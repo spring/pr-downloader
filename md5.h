@@ -37,8 +37,10 @@
  **********************************************************************
  */
 
+#include <stdlib.h> //typedef of u_int32_t
 /* typedef a 32 bit type */
-typedef unsigned long int UINT4;
+typedef u_int32_t UINT4;
+
 
 /* Data structure for MD5 (Message Digest) computation */
 typedef struct {
@@ -47,6 +49,7 @@ typedef struct {
   unsigned char in[64];                              /* input buffer */
   unsigned char digest[16];     /* actual digest after MD5Final call */
 } MD5_CTX;
+
 
 void MD5Init ();
 void MD5Update ();

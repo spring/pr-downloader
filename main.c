@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "md5.h"
 
 size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 	int written = fwrite(ptr, size, nmemb, stream);
@@ -98,6 +99,8 @@ bool parse_repository_line(char* str, SRepository* repository, int size){
 }
 
 
+
+
 /*
 	parses a rep master-file and creates a linked list with all reps
 */
@@ -141,15 +144,49 @@ typedef struct SMod{
 	struct SMod* next;
 }SMod;
 
-bool getUrl(SMod* mod, char* mirror, char* buf, int size){
+
+/*
+creates pool path:
+for example:
+http://mirror/pool/<first 2 hex of md5>/<rest of md5>.gz
+/home/path/.spring/pool/...
+*/
+
+bool getUrl(SMod* mod, char* path, char* buf, int size){
 	int i;
 	char md5[32];
 	for (i = 0; i < 16; i++){
 		sprintf(md5+i*2, "%02x", mod->md5[i]);
 	}
-	int res=snprintf(buf,size,"%spool/%c%c/%s.gz",mirror,md5[0],md5[1],md5+2);
+	snprintf(buf,size,"%spool/%c%c/%s.gz",path,md5[0],md5[1],md5+2);
 	return true;
 
+}
+
+bool fileIsValid(SMod* mod, char *filename){
+	gzFile *inFile = gzopen (filename, "rb");
+	MD5_CTX mdContext;
+	int bytes;
+	unsigned char data[1024];
+
+	if (inFile == NULL) {
+		printf("error opening %s\n",filename);
+		return false;
+	}
+	MD5Init (&mdContext);
+	while ((bytes = gzread (inFile, data, 1024)) != 0)
+		MD5Update (&mdContext, data, bytes);
+	MD5Final (&mdContext);
+	gzclose (inFile);
+	int i;
+	for(i=0; i<16;i++){
+		if (mdContext.digest[i]!=mod->md5[i]){ //file is invalid, delete it
+			printf("damaged file found, deleting it: %s",filename);
+			unlink(filename);
+			return false;
+		}
+	}
+	return true;
 }
 
 SMod* parse_binary_file(char* filename){
@@ -196,7 +233,14 @@ bool download_revision(char* mirror, char* package, char* springwritedir){
 	SMod* mod=parse_binary_file(pathbuf);
 	while(mod!=NULL){
 		getUrl(mod,mirror,urlbuf,sizeof(urlbuf));
-		printf("%s\n",urlbuf);
+		//printf("%s\n",urlbuf);
+
+		getUrl(mod,springwritedir,pathbuf, sizeof(pathbuf));
+		if (!fileIsValid(mod,pathbuf)){
+			printf("Invalid file downloaded: %s\n",pathbuf);
+			download(urlbuf,pathbuf);
+		}
+
 		mod=mod->next;
 	}
 
@@ -253,7 +297,7 @@ int main(int argc, char **argv){
 		modstmp=modstmp->next;
 	}
 
-	download_revision("http://nota.springrts.com/","52a86b5de454a39db2546017c2e6948d","/home/matze/.spring");
+	download_revision("http://nota.springrts.com/","52a86b5de454a39db2546017c2e6948d","/home/matze/.spring/");
 
 
     return 0;
