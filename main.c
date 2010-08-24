@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 	int written = fwrite(ptr, size, nmemb, stream);
@@ -19,7 +20,7 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 
 bool download(char* Url, char* filename){
 	CURL *curl;
-	CURLcode res;
+	CURLcode res=0;
     printf("Downloading %s to %s\n",Url, filename);
 
 	FILE* fp = fopen(filename ,"wb+");
@@ -41,7 +42,7 @@ bool download(char* Url, char* filename){
 		curl_easy_setopt(curl, CURLOPT_URL, Url);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-
+		curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 
 		res = curl_easy_perform(curl);
 
@@ -54,6 +55,11 @@ bool download(char* Url, char* filename){
 		curl_easy_cleanup(curl);
   }
   fclose(fp);
+  if (res!=0){
+		printf("error downloading");
+		unlink(filename);
+		return false;
+  }
   return true;
 }
 
@@ -108,7 +114,6 @@ SRepository* parse_repository_file(char* filename, int size){
     while(gzgets(fp, buf, sizeof(buf))!=Z_NULL){
     	SRepository* tmp=malloc(sizeof(SRepository));
     	if (parse_repository_line(buf,tmp, size)){
-	   		printf("Found repository %s %s %s\n",tmp->data[0], tmp->data[1], tmp->data[2]);
 	   		if (reps==NULL){
 	   			reps=tmp;
 	   			last=tmp;
@@ -126,10 +131,83 @@ SRepository* parse_repository_file(char* filename, int size){
 	return reps;
 }
 
+//FIXME: not portable
+typedef struct SMod{
+	u_int8_t namelen;//
+	char name[256];
+	unsigned char md5[16]; //16
+	unsigned int crc32[4]; //4
+	unsigned int size[4]; //4
+	struct SMod* next;
+}SMod;
+
+bool getUrl(SMod* mod, char* mirror, char* buf, int size){
+	int i;
+	char md5[32];
+	for (i = 0; i < 16; i++){
+		sprintf(md5+i*2, "%02x", mod->md5[i]);
+	}
+	int res=snprintf(buf,size,"%spool/%c%c/%s.gz",mirror,md5[0],md5[1],md5+2);
+	return true;
+
+}
+
+SMod* parse_binary_file(char* filename){
+	gzFile fp=gzopen(filename, "r");
+	printf("parse_binary: %s\n",filename);
+	if (fp==Z_NULL){
+        printf("Could not open %s\n",filename);
+		return NULL;
+	}
+	SMod* res=NULL;
+	SMod* tmp=NULL;
+	while(!gzeof(fp)){
+		if(res==NULL){
+			res=malloc(sizeof(SMod));
+			tmp=res;
+		}else{
+			tmp->next=malloc(sizeof(SMod));
+			tmp=tmp->next;
+		}
+		gzread(fp,&tmp->namelen, 1);
+		gzread(fp,&tmp->name, tmp->namelen);
+		tmp->name[tmp->namelen]=0;
+		gzread(fp,&tmp->md5, 24);
+	}
+	if(tmp!=NULL)
+		tmp->next=NULL;
+	return res;
+}
+/*
+	download the .sdp + all associated files
+	package is the md5sum
+	spring is for example ~/.spring
+*/
+bool download_revision(char* mirror, char* package, char* springwritedir){
+	char urlbuf[1024];
+	char pathbuf[1024];
+
+	snprintf(urlbuf,sizeof(urlbuf),"%s/packages/%s.sdp",mirror,package);
+	snprintf(pathbuf,sizeof(pathbuf),"%s/packages/%s.sdp",springwritedir,package);
+
+/*	if (!download(urlbuf, pathbuf))
+		return false;
+*/
+	SMod* mod=parse_binary_file(pathbuf);
+	while(mod!=NULL){
+		getUrl(mod,mirror,urlbuf,sizeof(urlbuf));
+		printf("%s\n",urlbuf);
+		mod=mod->next;
+	}
+
+	return true;
+}
+
+
 #define TMP_FILE "/tmp/repos.gz"
 #define TMP_FILE2 "/tmp/version.gz"
 int main(int argc, char **argv){
-	char urlbuf[4096];
+/*	char urlbuf[4096];
 
     download(REPO_MASTER, TMP_FILE);
 	SRepository* reps =parse_repository_file(TMP_FILE,4);
@@ -147,10 +225,35 @@ int main(int argc, char **argv){
 	}
 
 	tmp=reps;
+	SRepository* mods=NULL;
+
 	while(tmp!=NULL){
-		SRepository* repstmp =parse_repository_file(tmp->data[0],4);
+		SRepository* repstmp = parse_repository_file(tmp->data[0],4);
+		if (repstmp!=NULL){
+			if (mods==NULL){ //set first element
+				mods = repstmp;
+			}else{ //append
+				SRepository* modstmp = mods;
+				while(modstmp->next!=NULL)
+					modstmp=modstmp->next;
+				modstmp->next=repstmp;
+			}
+		}
 		tmp=tmp->next;
 	}
+
+*/
+	SRepository* mods=parse_repository_file("ca",3);
+
+	SRepository* modstmp=mods;
+	int i=0;
+	while(modstmp!=NULL){
+		printf("%d %s %s %s\n",i,modstmp->data[0], modstmp->data[1], modstmp->data[2]);
+		i++;
+		modstmp=modstmp->next;
+	}
+
+	download_revision("http://nota.springrts.com/","52a86b5de454a39db2546017c2e6948d","/home/matze/.spring");
 
 
     return 0;
