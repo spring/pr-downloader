@@ -29,10 +29,13 @@ public:
 	};
 	CFileSystem();
 	~CFileSystem();
+	//parses a sdp
 	std::list<CFileSystem::FileData*>* parseSdp(std::string& filename);
+	//Validates a File, (checks the md5)
 	bool fileIsValid(FileData* mod, std::string& filename);
+	//returns a temporary file name, file is deleted in destructor if not moved away
 	const std::string* createTempFile();
-	CRepo* parse_master_file(const std::string& filename);
+	//returns the spring writeable directory
 	const std::string& getSpringDir();
 
 private:

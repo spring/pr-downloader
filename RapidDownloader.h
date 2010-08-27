@@ -23,11 +23,13 @@ public:
 	}
 	static void Initialize();
 	static void Shutdown();
-
-	bool download_revision(const std::string& mirror,const std::string& package, const std::string& springwritedir);
+	//lists a tag, for exampe ba:stable
 	bool download_tag(const std::string& modname);
+	//lists all tags on all servers
 	void list_tag();
+	//remove a dsp from the list of remote dsps
 	void addRemoteDsp(CSdp& dsp);
+	//add dsp to list of the remote dsps
 	void removeRemoteDsp(CSdp& sdp);
 	CRapidDownloader();
 private:

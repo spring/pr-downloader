@@ -1,14 +1,15 @@
 #include "RepoMaster.h"
 
-//nota:revision:1,52a86b5de454a39db2546017c2e6948d,,NOTA test-1
-
 class CSdp{
 public:
 	CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& url);
 	void download();
 	void parse();
+	//returns md5 of a repo
 	const std::string& getMD5();
+	//returns the descriptional name
 	const std::string& getName();
+	//returns the shortname, for example ba:stable
 	const std::string& getShortName();
 private:
 	std::string name;

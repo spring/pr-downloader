@@ -15,6 +15,8 @@ public:
 	static void Initialize();
 	CHttpDownload();
 	~CHttpDownload();
+
+	//downloads a file from Url to filename
 	bool download(const std::string& Url,const std::string& filename);
 private:
 	CURL *curl;
