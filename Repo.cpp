@@ -4,6 +4,7 @@
 #include "HttpDownload.h"
 #include "RapidDownloader.h"
 #include "Sdp.h"
+#include "Util.h"
 #include <zlib.h>
 #include <stdio.h>
 

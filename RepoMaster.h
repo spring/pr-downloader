@@ -20,36 +20,6 @@ public:
 		return url;
 	}
 
-	std::string* getStrByIdx(std::string& str, char c, int idx){
-		unsigned int i=0;
-		std::string* tmp=new std::string;
-		if (idx==0){
-			for(i=0;i<str.size();i++){
-				if (str[i]==c)
-					break;
-			}
-			tmp->assign(str.substr(0,i));
-			return tmp;
-		}
-		int start=0;
-		int end=0;
-		int count=0;
-		for(i=0;i<str.length();i++){
-			if (str[i]==c){
-				count++;
-				if(count>=idx){
-					if(start==0)
-						start=i+1;
-					else{
-						end=i;
-						break;
-					}
-				}
-			}
-		}
-		tmp->assign(str.substr(start,end-start));
-		return tmp;
-	}
 };
 
 class CRepoMaster:IRapidRepo{

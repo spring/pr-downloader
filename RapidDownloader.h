@@ -25,7 +25,7 @@ public:
 	static void Shutdown();
 
 	bool download_revision(const std::string& mirror,const std::string& package, const std::string& springwritedir);
-	bool download_tag(const char* modname);
+	bool download_tag(const std::string& modname);
 	void list_tag();
 	void addRemoteDsp(CSdp& dsp);
 	void removeRemoteDsp(CSdp& sdp);

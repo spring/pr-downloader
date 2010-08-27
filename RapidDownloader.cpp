@@ -73,7 +73,7 @@ void CRapidDownloader::list_tag(){
 	}
 }
 
-bool CRapidDownloader::download_tag(const char* modname){
+bool CRapidDownloader::download_tag(const std::string& modname){
 	std::string url(REPO_MASTER);
 	repoMaster->download(url);
 	repoMaster->updateRepos();

@@ -5,6 +5,7 @@
 #include <string>
 #include <stdio.h>
 #include <zlib.h>
+#include "Util.h"
 
 CRepoMaster* CRepoMaster::singleton = NULL;
 
