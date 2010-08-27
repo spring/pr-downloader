@@ -40,10 +40,13 @@
  **********************************************************************
  */
 
+#ifdef WIN32
+typedef unsigned int UINT4;
+#else
 #include <stdlib.h> //typedef of u_int32_t
 /* typedef a 32 bit type */
 typedef u_int32_t UINT4;
-
+#endif
 
 /* Data structure for MD5 (Message Digest) computation */
 typedef struct {

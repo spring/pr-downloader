@@ -1,0 +1,23 @@
+
+# wget http://www.gknw.net/mirror/curl/win32/curl-7.21.1-devel-mingw32.zip
+# unzip curl-7.21.1-devel-mingw32.zip
+# cp -Rv curl-7.21.1-devel-mingw32/* mingwlibs/
+
+cat > win32.cmake <<EOF
+SET(CMAKE_SYSTEM_NAME Windows)
+SET(CMAKE_C_COMPILER i586-mingw32msvc-gcc)
+SET(CMAKE_CXX_COMPILER i586-mingw32msvc-g++)
+SET(CMAKE_FIND_ROOT_PATH /usr/i586-mingw32msvc)
+SET(MINGWLIBS ./mingwlibs)
+SET(CMAKE_INSTALL_PREFIX  ./dist)
+EOF
+rm CMakeCache.txt
+
+if [ ! -d mingwlibs ]; then
+	git clone git://github.com/spring/mingwlibs
+	cd mingwlibs
+	git checkout remotes/origin/boost_1.42.0_mingw_4.4.2
+	git checkout boost_1.42.0_mingw_4.4.2
+fi
+cmake . "-DCMAKE_TOOLCHAIN_FILE=./win32.cmake"
+make
