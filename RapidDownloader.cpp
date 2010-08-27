@@ -73,10 +73,15 @@ void CRapidDownloader::list_tag(){
 		printf("%s %s\n",tmp->getShortName().c_str(),tmp->getName().c_str());
 	}
 }
+
 bool CRapidDownloader::reloadRepos(){
+	if (reposLoaded)
+		return true;
 	std::string url(REPO_MASTER);
 	repoMaster->download(url);
 	repoMaster->updateRepos();
+	reposLoaded=true;
+	return true;
 }
 
 bool CRapidDownloader::download_tag(const std::string& modname){
@@ -90,6 +95,10 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 			return true;
 		}
 	}
-	printf("Couldn't find %s\n", modname);
+	printf("Couldn't find %s\n", modname.c_str());
 	return false;
+}
+
+CRapidDownloader::CRapidDownloader(){
+	reposLoaded = false;
 }

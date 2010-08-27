@@ -29,9 +29,11 @@ public:
 	void list_tag();
 	void addRemoteDsp(CSdp& dsp);
 	void removeRemoteDsp(CSdp& sdp);
+	CRapidDownloader();
 private:
 	std::list<CSdp*> sdps;
 	bool reloadRepos();
+	bool reposLoaded;
 };
 
 #define rapidDownloader CRapidDownloader::GetInstance()

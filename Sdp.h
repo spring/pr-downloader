@@ -16,4 +16,5 @@ private:
 	std::string shortname;
 	std::string url;
 	std::string filename;
+	bool downloaded;
 };
