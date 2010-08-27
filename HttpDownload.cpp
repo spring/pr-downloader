@@ -7,6 +7,32 @@
 
 CHttpDownload* CHttpDownload::singleton = NULL;
 
+int progress_func(void* ptr, double TotalToDownload, double NowDownloaded,
+                    double TotalToUpload, double NowUploaded){
+    // how wide you want the progress meter to be
+    int totaldotz=40;
+    double fractiondownloaded = NowDownloaded / TotalToDownload;
+    // part of the progressmeter that's already "full"
+    int dotz = fractiondownloaded * totaldotz;
+
+    // create the "meter"
+    int ii=0;
+    printf("%3.0f%% [",fractiondownloaded*100);
+    // part  that's full already
+    for ( ; ii < dotz;ii++) {
+        printf("=");
+    }
+    // remaining part (spaces)
+    for ( ; ii < totaldotz;ii++) {
+        printf(" ");
+    }
+    // and back to line begin - do not forget the fflush to avoid output buffering problems!
+    printf("] %d/%d\r",(int)NowDownloaded,(int)TotalToDownload );
+    fflush(stdout);
+	return 0;
+}
+
+
 size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 	int written = fwrite(ptr, size, nmemb, stream);
 	return written;
@@ -25,9 +51,10 @@ bool CHttpDownload::download(const std::string& Url,const std::string& filename)
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 		curl_easy_setopt(curl, CURLOPT_URL, Url.c_str());
 		res = curl_easy_perform(curl);
-  }
-  fclose(fp);
-  if (res!=0){
+	}
+	fclose(fp);
+	printf("\n"); //new line because of downloadbar
+	if (res!=0){
 		printf("error downloading %s\n",Url.c_str());
 		unlink(filename.c_str());
 		return false;
@@ -40,6 +67,8 @@ CHttpDownload::CHttpDownload(){
 	curl = curl_easy_init();
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
+	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+    curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
 }
 
 CHttpDownload::~CHttpDownload(){

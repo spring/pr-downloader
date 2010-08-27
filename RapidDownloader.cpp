@@ -66,17 +66,21 @@ void CRapidDownloader::removeRemoteDsp(CSdp& sdp){
 }
 
 void CRapidDownloader::list_tag(){
+	reloadRepos();
 	std::list<CSdp*>::iterator it;
 	for(it=sdps.begin();it!=sdps.end();++it){
 		CSdp* tmp=*it;
 		printf("%s %s\n",tmp->getShortName().c_str(),tmp->getName().c_str());
 	}
 }
-
-bool CRapidDownloader::download_tag(const std::string& modname){
+bool CRapidDownloader::reloadRepos(){
 	std::string url(REPO_MASTER);
 	repoMaster->download(url);
 	repoMaster->updateRepos();
+}
+
+bool CRapidDownloader::download_tag(const std::string& modname){
+	reloadRepos();
 	std::list<CSdp*>::iterator it;
 	for(it=sdps.begin();it!=sdps.end();++it){
 		CSdp* tmp=*it;

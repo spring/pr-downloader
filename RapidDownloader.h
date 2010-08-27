@@ -31,6 +31,7 @@ public:
 	void removeRemoteDsp(CSdp& sdp);
 private:
 	std::list<CSdp*> sdps;
+	bool reloadRepos();
 };
 
 #define rapidDownloader CRapidDownloader::GetInstance()

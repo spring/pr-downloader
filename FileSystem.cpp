@@ -98,7 +98,6 @@ CFileSystem::~CFileSystem(){
 	for (it = tmpfiles.begin();it != tmpfiles.end(); ++it) {
 		std::string* filename=(*it);
 		remove(filename->c_str());
-		printf("deleted temp file: %s\n",filename->c_str());
 	}
 }
 
