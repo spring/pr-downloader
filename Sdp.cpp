@@ -45,6 +45,7 @@ void CSdp::download(){
 			httpDownload->download(tmpurl,filePath);
 		}
 	}
+	delete(files);
 	downloaded=true;
 }
 

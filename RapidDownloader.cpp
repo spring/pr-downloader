@@ -12,31 +12,6 @@
 
 CRapidDownloader* CRapidDownloader::singleton = NULL;
 
-/*
-	download the .sdp + all associated files
-	package is the md5sum
-	spring is for example ~/.spring
-*/
-bool CRapidDownloader::download_revision(const std::string& mirror,const std::string& package, const std::string& springwritedir){
-	std::string url=mirror +"/packages/"+package+".sdp";
-	std::string path=springwritedir+"/packages/"+package+".sdp";;
-
-	std::list <CFileSystem::FileData*>* mod=fileSystem->parseSdp(path);
-	std::list <CFileSystem::FileData*>::iterator it;
-
-	for ( it = mod->begin(); it != mod->end(); ++it){
-		std::string url=getUrl(*it,mirror);
-		std::string path=getUrl(*it,springwritedir);
-
-		if (!fileSystem->fileIsValid(*it,url)){
-			printf("Invalid file downloaded: %s\n",url.c_str());
-			httpDownload->download(url,path);
-		}
-	}
-
-	return true;
-}
-
 void CRapidDownloader::Initialize(){
 	singleton=new CRapidDownloader();
 	CHttpDownload::Initialize();

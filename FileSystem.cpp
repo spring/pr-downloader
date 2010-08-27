@@ -19,8 +19,7 @@ bool CFileSystem::fileIsValid(FileData* mod, std::string& filename){
 	int bytes;
 	unsigned char data[1024];
 
-	if (inFile == NULL) {
-		printf("error opening %s\n",filename.c_str());
+	if (inFile == NULL) { //file doesn't exist, thats ok
 		return false;
 	}
 	MD5Init (&mdContext);
