@@ -2,6 +2,8 @@
 #define HTTP_DOWNLOAD_H
 
 #include <string>
+#include <curl/curl.h>
+
 
 class CHttpDownload{
 	static CHttpDownload* singleton;
@@ -12,8 +14,10 @@ public:
 	}
 	static void Initialize();
 	CHttpDownload();
+	~CHttpDownload();
 	bool download(const std::string& Url,const std::string& filename);
 private:
+	CURL *curl;
 
 };
 
