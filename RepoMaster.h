@@ -33,6 +33,9 @@ public:
 	CRepoMaster(std::string& masterurl):IRapidRepo(masterurl){}
 
 	void download(const std::string& name);
+/** *
+	parses a rep master-file
+*/
 	void parse();
 	void updateRepos();
 private:

@@ -29,8 +29,6 @@ public:
 	void list_tag();
 	//remove a dsp from the list of remote dsps
 	void addRemoteDsp(CSdp& dsp);
-	//add dsp to list of the remote dsps
-	void removeRemoteDsp(CSdp& sdp);
 	CRapidDownloader();
 private:
 	std::list<CSdp*> sdps;

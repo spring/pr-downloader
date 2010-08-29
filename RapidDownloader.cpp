@@ -29,23 +29,32 @@ void CRapidDownloader::addRemoteDsp(CSdp& sdp){
 	sdps.push_back(&sdp);
 }
 
-std::string toremove;
-bool single_digit (CSdp* value){
-	std::string tmp=value->getMD5();
-	return (tmp.compare(toremove)==0);
-}
+static bool list_compare(CSdp* first ,CSdp*  second){
+	std::string name1;
+	std::string name2;
+	name1.clear();
+	name2.clear();
 
-void CRapidDownloader::removeRemoteDsp(CSdp& sdp){
-	toremove=sdp.getMD5();
-	sdps.remove_if(single_digit);
+	name1=(first->getShortName());
+	name2=(second->getShortName());
+	unsigned int len;
+	len=name1.size();
+	if (len<name2.size())
+		len=name2.size();
+	for(unsigned int i=0;i<len;i++){
+		if (tolower(name1[i])<tolower(name2[i])){
+			return true;
+		}
+	}
+	return false;
 }
 
 void CRapidDownloader::list_tag(){
 	reloadRepos();
+	sdps.sort(list_compare);
 	std::list<CSdp*>::iterator it;
 	for(it=sdps.begin();it!=sdps.end();++it){
-		CSdp* tmp=*it;
-		printf("%s %s\n",tmp->getShortName().c_str(),tmp->getName().c_str());
+		printf("%-40s%s\n",(*it)->getShortName().c_str(),(*it)->getName().c_str());
 	}
 }
 
@@ -63,10 +72,9 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 	reloadRepos();
 	std::list<CSdp*>::iterator it;
 	for(it=sdps.begin();it!=sdps.end();++it){
-		CSdp* tmp=*it;
-		if (tmp->getShortName().compare(modname)==0){
-			printf("Found Repository with mod, downloading %s\n", tmp->getMD5().c_str());
-			tmp->download();
+		if ((*it)->getShortName().compare(modname)==0){
+			printf("Found Repository with mod, downloading %s\n", (*it)->getMD5().c_str());
+			(*it)->download();
 			return true;
 		}
 	}

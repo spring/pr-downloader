@@ -12,6 +12,6 @@ bool md5AtoI(const std::string& md5, unsigned char* dest);
 //converts md5 bin to ascii
 bool md5ItoA(const unsigned char* source, std::string& md5);
 //returns substring number idx split by c
-std::string* getStrByIdx(std::string& str, char c, int idx);
+std::string getStrByIdx(std::string& str, char c, int idx);
 
 #endif

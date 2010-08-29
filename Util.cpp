@@ -62,15 +62,15 @@ bool md5ItoA(const unsigned char* source, std::string& md5){
 }
 
 
-std::string* getStrByIdx(std::string& str, char c, int idx){
+std::string getStrByIdx(std::string& str, char c, int idx){
 	unsigned int i=0;
-	std::string* tmp=new std::string;
+	std::string tmp;
 	if (idx==0){
 		for(i=0;i<str.size();i++){
 			if (str[i]==c)
 				break;
 		}
-		tmp->assign(str.substr(0,i));
+		tmp.assign(str.substr(0,i));
 		return tmp;
 	}
 	int start=0;
@@ -89,6 +89,6 @@ std::string* getStrByIdx(std::string& str, char c, int idx){
 			}
 		}
 	}
-	tmp->assign(str.substr(start,end-start));
+	tmp.assign(str.substr(start,end-start));
 	return tmp;
 }

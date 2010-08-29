@@ -39,12 +39,12 @@ public:
 	//Validates a File, (checks the md5)
 	bool fileIsValid(FileData* mod, std::string& filename);
 	//returns a temporary file name, file is deleted in destructor if not moved away
-	const std::string* createTempFile();
+	std::string createTempFile();
 	//returns the spring writeable directory
-	const std::string& getSpringDir();
+	const std::string getSpringDir();
 
 private:
-	std::list<std::string*> tmpfiles;
+	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;
 	bool parse_repository_line(char* str, SRepository* repository, int size);
 	std::string springdir;

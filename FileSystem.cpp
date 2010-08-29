@@ -86,10 +86,10 @@ std::list<CFileSystem::FileData*>* CFileSystem::parseSdp(std::string& filename){
 
 
 
-const std::string* CFileSystem::createTempFile(){
-	std::string *tmp=new std::string();
+std::string CFileSystem::createTempFile(){
+	std::string tmp;
 #ifndef WIN32
-	tmp->assign(tmpnam(NULL));
+	tmp=tmpnam(NULL);
 #else
 	char buf[MAX_PATH];
 	char tmppath[MAX_PATH];
@@ -102,11 +102,9 @@ const std::string* CFileSystem::createTempFile(){
 }
 
 CFileSystem::~CFileSystem(){
-	std::list<std::string*>::iterator it;
+	std::list<std::string>::iterator it;
 	for (it = tmpfiles.begin();it != tmpfiles.end(); ++it) {
-		std::string* filename=(*it);
-		remove(filename->c_str());
-		delete(*it);
+		remove(it->c_str());
 	}
 	tmpfiles.clear();
 }
@@ -126,7 +124,7 @@ void CFileSystem::Shutdown(){
 	tmpFileSystem=NULL;
 }
 
-const std::string& CFileSystem::getSpringDir(){
+const std::string CFileSystem::getSpringDir(){
 	return springdir;
 }
 

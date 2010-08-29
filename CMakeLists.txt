@@ -20,6 +20,7 @@ else (UNIX AND NOT MINGW)
 	set (MINGW 1)
 endif (UNIX AND NOT MINGW)
 
+set(CMAKE_CXX_FLAGS "-Wall -O2 -g")
 include(FindCURL)
 include(FindZLIB)
 

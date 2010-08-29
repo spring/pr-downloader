@@ -10,8 +10,7 @@
 CRepoMaster* CRepoMaster::singleton = NULL;
 
 void CRepoMaster::download(const std::string& name){
-	const std::string* tmp=fileSystem->createTempFile();
-	tmpFile=*tmp;
+	tmpFile=fileSystem->createTempFile();
 	httpDownload->download(name, tmpFile);
 	parse();
 }
@@ -20,9 +19,6 @@ void CRepoMaster::Initialize(std::string& masterurl){
 	singleton=new CRepoMaster(masterurl);
 }
 
-/*
-	parses a rep master-file
-*/
 void CRepoMaster::parse(){
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
 	if (fp==Z_NULL){
@@ -33,12 +29,11 @@ void CRepoMaster::parse(){
     repos.empty();
     while(gzgets(fp, buf, sizeof(buf))!=Z_NULL){
     	std::string tmp=buf;
-		std::string* url=getStrByIdx(tmp,',',1);
-		if (url->size()>0){ //create new repo from url
-			CRepo* repotmp=new CRepo(*url);
+		std::string url=getStrByIdx(tmp,',',1);
+		if (url.size()>0){ //create new repo from url
+			CRepo* repotmp=new CRepo(url);
 			repos.push_back(repotmp);
 		}
-		delete(url);
     }
     gzclose(fp);
 }
