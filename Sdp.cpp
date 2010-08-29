@@ -43,6 +43,9 @@ void CSdp::download(){
 			std::string tmpurl;
 			tmpurl=url+relfile;
 			httpDownload->download(tmpurl,filePath);
+			if (!fileSystem->fileIsValid(*it,filePath)){
+				printf("Error downloading %s file md5 is invalid\n",tmpurl.c_str());
+			}
 		}
 	}
 	delete(files);
