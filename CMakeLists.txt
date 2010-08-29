@@ -41,5 +41,5 @@ add_executable(${RAPID}
 )
 target_link_libraries(${RAPID} ${CURL_LIBRARIES} ${ZLIB_LIBRARIES})
 if (MINGW)
-SET_TARGET_PROPERTIES(${RAPID} PROPERTIES LINK_FLAGS "-static ${MINGWLIBS}/dll/libcurl.dll ${MINGWLIBS}/dll/zlib1.dll -Wl,-subsystem,console")
+SET_TARGET_PROPERTIES(${RAPID} PROPERTIES LINK_FLAGS "${MINGWLIBS}/dll/libcurl.dll -Wl,-subsystem,console")
 endif (MINGW)

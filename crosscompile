@@ -1,8 +1,9 @@
 
+# git clone git://github.com/spring/mingwlibs
 # wget http://www.gknw.net/mirror/curl/win32/curl-7.21.1-devel-mingw32.zip
 # unzip curl-7.21.1-devel-mingw32.zip
 # cp -Rv curl-7.21.1-devel-mingw32/* mingwlibs/
-# mv mingwlibs/bin/libcurl.dll mingwlibs/dll
+## mv mingwlibs/bin/libcurl.dll mingwlibs/dll
 
 
 cat > win32.cmake <<EOF
@@ -22,7 +23,7 @@ if [ ! -d mingwlibs ]; then
 	git checkout boost_1.42.0_mingw_4.4.2
 fi
 cmake . "-DCMAKE_TOOLCHAIN_FILE=./win32.cmake"
-make clean
-make VERBOSE=1
-cd mingwlibs/dll/; ../../rapid.exe --list; cd -
+#make clean
+#make VERBOSE=1
+#cd mingwlibs/dll/; ../../rapid.exe --list; cd -
 
