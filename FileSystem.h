@@ -41,7 +41,9 @@ public:
 	//returns a temporary file name, file is deleted in destructor if not moved away
 	std::string createTempFile();
 	//returns the spring writeable directory
-	const std::string getSpringDir();
+	const std::string& getSpringDir() const;
+	bool directory_exist(const std::string& path);
+	void create_subdirs (const std::string& path);
 
 private:
 	std::list<std::string> tmpfiles;

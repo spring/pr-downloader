@@ -1,16 +1,15 @@
 #include <list>
 class CSdp;
 
-class CRepo:public IRapidRepo{
+class CRepo{
 	std::string repourl;
 public:
-	CRepo(const std::string& repourl):
-		IRapidRepo(repourl){
+	CRepo(const std::string& repourl){
 		this->repourl=repourl;
 	}
 
 	//downloads a repo
-	void download(const std::string& url);
+	void download();
 	//parse the downloaded repo
 	void parse();
 private:

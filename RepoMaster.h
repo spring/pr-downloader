@@ -6,47 +6,27 @@
 
 class CRepo;
 
-class IRapidRepo{
-protected:
-	std::string url;
-public:
-	IRapidRepo(std::string url){
-		this->url=url;
-	}
-	//starts the download
-	virtual void download(const std::string& name)=0;
-	virtual void parse()=0;
-	const std::string& getUrl(){
-		return url;
-	}
-
-};
-
-class CRepoMaster:IRapidRepo{
+class CRepoMaster{
 	static CRepoMaster* singleton;
 	std::string tmpFile;
+	std::string url;
 public:
 	static void Initialize(std::string& masterurl);
+	static void Shutdown();
 	static CRepoMaster* GetInstance(){
 		return singleton;
 	}
-	CRepoMaster(std::string& masterurl):IRapidRepo(masterurl){}
-
 	void download(const std::string& name);
 /** *
 	parses a rep master-file
 */
 	void parse();
 	void updateRepos();
+	CRepoMaster(std::string url);
 private:
 	std::list<CRepo*> repos;
 
 };
 #define repoMaster CRepoMaster::GetInstance()
-
-class CMod:IRapidRepo{
-	void download(){
-	}
-};
 
 #endif

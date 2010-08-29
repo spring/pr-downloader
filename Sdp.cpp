@@ -20,35 +20,44 @@ CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::stri
 void CSdp::download(){
 	if(downloaded) //allow download only once of the same sdp
 		return;
-	filename=fileSystem->getSpringDir();
-	filename.append( "/packages/");
+	filename=fileSystem->getSpringDir() + "/packages/";
+	if (!fileSystem->directory_exist(filename)){
+		fileSystem->create_subdirs(filename);
+	}
 	filename  += md5 + ".sdp";
 	httpDownload->download(url + "/packages/" + md5 + ".sdp", filename);
 	std::list<CFileSystem::FileData*>* files=fileSystem->parseSdp(filename);
 	std::list<CFileSystem::FileData*>::iterator it;
-
+	httpDownload->setCount(files->size());
+	int i=0;
 	for(it=files->begin(); it!=files->end(); ++it){
-		std::string springdir=fileSystem->getSpringDir();
-		std::string relfile="";
-		std::string filePath;
-		relfile.append( "/pool/");
-		md5ItoA((*it)->md5, filePath);
-		relfile += filePath.at(0);
-		relfile +=filePath.at(1);
-		relfile.append("/");
-		relfile.append(filePath.substr(2));
-		relfile += ".gz";
-		filePath=springdir+relfile;
-		if (!fileSystem->fileIsValid(*it,filePath)){
-			std::string tmpurl;
-			tmpurl=url+relfile;
-			httpDownload->download(tmpurl,filePath);
-			if (!fileSystem->fileIsValid(*it,filePath)){
-				printf("Error downloading %s file md5 is invalid\n",tmpurl.c_str());
+		i++;
+		printf("%d/%d\r",i,(unsigned int)files->size());
+		std::string md5="";
+
+		md5ItoA((*it)->md5, md5);
+		std::string filename=md5.substr(2);
+		filename.append(".gz");
+		std::string path("/pool/");
+		path += md5.at(0);
+		path += md5.at(1);
+		path += "/";
+
+		std::string file=fileSystem->getSpringDir() + path + filename; //absolute filename
+		std::string url=this->url + path + filename; //absolute url
+
+		if (!fileSystem->directory_exist(fileSystem->getSpringDir()+path)){
+			fileSystem->create_subdirs(fileSystem->getSpringDir()+path);
+		}
+		if (!fileSystem->fileIsValid(*it,file)){
+			httpDownload->download(url,file,i);
+			if (!fileSystem->fileIsValid(*it,file)){
+				printf("Error downloading %s file md5 is invalid\n",url.c_str());
 			}
 		}
 	}
 	delete(files);
+	printf("Succesfully downloaded %s %s\n",shortname.c_str(),name.c_str());
 	downloaded=true;
 }
 

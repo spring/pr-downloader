@@ -10,10 +10,10 @@
 
 
 
-void CRepo::download(const std::string& url){
+void CRepo::download(){
 	tmpFile=fileSystem->createTempFile();
 	std::string fullUrl;
-	fullUrl=url+"/versions.gz";
+	fullUrl=repourl+"/versions.gz";
 	httpDownload->download(fullUrl, tmpFile);
 	parse();
 }

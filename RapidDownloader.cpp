@@ -21,7 +21,11 @@ void CRapidDownloader::Initialize(){
 }
 
 void CRapidDownloader::Shutdown(){
+	CRepoMaster::Shutdown();
 	CFileSystem::Shutdown();
+	CHttpDownload::Shutdown();
+	delete(singleton);
+	singleton=NULL;
 }
 
 

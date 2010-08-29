@@ -19,6 +19,16 @@ void CRepoMaster::Initialize(std::string& masterurl){
 	singleton=new CRepoMaster(masterurl);
 }
 
+CRepoMaster::CRepoMaster(std::string url){
+	this->url=url;
+}
+
+void CRepoMaster::Shutdown(){
+	delete(singleton);
+	singleton=NULL;
+}
+
+
 void CRepoMaster::parse(){
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
 	if (fp==Z_NULL){
@@ -41,6 +51,6 @@ void CRepoMaster::parse(){
 void CRepoMaster::updateRepos(){
 	std::list<CRepo*>::iterator it;
 	for (it = repos.begin();it != repos.end(); ++it) {
-		(*it)->download((*it)->getUrl());
+		(*it)->download();
 	}
 }

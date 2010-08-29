@@ -8,18 +8,25 @@
 #include <string.h>
 #include <list>
 #include <cstring>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+
+#ifdef WIN32
+#define PATH_DELIMITER '\\'
+#else
+#define PATH_DELIMITER '/'
+#endif
 
 
 CFileSystem* CFileSystem::singleton = NULL;
-
 
 bool CFileSystem::fileIsValid(FileData* mod, std::string& filename){
 	gzFile inFile = gzopen (filename.c_str(), "rb");
 	MD5_CTX mdContext;
 	int bytes;
 	unsigned char data[1024];
-
-	if (inFile == NULL) { //file doesn't exist, thats ok
+	if (inFile == NULL) { //file doesn't exist
 		return false;
 	}
 	MD5Init (&mdContext);
@@ -117,6 +124,7 @@ CFileSystem::CFileSystem(){
 void CFileSystem::Initialize(){
 	singleton=new CFileSystem();
 }
+
 void CFileSystem::Shutdown(){
 	CFileSystem* tmpFileSystem=singleton;
 	singleton=NULL;
@@ -124,8 +132,32 @@ void CFileSystem::Shutdown(){
 	tmpFileSystem=NULL;
 }
 
-const std::string CFileSystem::getSpringDir(){
+const std::string& CFileSystem::getSpringDir() const{
 	return springdir;
 }
 
+/**
+	checks if a directory exists
+*/
+bool CFileSystem::directory_exist(const std::string& path){
+	struct stat fileinfo;
+	int res=stat(path.c_str(),&fileinfo);
+	return (res==0);
+}
 
+/**
+	creates a directory with all subdirectorys (doesn't handle c:\ ...)
+*/
+void CFileSystem::create_subdirs (const std::string& path) {
+	bool run=false;
+	for (unsigned int i=0;i<path.size(); i++){
+		char c=path.at(i);
+		if (c==PATH_DELIMITER){
+			mkdir(path.substr(0,i).c_str(),0777);
+			run=true;
+		}
+	}
+	mkdir(path.c_str(),0);
+	if (run)
+		printf("Created dir: %s\n", path.c_str());
+}

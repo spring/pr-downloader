@@ -2,7 +2,6 @@
 #define RAPID_DOWNLOADER_H
 
 
-#define MAX_DATA 5
 #include <string>
 #include <list>
 #include <stdio.h>

@@ -4,20 +4,31 @@
 #include <curl/curl.h>
 #include <unistd.h>
 #include <string>
+#include <string.h>
+#include "FileSystem.h"
+
 
 CHttpDownload* CHttpDownload::singleton = NULL;
 
-int progress_func(void* ptr, double TotalToDownload, double NowDownloaded,
+/** *
+	draw a nice download status-bar
+*/
+int progress_func(int pos, double TotalToDownload, double NowDownloaded,
                     double TotalToUpload, double NowUploaded){
     // how wide you want the progress meter to be
     int totaldotz=40;
-    double fractiondownloaded = NowDownloaded / TotalToDownload;
-    // part of the progressmeter that's already "full"
+    double fractiondownloaded;
+    if (TotalToDownload>0)
+    	fractiondownloaded = NowDownloaded / TotalToDownload;
+	else
+		fractiondownloaded=0;
+        // part of the progressmeter that's already "full"
     int dotz = fractiondownloaded * totaldotz;
 
     // create the "meter"
-    int ii=0;
+    printf("%5d/%5d ", pos,httpDownload->getCount());
     printf("%3.0f%% [",fractiondownloaded*100);
+    int ii=0;
     // part  that's full already
     for ( ; ii < dotz;ii++) {
         printf("=");
@@ -38,16 +49,17 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 	return written;
 }
 
-bool CHttpDownload::download(const std::string& Url,const std::string& filename){
+bool CHttpDownload::download(const std::string& Url, const std::string& filename, int pos){
 	CURLcode res=CURLE_OK;
     printf("Downloading %s to %s\n",Url.c_str(), filename.c_str());
 
 	FILE* fp = fopen(filename.c_str() ,"wb+");
-	if (fp==NULL){
+	if (fp<=NULL){
         printf("Could not open %s\n",filename.c_str());
 		return false;
 	}
 	if(curl) {
+		curl_easy_setopt(curl, CURLOPT_PROGRESSDATA , pos);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 		curl_easy_setopt(curl, CURLOPT_URL, Url.c_str());
 		res = curl_easy_perform(curl);
@@ -69,12 +81,27 @@ CHttpDownload::CHttpDownload(){
 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
     curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
+    count=1;
 }
 
 CHttpDownload::~CHttpDownload(){
 	curl_easy_cleanup(curl);
+	curl=NULL;
 }
 
 void CHttpDownload::Initialize(){
 	singleton=new CHttpDownload();
+}
+
+void CHttpDownload::Shutdown(){
+	delete(singleton);
+	singleton=NULL;
+}
+
+void CHttpDownload::setCount(unsigned int count){
+	this->count=count;
+}
+
+unsigned int CHttpDownload::getCount(){
+	return this->count;
 }

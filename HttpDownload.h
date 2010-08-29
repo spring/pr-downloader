@@ -5,6 +5,7 @@
 #include <curl/curl.h>
 
 
+
 class CHttpDownload{
 	static CHttpDownload* singleton;
 
@@ -13,13 +14,20 @@ public:
 		return singleton;
 	}
 	static void Initialize();
+	static void Shutdown();
 	CHttpDownload();
 	~CHttpDownload();
 
-	//downloads a file from Url to filename
-	bool download(const std::string& Url,const std::string& filename);
+	/**
+		downloads a file from Url to filename
+	*/
+	bool download(const std::string& Url, const std::string& filename, int pos=1);
+	void setCount(unsigned int count);
+	unsigned int getCount();
+	const std::string& getCacheFile(const std::string &url);
 private:
 	CURL *curl;
+	int count;
 
 };
 
