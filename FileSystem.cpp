@@ -87,7 +87,16 @@ std::list<CFileSystem::FileData*>* CFileSystem::parseSdp(std::string& filename){
 
 
 const std::string* CFileSystem::createTempFile(){
-	std::string *tmp=new std::string(tmpnam(NULL));
+	std::string *tmp=new std::string();
+#ifndef WIN32
+	tmp->assign(tmpnam(NULL));
+#else
+	char buf[MAX_PATH];
+	char tmppath[MAX_PATH];
+	GetTempPath(sizeof(tmppath),tmppath);
+	GetTempFileName(tmppath,NULL,0,buf);
+	tmp->assign(buf);
+#endif
 	tmpfiles.push_back(tmp);
 	return tmp;
 }
@@ -97,7 +106,9 @@ CFileSystem::~CFileSystem(){
 	for (it = tmpfiles.begin();it != tmpfiles.end(); ++it) {
 		std::string* filename=(*it);
 		remove(filename->c_str());
+		delete(*it);
 	}
+	tmpfiles.clear();
 }
 
 CFileSystem::CFileSystem(){

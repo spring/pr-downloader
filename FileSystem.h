@@ -2,7 +2,12 @@
 #ifndef FILE_SYSTEM_H
 #define FILE_SYSTEM_H
 
+#ifndef WIN32
 #include <stdlib.h>
+#else
+#include <windows.h>
+#endif
+
 #include <list>
 #include <string>
 

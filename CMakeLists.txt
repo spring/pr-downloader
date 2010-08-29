@@ -1,20 +1,34 @@
 
 cmake_minimum_required(VERSION 2.6)
+project(rapid)
 
+if    (UNIX AND NOT MINGW)
+else (UNIX AND NOT MINGW)
+        set(MINGWLIBS ${CMAKE_SOURCE_DIR}/mingwlibs CACHE PATH "Location of the mingwlibs package")
+      if    (NOT EXISTS "${MINGWLIBS}" OR NOT IS_DIRECTORY "${MINGWLIBS}")
+               MESSAGE(FATAL_ERROR "MINGWLIBS is not a valid directory")
+       endif (NOT EXISTS "${MINGWLIBS}" OR NOT IS_DIRECTORY "${MINGWLIBS}")
 
-if    (MINGW)
 	include_directories(${MINGWLIBS}/include)
-        set(CMAKE_LIBRARY_PATH ${MINGWLIBS}/dll)
+       set(CMAKE_LIBRARY_PATH ${MINGWLIBS}/dll)
         set(CMAKE_PREFIX_PATH ${MINGWLIBS})
         set (CMAKE_FIND_ROOT_PATH ${MINGWLIBS} ${CMAKE_FIND_ROOT_PATH})
+        set (CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+        set (CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+        set(CMAKE_SHARED_LIBRARY_PREFIX "")
+       set(CMAKE_SHARED_MODULE_PREFIX "")
+	set (MINGW 1)
+endif (UNIX AND NOT MINGW)
 
-endif (MINGW)
+include(FindCURL)
+include(FindZLIB)
 
-project(rapid)
-Include(FindCURL)
-Include(FindZLIB)
+include_directories(${CURL_INCLUDE_DIR})
+include_directories(${ZLIB_INCLUDE_DIR})
 
-add_executable(rapid
+set (RAPID "rapid")
+
+add_executable(${RAPID}
 	FileSystem.cpp
 	main.cpp
 	RapidDownloader.cpp
@@ -25,5 +39,7 @@ add_executable(rapid
 	Repo.cpp
 	Sdp.cpp
 )
-target_link_libraries(rapid ${CURL_LIBRARIES} ${ZLIB_LIBRARIES})
-
+target_link_libraries(${RAPID} ${CURL_LIBRARIES} ${ZLIB_LIBRARIES})
+if (MINGW)
+SET_TARGET_PROPERTIES(${RAPID} PROPERTIES LINK_FLAGS "-static ${MINGWLIBS}/dll/libcurl.dll ${MINGWLIBS}/dll/zlib1.dll -Wl,-subsystem,console")
+endif (MINGW)
