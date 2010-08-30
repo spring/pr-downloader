@@ -36,16 +36,16 @@ public:
 	CFileSystem();
 	~CFileSystem();
 	//parses a sdp
-	bool parseSdp(std::string& filename, std::list<CFileSystem::FileData*>& files);	//Validates a File, (checks the md5)
-	bool fileIsValid(FileData* mod, std::string& filename);
+	bool parseSdp(const std::string& filename, std::list<CFileSystem::FileData*>& files);	//Validates a File, (checks the md5)
+	bool fileIsValid(const FileData* mod, const std::string& filename) const;
 	//returns a temporary file name, file is deleted in destructor if not moved away
 	std::string createTempFile();
 	//returns the spring writeable directory
 	const std::string& getSpringDir() const;
-	bool directory_exist(const std::string& path);
-	void create_subdirs (const std::string& path);
+	bool directory_exist(const std::string& path) const;
+	void create_subdirs (const std::string& path) const;
 
-	const std::string getPoolFileName(CFileSystem::FileData* fdata);
+	const std::string getPoolFileName(CFileSystem::FileData* fdata) const;
 
 private:
 	std::list<std::string> tmpfiles;

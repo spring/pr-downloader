@@ -146,7 +146,7 @@ static size_t write_streamed_data(void* buf, size_t size, size_t nmemb, FILE *st
 				it++;
 			}
 		}
-		printf("\n%s %d %d\n",filename.c_str(), bytes, towrite);
+		printf("\n%s %d %d %d\n",filename.c_str(), bytes, towrite, (*it)->size);
 
 		if (f!=NULL){ //file is already open, write or close it
 			if (written_tofile<(*it)->size){//if so, then write bytes left
@@ -176,6 +176,7 @@ static size_t write_streamed_data(void* buf, size_t size, size_t nmemb, FILE *st
 					printf("\nDamaged File %s %d\n",filename.c_str(), (*it)->size);
 					return -1;
 				}
+				skipped=false;
 				filename="";
 				written_tofile=0;
 				++it;
@@ -243,7 +244,7 @@ void CHttpDownload::downloadStream(std::string url,std::list<CFileSystem::FileDa
 		char* dest=(char*)malloc(destlen);
 
 		gzip_str(buf,buflen,dest,&destlen);
-/*
+
 		FILE* f;
 		f=fopen("request","w");
 		fwrite(buf, buflen,1,f);
@@ -252,7 +253,7 @@ void CHttpDownload::downloadStream(std::string url,std::list<CFileSystem::FileDa
 		f=fopen("request.gz","w");
 		fwrite(dest, destlen,1,f);
 		fclose(f);
-*/
+
 		free(buf);
 
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_streamed_data);

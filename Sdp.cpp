@@ -34,8 +34,6 @@ void CSdp::download(){
 	int i=0;
 	for(it=files.begin(); it!=files.end(); ++it){
 		i++;
-		if (i%10==0)
-			printf("%d/%d\r",i,(unsigned int)files.size());
 		std::string tmpmd5="";
 
 		md5ItoA((*it)->md5, tmpmd5);
@@ -51,14 +49,15 @@ void CSdp::download(){
 		if (!fileSystem->directory_exist(fileSystem->getSpringDir()+path)){
 			fileSystem->create_subdirs(fileSystem->getSpringDir()+path);
 		}
-		if(!fileSystem->fileIsValid(*it,file)){
+		if(!fileSystem->fileIsValid(*it,file)){ //add invalid files to download list
 			count++;
 			(*it)->download=true;
+		}else{
+			(*it)->download=false;
 		}
 	}
-	printf("%d/%d\n",i,(unsigned int)files.size());
+	printf("%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
 	if (count>0){
-		printf("Need to download %d Files\n",count);
 		httpDownload->setCount(count);
 		httpDownload->downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		files.clear();
@@ -66,7 +65,7 @@ void CSdp::download(){
 	}else
 		printf("Already ");
 
-	printf("downloaded %d files: %s %s %d \n",count,shortname.c_str(),name.c_str());
+	printf("downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
 	downloaded=true;
 }
 

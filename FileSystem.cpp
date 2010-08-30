@@ -22,16 +22,28 @@
 
 CFileSystem* CFileSystem::singleton = NULL;
 
-bool CFileSystem::fileIsValid(FileData* mod, std::string& filename){
-	gzFile inFile = gzopen (filename.c_str(), "rb");
+bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) const{
 	MD5_CTX mdContext;
 	int bytes;
 	unsigned char data[1024];
-	if (inFile == NULL) { //file doesn't exist
+	struct stat sb;
+	if (stat(filename.c_str(),&sb)<0)
+		return false;
+	if (sb.st_size!=mod->size){
+		printf("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),sb.st_size, mod->size);
+		return false;
+	}
+	if (!sb.st_mode&S_IFREG){
+		printf("File is no file %s\n", filename.c_str());
+		return false;
+	}
+
+	gzFile inFile = gzopen (filename.c_str(), "rb");
+	if (inFile == NULL) { //file can't be opened
 		return false;
 	}
 	MD5Init (&mdContext);
-	while ((bytes = gzread (inFile, data, 1024)) != 0)
+	while ((bytes = gzread (inFile, data, 1024)) > 0)
 		MD5Update (&mdContext, data, bytes);
 	MD5Final (&mdContext);
 	gzclose (inFile);
@@ -39,7 +51,7 @@ bool CFileSystem::fileIsValid(FileData* mod, std::string& filename){
 	for(i=0; i<16;i++){
 		if (mdContext.digest[i]!=mod->md5[i]){ //file is invalid
 //			printf("Damaged file found: %s\n",filename.c_str());
-			unlink(filename.c_str());
+//			unlink(filename.c_str());
 			return false;
 		}
 	}
@@ -50,7 +62,7 @@ bool CFileSystem::fileIsValid(FileData* mod, std::string& filename){
 /*
 	parses the file for a mod and creates
 */
-bool CFileSystem::parseSdp(std::string& filename, std::list<CFileSystem::FileData*>& files){
+bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::FileData*>& files){
 	char c_name[255];
 	unsigned char c_md5[16];
 	unsigned char c_crc32[4];
@@ -130,7 +142,7 @@ const std::string& CFileSystem::getSpringDir() const{
 /**
 	checks if a directory exists
 */
-bool CFileSystem::directory_exist(const std::string& path){
+bool CFileSystem::directory_exist(const std::string& path) const{
 	struct stat fileinfo;
 	int res=stat(path.c_str(),&fileinfo);
 	return (res==0);
@@ -139,7 +151,7 @@ bool CFileSystem::directory_exist(const std::string& path){
 /**
 	creates a directory with all subdirectorys (doesn't handle c:\ ...)
 */
-void CFileSystem::create_subdirs (const std::string& path) {
+void CFileSystem::create_subdirs (const std::string& path) const {
 	bool run=false;
 	for (unsigned int i=0;i<path.size(); i++){
 		char c=path.at(i);
@@ -152,7 +164,7 @@ void CFileSystem::create_subdirs (const std::string& path) {
 }
 
 
-const std::string CFileSystem::getPoolFileName(CFileSystem::FileData* fdata){
+const std::string CFileSystem::getPoolFileName(CFileSystem::FileData* fdata) const{
 	std::string name;
 	std::string md5;
 
