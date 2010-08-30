@@ -105,7 +105,7 @@ std::string CFileSystem::createTempFile(){
 	char tmppath[MAX_PATH];
 	GetTempPath(sizeof(tmppath),tmppath);
 	GetTempFileName(tmppath,NULL,0,buf);
-	tmp->assign(buf);
+	tmp.assign(buf);
 #endif
 	tmpfiles.push_back(tmp);
 	return tmp;
@@ -156,11 +156,19 @@ void CFileSystem::create_subdirs (const std::string& path) const {
 	for (unsigned int i=0;i<path.size(); i++){
 		char c=path.at(i);
 		if (c==PATH_DELIMITER){
+#ifdef WIN32
+			mkdir(path.substr(0,i).c_str());
+#else
 			mkdir(path.substr(0,i).c_str(),0777);
+#endif
 			run=true;
 		}
 	}
-	mkdir(path.c_str(),0);
+#ifdef WIN32
+	mkdir(path.c_str());
+#else
+	mkdir(path.c_str(),0777);
+#endif
 }
 
 
