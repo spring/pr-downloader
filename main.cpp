@@ -15,18 +15,20 @@
 #include "RapidDownloader.h"
 #include "Util.h"
 #include <string>
-
+#include "FileSystem.h"
 
 int main(int argc, char **argv){
 	int i;
 	if (argc==1){
-		printf("Usage: %s tagtodownload|--list\n", argv[0]);
+		printf("Usage: %s tagtodownload|--list|--validate-pool\n", argv[0]);
 	}
 	rapidDownloader->Initialize();
 	for(i=1;i<argc;i++){
 		std::string arg=argv[i];
 		if(arg=="--list"){
 			rapidDownloader->list_tag();
+		}else if (arg=="--validate-pool"){
+			fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
 		}else{
 			rapidDownloader->download_tag(arg);
 		}

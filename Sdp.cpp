@@ -32,7 +32,8 @@ void CSdp::download(){
 	std::list<CFileSystem::FileData*>::iterator it;
 	httpDownload->setCount(files.size());
 	int i=0;
-	for(it=files.begin(); it!=files.end(); ++it){
+	it=files.begin();
+	while(it!=files.end()){
 		i++;
 		std::string tmpmd5="";
 
@@ -55,6 +56,7 @@ void CSdp::download(){
 		}else{
 			(*it)->download=false;
 		}
+		it++;
 	}
 	printf("%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
 	if (count>0){

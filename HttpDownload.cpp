@@ -108,84 +108,80 @@ unsigned int CHttpDownload::getCount(){
 	return this->count;
 }
 
-bool initianlized;
-unsigned long written_tofile; //bytes written to current file in total
-int filepos; //current file # we are downloading
-FILE*f; //current file
-std::string filename;
-std::list<CFileSystem::FileData*>::iterator it;
+
+std::list<CFileSystem::FileData*>::iterator list_it;
 std::list<CFileSystem::FileData*>* globalFiles;
-bool skipped;
+bool initialized;
+FILE* file_handle;
+std::string file_name;
 
-static size_t write_streamed_data(void* buf, size_t size, size_t nmemb, FILE *stream) {
-	unsigned int towrite=size*nmemb; //count of bytes to write this pass
-	char* pos; //bytes written in this pass
-	unsigned int bytes=0;
-	pos=(char*)buf;
-	if(!initianlized){ //initialize
-		it=globalFiles->begin();
-		initianlized=true;
-		f=NULL;
-		filename="";
-		written_tofile=0;
-		printf("initialized\n");
+unsigned int file_pos;
+unsigned int skipped;
+
+unsigned int intmin(int x, int y){
+	if(x<y)
+		return x;
+	return y;
+}
+
+static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,void *userdata) {
+	char buf[CURL_MAX_WRITE_SIZE];
+	memcpy(&buf,tmp,CURL_MAX_WRITE_SIZE);
+	if(!initialized){
+		list_it=globalFiles->begin();
+		initialized=true;
+		file_handle=NULL;
+		file_name="";
+		skipped=0;
 	}
-	while(bytes<=towrite){ //repeat until all avaiable data is written
-		while( (f == NULL) && ( it != globalFiles->end())){//get next file
-			if ((*it)->download==true){
-				//now open new file
-				filename=fileSystem->getPoolFileName(*it);
-				f=fopen(filename.c_str(),"wb");
-				skipped=false;
-				filepos++; //inc files downloading
-				if (f==NULL){
-					printf("\nError opening %s\n",filename.c_str());
+	char* buf_start=(char*)&buf;
+	const char* buf_end=buf_start + size*nmemb;
+	char* buf_pos=buf_start;
+
+	while(buf_pos<buf_end){ //all bytes written?
+		if (file_handle==NULL){ //no open file, create one
+			while( (!(*list_it)->download==true) && (list_it!=globalFiles->end())){ //get file
+				list_it++;
+			}
+			file_name=fileSystem->getPoolFileName(*list_it);
+			file_handle=fopen(file_name.c_str(),"wb");
+			if (file_handle==NULL){
+				printf("couldn't open %s\n",(*list_it)->name.c_str());
+				return -1;
+			}
+			//here comes the init new file stuff
+			file_pos=0;
+		}
+		if (file_handle!=NULL){
+			if (skipped<4){ // check if we skipped all 4 bytes, if not so, skip them
+				skipped=skipped + intmin(buf_end-buf_pos,4-skipped);
+				buf_pos=buf_pos+skipped;
+			}
+			int towrite=intmin ((*list_it)->size-file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
+				buf_end-buf_pos);
+			printf("%s %d %ld %ld %ld %d %d %d %d\n",file_name.c_str(), (*list_it)->size, buf_pos,buf_end, buf_start, towrite, size, nmemb , skipped);
+			int res=fwrite(buf_pos,1,towrite,file_handle);
+			if(res<=0){
+				printf("\nwrote error: %d\n", res);
+				return -1;
+			}
+			buf_pos=buf_pos+res;
+			file_pos+=res;
+			if (file_pos>=(*list_it)->size){ //file finished -> next file
+				fclose(file_handle);
+				if (!fileSystem->fileIsValid(*list_it,file_name.c_str())){
+					printf("File is invalid %s\n",file_name.c_str());
 					return -1;
 				}
-			}else{
-				it++;
+				file_handle=NULL;
+				list_it++;
+				file_pos=0;
+//				skipped=0;
 			}
 		}
-		printf("\n%s %d %d %d\n",filename.c_str(), bytes, towrite, (*it)->size);
-
-		if (f!=NULL){ //file is already open, write or close it
-			if (written_tofile<(*it)->size){//if so, then write bytes left
-				unsigned int left=(*it)->size - written_tofile;
-				if (towrite<left)
-					left=towrite;
-
-				if (!skipped){ //first write to file, skip the 4 length bytes
-					bytes+=4;
-					pos+=4;
-					skipped=true;
-				}
-
-				int res=fwrite(pos,1,left,f);
-				if(res<=0){
-					printf("\n -------------------------- Error in fwrite\n");
-					return -1;
-				}
-
-				written_tofile+=res;
-				bytes+=res;
-				pos+=bytes;
-			}
-			if (written_tofile>=(*it)->size){ //file end reached
-				fclose(f);
-				if (!fileSystem->fileIsValid(*it,filename)){//damaged file downloaded, abort!
-					printf("\nDamaged File %s %d\n",filename.c_str(), (*it)->size);
-					return -1;
-				}
-				skipped=false;
-				filename="";
-				written_tofile=0;
-				++it;
-				f=NULL;
-			}
-		}
 	}
-    fflush(stdout);
-	return nmemb*size;
+	return buf_pos-buf_start;
+
 }
 
 /**
@@ -218,8 +214,7 @@ void CHttpDownload::downloadStream(std::string url,std::list<CFileSystem::FileDa
 	CURL* curl;
 	CURLcode res;
 	curl = curl_easy_init();
-	initianlized=false;
-	filepos=1;
+	initialized=false;
 	if(curl) {
 		printf("%s\n",url.c_str());
 
@@ -262,9 +257,9 @@ void CHttpDownload::downloadStream(std::string url,std::list<CFileSystem::FileDa
 		curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, dest);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE,destlen);
-//		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
 //		curl_easy_setopt(curl, CURLOPT_PROGRESSDATA , filepos);
-//		curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
+		curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
 
 		res = curl_easy_perform(curl);
 		if (res!=CURLE_OK){

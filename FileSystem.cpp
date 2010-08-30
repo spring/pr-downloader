@@ -11,7 +11,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "Util.h"
-
+#include <dirent.h>
+#include <limits.h>
 
 #ifdef WIN32
 #define PATH_DELIMITER '\\'
@@ -27,8 +28,9 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 	int bytes;
 	unsigned char data[1024];
 	struct stat sb;
-	if (stat(filename.c_str(),&sb)<0)
+	if (stat(filename.c_str(),&sb)<0){
 		return false;
+	}
 	if (sb.st_size!=mod->size){
 		printf("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),sb.st_size, mod->size);
 		return false;
@@ -186,4 +188,32 @@ const std::string CFileSystem::getPoolFileName(CFileSystem::FileData* fdata) con
 	name += md5.substr(2);
 	name += ".gz";
 	return name;
+}
+
+/**
+	Validate all files in /pool/ (check md5)
+*/
+void CFileSystem::validatePool(const std::string& path){
+	DIR* d;
+	d=opendir(path.c_str());
+
+	if (d!=NULL){
+		struct dirent* dentry;
+		while( (dentry=readdir(d))!=NULL){
+			struct stat sb;
+			std::string tmp;
+			if (dentry->d_name[0]=='.')
+				break;
+			tmp=path+"/"+dentry->d_name;
+			stat(tmp.c_str(),&sb);
+			if(sb.st_mode&S_IFDIR!=0){
+				validatePool(tmp);
+			}else{
+				printf("%s\n",tmp.c_str());
+			}
+
+		}
+
+	}
+
 }
