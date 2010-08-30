@@ -128,23 +128,25 @@ static size_t write_streamed_data(void* buf, size_t size, size_t nmemb, FILE *st
 		f=NULL;
 		filename="";
 		written_tofile=0;
+		printf("initialized\n");
 	}
 	while(bytes<=towrite){ //repeat until all avaiable data is written
-		while( (f==NULL) && ( it != globalFiles->end())){//get next file
+		while( (f == NULL) && ( it != globalFiles->end())){//get next file
 			if ((*it)->download==true){
 				//now open new file
 				filename=fileSystem->getPoolFileName(*it);
-				f=fopen(filename.c_str(),"wb+");
+				f=fopen(filename.c_str(),"wb");
 				skipped=false;
 				filepos++; //inc files downloading
 				if (f==NULL){
-					printf("\n ------------------------------- Error opening %s\n",filename.c_str());
+					printf("\nError opening %s\n",filename.c_str());
 					return -1;
 				}
 			}else{
 				it++;
 			}
 		}
+		printf("\n%s %d %d\n",filename.c_str(), bytes, towrite);
 
 		if (f!=NULL){ //file is already open, write or close it
 			if (written_tofile<(*it)->size){//if so, then write bytes left
@@ -154,10 +156,9 @@ static size_t write_streamed_data(void* buf, size_t size, size_t nmemb, FILE *st
 
 				if (!skipped){ //first write to file, skip the 4 length bytes
 					bytes+=4;
-					*pos+=4;
+					pos+=4;
 					skipped=true;
 				}
-
 
 				int res=fwrite(pos,1,left,f);
 				if(res<=0){
@@ -167,10 +168,11 @@ static size_t write_streamed_data(void* buf, size_t size, size_t nmemb, FILE *st
 
 				written_tofile+=res;
 				bytes+=res;
+				pos+=bytes;
 			}
 			if (written_tofile>=(*it)->size){ //file end reached
 				fclose(f);
-				if (fileSystem->fileIsValid(*it,filename)){//damaged file downloaded, abort!
+				if (!fileSystem->fileIsValid(*it,filename)){//damaged file downloaded, abort!
 					printf("\nDamaged File %s %d\n",filename.c_str(), (*it)->size);
 					return -1;
 				}
@@ -259,9 +261,9 @@ void CHttpDownload::downloadStream(std::string url,std::list<CFileSystem::FileDa
 		curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, dest);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE,destlen);
-		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
-		curl_easy_setopt(curl, CURLOPT_PROGRESSDATA , filepos);
-		curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
+//		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+//		curl_easy_setopt(curl, CURLOPT_PROGRESSDATA , filepos);
+//		curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
 
 		res = curl_easy_perform(curl);
 		if (res!=CURLE_OK){

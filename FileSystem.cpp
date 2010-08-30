@@ -39,7 +39,7 @@ bool CFileSystem::fileIsValid(FileData* mod, std::string& filename){
 	for(i=0; i<16;i++){
 		if (mdContext.digest[i]!=mod->md5[i]){ //file is invalid
 //			printf("Damaged file found: %s\n",filename.c_str());
-//			unlink(filename.c_str());
+			unlink(filename.c_str());
 			return false;
 		}
 	}
