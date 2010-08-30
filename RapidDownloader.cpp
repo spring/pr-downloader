@@ -77,7 +77,7 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 	std::list<CSdp*>::iterator it;
 	for(it=sdps.begin();it!=sdps.end();++it){
 		if ((*it)->getShortName().compare(modname)==0){
-			printf("Found Repository with mod, downloading %s\n", (*it)->getMD5().c_str());
+			printf("Found Repository, downloading %s\n", (*it)->getName().c_str());
 			(*it)->download();
 			return true;
 		}

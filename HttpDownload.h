@@ -26,13 +26,15 @@ public:
 	*/
 	bool download(const std::string& Url, const std::string& filename, int pos=1);
 	void setCount(unsigned int count);
+	void setStatsPos(unsigned int pos);
+	unsigned int getStatsPos();
 	unsigned int getCount();
 	const std::string& getCacheFile(const std::string &url);
 	void downloadStream(const std::string url,std::list<CFileSystem::FileData*>& files);
 private:
 	CURL *curl;
-	int count;
-
+	unsigned int stats_count;
+	unsigned int stats_filepos;
 };
 
 

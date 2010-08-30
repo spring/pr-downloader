@@ -75,7 +75,6 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 	unsigned char c_size[4];
 
 	gzFile in=gzopen(filename.c_str(), "r");
-	printf("parse_binary: %s\n",filename.c_str());
 	if (in==Z_NULL){
         printf("Could not open %s\n",filename.c_str());
 		return NULL;

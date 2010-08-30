@@ -12,10 +12,11 @@
 
 CHttpDownload* CHttpDownload::singleton = NULL;
 
+
 /** *
 	draw a nice download status-bar
 */
-int progress_func(int pos, double TotalToDownload, double NowDownloaded,
+int progress_func(void* ptr, double TotalToDownload, double NowDownloaded,
                     double TotalToUpload, double NowUploaded){
     // how wide you want the progress meter to be
     int totaldotz=40;
@@ -28,7 +29,7 @@ int progress_func(int pos, double TotalToDownload, double NowDownloaded,
     int dotz = fractiondownloaded * totaldotz;
 
     // create the "meter"
-    printf("%5d/%5d ", pos,httpDownload->getCount());
+    printf("%5d/%5d ", httpDownload->getStatsPos(),httpDownload->getCount());
     printf("%3.0f%% [",fractiondownloaded*100);
     int ii=0;
     // part  that's full already
@@ -83,7 +84,8 @@ CHttpDownload::CHttpDownload(){
 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
     curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
-    count=1;
+    stats_filepos=1;
+    stats_count=1;
 }
 
 CHttpDownload::~CHttpDownload(){
@@ -101,13 +103,20 @@ void CHttpDownload::Shutdown(){
 }
 
 void CHttpDownload::setCount(unsigned int count){
-	this->count=count;
+	this->stats_count=count;
 }
 
 unsigned int CHttpDownload::getCount(){
-	return this->count;
+	return this->stats_count;
 }
 
+unsigned int CHttpDownload::getStatsPos(){
+	return this->stats_filepos;
+}
+
+void CHttpDownload::setStatsPos(unsigned int pos){
+	this->stats_filepos=pos;
+}
 
 std::list<CFileSystem::FileData*>::iterator list_it;
 std::list<CFileSystem::FileData*>* globalFiles;
@@ -147,6 +156,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,voi
 			}
 			file_name=fileSystem->getPoolFileName(*list_it);
 			file_handle=fopen(file_name.c_str(),"wb");
+			httpDownload->setStatsPos(httpDownload->getStatsPos()+1);
 			if (file_handle==NULL){
 				printf("couldn't open %s\n",(*list_it)->name.c_str());
 				return -1;
@@ -218,7 +228,8 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,voi
 	* streamer.cgi then responds with <big endian encoded int32 length>
 	  <data of gzipped pool file> for all files requested. Files in the
 	  pool are also gzipped, so there is no need to decompress unless
-	  you wish to verify integrity.
+	  you wish to verify integrity. Note: The filesize here isn't the same
+	  as in the .sdp, the sdp-file contains the uncompressed size
 	* streamer.cgi also sets the Content-Length header in the reply so
 	  you can implement a proper progress bar.
 
@@ -237,11 +248,9 @@ void CHttpDownload::downloadStream(std::string url,std::list<CFileSystem::FileDa
 	curl = curl_easy_init();
 	initialized=false;
 	if(curl) {
-		printf("%s\n",url.c_str());
+		printf("Downloading stream: %s\n",url.c_str());
 
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-//		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-//		curl_easy_setopt(curl, CURLOPT_HEADER, 1L);
 
 		std::list<CFileSystem::FileData*>::iterator it;
 		int  buflen=files.size()/8;
@@ -279,10 +288,10 @@ void CHttpDownload::downloadStream(std::string url,std::list<CFileSystem::FileDa
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, dest);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE,destlen);
 		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
-//		curl_easy_setopt(curl, CURLOPT_PROGRESSDATA , filepos);
 		curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
 
 		res = curl_easy_perform(curl);
+		printf("\n"); //new line because of progressbar
 		if (res!=CURLE_OK){
 			printf("%s\n",curl_easy_strerror(res));
 		}

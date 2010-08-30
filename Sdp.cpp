@@ -26,9 +26,15 @@ void CSdp::download(){
 	}
 	int count=0;
 	filename  += this->md5 + ".sdp";
-	httpDownload->download(url + "/packages/" + md5 + ".sdp", filename);
+	CFileSystem::FileData tmp;
+	md5AtoI(md5,tmp.md5);
 	std::list<CFileSystem::FileData*> files;
-	fileSystem->parseSdp(filename,files);
+
+	if (!fileSystem->parseSdp(filename,files)){ //file isn't avaiable, download it
+		httpDownload->download(url + "/packages/" + md5 + ".sdp", filename);
+		fileSystem->parseSdp(filename,files); //parse downloaded file
+	}
+
 	std::list<CFileSystem::FileData*>::iterator it;
 	httpDownload->setCount(files.size());
 	int i=0;
@@ -36,7 +42,6 @@ void CSdp::download(){
 	while(it!=files.end()){
 		i++;
 		std::string tmpmd5="";
-
 		md5ItoA((*it)->md5, tmpmd5);
 		std::string filename=tmpmd5.substr(2);
 		filename.append(".gz");
@@ -56,6 +61,8 @@ void CSdp::download(){
 		}else{
 			(*it)->download=false;
 		}
+		if (i%20==0)
+			printf("\r%d/%d checked",i,files.size());
 		it++;
 	}
 	printf("%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
