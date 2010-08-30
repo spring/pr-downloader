@@ -117,6 +117,8 @@ std::string file_name;
 
 unsigned int file_pos;
 unsigned int skipped;
+unsigned char cursize_buf[4];
+unsigned int cursize;
 
 unsigned int intmin(int x, int y){
 	if(x<y)
@@ -153,30 +155,49 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,voi
 			file_pos=0;
 		}
 		if (file_handle!=NULL){
+			if((skipped>0)&&(skipped<4)){
+//				printf("difficulty %d\n",skipped);
+			}
 			if (skipped<4){ // check if we skipped all 4 bytes, if not so, skip them
-				skipped=skipped + intmin(buf_end-buf_pos,4-skipped);
+				int toskip=intmin(buf_end-buf_pos,4-skipped); //calculate bytes we can skip, could overlap received bufs
+				for(int i=0;i<toskip;i++) //copy bufs avaiable
+					cursize_buf[i]=buf_pos[i];
+//				printf("toskip: %d skipped: %d\n",toskip,skipped);
+				skipped=toskip+skipped;
 				buf_pos=buf_pos+skipped;
-			}
-			int towrite=intmin ((*list_it)->size-file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
-				buf_end-buf_pos);
-			printf("%s %d %ld %ld %ld %d %d %d %d\n",file_name.c_str(), (*list_it)->size, buf_pos,buf_end, buf_start, towrite, size, nmemb , skipped);
-			int res=fwrite(buf_pos,1,towrite,file_handle);
-			if(res<=0){
-				printf("\nwrote error: %d\n", res);
-				return -1;
-			}
-			buf_pos=buf_pos+res;
-			file_pos+=res;
-			if (file_pos>=(*list_it)->size){ //file finished -> next file
-				fclose(file_handle);
-				if (!fileSystem->fileIsValid(*list_it,file_name.c_str())){
-					printf("File is invalid %s\n",file_name.c_str());
-					return -1;
+				if (skipped==4){
+					(*list_it)->compsize=parse_int32(cursize_buf);
 				}
-				file_handle=NULL;
-				list_it++;
-				file_pos=0;
-//				skipped=0;
+			}
+			if (skipped==4){
+				int towrite=intmin ((*list_it)->compsize-file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
+					buf_end-buf_pos);
+//				printf("%s %d %ld %ld %ld %d %d %d %d %d\n",file_name.c_str(), (*list_it)->compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , skipped, file_pos);
+				int res=0;
+				if (towrite>0){
+					res=fwrite(buf_pos,1,towrite,file_handle);
+					if (res!=towrite){
+						printf("fwrite didn't write all\n");
+					}
+					if(res<=0){
+						printf("\nwrote error: %d\n", res);
+						return -1;
+					}
+				}
+
+				buf_pos=buf_pos+res;
+				file_pos+=res;
+				if (file_pos>=(*list_it)->compsize){ //file finished -> next file
+					fclose(file_handle);
+					if (!fileSystem->fileIsValid(*list_it,file_name.c_str())){
+						printf("File is broken?!: %s\n",file_name.c_str());
+						return -1;
+					}
+					file_handle=NULL;
+					list_it++;
+					file_pos=0;
+					skipped=0;
+				}
 			}
 		}
 	}

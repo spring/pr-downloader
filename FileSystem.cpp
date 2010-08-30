@@ -31,10 +31,7 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 	if (stat(filename.c_str(),&sb)<0){
 		return false;
 	}
-	if (sb.st_size!=mod->size){
-		printf("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),sb.st_size, mod->size);
-		return false;
-	}
+
 	if (!sb.st_mode&S_IFREG){
 		printf("File is no file %s\n", filename.c_str());
 		return false;
@@ -45,10 +42,18 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 		return false;
 	}
 	MD5Init (&mdContext);
-	while ((bytes = gzread (inFile, data, 1024)) > 0)
+	unsigned long filesize=0;
+	while ((bytes = gzread (inFile, data, 1024)) > 0){
 		MD5Update (&mdContext, data, bytes);
+		filesize=filesize+bytes;
+	}
 	MD5Final (&mdContext);
 	gzclose (inFile);
+/*	if (filesize!=mod->size){
+		printf("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),filesize, mod->size);
+		return false;
+	}*/
+
 	int i;
 	for(i=0; i<16;i++){
 		if (mdContext.digest[i]!=mod->md5[i]){ //file is invalid
@@ -57,7 +62,6 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 			return false;
 		}
 	}
-	printf("Valid file found: %s\n",filename.c_str());
 	return true;
 }
 
@@ -91,6 +95,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 		std::memcpy(&f->md5, &c_md5, 16);
 		f->crc32 = parse_int32(c_crc32);
 		f->size = parse_int32(c_size);
+		f->compsize = 0;
 		files.push_back(f);
 	}
 	return true;

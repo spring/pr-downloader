@@ -31,6 +31,7 @@ public:
 		unsigned char md5[16];
 		unsigned int crc32;
 		unsigned int size;
+		unsigned int compsize; //compressed size
 		bool download;
 	};
 	CFileSystem();

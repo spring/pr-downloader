@@ -63,11 +63,10 @@ void CSdp::download(){
 		httpDownload->setCount(count);
 		httpDownload->downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		files.clear();
-		printf("Sucessfully ");
+		printf("Sucessfully downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
 	}else
-		printf("Already ");
+		printf("Already downloaded: %s\n", shortname.c_str());
 
-	printf("downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
 	downloaded=true;
 }
 
