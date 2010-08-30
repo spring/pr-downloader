@@ -31,12 +31,12 @@ public:
 		unsigned char md5[16];
 		unsigned int crc32;
 		unsigned int size;
+		bool download;
 	};
 	CFileSystem();
 	~CFileSystem();
 	//parses a sdp
-	std::list<CFileSystem::FileData*>* parseSdp(std::string& filename);
-	//Validates a File, (checks the md5)
+	bool parseSdp(std::string& filename, std::list<CFileSystem::FileData*>& files);	//Validates a File, (checks the md5)
 	bool fileIsValid(FileData* mod, std::string& filename);
 	//returns a temporary file name, file is deleted in destructor if not moved away
 	std::string createTempFile();
@@ -44,6 +44,8 @@ public:
 	const std::string& getSpringDir() const;
 	bool directory_exist(const std::string& path);
 	void create_subdirs (const std::string& path);
+
+	const std::string getPoolFileName(CFileSystem::FileData* fdata);
 
 private:
 	std::list<std::string> tmpfiles;

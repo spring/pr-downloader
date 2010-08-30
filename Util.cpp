@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "Util.h"
 #include <string.h>
+#include <zlib.h>
 
 
 /*
@@ -91,4 +92,35 @@ std::string getStrByIdx(std::string& str, char c, int idx){
 	}
 	tmp.assign(str.substr(start,end-start));
 	return tmp;
+}
+
+
+void gzip_str(const char* in, const int inlen,  char* out, int *outlen){
+	z_stream zlibStreamStruct;
+	zlibStreamStruct.zalloc    = Z_NULL; // Set zalloc, zfree, and opaque to Z_NULL so
+	zlibStreamStruct.zfree     = Z_NULL; // that when we call deflateInit2 they will be
+	zlibStreamStruct.opaque    = Z_NULL; // updated to use default allocation functions.
+	zlibStreamStruct.total_out = 0; // Total number of output bytes produced so far
+	zlibStreamStruct.next_in   = (Bytef*)in; // Pointer to input bytes
+	zlibStreamStruct.avail_in  = inlen; // Number
+
+	int res = deflateInit2(&zlibStreamStruct, Z_DEFAULT_COMPRESSION, Z_DEFLATED, (15+16), 8, Z_DEFAULT_STRATEGY);
+	if (res!= Z_OK) return;
+	do {
+         zlibStreamStruct.next_out = (Bytef*)out + zlibStreamStruct.total_out;
+         zlibStreamStruct.avail_out = *outlen - zlibStreamStruct.total_out;
+         res = deflate(&zlibStreamStruct, Z_FINISH);
+     } while ( res == Z_OK );
+	deflateEnd(&zlibStreamStruct);
+	*outlen=zlibStreamStruct.total_out;
+}
+
+
+unsigned int parse_int32(unsigned char c[4]){
+        unsigned int i = 0;
+        i = c[0] << 24 | i;
+        i = c[1] << 16 | i;
+        i = c[2] << 8  | i;
+        i = c[3] << 0  | i;
+        return i;
 }

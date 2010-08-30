@@ -2,7 +2,10 @@
 #define HTTP_DOWNLOAD_H
 
 #include <string>
+#include <list>
 #include <curl/curl.h>
+#include "FileSystem.h"
+
 
 
 
@@ -25,6 +28,7 @@ public:
 	void setCount(unsigned int count);
 	unsigned int getCount();
 	const std::string& getCacheFile(const std::string &url);
+	void downloadStream(const std::string url,std::list<CFileSystem::FileData*>& files);
 private:
 	CURL *curl;
 	int count;

@@ -14,4 +14,7 @@ bool md5ItoA(const unsigned char* source, std::string& md5);
 //returns substring number idx split by c
 std::string getStrByIdx(std::string& str, char c, int idx);
 
+void gzip_str(const char* in, const int inlen,  char* out, int *outlen);
+unsigned int parse_int32(unsigned char c[4]);
+
 #endif

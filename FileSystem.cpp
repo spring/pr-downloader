@@ -10,6 +10,7 @@
 #include <cstring>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include "Util.h"
 
 
 #ifdef WIN32
@@ -36,29 +37,20 @@ bool CFileSystem::fileIsValid(FileData* mod, std::string& filename){
 	gzclose (inFile);
 	int i;
 	for(i=0; i<16;i++){
-		if (mdContext.digest[i]!=mod->md5[i]){ //file is invalid, delete it
-			printf("damaged file found, deleting it: %s",filename.c_str());
-			unlink(filename.c_str());
+		if (mdContext.digest[i]!=mod->md5[i]){ //file is invalid
+//			printf("Damaged file found: %s\n",filename.c_str());
+//			unlink(filename.c_str());
 			return false;
 		}
 	}
+	printf("Valid file found: %s\n",filename.c_str());
 	return true;
 }
-
-static unsigned int parse_int32(unsigned char c[4]){
-        unsigned int i = 0;
-        i = c[0] << 24 | i;
-        i = c[1] << 16 | i;
-        i = c[2] << 8  | i;
-        i = c[3] << 0  | i;
-        return i;
-}
-
 
 /*
 	parses the file for a mod and creates
 */
-std::list<CFileSystem::FileData*>* CFileSystem::parseSdp(std::string& filename){
+bool CFileSystem::parseSdp(std::string& filename, std::list<CFileSystem::FileData*>& files){
 	char c_name[255];
 	unsigned char c_md5[16];
 	unsigned char c_crc32[4];
@@ -70,25 +62,24 @@ std::list<CFileSystem::FileData*>* CFileSystem::parseSdp(std::string& filename){
         printf("Could not open %s\n",filename.c_str());
 		return NULL;
 	}
-	std::list<FileData*>* tmp;
-	tmp=new std::list<FileData*>;
+	files.clear();
 	FileData tmpfile;
 	while(!gzeof(in)){
 		int length = gzgetc(in);
 		if (length == -1) break;
-		if (!gzread(in, &c_name, length)) break;
-		if (!gzread(in, &c_md5, 16)) break;
-		if (!gzread(in, &c_crc32, 4)) break;
-		if (!gzread(in, &c_size, 4)) break;
+		if (!gzread(in, &c_name, length)) return false;
+		if (!gzread(in, &c_md5, 16)) return false;
+		if (!gzread(in, &c_crc32, 4)) return false;
+		if (!gzread(in, &c_size, 4)) return false;
 
 		FileData *f = new FileData;
 		f->name = std::string(c_name, length);
 		std::memcpy(&f->md5, &c_md5, 16);
 		f->crc32 = parse_int32(c_crc32);
 		f->size = parse_int32(c_size);
-		tmp->push_back(f);
+		files.push_back(f);
 	}
-	return tmp;
+	return true;
 }
 
 
@@ -158,6 +149,21 @@ void CFileSystem::create_subdirs (const std::string& path) {
 		}
 	}
 	mkdir(path.c_str(),0);
-	if (run)
-		printf("Created dir: %s\n", path.c_str());
+}
+
+
+const std::string CFileSystem::getPoolFileName(CFileSystem::FileData* fdata){
+	std::string name;
+	std::string md5;
+
+	md5ItoA(fdata->md5, md5);
+	name=getSpringDir();
+	name += "/pool/";
+	name += md5.at(0);
+	name += md5.at(1);
+	name += "/";
+	create_subdirs(name);
+	name += md5.substr(2);
+	name += ".gz";
+	return name;
 }
