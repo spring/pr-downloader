@@ -21,7 +21,7 @@
 int main(int argc, char **argv){
 	int i;
 	if (argc==1){
-		printf("Usage: %s tagtodownload|--list|--validate-pool|--plasmadownload\n", argv[0]);
+		printf("Usage: %s tagtodownload|--list|--validate-pool|--plasma-download\n", argv[0]);
 	}
 	rapidDownloader->Initialize();
 	for(i=1;i<argc;i++){
