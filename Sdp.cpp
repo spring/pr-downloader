@@ -65,7 +65,7 @@ void CSdp::download(){
 			printf("\r%d/%d checked",i,files.size());
 		it++;
 	}
-	printf("%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
+	printf("\r%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
 	if (count>0){
 		httpDownload->setCount(count);
 		httpDownload->downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
