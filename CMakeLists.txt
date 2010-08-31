@@ -35,11 +35,15 @@ add_executable(${RAPID}
 	main.cpp
 	RapidDownloader.cpp
 	RepoMaster.cpp
+	PlasmaDownloader.cpp
 	Util.cpp
 	HttpDownload.cpp
 	md5.cpp
 	Repo.cpp
 	Sdp.cpp
+	plasma/soapC.cpp
+	plasma/soapPlasmaServiceSoap12Proxy.cpp
+	plasma/stdsoap2.cpp
 )
 target_link_libraries(${RAPID} ${CURL_LIBRARIES} ${ZLIB_LIBRARIES})
 if (MINGW)
