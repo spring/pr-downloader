@@ -1,9 +1,9 @@
 
-if [ ! -s mingwlibs/bin/libcurl.dll ]; then
-	wget http://www.gknw.net/mirror/curl/win32/curl-7.21.1-devel-mingw32.zip
-	unzip curl-7.21.1-devel-mingw32.zip
-	cp -Rv curl-7.21.1-devel-mingw32/* mingwlibs/
-	mv mingwlibs/bin/libcurl.dll mingwlibs/dll
+if [ ! -s mingwlibs/dll/libcurl.dll ]; then
+	wget -c http://www.gknw.net/mirror/curl/win32/curl-7.21.1-devel-mingw32.zip
+	unzip -n curl-7.21.1-devel-mingw32.zip
+	cp -Rvn curl-7.21.1-devel-mingw32/* mingwlibs/
+	mv -n mingwlibs/bin/libcurl.dll mingwlibs/dll
 fi
 
 if [ ! -d mingwlibs ]; then
