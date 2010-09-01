@@ -32,7 +32,8 @@ int main(int argc, char **argv){
 			fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
 		}else if (arg=="--plasma-download"){
 			CPlasmaDownloader* p=new CPlasmaDownloader();
-			p->download();
+			std::string name="Ultimate Pass Greenland v1";
+			p->download(name);
 			delete(p);
 		}else{
 			rapidDownloader->download_tag(arg);
