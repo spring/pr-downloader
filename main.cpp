@@ -36,7 +36,6 @@ int main(int argc, char **argv){
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
 		if (c == -1)
 			break;
-		printf("blaaaaaaa %d\n", c);
 		switch(c){
 			case 1:{
 				rapidDownloader->download_tag(optarg);
@@ -59,11 +58,19 @@ int main(int argc, char **argv){
 			}
 			default:{
 				int i=0;
-				printf("Usage: %s\n", argv[0]);
+				printf("Usage: %s ", argv[0]);
+				bool append=false;
 				while(long_options[i].name!=0){
-					printf("--%s\n",long_options[i].name);
+					if (append){
+						printf("|");
+					}
+					append=true;
+					printf("--%s",long_options[i].name);
+					if (long_options[i].has_arg!=0)
+						printf(" <name>");
 					i++;
 				}
+				printf("\n");
 				exit(1);
 				break;
 			}
