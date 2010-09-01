@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.6)
 project(rapid)
 
-if    (UNIX AND NOT MINGW)
+if   (UNIX AND NOT MINGW)
 else (UNIX AND NOT MINGW)
         set(MINGWLIBS ${CMAKE_SOURCE_DIR}/mingwlibs CACHE PATH "Location of the mingwlibs package")
       if    (NOT EXISTS "${MINGWLIBS}" OR NOT IS_DIRECTORY "${MINGWLIBS}")
@@ -12,24 +12,23 @@ else (UNIX AND NOT MINGW)
 	include_directories(${MINGWLIBS}/include)
 	set(CMAKE_LIBRARY_PATH ${MINGWLIBS}/dll)
 	set(CMAKE_PREFIX_PATH ${MINGWLIBS})
-	set (CMAKE_FIND_ROOT_PATH ${MINGWLIBS} ${CMAKE_FIND_ROOT_PATH})
-	set (CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-	set (CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+	set(CMAKE_FIND_ROOT_PATH ${MINGWLIBS} ${CMAKE_FIND_ROOT_PATH})
+	set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+	set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 	set(CMAKE_SHARED_LIBRARY_PREFIX "")
 	set(CMAKE_SHARED_MODULE_PREFIX "")
 	set (MINGW 1)
 endif (UNIX AND NOT MINGW)
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -O0 -g")
-include(FindCURL)
-include(FindZLIB)
+
+find_package(CURL)
+find_package(ZLIB)
 
 include_directories(${CURL_INCLUDE_DIR})
 include_directories(${ZLIB_INCLUDE_DIR})
 
-
 set (RAPID "rapid")
-
 add_executable(${RAPID}
 	FileSystem.cpp
 	main.cpp
@@ -45,9 +44,12 @@ add_executable(${RAPID}
 	plasma/soapPlasmaServiceSoap12Proxy.cpp
 	plasma/stdsoap2.cpp
 )
-target_link_libraries(${RAPID} ${CURL_LIBRARIES} ${ZLIB_LIBRARIES})
-if (WIN32)
-	SET_TARGET_PROPERTIES(${RAPID} PROPERTIES LINK_FLAGS "${MINGWLIBS}/dll/libcurl.dll -Wl,-subsystem,console")
-	TARGET_LINK_LIBRARIES(${RAPID} -lwsock32)
+
+target_link_libraries(${RAPID} ${ZLIB_LIBRARIES})
+
+if   (WIN32)
+	target_link_libraries(${RAPID} "-Wl,-subsystem,console -lwsock32 ${MINGWLIBS}/dll/libcurl.dll")
+else (WIN32)
+	target_link_libraries(${RAPID} ${CURL_LIBRARIES})
 endif(WIN32)
 
