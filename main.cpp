@@ -11,6 +11,7 @@
 #include "md5.h"
 #include "RapidDownloader.h"
 #include "PlasmaDownloader.h"
+#include "TorrentDownloader.h"
 #include "Util.h"
 #include <string>
 #include "FileSystem.h"
@@ -26,16 +27,18 @@ int main(int argc, char **argv){
 		RAPID_VALIDATE,
 		RAPID_LIST,
 		PLASMA_DOWNLOAD,
+		TORRENT_DOWNLOAD,
 		HELP
 	};
 
 	static struct option long_options[] = {
-		{"rapid-download" , 1, 0, RAPID_DOWNLOAD},
-		{"rapid-validate" , 0, 0, RAPID_VALIDATE},
-		{"rapid-list"     , 0, 0, RAPID_LIST},
-		{"plasma-download", 1, 0, PLASMA_DOWNLOAD},
-		{"help"           , 0, 0, HELP},
-		{0                , 0, 0, 0}
+		{"rapid-download"   , 1, 0, RAPID_DOWNLOAD},
+		{"rapid-validate"   , 0, 0, RAPID_VALIDATE},
+		{"rapid-list"       , 0, 0, RAPID_LIST},
+		{"plasma-download"  , 1, 0, PLASMA_DOWNLOAD},
+		{"torrent-download" , 1, 0, TORRENT_DOWNLOAD},
+		{"help"             , 0, 0, HELP},
+		{0                  , 0, 0, 0}
 	};
 
 	rapidDownloader->Initialize();
@@ -63,6 +66,11 @@ int main(int argc, char **argv){
 				p->download(name);
 				delete(p);
 				break;
+			}
+			case TORRENT_DOWNLOAD: {
+				CTorrentDownloader* p= new CTorrentDownloader();
+				std::string name=optarg;
+				p->download(name);
 			}
 			case HELP:
 			default:{

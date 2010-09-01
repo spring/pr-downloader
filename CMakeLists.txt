@@ -24,9 +24,32 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -O0 -g")
 
 find_package(CURL)
 find_package(ZLIB)
+include(FindPkgConfig)
 
 include_directories(${CURL_INCLUDE_DIR})
 include_directories(${ZLIB_INCLUDE_DIR})
+
+#----------------------------------------------------------------------------------------------------
+# libtorrent-rasterbar dependency check
+#----------------------------------------------------------------------------------------------------
+
+IF( NOT WIN32)
+	SET ( LIBTORRENT_MIN_VERSION 0.13 )
+	pkg_check_modules( LIBTORRENT libtorrent-rasterbar>=${LIBTORRENT_MIN_VERSION} )
+	IF( LIBTORRENT_FOUND )
+		INCLUDE_DIRECTORIES( ${LIBTORRENT_INCLUDE_DIRS} )
+		LINK_LIBRARIES( ${LIBTORRENT_LIBRARIES} )
+	ELSE()
+		MESSAGE( FATAL_ERROR "libtorrent-rasterbar library not found! Please install the package or toggle OPTION_TORRENT_SYSTEM to OFF")
+	ENDIF()
+ELSE( NOT WIN32)
+	link_directories( ${boost_LIB_DIR} )
+	INCLUDE_DIRECTORIES( ${boost_INCLUDE_DIR} )
+	ADD_DEFINITIONS( -mthreads  )
+	LINK_LIBRARIES( -mthreads torrent-rasterbar ${Boost_LIBRARIES} z ws2_32 mswsock  )
+ENDIF( NOT WIN32)
+
+
 
 set (RAPID "rapid")
 add_executable(${RAPID}
@@ -40,6 +63,8 @@ add_executable(${RAPID}
 	md5.cpp
 	Repo.cpp
 	Sdp.cpp
+	Torrent.cpp
+	TorrentDownloader.cpp
 	plasma/soapC.cpp
 	plasma/soapPlasmaServiceSoap12Proxy.cpp
 	plasma/stdsoap2.cpp
