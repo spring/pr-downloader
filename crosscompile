@@ -1,4 +1,6 @@
 
+rm CMakeCache.txt
+
 if [ ! -s mingwlibs/dll/libcurl.dll ]; then
 	wget -c http://www.gknw.net/mirror/curl/win32/curl-7.21.1-devel-mingw32.zip
 	unzip -n curl-7.21.1-devel-mingw32.zip
@@ -23,7 +25,7 @@ SET(CMAKE_FIND_ROOT_PATH /usr/i586-mingw32msvc)
 SET(MINGWLIBS ./mingwlibs)
 SET(CMAKE_INSTALL_PREFIX  ./dist)
 EOF
-	rm CMakeCache.txt
+
 fi
 
 cmake . "-DCMAKE_TOOLCHAIN_FILE=./win32.cmake"

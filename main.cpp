@@ -21,12 +21,20 @@
 
 
 int main(int argc, char **argv){
-	int opt=0;
+	enum{
+		RAPID_DOWNLOAD=0,
+		RAPID_VALIDATE,
+		RAPID_LIST,
+		PLASMA_DOWNLOAD,
+		HELP
+	};
+
 	static struct option long_options[] = {
-		{"rapid-download" , 1, 0, 1},
-		{"rapid-validate" , 0, 0, 2},
-		{"rapid-list"     , 0, 0, 3},
-		{"plasma-download", 1, 0, 4},
+		{"rapid-download" , 1, 0, RAPID_DOWNLOAD},
+		{"rapid-validate" , 0, 0, RAPID_VALIDATE},
+		{"rapid-list"     , 0, 0, RAPID_LIST},
+		{"plasma-download", 1, 0, PLASMA_DOWNLOAD},
+		{"help"           , 0, 0, HELP},
 		{0                , 0, 0, 0}
 	};
 
@@ -37,25 +45,26 @@ int main(int argc, char **argv){
 		if (c == -1)
 			break;
 		switch(c){
-			case 1:{
+			case RAPID_DOWNLOAD:{
 				rapidDownloader->download_tag(optarg);
 				break;
 			}
-			case 2:{
+			case RAPID_VALIDATE:{
 				fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
 				break;
 			}
-			case 3:{
+			case RAPID_LIST:{
 				rapidDownloader->list_tag();
 				break;
 			}
-			case 4: {
+			case PLASMA_DOWNLOAD: {
 				CPlasmaDownloader* p=new CPlasmaDownloader();
 				std::string name=optarg;
 				p->download(name);
 				delete(p);
 				break;
 			}
+			case HELP:
 			default:{
 				int i=0;
 				printf("Usage: %s ", argv[0]);
