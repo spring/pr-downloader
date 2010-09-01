@@ -1,6 +1,3 @@
-
-
-
 #define VERSION 0.1
 #define USER_AGENT "unitsync-dev" + VERSION
 #define SPRING_DIR "/home/matze/.spring"
@@ -17,29 +14,61 @@
 #include "Util.h"
 #include <string>
 #include "FileSystem.h"
+#include <unistd.h>
+#include <getopt.h>
+
+
+
 
 int main(int argc, char **argv){
-	int i;
-	if (argc==1){
-		printf("Usage: %s tagtodownload|--list|--validate-pool|--plasma-download\n", argv[0]);
-	}
+	int opt=0;
+	static struct option long_options[] = {
+		{"rapid-download" , 1, 0, 1},
+		{"rapid-validate" , 0, 0, 2},
+		{"rapid-list"     , 0, 0, 3},
+		{"plasma-download", 1, 0, 4},
+		{0                , 0, 0, 0}
+	};
+
 	rapidDownloader->Initialize();
-	for(i=1;i<argc;i++){
-		std::string arg=argv[i];
-		if(arg=="--list"){
-			rapidDownloader->list_tag();
-		}else if (arg=="--validate-pool"){
-			fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
-		}else if (arg=="--plasma-download"){
-			CPlasmaDownloader* p=new CPlasmaDownloader();
-			std::string name="Ultimate Pass Greenland v1";
-			p->download(name);
-			delete(p);
-		}else{
-			rapidDownloader->download_tag(arg);
+	while(true){
+		int option_index = 0;
+		int c = getopt_long(argc, argv, "",long_options, &option_index);
+		if (c == -1)
+			break;
+		printf("blaaaaaaa %d\n", c);
+		switch(c){
+			case 1:{
+				rapidDownloader->download_tag(optarg);
+				break;
+			}
+			case 2:{
+				fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
+				break;
+			}
+			case 3:{
+				rapidDownloader->list_tag();
+				break;
+			}
+			case 4: {
+				CPlasmaDownloader* p=new CPlasmaDownloader();
+				std::string name=optarg;
+				p->download(name);
+				delete(p);
+				break;
+			}
+			default:{
+				int i=0;
+				printf("Usage: %s\n", argv[0]);
+				while(long_options[i].name!=0){
+					printf("--%s\n",long_options[i].name);
+					i++;
+				}
+				exit(1);
+				break;
+			}
 		}
 	}
-
 	rapidDownloader->Shutdown();
 
     return 0;
