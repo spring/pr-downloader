@@ -46,7 +46,8 @@ add_executable(${RAPID}
 	plasma/stdsoap2.cpp
 )
 target_link_libraries(${RAPID} ${CURL_LIBRARIES} ${ZLIB_LIBRARIES})
-if (MINGW)
-SET_TARGET_PROPERTIES(${RAPID} PROPERTIES LINK_FLAGS "${MINGWLIBS}/dll/libcurl.dll -Wl,-subsystem,console")
-endif (MINGW)
+if (WIN32)
+	SET_TARGET_PROPERTIES(${RAPID} PROPERTIES LINK_FLAGS "${MINGWLIBS}/dll/libcurl.dll -Wl,-subsystem,console")
+	TARGET_LINK_LIBRARIES(${RAPID} -lwsock32)
+endif(WIN32)
 
