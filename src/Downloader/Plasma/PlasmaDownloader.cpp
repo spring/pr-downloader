@@ -7,8 +7,8 @@
 CPlasmaDownloader::CPlasmaDownloader(){
 }
 
-void CPlasmaDownloader::download(const std::string& name){
-//	struct soap *soap = soap_new();
+std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	PlasmaServiceSoap12Proxy service;
 	_ns1__DownloadFile file;
 	_ns1__DownloadFileResponse result;
@@ -34,7 +34,7 @@ void CPlasmaDownloader::download(const std::string& name){
 				printf("%s\n",(*it).c_str());
 			}
 		}else
-			printf("download failed\n");
+			printf("Nothing found\n");
 	else
       printf("soap!=ok\n");
 }
@@ -49,8 +49,4 @@ const IDownload* CPlasmaDownloader::addDownload(const std::string& url, const st
 bool CPlasmaDownloader::removeDownload(IDownload& download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	return true;
-}
-std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
-	return NULL;
 }

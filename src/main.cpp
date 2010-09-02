@@ -25,6 +25,7 @@ int main(int argc, char **argv){
 		RAPID_VALIDATE,
 		RAPID_LIST,
 		PLASMA_DOWNLOAD,
+		PLASMA_SEARCH,
 		TORRENT_DOWNLOAD,
 		HELP
 	};
@@ -34,6 +35,7 @@ int main(int argc, char **argv){
 		{"rapid-validate"   , 0, 0, RAPID_VALIDATE},
 		{"rapid-list"       , 0, 0, RAPID_LIST},
 		{"plasma-download"  , 1, 0, PLASMA_DOWNLOAD},
+		{"plasma-search"    , 1, 0, PLASMA_SEARCH},
 		{"torrent-download" , 1, 0, TORRENT_DOWNLOAD},
 		{"help"             , 0, 0, HELP},
 		{0                  , 0, 0, 0}
@@ -65,6 +67,10 @@ int main(int argc, char **argv){
 				}
 				delete(list);
 				break;
+			}
+			case PLASMA_SEARCH:{
+				std::string tmp=optarg;
+				plasmaDownload->search(tmp);
 			}
 			case PLASMA_DOWNLOAD: {
 				std::string tmp=optarg;
