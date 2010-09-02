@@ -33,8 +33,8 @@ void CSdp::download(){
 	std::list<CFileSystem::FileData*> files;
 
 	if (!fileSystem->parseSdp(filename,files)){ //file isn't avaiable, download it
-		httpDownload.addDownload(url + "/packages/" + md5 + ".sdp", filename);
-		httpDownload.start();
+		httpDownload->addDownload(url + "/packages/" + md5 + ".sdp", filename);
+		httpDownload->start();
 		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}
 

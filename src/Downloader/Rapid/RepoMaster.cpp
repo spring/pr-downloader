@@ -9,8 +9,8 @@
 
 void CRepoMaster::download(const std::string& name){
 	tmpFile=fileSystem->createTempFile();
-	httpDownload.addDownload(name, tmpFile);
-	httpDownload.start();
+	httpDownload->addDownload(name, tmpFile);
+	httpDownload->start();
 	parse();
 }
 

@@ -47,7 +47,9 @@ int main(int argc, char **argv){
 			break;
 		switch(c){
 			case RAPID_DOWNLOAD:{
-				rapidDownload.addDownload(optarg);
+				rapidDownload->addDownload(optarg);
+				rapidDownload->start();
+
 				break;
 			}
 			case RAPID_VALIDATE:{
@@ -55,17 +57,18 @@ int main(int argc, char **argv){
 				break;
 			}
 			case RAPID_LIST:{
-				rapidDownload.search(optarg);
+				rapidDownload->search("");
 				break;
 			}
 			case PLASMA_DOWNLOAD: {
-				plasmaDownload.addDownload(optarg);
-				plasmaDownload.start();
+				std::string tmp=optarg;
+				plasmaDownload->addDownload(tmp);
+				plasmaDownload->start();
 				break;
 			}
 			case TORRENT_DOWNLOAD: {
-				torrentDownload.addDownload(optarg);
-				torrentDownload.start();
+				torrentDownload->addDownload(optarg);
+				torrentDownload->start();
 			}
 			case HELP:
 			default:{

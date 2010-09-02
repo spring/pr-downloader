@@ -55,11 +55,11 @@ bool CHttpDownloader::download(const std::string& Url, const std::string& filena
 
 	FILE* fp = fopen(filename.c_str() ,"wb+");
 	if (fp<=NULL){
-        printf("Could not open %s\n",filename.c_str());
+        printf("CHttpDownloader:: Could not open %s\n",filename.c_str());
 		return false;
 	}
 	if(curl) {
-		curl_easy_setopt(curl, CURLOPT_PROGRESSDATA , pos);
+		curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 		curl_easy_setopt(curl, CURLOPT_URL, Url.c_str());
 		res = curl_easy_perform(curl);
@@ -81,6 +81,7 @@ CHttpDownloader::CHttpDownloader(){
 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
     curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
+    curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, this);
     stats_filepos=1;
     stats_count=1;
 }
@@ -108,10 +109,23 @@ void CHttpDownloader::setStatsPos(unsigned int pos){
 
 
 const IDownload* CHttpDownloader::addDownload(const std::string& url, const std::string& filename){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	IDownload* dl=new IDownload(url,filename);
+	downloads.push_back(dl);
+	return NULL;
 }
 bool CHttpDownloader::removeDownload(IDownload& download){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return true;
 }
-const IDownload* CHttpDownloader::search(const std::string& name){
+const std::list<IDownload>* CHttpDownloader::search(const std::string& name){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return NULL;
 }
 void CHttpDownloader::start(IDownload* download){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+  	while (!downloads.empty()){
+  		this->download(downloads.front()->url,downloads.front()->filename);
+		downloads.pop_front();
+	}
 }

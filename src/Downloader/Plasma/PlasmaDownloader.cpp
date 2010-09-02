@@ -19,8 +19,6 @@ void CPlasmaDownloader::download(const std::string& name){
 		if (result.DownloadFileResult){
 			printf("download ok\n");
 			std::string *torrent=result.torrentFileName;
-			std::vector<std::string>* deps=&result.dependencies->string;
-			std::vector<std::string>* links=&result.links->string;
 
 			printf("%s\n",torrent->c_str());
 			xsd__base64Binary *torrent_buf=result.torrent;
@@ -42,10 +40,17 @@ void CPlasmaDownloader::download(const std::string& name){
 }
 
 void CPlasmaDownloader::start(IDownload* download){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 }
 const IDownload* CPlasmaDownloader::addDownload(const std::string& url, const std::string& filename){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return NULL;
 }
 bool CPlasmaDownloader::removeDownload(IDownload& download){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return true;
 }
-const IDownload* CPlasmaDownloader::search(const std::string& name){
+const std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return NULL;
 }

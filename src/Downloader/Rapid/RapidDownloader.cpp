@@ -80,15 +80,26 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 
 
 const IDownload* CRapidDownloader::addDownload(const std::string& url, const std::string& filename){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return NULL;
 }
 
 bool CRapidDownloader::removeDownload(IDownload& download){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return true;
 }
 
-const IDownload* CRapidDownloader::search(const std::string& name){
-
+const std::list<IDownload>* CRapidDownloader::search(const std::string& name){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	if (name=="")
+		list_tag();
+	else
+		//TODO
+		printf("rapiddownloader::search start\n");
+	return NULL;
 }
 
 void CRapidDownloader::start(IDownload* download){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 }
 

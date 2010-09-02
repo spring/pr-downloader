@@ -4,6 +4,8 @@
 #include <list>
 #include <string>
 
+#include <stdio.h>
+
 class IDownload{
 public:
 	IDownload(const std::string& url, const std::string& filename);
@@ -11,26 +13,26 @@ public:
 		add a mirror to the download specified
 	*/
 	bool addMirror(const std::string& url);
-
-private:
 	std::list<std::string> mirror;
 	std::string url;
 	std::string filename;
 };
 
 class IDownloader{
+protected:
+	std::list<IDownload*> downloads;
 public:
-	static IDownloader& GetHttpInstance() {
-		return *httpdl;
+	static IDownloader* GetHttpInstance() {
+		return httpdl;
 	}
-	static IDownloader& GetRapidInstance() {
-		return *httpdl;
+	static IDownloader* GetRapidInstance() {
+		return rapiddl;
 	}
-	static IDownloader& GetPlasmaInstance() {
-		return *plasmadl;
+	static IDownloader* GetPlasmaInstance() {
+		return plasmadl;
 	}
-	static IDownloader& GetTorrentInstance() {
-		return *torrentdl;
+	static IDownloader* GetTorrentInstance() {
+		return  torrentdl;
 	}
 
 	//IDownloader(){};
@@ -58,10 +60,9 @@ public:
 	/**
 		search for a string at the downloader
 	*/
-	virtual const IDownload* search(const std::string& name)=0;
+	virtual const std::list<IDownload>* search(const std::string& name="")=0;
 
 private:
-	std::list<IDownload*> downloads;
 	static IDownloader* httpdl;
 	static IDownloader* plasmadl;
 	static IDownloader* rapiddl;

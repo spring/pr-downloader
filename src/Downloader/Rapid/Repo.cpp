@@ -14,7 +14,8 @@ void CRepo::download(){
 	tmpFile=fileSystem->createTempFile();
 	std::string fullUrl;
 	fullUrl=repourl+"/versions.gz";
-	httpDownload.addDownload(fullUrl, tmpFile);
+	httpDownload->addDownload(fullUrl, tmpFile);
+	httpDownload->start();
 	parse();
 }
 
@@ -45,8 +46,8 @@ void CRepo::parse(){
 		std::string name=getStrByIdx(tmp,',',3);
 		if (shortname.size()>0){ //create new repo from url
 			CSdp* sdptmp=new CSdp(shortname, md5, name, repourl);
-			CRapidDownloader& tmp=(CRapidDownloader&)rapidDownload;
-			tmp.addRemoteDsp(*sdptmp);
+			CRapidDownloader* tmp=(CRapidDownloader*)rapidDownload;
+			tmp->addRemoteDsp(*sdptmp);
 		}
     }
     gzclose(fp);

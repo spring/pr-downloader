@@ -24,11 +24,11 @@ public:
 	//lists all tags on all servers
 	void list_tag();
 	//remove a dsp from the list of remote dsps
-	void addRemoteDsp(CSdp& dsp);
-	const IDownload* addDownload(const std::string& url, const std::string& filename);
-	bool removeDownload(IDownload& download);
-	const IDownload* search(const std::string& name);
-	void start(IDownload* download = NULL);
+	virtual void addRemoteDsp(CSdp& dsp);
+	virtual const IDownload* addDownload(const std::string& url, const std::string& filename);
+	virtual bool removeDownload(IDownload& download);
+	virtual const std::list<IDownload>* search(const std::string& name);
+	virtual void start(IDownload* download);
 
 private:
 	std::list<CSdp*> sdps;

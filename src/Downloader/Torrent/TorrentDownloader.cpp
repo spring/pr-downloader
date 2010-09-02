@@ -19,20 +19,28 @@ bool CTorrentDownloader::download(const std::string& torrentfile, const std::str
     while(true){
     	const libtorrent::session_status& sessinfo=s.status();
     	sleep(1);
-    	printf("%d\n",sessinfo.total_download);
+    	printf("%ld\n",sessinfo.total_download);
 
     }
+    return true;
 }
 
 
 void CTorrentDownloader::start(IDownload* download){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 }
 
 const IDownload* CTorrentDownloader::addDownload(const std::string& url, const std::string& filename){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return NULL;
 }
 
 bool CTorrentDownloader::removeDownload(IDownload& download){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return true;
 }
 
-const IDownload* CTorrentDownloader::search(const std::string& name){
+const std::list<IDownload>* CTorrentDownloader::search(const std::string& name){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	return NULL;
 }

@@ -36,10 +36,10 @@ bool IDownloader::removeDownload(IDownload& download){
 }
 
 void IDownloader::Initialize(){
- 	httpdl=new CHttpDownloader::CHttpDownloader();
-	plasmadl=new CPlasmaDownloader::CPlasmaDownloader();
-	rapiddl=new CRapidDownloader::CRapidDownloader();
-	torrentdl=new CTorrentDownloader::CTorrentDownloader();
+ 	httpdl=new CHttpDownloader();
+	plasmadl=new CPlasmaDownloader();
+	rapiddl=new CRapidDownloader();
+	torrentdl=new CTorrentDownloader();
 }
 
 void IDownloader::Shutdown(){
