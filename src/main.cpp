@@ -38,6 +38,7 @@ int main(int argc, char **argv){
 		{"help"             , 0, 0, HELP},
 		{0                  , 0, 0, 0}
 	};
+	CFileSystem::Initialize();
 	IDownloader::Initialize();
 	while(true){
 		int option_index = 0;
@@ -88,6 +89,7 @@ int main(int argc, char **argv){
 		}
 	}
 	IDownloader::Shutdown();
+	CFileSystem::Shutdown();
 
     return 0;
 }
