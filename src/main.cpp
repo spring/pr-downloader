@@ -16,7 +16,7 @@
 #include <getopt.h>
 #include <Downloader/IDownloader.h>
 #include <stdio.h>
-
+#include <list>
 
 
 int main(int argc, char **argv){
@@ -47,6 +47,7 @@ int main(int argc, char **argv){
 			break;
 		switch(c){
 			case RAPID_DOWNLOAD:{
+				rapidDownload->search(optarg);
 				rapidDownload->addDownload(optarg);
 				rapidDownload->start();
 
@@ -57,7 +58,12 @@ int main(int argc, char **argv){
 				break;
 			}
 			case RAPID_LIST:{
-				rapidDownload->search("");
+				std::list<IDownload>* list=rapidDownload->search("");
+				std::list<IDownload>::iterator it;
+				for(it=list->begin();it!=list->end();++it){
+					printf("%s\n",(*it).url.c_str());
+				}
+				delete(list);
 				break;
 			}
 			case PLASMA_DOWNLOAD: {

@@ -44,16 +44,9 @@ static bool list_compare(CSdp* first ,CSdp*  second){
 	}
 	return false;
 }
-
-void CRapidDownloader::list_tag(){
-	reloadRepos();
-	sdps.sort(list_compare);
-	std::list<CSdp*>::iterator it;
-	for(it=sdps.begin();it!=sdps.end();++it){
-		printf("%-40s%s\n",(*it)->getShortName().c_str(),(*it)->getName().c_str());
-	}
-}
-
+/*
+	update all repos from the web
+*/
 bool CRapidDownloader::reloadRepos(){
 	if (reposLoaded)
 		return true;
@@ -81,6 +74,7 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 
 const IDownload* CRapidDownloader::addDownload(const std::string& url, const std::string& filename){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	download_tag(url);
 	return NULL;
 }
 
@@ -89,17 +83,32 @@ bool CRapidDownloader::removeDownload(IDownload& download){
 	return true;
 }
 
-const std::list<IDownload>* CRapidDownloader::search(const std::string& name){
+std::list<IDownload>* CRapidDownloader::search(const std::string& name){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
-	if (name=="")
-		list_tag();
-	else
-		//TODO
-		printf("rapiddownloader::search start\n");
-	return NULL;
+	reloadRepos();
+	std::list<IDownload>*tmp;
+	tmp=new std::list<IDownload>;
+
+	sdps.sort(list_compare);
+	std::list<CSdp*>::iterator it;
+	for(it=sdps.begin();it!=sdps.end();++it){
+		IDownload* dl;
+		dl=new IDownload((*it)->getShortName().c_str(),(*it)->getName().c_str());
+		if (match_download_name(dl->name,name))
+			tmp->push_back(*dl);
+	}
+	return tmp;
 }
 
 void CRapidDownloader::start(IDownload* download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	if (download==NULL){
+  		while (!downloads.empty()){
+	  		this->download_tag(downloads.front()->url);
+			downloads.pop_front();
+		}
+	}else{
+		this->download_tag(download->url);
+	}
 }
 

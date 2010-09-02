@@ -40,7 +40,7 @@ bool CTorrentDownloader::removeDownload(IDownload& download){
 	return true;
 }
 
-const std::list<IDownload>* CTorrentDownloader::search(const std::string& name){
+std::list<IDownload>* CTorrentDownloader::search(const std::string& name){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	return NULL;
 }

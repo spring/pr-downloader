@@ -264,19 +264,8 @@ void CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData*>& fil
 
 		gzip_str(buf,buflen,dest,&destlen);
 
-		FILE* f;
-		f=fopen("request","w");
-		fwrite(buf, buflen,1,f);
-		fclose(f);
-
-		f=fopen("request.gz","w");
-		fwrite(dest, destlen,1,f);
-		fclose(f);
-
-		free(buf);
-
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_streamed_data);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &files);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
 		globalFiles=&files;
 		curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, dest);

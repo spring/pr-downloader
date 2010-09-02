@@ -13,9 +13,9 @@ IDownloader* IDownloader::plasmadl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
 IDownloader* IDownloader::torrentdl=NULL;
 
-IDownload::IDownload(const std::string& url, const std::string& filename){
+IDownload::IDownload(const std::string& url, const std::string& name){
 	this->url=url;
-	this->filename=filename;
+	this->name=name;
 }
 
 

@@ -118,14 +118,14 @@ bool CHttpDownloader::removeDownload(IDownload& download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	return true;
 }
-const std::list<IDownload>* CHttpDownloader::search(const std::string& name){
+std::list<IDownload>* CHttpDownloader::search(const std::string& name){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	return NULL;
 }
 void CHttpDownloader::start(IDownload* download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
   	while (!downloads.empty()){
-  		this->download(downloads.front()->url,downloads.front()->filename);
+  		this->download(downloads.front()->url,downloads.front()->name);
 		downloads.pop_front();
 	}
 }

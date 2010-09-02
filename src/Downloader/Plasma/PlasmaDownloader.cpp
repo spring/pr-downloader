@@ -50,7 +50,7 @@ bool CPlasmaDownloader::removeDownload(IDownload& download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	return true;
 }
-const std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
+std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	return NULL;
 }

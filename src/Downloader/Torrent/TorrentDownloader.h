@@ -11,6 +11,6 @@ public:
 	void start(IDownload* download = NULL);
 	const IDownload* addDownload(const std::string& url, const std::string& filename="");
 	bool removeDownload(IDownload& download);
-	const std::list<IDownload>* search(const std::string& name);
+	std::list<IDownload>* search(const std::string& name);
 };
 #endif

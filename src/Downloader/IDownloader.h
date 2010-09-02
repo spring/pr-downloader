@@ -14,8 +14,8 @@ public:
 	*/
 	bool addMirror(const std::string& url);
 	std::list<std::string> mirror;
-	std::string url;
-	std::string filename;
+	std::string url; //url to download
+	std::string name; //name, in most cases the filename to save to
 };
 
 class IDownloader{
@@ -60,7 +60,7 @@ public:
 	/**
 		search for a string at the downloader
 	*/
-	virtual const std::list<IDownload>* search(const std::string& name="")=0;
+	virtual std::list<IDownload>* search(const std::string& name="")=0;
 
 private:
 	static IDownloader* httpdl;

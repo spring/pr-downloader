@@ -26,7 +26,7 @@ public:
 	void downloadStream(const std::string url,std::list<CFileSystem::FileData*>& files);
 	const IDownload* addDownload(const std::string& url, const std::string& filename);
 	bool removeDownload(IDownload& download);
-	const std::list<IDownload>* search(const std::string& name);
+	std::list<IDownload>* search(const std::string& name);
 	void start(IDownload* download = NULL);
 private:
 	CURL *curl;

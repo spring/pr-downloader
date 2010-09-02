@@ -27,7 +27,7 @@ public:
 	virtual void addRemoteDsp(CSdp& dsp);
 	virtual const IDownload* addDownload(const std::string& url, const std::string& filename);
 	virtual bool removeDownload(IDownload& download);
-	virtual const std::list<IDownload>* search(const std::string& name);
+	virtual std::list<IDownload>* search(const std::string& name);
 	virtual void start(IDownload* download);
 
 private:
