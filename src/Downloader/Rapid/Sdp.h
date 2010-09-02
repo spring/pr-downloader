@@ -1,4 +1,9 @@
+#ifndef _SDP_H
+#define _SDP_H
+
+
 #include "RepoMaster.h"
+#include "FileSystem.h"
 
 class CSdp{
 public:
@@ -11,7 +16,20 @@ public:
 	const std::string& getName();
 	//returns the shortname, for example ba:stable
 	const std::string& getShortName();
+
+	bool downlooadInitialized;
+	std::list<CFileSystem::FileData*>::iterator list_it;
+	std::list<CFileSystem::FileData*>* globalFiles;
+	FILE* file_handle;
+	std::string file_name;
+
+	unsigned int file_pos;
+	unsigned int skipped;
+	unsigned char cursize_buf[4];
+	unsigned int cursize;
+
 private:
+	void downloadStream(std::string url,std::list<CFileSystem::FileData*>& files);
 	std::string name;
 	std::string md5;
 	std::string shortname;
@@ -19,3 +37,5 @@ private:
 	std::string filename;
 	bool downloaded;
 };
+
+#endif

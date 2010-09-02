@@ -16,5 +16,6 @@ std::string getStrByIdx(std::string& str, char c, int idx);
 
 void gzip_str(const char* in, const int inlen,  char* out, int *outlen);
 unsigned int parse_int32(unsigned char c[4]);
+unsigned int intmin(int x, int y);
 
 #endif

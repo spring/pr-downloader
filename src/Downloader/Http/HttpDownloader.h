@@ -5,21 +5,14 @@
 #include <list>
 #include <curl/curl.h>
 #include "FileSystem.h"
+#include "Downloader/IDownloader.h"
 
 
-
-
-class CHttpDownload{
-	static CHttpDownload* singleton;
+class CHttpDownloader: public IDownloader{
 
 public:
-	static inline CHttpDownload* GetInstance() {
-		return singleton;
-	}
-	static void Initialize();
-	static void Shutdown();
-	CHttpDownload();
-	~CHttpDownload();
+	CHttpDownloader();
+	~CHttpDownloader();
 
 	/**
 		downloads a file from Url to filename
@@ -31,13 +24,14 @@ public:
 	unsigned int getCount();
 	const std::string& getCacheFile(const std::string &url);
 	void downloadStream(const std::string url,std::list<CFileSystem::FileData*>& files);
+	const IDownload* addDownload(const std::string& url, const std::string& filename);
+	bool removeDownload(IDownload& download);
+	const IDownload* search(const std::string& name);
+	void start(IDownload* download = NULL);
 private:
 	CURL *curl;
 	unsigned int stats_count;
 	unsigned int stats_filepos;
 };
-
-
-#define httpDownload CHttpDownload::GetInstance()
 
 #endif

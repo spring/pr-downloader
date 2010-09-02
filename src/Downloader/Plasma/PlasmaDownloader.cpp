@@ -1,5 +1,5 @@
-#include "plasma/soapPlasmaServiceSoap12Proxy.h"
-#include "plasma/PlasmaServiceSoap.nsmap"
+#include "soap/soapPlasmaServiceSoap12Proxy.h"
+#include "soap/PlasmaServiceSoap.nsmap"
 #include "PlasmaDownloader.h"
 
 
@@ -41,4 +41,11 @@ void CPlasmaDownloader::download(const std::string& name){
       printf("soap!=ok\n");
 }
 
-
+void CPlasmaDownloader::start(IDownload* download){
+}
+const IDownload* CPlasmaDownloader::addDownload(const std::string& url, const std::string& filename){
+}
+bool CPlasmaDownloader::removeDownload(IDownload& download){
+}
+const IDownload* CPlasmaDownloader::search(const std::string& name){
+}

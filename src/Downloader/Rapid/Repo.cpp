@@ -1,7 +1,7 @@
 #include "RepoMaster.h"
 #include "Repo.h"
 #include "FileSystem.h"
-#include "HttpDownload.h"
+#include "Downloader/IDownloader.h"
 #include "RapidDownloader.h"
 #include "Sdp.h"
 #include "Util.h"
@@ -14,7 +14,7 @@ void CRepo::download(){
 	tmpFile=fileSystem->createTempFile();
 	std::string fullUrl;
 	fullUrl=repourl+"/versions.gz";
-	httpDownload->download(fullUrl, tmpFile);
+	httpDownload.addDownload(fullUrl, tmpFile);
 	parse();
 }
 
@@ -45,7 +45,8 @@ void CRepo::parse(){
 		std::string name=getStrByIdx(tmp,',',3);
 		if (shortname.size()>0){ //create new repo from url
 			CSdp* sdptmp=new CSdp(shortname, md5, name, repourl);
-			rapidDownloader->addRemoteDsp(*sdptmp);
+			CRapidDownloader& tmp=(CRapidDownloader&)rapidDownload;
+			tmp.addRemoteDsp(*sdptmp);
 		}
     }
     gzclose(fp);

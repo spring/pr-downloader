@@ -1,33 +1,22 @@
 #include "RepoMaster.h"
 #include "FileSystem.h"
-#include "HttpDownload.h"
 #include "Repo.h"
 #include <string>
 #include <stdio.h>
 #include <zlib.h>
 #include "Util.h"
-
-CRepoMaster* CRepoMaster::singleton = NULL;
+#include "Downloader/IDownloader.h"
 
 void CRepoMaster::download(const std::string& name){
 	tmpFile=fileSystem->createTempFile();
-	httpDownload->download(name, tmpFile);
+	httpDownload.addDownload(name, tmpFile);
+	httpDownload.start();
 	parse();
 }
 
-void CRepoMaster::Initialize(std::string& masterurl){
-	singleton=new CRepoMaster(masterurl);
-}
-
-CRepoMaster::CRepoMaster(std::string url){
+CRepoMaster::CRepoMaster(std::string& url){
 	this->url=url;
 }
-
-void CRepoMaster::Shutdown(){
-	delete(singleton);
-	singleton=NULL;
-}
-
 
 void CRepoMaster::parse(){
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
@@ -53,4 +42,7 @@ void CRepoMaster::updateRepos(){
 	for (it = repos.begin();it != repos.end(); ++it) {
 		(*it)->download();
 	}
+}
+
+CRepoMaster::~CRepoMaster(){
 }

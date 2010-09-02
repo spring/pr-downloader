@@ -1,8 +1,5 @@
 #include "md5.h"
 #include "FileSystem.h"
-#include "RapidDownloader.h"
-#include "RepoMaster.h"
-#include "Repo.h"
 #include <zlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -210,7 +207,7 @@ void CFileSystem::validatePool(const std::string& path){
 				break;
 			tmp=path+"/"+dentry->d_name;
 			stat(tmp.c_str(),&sb);
-			if(sb.st_mode&S_IFDIR!=0){
+			if((sb.st_mode&S_IFDIR)!=0){
 				validatePool(tmp);
 			}else{
 				printf("%s\n",tmp.c_str());

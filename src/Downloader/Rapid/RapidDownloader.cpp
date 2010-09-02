@@ -1,7 +1,7 @@
 #include "RapidDownloader.h"
 #include "FileSystem.h"
 #include "Util.h"
-#include "HttpDownload.h"
+#include "Downloader/IDownloader.h"
 #include "Sdp.h"
 #include <stdio.h>
 #include <string>
@@ -10,22 +10,14 @@
 #include "RepoMaster.h"
 
 
-CRapidDownloader* CRapidDownloader::singleton = NULL;
-
-void CRapidDownloader::Initialize(){
-	singleton=new CRapidDownloader();
-	CHttpDownload::Initialize();
-	CFileSystem::Initialize();
+CRapidDownloader::CRapidDownloader(){
 	std::string url(REPO_MASTER);
-	CRepoMaster::Initialize(url);
+	this->repoMaster=new CRepoMaster(url);
+	reposLoaded = false;
 }
 
-void CRapidDownloader::Shutdown(){
-	CRepoMaster::Shutdown();
-	CFileSystem::Shutdown();
-	CHttpDownload::Shutdown();
-	delete(singleton);
-	singleton=NULL;
+CRapidDownloader::~CRapidDownloader(){
+	delete(repoMaster);
 }
 
 
@@ -66,7 +58,7 @@ bool CRapidDownloader::reloadRepos(){
 	if (reposLoaded)
 		return true;
 	std::string url(REPO_MASTER);
-	repoMaster->download(url);
+	this->repoMaster->download(url);
 	repoMaster->updateRepos();
 	reposLoaded=true;
 	return true;
@@ -86,6 +78,17 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 	return false;
 }
 
-CRapidDownloader::CRapidDownloader(){
-	reposLoaded = false;
+
+const IDownload* CRapidDownloader::addDownload(const std::string& url, const std::string& filename){
 }
+
+bool CRapidDownloader::removeDownload(IDownload& download){
+}
+
+const IDownload* CRapidDownloader::search(const std::string& name){
+
+}
+
+void CRapidDownloader::start(IDownload* download){
+}
+

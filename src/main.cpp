@@ -9,15 +9,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "md5.h"
-#include "RapidDownloader.h"
-#include "PlasmaDownloader.h"
-#include "TorrentDownloader.h"
 #include "Util.h"
 #include <string>
 #include "FileSystem.h"
 #include <unistd.h>
 #include <getopt.h>
-
+#include <Downloader/IDownloader.h>
+#include <stdio.h>
 
 
 
@@ -40,8 +38,7 @@ int main(int argc, char **argv){
 		{"help"             , 0, 0, HELP},
 		{0                  , 0, 0, 0}
 	};
-
-	rapidDownloader->Initialize();
+	IDownloader::Initialize();
 	while(true){
 		int option_index = 0;
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
@@ -49,7 +46,7 @@ int main(int argc, char **argv){
 			break;
 		switch(c){
 			case RAPID_DOWNLOAD:{
-				rapidDownloader->download_tag(optarg);
+				rapidDownload.addDownload(optarg);
 				break;
 			}
 			case RAPID_VALIDATE:{
@@ -57,20 +54,17 @@ int main(int argc, char **argv){
 				break;
 			}
 			case RAPID_LIST:{
-				rapidDownloader->list_tag();
+				rapidDownload.search(optarg);
 				break;
 			}
 			case PLASMA_DOWNLOAD: {
-				CPlasmaDownloader* p=new CPlasmaDownloader();
-				std::string name=optarg;
-				p->download(name);
-				delete(p);
+				plasmaDownload.addDownload(optarg);
+				plasmaDownload.start();
 				break;
 			}
 			case TORRENT_DOWNLOAD: {
-				CTorrentDownloader* p= new CTorrentDownloader();
-				std::string name=optarg;
-				p->download(name);
+				torrentDownload.addDownload(optarg);
+				torrentDownload.start();
 			}
 			case HELP:
 			default:{
@@ -93,7 +87,7 @@ int main(int argc, char **argv){
 			}
 		}
 	}
-	rapidDownloader->Shutdown();
+	IDownloader::Shutdown();
 
     return 0;
 }

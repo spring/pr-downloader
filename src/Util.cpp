@@ -124,3 +124,9 @@ unsigned int parse_int32(unsigned char c[4]){
         i = c[3] << 0  | i;
         return i;
 }
+
+unsigned int intmin(int x, int y){
+	if(x<y)
+		return x;
+	return y;
+}

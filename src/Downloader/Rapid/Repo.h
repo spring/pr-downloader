@@ -1,3 +1,7 @@
+#ifndef REPO_H
+#define REPO_H
+
+
 #include <list>
 class CSdp;
 
@@ -16,3 +20,5 @@ private:
 	std::list<CSdp*> sdps;
 	std::string tmpFile;
 };
+
+#endif
