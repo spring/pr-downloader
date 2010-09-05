@@ -1,10 +1,13 @@
 #include "soap/soapPlasmaServiceSoap12Proxy.h"
 #include "soap/PlasmaServiceSoap.nsmap"
 #include "PlasmaDownloader.h"
+#include "FileSystem.h"
 
 
 
 CPlasmaDownloader::CPlasmaDownloader(){
+	this->torrentPath==fileSystem->getSpringDir()+"/torrent/";
+	fileSystem->create_subdirs(this->torrentPath);
 }
 
 std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
@@ -18,11 +21,11 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	if (service.DownloadFile(&file, &result) == SOAP_OK)
 		if (result.DownloadFileResult){
 			printf("download ok\n");
-			std::string *torrent=result.torrentFileName;
+			std::string fileName=this->torrentPath + *result.torrentFileName;
 
-			printf("%s\n",torrent->c_str());
+			printf("%s\n",fileName.c_str());
 			xsd__base64Binary *torrent_buf=result.torrent;
-			FILE* f=fopen(torrent->c_str(),"wb");
+			FILE* f=fopen(fileName.c_str(),"wb");
 			fwrite(torrent_buf->__ptr, torrent_buf->__size, 1, f);
 			fclose(f);
 

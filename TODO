@@ -1,8 +1,16 @@
-use  /packages/selected.list for pinned tags / downloaded files
+=general=
+ * make unit-sync compatible
+ * remove hardcoded paths
+ * verify / check if file is already downloaded before starting
 
-after including into unitsync (maybe as plugin?)
-integrate into spring (load unitsync?)
-remove hardcoded paths
-add soap: http://www.vivtek.com/wftk/doc/code/wftk/action/ACTION_http.html
+=http=
 
-verify / check if file is already downloaded before starting
+=plasma=
+ * finish it
+
+=rapid=
+ * use  /packages/selected.list for pinned tags / downloaded files
+ * add depends-support
+
+=torrent=
+
