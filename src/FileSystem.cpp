@@ -124,7 +124,7 @@ CFileSystem::~CFileSystem(){
 
 CFileSystem::CFileSystem(){
 	tmpfiles.clear();
-	springdir="/home/matze/.spring";
+	springdir="/home/abma/.spring";
 }
 
 void CFileSystem::Initialize(){

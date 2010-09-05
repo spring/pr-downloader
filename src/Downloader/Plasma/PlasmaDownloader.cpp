@@ -17,29 +17,40 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	_ns1__DownloadFileResponse result;
 	std::string tmpname=name;
 	file.internalName=&tmpname;
+	int res;
+	res=service.DownloadFile(&file, &result);
+	if (res != SOAP_OK){
+		switch(res){
+			case SOAP_TCP_ERROR:
+				printf("Couldn't connect to soap-server\n",res);
+				break;
 
-	if (service.DownloadFile(&file, &result) == SOAP_OK)
-		if (result.DownloadFileResult){
-			printf("download ok\n");
-			std::string fileName=this->torrentPath + *result.torrentFileName;
+			default:
+				printf("Soap error: %d\n",res);
+		}
+		return NULL;
+	}
+	if (!result.DownloadFileResult){
+		printf("No file found for criteria %s\n",name);
+		return NULL;
+	}
+	printf("download ok\n");
+	std::string fileName=this->torrentPath + *result.torrentFileName;
 
-			printf("%s\n",fileName.c_str());
-			xsd__base64Binary *torrent_buf=result.torrent;
-			FILE* f=fopen(fileName.c_str(),"wb");
-			fwrite(torrent_buf->__ptr, torrent_buf->__size, 1, f);
-			fclose(f);
+	printf("%s\n",fileName.c_str());
+	xsd__base64Binary *torrent_buf=result.torrent;
+	FILE* f=fopen(fileName.c_str(),"wb");
+	fwrite(torrent_buf->__ptr, torrent_buf->__size, 1, f);
+	fclose(f);
 
-			std::vector<std::string>::iterator it;
-			for(it=result.links->string.begin();it!=result.links->string.end(); it++){
-				printf("%s\n",(*it).c_str());
-			}
-			for(it=result.dependencies->string.begin();it!=result.dependencies->string.end(); it++){
-				printf("%s\n",(*it).c_str());
-			}
-		}else
-			printf("Nothing found\n");
-	else
-      printf("soap!=ok\n");
+	std::vector<std::string>::iterator it;
+	for(it=result.links->string.begin();it!=result.links->string.end(); it++){
+		printf("%s\n",(*it).c_str());
+	}
+	for(it=result.dependencies->string.begin();it!=result.dependencies->string.end(); it++){
+		printf("%s\n",(*it).c_str());
+	}
+	return NULL;
 }
 
 void CPlasmaDownloader::start(IDownload* download){
