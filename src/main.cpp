@@ -74,8 +74,10 @@ int main(int argc, char **argv){
 			}
 			case PLASMA_DOWNLOAD: {
 				std::string tmp=optarg;
-				plasmaDownload->addDownload(tmp);
-				plasmaDownload->start();
+				std::list <IDownload>* tmplist=plasmaDownload->search(tmp);
+				std::list <IDownload>::iterator it;
+				it=tmplist->begin();
+				plasmaDownload->start(&*it);
 				break;
 			}
 			case TORRENT_DOWNLOAD: {

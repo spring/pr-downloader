@@ -13,9 +13,11 @@ public:
 		add a mirror to the download specified
 	*/
 	bool addMirror(const std::string& url);
+	bool addDepend(const std::string& depend);
 	std::list<std::string> mirror;
 	std::string url; //url to download
 	std::string name; //name, in most cases the filename to save to
+	std::string depend;
 };
 
 class IDownloader{

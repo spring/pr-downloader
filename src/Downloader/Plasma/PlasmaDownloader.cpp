@@ -17,6 +17,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	_ns1__DownloadFileResponse result;
 	std::string tmpname=name;
 	file.internalName=&tmpname;
+	std::list<IDownload>* dlres;
 	int res;
 	res=service.DownloadFile(&file, &result);
 	if (res != SOAP_OK){
@@ -37,6 +38,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	printf("download ok\n");
 	std::string fileName=this->torrentPath + *result.torrentFileName;
 
+
 	printf("%s\n",fileName.c_str());
 	xsd__base64Binary *torrent_buf=result.torrent;
 	FILE* f=fopen(fileName.c_str(),"wb");
@@ -44,18 +46,30 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	fclose(f);
 
 	std::vector<std::string>::iterator it;
+	dlres=new std::list<IDownload>();
+
+	std::string saveto=fileSystem->getSpringDir();
+	if (result.resourceType==ns1__ResourceType__Map){
+		saveto.append("/Maps/");
+	}else
+		saveto.append("/Mods/");
+
+	IDownload* dl=new IDownload(fileName,saveto);
 	for(it=result.links->string.begin();it!=result.links->string.end(); it++){
-		printf("%s\n",(*it).c_str());
+		dl->addMirror((*it).c_str());
 	}
 	for(it=result.dependencies->string.begin();it!=result.dependencies->string.end(); it++){
-		printf("%s\n",(*it).c_str());
+		dl->addDepend((*it).c_str());
 	}
-	return NULL;
+	dlres->push_back(*dl);
+	return dlres;
 }
 
 void CPlasmaDownloader::start(IDownload* download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	torrentDownload->start(download);
 }
+
 const IDownload* CPlasmaDownloader::addDownload(const std::string& url, const std::string& filename){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	return NULL;

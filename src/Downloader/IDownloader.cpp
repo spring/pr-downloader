@@ -24,6 +24,11 @@ bool IDownload::addMirror(const std::string& url){
 	return true;
 }
 
+bool IDownload::addDepend(const std::string& depend){
+	this->depend=depend;
+	return true;
+}
+
 const IDownload* IDownloader::addDownload(const std::string& url, const std::string& filename){
 	IDownload* dl=new IDownload(url,filename);
 	downloads.push_back(dl);

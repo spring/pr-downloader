@@ -2,6 +2,12 @@
  * make unit-sync compatible
  * remove hardcoded paths
  * verify / check if file is already downloaded before starting
+ * allow it to be quiet on stdout/stderr
+ * auto ban corrupted mirrors (temp-ban?)
+
+==unitsync==
+ * allow removal/cleanup of mod/map
+ * allow getting data directory from unitsync without scanning everything
 
 =http=
 
@@ -9,8 +15,10 @@
  * finish it
 
 =rapid=
- * use  /packages/selected.list for pinned tags / downloaded files
+ * use /packages/selected.list for pinned tags / downloaded files
  * add depends-support
+ * dont download directly to pool or packages dir but to a temp dir
+ * add etag support
 
 =torrent=
 
