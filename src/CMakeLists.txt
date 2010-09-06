@@ -51,27 +51,30 @@ ENDIF( NOT WIN32)
 
 
 
-set (RAPID "rapid")
-add_executable(${RAPID}
+set(myRapidFiles
 	FileSystem.cpp
-	main.cpp
 	Util.cpp
 	md5.cpp
-Downloader/IDownloader.cpp
-Downloader/Torrent/TorrentDownloader.h
-Downloader/Torrent/Torrent.cpp
-Downloader/Torrent/TorrentDownloader.cpp
-Downloader/Plasma/PlasmaDownloader.cpp
-Downloader/Plasma/soap/soapC.cpp
-Downloader/Plasma/soap/soapPlasmaServiceSoap12Proxy.cpp
-Downloader/Plasma/soap/soapPlasmaServiceSoapProxy.cpp
-Downloader/Plasma/soap/stdsoap2.cpp
-Downloader/Rapid/RapidDownloader.cpp
-Downloader/Rapid/RepoMaster.cpp
-Downloader/Rapid/Repo.cpp
-Downloader/Rapid/Sdp.cpp
-Downloader/Http/HttpDownloader.cpp
-)
+	Downloader/IDownloader.cpp
+	Downloader/Torrent/TorrentDownloader.h
+	Downloader/Torrent/Torrent.cpp
+	Downloader/Torrent/TorrentDownloader.cpp
+	Downloader/Plasma/PlasmaDownloader.cpp
+	Downloader/Plasma/soap/soapC.cpp
+	Downloader/Plasma/soap/soapPlasmaServiceSoap12Proxy.cpp
+	Downloader/Plasma/soap/soapPlasmaServiceSoapProxy.cpp
+	Downloader/Plasma/soap/stdsoap2.cpp
+	Downloader/Rapid/RapidDownloader.cpp
+	Downloader/Rapid/RepoMaster.cpp
+	Downloader/Rapid/Repo.cpp
+	Downloader/Rapid/Sdp.cpp
+	Downloader/Http/HttpDownloader.cpp)
+
+set (RAPID "rapid")
+set (RAPID_LIB "unitsync-ext")
+add_executable(${RAPID} ${myRapidFiles} "main.cpp")
+add_library(${RAPID_LIB} ${myRapidFiles})
+
 
 target_link_libraries(${RAPID} ${ZLIB_LIBRARIES})
 

@@ -22,7 +22,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	if (res != SOAP_OK){
 		switch(res){
 			case SOAP_TCP_ERROR:
-				printf("Couldn't connect to soap-server\n",res);
+				printf("Couldn't connect to soap-server\n");
 				break;
 
 			default:
@@ -31,7 +31,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 		return NULL;
 	}
 	if (!result.DownloadFileResult){
-		printf("No file found for criteria %s\n",name);
+		printf("No file found for criteria %s\n",name.c_str());
 		return NULL;
 	}
 	printf("download ok\n");

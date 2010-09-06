@@ -66,7 +66,7 @@ void CSdp::download(){
 		}else{
 			(*it)->download=false;
 		}
-		if (i%20==0)
+		if (i%10==0)
 			printf("\r%d/%d checked",i,(int)files.size());
 		it++;
 	}
