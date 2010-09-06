@@ -6,7 +6,7 @@
 
 
 CPlasmaDownloader::CPlasmaDownloader(){
-	this->torrentPath==fileSystem->getSpringDir()+"/torrent/";
+	this->torrentPath=fileSystem->getSpringDir()+"/torrent/";
 	fileSystem->create_subdirs(this->torrentPath);
 }
 
@@ -36,7 +36,8 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 		return NULL;
 	}
 	printf("download ok\n");
-	std::string fileName=this->torrentPath + *result.torrentFileName;
+	std::string fileName=this->torrentPath;
+	fileName.append(*result.torrentFileName);
 
 
 	printf("%s\n",fileName.c_str());
@@ -50,9 +51,9 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 
 	std::string saveto=fileSystem->getSpringDir();
 	if (result.resourceType==ns1__ResourceType__Map){
-		saveto.append("/Maps/");
+		saveto.append("/maps/");
 	}else
-		saveto.append("/Mods/");
+		saveto.append("/mods/");
 
 	IDownload* dl=new IDownload(fileName,saveto);
 	for(it=result.links->string.begin();it!=result.links->string.end(); it++){
