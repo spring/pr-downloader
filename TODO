@@ -13,10 +13,10 @@
 
 =plasma=
  * finish it
+ * add depends-support
 
 =rapid=
  * use /packages/selected.list for pinned tags / downloaded files
- * add depends-support
  * dont download directly to pool or packages dir but to a temp dir
  * add etag support
 
