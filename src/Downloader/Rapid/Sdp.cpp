@@ -8,13 +8,6 @@
 #include <stdio.h>
 #include <curl/curl.h>
 
-CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& url){
-	this->shortname=shortname;
-	this->name=name;
-	this->md5=md5;
-	this->url=url;
-	this->downloaded=false;
-}
 /*
 	download a mod, we already know the host where to download from + the md5 of the sdp file
 	we have to download the sdp + parse it + download associated files
@@ -81,19 +74,6 @@ void CSdp::download(){
 
 	downloaded=true;
 }
-
-
-const std::string& CSdp::getMD5(){
-	return md5;
-}
-
-const std::string& CSdp::getName(){
-	return name;
-}
-const std::string& CSdp::getShortName(){
-	return shortname;
-}
-
 
 static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSdp *sdp) {
 	char buf[CURL_MAX_WRITE_SIZE];

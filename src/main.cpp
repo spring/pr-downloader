@@ -63,7 +63,7 @@ int main(int argc, char **argv){
 				std::list<IDownload>* list=rapidDownload->search("");
 				std::list<IDownload>::iterator it;
 				for(it=list->begin();it!=list->end();++it){
-					printf("%s\n",(*it).url.c_str());
+					printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
 				}
 				delete(list);
 				break;

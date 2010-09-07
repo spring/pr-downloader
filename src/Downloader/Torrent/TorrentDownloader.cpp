@@ -30,6 +30,7 @@ void CTorrentDownloader::start(IDownload* download){
 	libtorrent::add_torrent_params p;
 	p.save_path = download->name; //name contains the path, because torrents already include the filenames
     p.ti = new libtorrent::torrent_info(download->url.c_str());
+    printf("Downloading torrent to %s\n", download->name.c_str());
     libtorrent::torrent_handle tor=s.add_torrent(p);
 
     std::list<std::string>::iterator it;

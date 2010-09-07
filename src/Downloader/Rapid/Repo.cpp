@@ -23,6 +23,8 @@ void CRepo::download(){
 	parse a repo file (versions.gz)
 	a line looks like
 	nota:revision:1,52a86b5de454a39db2546017c2e6948d,,NOTA test-1
+
+	<tag>,<md5>,<depends on (descriptive name)>,<descriptive name>
 */
 void CRepo::parse(){
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
@@ -43,9 +45,10 @@ void CRepo::parse(){
     	std::string tmp=buf;
 		std::string shortname=getStrByIdx(tmp,',',0);
 		std::string md5=getStrByIdx(tmp,',',1);
+		std::string depends=getStrByIdx(tmp,',',2);
 		std::string name=getStrByIdx(tmp,',',3);
 		if (shortname.size()>0){ //create new repo from url
-			CSdp* sdptmp=new CSdp(shortname, md5, name, repourl);
+			CSdp* sdptmp=new CSdp(shortname, md5, name, depends, repourl);
 			CRapidDownloader* tmp=(CRapidDownloader*)rapidDownload;
 			tmp->addRemoteDsp(*sdptmp);
 		}

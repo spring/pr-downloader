@@ -64,10 +64,28 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 		if ((*it)->getShortName().compare(modname)==0){
 			printf("Found Repository, downloading %s\n", (*it)->getName().c_str());
 			(*it)->download();
+			if ((*it)->getDepends().length()>0){
+				download_name((*it)->getDepends());
+			}
 			return true;
 		}
 	}
 	printf("Couldn't find %s\n", modname.c_str());
+	return false;
+}
+
+bool CRapidDownloader::download_name(const std::string& longname){
+	std::list<CSdp*>::iterator it;
+	for(it=sdps.begin();it!=sdps.end();++it){
+		if ((*it)->getName().compare(longname)==0){
+			printf("Found Depends, downloading %s\n", (*it)->getName().c_str());
+			(*it)->download();
+			if ((*it)->getDepends().length()>0){
+				download_name((*it)->getDepends()); //FIXME: this could be an infinite loop
+			}
+			return true;
+		}
+	}
 	return false;
 }
 

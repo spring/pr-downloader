@@ -31,6 +31,7 @@ public:
 	virtual void start(IDownload* download);
 
 private:
+	bool download_name(const std::string& longname);
 	std::list<CSdp*> sdps;
 	bool reloadRepos();
 	bool reposLoaded;
