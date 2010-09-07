@@ -25,6 +25,9 @@ void CRapidDownloader::addRemoteDsp(CSdp& sdp){
 	sdps.push_back(&sdp);
 }
 
+/**
+	helper function for sort
+*/
 static bool list_compare(CSdp* first ,CSdp*  second){
 	std::string name1;
 	std::string name2;
@@ -44,7 +47,7 @@ static bool list_compare(CSdp* first ,CSdp*  second){
 	}
 	return false;
 }
-/*
+/**
 	update all repos from the web
 */
 bool CRapidDownloader::reloadRepos(){
@@ -56,7 +59,9 @@ bool CRapidDownloader::reloadRepos(){
 	reposLoaded=true;
 	return true;
 }
-
+/**
+	download by tag, for example "ba:stable"
+*/
 bool CRapidDownloader::download_tag(const std::string& modname){
 	reloadRepos();
 	std::list<CSdp*>::iterator it;
@@ -74,14 +79,19 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 	return false;
 }
 
-bool CRapidDownloader::download_name(const std::string& longname){
+/**
+	download by name, for example "Complete Annihilation revision 1234"
+*/
+bool CRapidDownloader::download_name(const std::string& longname, int reccounter){
 	std::list<CSdp*>::iterator it;
+	if (reccounter>10)
+		return false;
 	for(it=sdps.begin();it!=sdps.end();++it){
 		if ((*it)->getName().compare(longname)==0){
 			printf("Found Depends, downloading %s\n", (*it)->getName().c_str());
 			(*it)->download();
 			if ((*it)->getDepends().length()>0){
-				download_name((*it)->getDepends()); //FIXME: this could be an infinite loop
+				download_name((*it)->getDepends(),reccounter+1); //FIXME: this could be an infinite loop
 			}
 			return true;
 		}
@@ -100,7 +110,9 @@ bool CRapidDownloader::removeDownload(IDownload& download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	return true;
 }
-
+/**
+	search for a mod
+*/
 std::list<IDownload>* CRapidDownloader::search(const std::string& name){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	reloadRepos();
@@ -117,7 +129,9 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name){
 	}
 	return tmp;
 }
-
+/**
+	start a download
+*/
 void CRapidDownloader::start(IDownload* download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	if (download==NULL){

@@ -31,11 +31,11 @@ public:
 	virtual void start(IDownload* download);
 
 private:
-	bool download_name(const std::string& longname);
-	std::list<CSdp*> sdps;
+	bool download_name(const std::string& longname, int reccounter=0);
 	bool reloadRepos();
 	bool reposLoaded;
 	CRepoMaster* repoMaster;
+	std::list<CSdp*> sdps;
 };
 
 #endif
