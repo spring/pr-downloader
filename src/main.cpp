@@ -56,7 +56,8 @@ int main(int argc, char **argv){
 				break;
 			}
 			case RAPID_VALIDATE:{
-				fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
+				int res=fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
+				printf("Validated %d files",res);
 				break;
 			}
 			case RAPID_LIST:{

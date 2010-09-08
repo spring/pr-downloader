@@ -193,11 +193,12 @@ const std::string CFileSystem::getPoolFileName(CFileSystem::FileData* fdata) con
 
 /**
 	Validate all files in /pool/ (check md5)
+	@return count of valid files found
 */
-void CFileSystem::validatePool(const std::string& path){
+int CFileSystem::validatePool(const std::string& path){
 	DIR* d;
 	d=opendir(path.c_str());
-	printf("Checking %s\n",path.c_str());
+	int res=0;
 	if (d!=NULL){
 		struct dirent* dentry;
 		while( (dentry=readdir(d))!=NULL){
@@ -207,18 +208,26 @@ void CFileSystem::validatePool(const std::string& path){
 				tmp=path+"/"+dentry->d_name;
 				stat(tmp.c_str(),&sb);
 				if((sb.st_mode&S_IFDIR)!=0){
-					validatePool(tmp);
+					res=res+validatePool(tmp);
+					printf("Valid files: %d\r",res);
+					fflush(stdout);
 				}else{
 					FileData filedata;
 					std::string md5;
-					int pos=tmp.rfind('/'); //FIXME: platform dependand!
-					md5="";
-					md5.push_back(tmp.at(pos-2));
-					md5.push_back(tmp.at(pos-1));
-					md5.append(tmp.substr(tmp.length()-33, 30));
-					md5AtoI(md5,filedata.md5);
-					if (!fileIsValid(&filedata,tmp)){
-						printf("Invalid File in pool: %s\n",tmp.c_str());
+					int len=tmp.length();
+					if (len<36){ //file length has at least to be <md5[0]><md5[1]>/<md5[2-30]>.gz
+						printf("Invalid file: %s\n", tmp.c_str());
+					}else{
+						md5="";
+						md5.push_back(tmp.at(len-36));
+						md5.push_back(tmp.at(len-35));
+						md5.append(tmp.substr(len-33, 30));
+						md5AtoI(md5,filedata.md5);
+						if (!fileIsValid(&filedata,tmp)){
+							printf("Invalid File in pool: %s\n",tmp.c_str());
+						}else{
+							res++;
+						}
 					}
 				}
 			}
@@ -226,5 +235,5 @@ void CFileSystem::validatePool(const std::string& path){
 		}
 
 	}
-
+	return res;
 }

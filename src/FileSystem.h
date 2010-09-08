@@ -46,7 +46,7 @@ public:
 	void create_subdirs (const std::string& path) const;
 
 	const std::string getPoolFileName(CFileSystem::FileData* fdata) const;
-	void validatePool(const std::string& path);
+	int validatePool(const std::string& path);
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;
