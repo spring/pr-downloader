@@ -72,11 +72,11 @@ set(myRapidFiles
 
 set (RAPID "rapid")
 set (RAPID_LIB "unitsync-ext")
-add_executable(${RAPID} ${myRapidFiles} "main.cpp")
 add_library(${RAPID_LIB} ${myRapidFiles})
+add_executable(${RAPID} "main.cpp")
 
 
-target_link_libraries(${RAPID} ${ZLIB_LIBRARIES})
+target_link_libraries(${RAPID} ${ZLIB_LIBRARIES} ${RAPID_LIB})
 
 if   (WIN32)
 	target_link_libraries(${RAPID} "-Wl,-subsystem,console -lwsock32 ${MINGWLIBS}/dll/libcurl.dll")
