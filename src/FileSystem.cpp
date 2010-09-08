@@ -197,20 +197,30 @@ const std::string CFileSystem::getPoolFileName(CFileSystem::FileData* fdata) con
 void CFileSystem::validatePool(const std::string& path){
 	DIR* d;
 	d=opendir(path.c_str());
-
+	printf("Checking %s\n",path.c_str());
 	if (d!=NULL){
 		struct dirent* dentry;
 		while( (dentry=readdir(d))!=NULL){
 			struct stat sb;
 			std::string tmp;
-			if (dentry->d_name[0]=='.')
-				break;
-			tmp=path+"/"+dentry->d_name;
-			stat(tmp.c_str(),&sb);
-			if((sb.st_mode&S_IFDIR)!=0){
-				validatePool(tmp);
-			}else{
-				printf("%s\n",tmp.c_str());
+			if (dentry->d_name[0]!='.'){
+				tmp=path+"/"+dentry->d_name;
+				stat(tmp.c_str(),&sb);
+				if((sb.st_mode&S_IFDIR)!=0){
+					validatePool(tmp);
+				}else{
+					FileData filedata;
+					std::string md5;
+					int pos=tmp.rfind('/'); //FIXME: platform dependand!
+					md5="";
+					md5.push_back(tmp.at(pos-2));
+					md5.push_back(tmp.at(pos-1));
+					md5.append(tmp.substr(tmp.length()-33, 30));
+					md5AtoI(md5,filedata.md5);
+					if (!fileIsValid(&filedata,tmp)){
+						printf("Invalid File in pool: %s\n",tmp.c_str());
+					}
+				}
 			}
 
 		}
