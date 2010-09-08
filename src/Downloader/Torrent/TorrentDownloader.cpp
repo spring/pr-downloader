@@ -45,12 +45,12 @@ void CTorrentDownloader::start(IDownload* download){
 		printf("Adding webseed to torrent %s\n",(*it).c_str());
     	tor.add_url_seed(*it);
 	}
+	libtorrent::torrent_info info = tor.get_torrent_info();
 
     while( (!tor.is_seed()) && (tor.is_valid())){
 		const libtorrent::session_status& sessinfo=s->status();
+		printf("%ld/%ld\n",sessinfo.total_download, info.total_size());
     	sleep(1);
-    	printf("%ld\n",sessinfo.total_download);
-
     }
 
     printf("download finished, shuting down torrent...\n");
