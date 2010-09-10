@@ -62,6 +62,7 @@ void CTorrentDownloader::start(IDownload* download){
 			if (( a->category() &  libtorrent::alert::peer_notification) &&
 				(  a->category() & libtorrent::alert::error_notification)){
 				printf("wrong peer found!\n");
+				break; //better fail than hang
 			}
 			printf("%s\n",a->message().c_str());
 			s.pop_alert();
