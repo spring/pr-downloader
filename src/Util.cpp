@@ -142,3 +142,15 @@ bool match_download_name(const std::string &str1,const std::string& str2){
 	if (str1==str2) return false;
 	return false;
 }
+
+/**
+	replace " " with %20 in an url
+	FIXME: this should handle all special chars
+*/
+void urlEncode(std::string& url){
+	for(int i=url.length()-1;i>=0;i--){
+		if (url.at(i)==' '){
+			url.replace(i,1,"%20");
+		}
+	}
+}

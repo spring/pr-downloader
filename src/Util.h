@@ -18,5 +18,5 @@ void gzip_str(const char* in, const int inlen,  char* out, int *outlen);
 unsigned int parse_int32(unsigned char c[4]);
 unsigned int intmin(int x, int y);
 bool match_download_name(const std::string &str1,const std::string& str2);
-
+void urlEncode(std::string& url);
 #endif
