@@ -4,6 +4,10 @@
 #include <string>
 #include "Downloader/IDownloader.h"
 
+#include <libtorrent/entry.hpp>
+#include <libtorrent/bencode.hpp>
+#include <libtorrent/session.hpp>
+#include <libtorrent/alert_types.hpp>
 
 class CTorrentDownloader: public IDownloader{
 public:
@@ -12,5 +16,10 @@ public:
 	const IDownload* addDownload(const std::string& url, const std::string& filename="");
 	bool removeDownload(IDownload& download);
 	std::list<IDownload>* search(const std::string& name);
+private:
+	/**
+		returns the bytes of the torrent already downloaded
+	*/
+	int getProcess(const libtorrent::torrent_handle& torrentHandle);
 };
 #endif
