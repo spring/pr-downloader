@@ -8,16 +8,12 @@
 #include <stdio.h>
 #include <curl/curl.h>
 
-/*
-	download a mod, we already know the host where to download from + the md5 of the sdp file
-	we have to download the sdp + parse it + download associated files
-*/
 void CSdp::download(){
 	if(downloaded) //allow download only once of the same sdp
 		return;
 	filename=fileSystem->getSpringDir() + PATH_DELIMITER+"packages"+PATH_DELIMITER;
-	if (!fileSystem->directory_exist(filename)){
-		fileSystem->create_subdirs(filename);
+	if (!fileSystem->directoryExists(filename)){
+		fileSystem->createSubdirs(filename);
 	}
 	int count=0;
 	filename  += this->md5 + ".sdp";
@@ -50,8 +46,8 @@ void CSdp::download(){
 
 		std::string file=fileSystem->getSpringDir() + path + filename; //absolute filename
 
-		if (!fileSystem->directory_exist(fileSystem->getSpringDir()+path)){
-			fileSystem->create_subdirs(fileSystem->getSpringDir()+path);
+		if (!fileSystem->directoryExists(fileSystem->getSpringDir()+path)){
+			fileSystem->createSubdirs(fileSystem->getSpringDir()+path);
 		}
 		if(!fileSystem->fileIsValid(*it,file)){ //add invalid files to download list
 			count++;
@@ -75,6 +71,12 @@ void CSdp::download(){
 	downloaded=true;
 }
 
+/**
+	write the data received from curl to the rapid pool.
+
+	the filename is read from the sdp-list (created at request start)
+	filesize is read from the http-data received (could overlap!)
+*/
 static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSdp *sdp) {
 	char buf[CURL_MAX_WRITE_SIZE];
 	memcpy(&buf,tmp,CURL_MAX_WRITE_SIZE);
@@ -190,33 +192,6 @@ int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloaded,
 	return 0;
 }
 
-/**
-	download files streamed
-	streamer.cgi works as follows:
-	* The client does a POST to /streamer.cgi?<hex>
-	  Where hex = the name of the .sdp
-	* The client then sends a gzipped bitarray representing the files
-	  it wishes to download. Bitarray is formated in the obvious way,
-	  an array of characters where each file in the sdp is represented
-	  by the (index mod 8) bit (shifted left) of the (index div 8) byte
-	  of the array.
-	* streamer.cgi then responds with <big endian encoded int32 length>
-	  <data of gzipped pool file> for all files requested. Files in the
-	  pool are also gzipped, so there is no need to decompress unless
-	  you wish to verify integrity. Note: The filesize here isn't the same
-	  as in the .sdp, the sdp-file contains the uncompressed size
-	* streamer.cgi also sets the Content-Length header in the reply so
-	  you can implement a proper progress bar.
-
-T 192.168.1.2:33202 -> 94.23.170.70:80 [AP]
-POST /streamer.cgi?652e5bb5028ff4d2fc7fe43a952668a7 HTTP/1.1..Accept-Encodi
-ng: identity..Content-Length: 29..Host: packages.springrts.com..Content-Typ
-e: application/x-www-form-urlencoded..Connection: close..User-Agent: Python
--urllib/2.6....
-##
-T 192.168.1.2:33202 -> 94.23.170.70:80 [AP]
-......zL..c`..`d.....K.n/....
-*/
 void CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData*>& files){
 	CURL* curl;
 	CURLcode res;

@@ -7,7 +7,7 @@
 
 CPlasmaDownloader::CPlasmaDownloader(){
 	this->torrentPath=fileSystem->getSpringDir()+"/torrent/";
-	fileSystem->create_subdirs(this->torrentPath);
+	fileSystem->createSubdirs(this->torrentPath);
 }
 
 std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
@@ -73,6 +73,12 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 void CPlasmaDownloader::start(IDownload* download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	torrentDownload->start(download);
+	std::list<std::string>::iterator it;
+	for(it=download->depend.begin(); it!=download->depend.end(); it++){
+		std::list<IDownload>* tmp=search((*it));
+		printf("%s\n downloading depends: ",tmp->front().name);
+		torrentDownload->start(&tmp->front());
+	}
 }
 
 const IDownload* CPlasmaDownloader::addDownload(const std::string& url, const std::string& filename){

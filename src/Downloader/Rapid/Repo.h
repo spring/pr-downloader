@@ -12,9 +12,18 @@ public:
 		this->repourl=repourl;
 	}
 
-	//downloads a repo
+	/**
+		downloads a repo
+	*/
 	void download();
-	//parse the downloaded repo
+
+	/**
+	parse a repo file (versions.gz)
+	a line looks like
+	nota:revision:1,52a86b5de454a39db2546017c2e6948d,,NOTA test-1
+
+	<tag>,<md5>,<depends on (descriptive name)>,<descriptive name>
+	*/
 	void parse();
 private:
 	std::list<CSdp*> sdps;

@@ -26,7 +26,7 @@ bool IDownload::addMirror(const std::string& url){
 }
 
 bool IDownload::addDepend(const std::string& depend){
-	this->depend=depend;
+	this->depend.push_back(depend);
 	return true;
 }
 

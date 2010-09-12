@@ -1,13 +1,13 @@
 =general=
  * make unit-sync compatible
  * verify / check if file is already downloaded before starting
- * allow it to be quiet on stdout/stderr
  * auto ban corrupted mirrors (temp-ban?)
  * add lua-widget download support
 
 ==unitsync==
  * allow removal/cleanup of mod/map
  * allow getting data directory from unitsync without scanning everything
+ * allow it to be quiet on stdout/stderr
 
 =http=
 
@@ -18,7 +18,7 @@
 =rapid=
  * use /packages/selected.list for pinned tags / downloaded files
  * dont download directly to pool or packages dir but to a temp dir
- * add etag support
+ * add etag support / caching
 
 =torrent=
 

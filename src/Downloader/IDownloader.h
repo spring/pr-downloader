@@ -30,7 +30,7 @@ public:
 	std::list<std::string> mirror;
 	std::string url; //url to download
 	std::string name; //name, in most cases the filename to save to
-	std::string depend;
+	std::list<std::string> depend; //list of all depends
 	/**
 		returns the string name of a category
 	*/

@@ -94,7 +94,6 @@ std::string getStrByIdx(std::string& str, char c, int idx){
 	return tmp;
 }
 
-
 void gzip_str(const char* in, const int inlen,  char* out, int *outlen){
 	z_stream zlibStreamStruct;
 	zlibStreamStruct.zalloc    = Z_NULL; // Set zalloc, zfree, and opaque to Z_NULL so
@@ -115,7 +114,6 @@ void gzip_str(const char* in, const int inlen,  char* out, int *outlen){
 	*outlen=zlibStreamStruct.total_out;
 }
 
-
 unsigned int parse_int32(unsigned char c[4]){
         unsigned int i = 0;
         i = c[0] << 24 | i;
@@ -131,11 +129,6 @@ unsigned int intmin(int x, int y){
 	return y;
 }
 
-/*
-	compare str1 with str2
-	if str2==* or "" it matches
-	used for search in downloaders
-*/
 bool match_download_name(const std::string &str1,const std::string& str2){
 	if (str2=="") return true;
 	if (str2=="*") return true;
@@ -143,14 +136,24 @@ bool match_download_name(const std::string &str1,const std::string& str2){
 	return false;
 }
 
-/**
-	replace " " with %20 in an url
-	FIXME: this should handle all special chars
-*/
 void urlEncode(std::string& url){
 	for(int i=url.length()-1;i>=0;i--){
 		if (url.at(i)==' '){
 			url.replace(i,1,"%20");
 		}
 	}
+}
+
+bool urlToPath(const std::string& url, std::string& path){
+	size_t pos=url.find("//");
+	if (pos==std::string::npos){ //not found
+		return false;
+	}
+	path=url.substr(pos+2);
+	pos=path.find("/",pos+1);
+	while(pos!=std::string::npos){ //replace / with "\\"
+		path.replace(pos,1,1, PATH_DELIMITER);
+		pos=path.find("/",pos+1);
+	}
+	return true;
 }

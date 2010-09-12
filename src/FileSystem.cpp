@@ -154,35 +154,34 @@ const std::string& CFileSystem::getSpringDir() const{
 	return springdir;
 }
 
-/**
-	checks if a directory exists
-*/
-bool CFileSystem::directory_exist(const std::string& path) const{
+bool CFileSystem::directoryExists(const std::string& path) const{
 	struct stat fileinfo;
 	int res=stat(path.c_str(),&fileinfo);
 	return (res==0);
 }
 
-/**
-	creates a directory with all subdirectorys (doesn't handle c:\ ...)
-*/
-void CFileSystem::create_subdirs (const std::string& path) const {
+void CFileSystem::createSubdirs (const std::string& path) const {
+	std::string tmp;
+	tmp=path;
+	if (path[path.length()]!=PATH_DELIMITER){
+		tmp=tmp.substr(0,tmp.rfind(PATH_DELIMITER));
+	}
 	bool run=false;
-	for (unsigned int i=0;i<path.size(); i++){
-		char c=path.at(i);
+	for (unsigned int i=0;i<tmp.size(); i++){
+		char c=tmp.at(i);
 		if (c==PATH_DELIMITER){
 #ifdef WIN32
-			mkdir(path.substr(0,i).c_str());
+			mkdir(tmp.substr(0,i).c_str());
 #else
-			mkdir(path.substr(0,i).c_str(),0777);
+			mkdir(tmp.substr(0,i).c_str(),0777);
 #endif
 			run=true;
 		}
 	}
 #ifdef WIN32
-	mkdir(path.c_str());
+	mkdir(tmp.c_str());
 #else
-	mkdir(path.c_str(),0777);
+	mkdir(tmp.c_str(),0777);
 #endif
 }
 
@@ -199,7 +198,7 @@ const std::string CFileSystem::getPoolFileName(CFileSystem::FileData* fdata) con
 	name += md5.at(0);
 	name += md5.at(1);
 	name += PATH_DELIMITER;
-	create_subdirs(name);
+	createSubdirs(name);
 	name += md5.substr(2);
 	name += ".gz";
 	return name;

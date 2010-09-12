@@ -8,8 +8,11 @@
 #include "../IDownloader.h"
 
 void CRepoMaster::download(const std::string& name){
-	tmpFile=fileSystem->createTempFile();
-	httpDownload->addDownload(name, tmpFile);
+	std::string tmp;
+	urlToPath(name,tmp);
+	this->path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
+	fileSystem->createSubdirs(path);
+	httpDownload->addDownload(name, path);
 	httpDownload->start();
 	parse();
 }
@@ -19,9 +22,9 @@ CRepoMaster::CRepoMaster(std::string& url){
 }
 
 void CRepoMaster::parse(){
-	gzFile fp=gzopen(tmpFile.c_str(), "r");
+	gzFile fp=gzopen(path.c_str(), "r");
 	if (fp==Z_NULL){
-        printf("Could not open %s\n",tmpFile.c_str());
+        printf("Could not open %s\n",path.c_str());
 		return;
 	}
     char buf[4096];

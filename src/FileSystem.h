@@ -38,12 +38,26 @@ public:
 	//parses a sdp
 	bool parseSdp(const std::string& filename, std::list<CFileSystem::FileData*>& files);	//Validates a File, (checks the md5)
 	bool fileIsValid(const FileData* mod, const std::string& filename) const;
-	//returns a temporary file name, file is deleted in destructor if not moved away
+	/**
+		returns a temporary file name, file is deleted in destructor if not moved away
+	*/
 	std::string createTempFile();
-	//returns the spring writeable directory
+
+	/**
+		returns the spring writeable directory
+	*/
 	const std::string& getSpringDir() const;
-	bool directory_exist(const std::string& path) const;
-	void create_subdirs (const std::string& path) const;
+
+	/**
+		checks if a directory exists
+	*/
+	bool directoryExists(const std::string& path) const;
+
+	/**
+		creates directory if it doesn't exist, expects PATH_DELIMETER at the end of the path
+		creates a directory with all subdirectorys (doesn't handle c:\ ...)
+	*/
+	void createSubdirs(const std::string& path) const;
 
 	const std::string getPoolFileName(CFileSystem::FileData* fdata) const;
 	int validatePool(const std::string& path);

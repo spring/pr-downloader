@@ -9,13 +9,13 @@
 class CRepo;
 
 class CRepoMaster{
-	std::string tmpFile;
+	std::string path;
 	std::string url;
 public:
 	CRepoMaster(std::string& masterurl);
 	~CRepoMaster();
 	void download(const std::string& name);
-/** *
+/**
 	parses a rep master-file
 */
 	void parse();

@@ -11,21 +11,16 @@
 
 
 void CRepo::download(){
-	tmpFile=fileSystem->createTempFile();
-	std::string fullUrl;
-	fullUrl=repourl+PATH_DELIMITER+"versions.gz";
-	httpDownload->addDownload(fullUrl, tmpFile);
+	std::string tmp;
+	urlToPath(repourl,tmp);
+	this->tmpFile = fileSystem->getSpringDir() + PATH_DELIMITER + "rapid" + PATH_DELIMITER +tmp + PATH_DELIMITER +"versions.gz";
+	fileSystem->createSubdirs(tmpFile);
+	httpDownload->addDownload(repourl + "/versions.gz", tmpFile);
 	httpDownload->start();
 	parse();
 }
 
-/*
-	parse a repo file (versions.gz)
-	a line looks like
-	nota:revision:1,52a86b5de454a39db2546017c2e6948d,,NOTA test-1
 
-	<tag>,<md5>,<depends on (descriptive name)>,<descriptive name>
-*/
 void CRepo::parse(){
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
 	if (fp==Z_NULL){
