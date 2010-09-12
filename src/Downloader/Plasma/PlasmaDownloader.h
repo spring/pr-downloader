@@ -1,7 +1,7 @@
 #ifndef PLASMA_DOWNLOADER_H
 #define PLASMA_DOWNLOADER_H
 
-#include "Downloader/IDownloader.h"
+#include "../IDownloader.h"
 
 
 class CPlasmaDownloader: public IDownloader {

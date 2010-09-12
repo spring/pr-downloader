@@ -1,10 +1,10 @@
 #include "RepoMaster.h"
 #include "Repo.h"
-#include "FileSystem.h"
-#include "Downloader/IDownloader.h"
+#include "../../FileSystem.h"
+#include "../IDownloader.h"
 #include "RapidDownloader.h"
 #include "Sdp.h"
-#include "Util.h"
+#include "../../Util.h"
 #include <zlib.h>
 #include <stdio.h>
 
@@ -13,7 +13,7 @@
 void CRepo::download(){
 	tmpFile=fileSystem->createTempFile();
 	std::string fullUrl;
-	fullUrl=repourl+"/versions.gz";
+	fullUrl=repourl+PATH_DELIMITER+"versions.gz";
 	httpDownload->addDownload(fullUrl, tmpFile);
 	httpDownload->start();
 	parse();

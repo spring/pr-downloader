@@ -1,7 +1,7 @@
 #include "soap/soapPlasmaServiceSoap12Proxy.h"
 #include "soap/PlasmaServiceSoap.nsmap"
 #include "PlasmaDownloader.h"
-#include "FileSystem.h"
+#include "../../FileSystem.h"
 
 
 
@@ -50,12 +50,16 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	dlres=new std::list<IDownload>();
 
 	std::string saveto=fileSystem->getSpringDir();
+	IDownload::category cat;
 	if (result.resourceType==ns1__ResourceType__Map){
 		saveto.append("/maps/");
-	}else
+		cat=IDownload::CAT_MAPS;
+	}else{
 		saveto.append("/mods/");
+		cat=IDownload::CAT_MODS;
+	}
 
-	IDownload* dl=new IDownload(fileName,saveto);
+	IDownload* dl=new IDownload(fileName,saveto,cat);
 	for(it=result.links->string.begin();it!=result.links->string.end(); it++){
 		dl->addMirror((*it).c_str());
 	}

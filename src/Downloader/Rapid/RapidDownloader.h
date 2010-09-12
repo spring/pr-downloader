@@ -7,7 +7,7 @@
 #include <stdio.h>
 //FIXME: read from config / use this as default
 #define REPO_MASTER "http://repos.caspring.org/repos.gz"
-#include "Downloader/IDownloader.h"
+#include "../IDownloader.h"
 
 class CSdp;
 class CHttpDownload;

@@ -4,8 +4,8 @@
 #include <string>
 #include <list>
 #include <curl/curl.h>
-#include "FileSystem.h"
-#include "Downloader/IDownloader.h"
+#include "../../FileSystem.h"
+#include "../IDownloader.h"
 
 
 class CHttpDownloader: public IDownloader{

@@ -5,8 +5,8 @@
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/session.hpp>
 #include <libtorrent/alert_types.hpp>
-#include "FileSystem.h"
-#include "Util.h"
+#include "../../FileSystem.h"
+#include "../../Util.h"
 
 bool CTorrentDownloader::download(const std::string& torrentfile, const std::string& filename){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
@@ -59,6 +59,8 @@ void CTorrentDownloader::start(IDownload* download){
 		torrentHandle.add_url_seed(*it);
 	}
 	libtorrent::torrent_info torrentInfo = torrentHandle.get_torrent_info();
+
+	http://springfiles.com/checkmirror.php?q=FILE_NAME&c=CATEGORY
 
 	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
 		it=download->mirror.begin();

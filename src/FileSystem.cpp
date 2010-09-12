@@ -11,6 +11,14 @@
 #include <dirent.h>
 #include <limits.h>
 
+#ifdef WIN32
+	#include <windows.h>
+	#include <shlobj.h>
+	#ifndef SHGFP_TYPE_CURRENT
+		#define SHGFP_TYPE_CURRENT 0
+	#endif
+#endif
+
 CFileSystem* CFileSystem::singleton = NULL;
 
 bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) const{
@@ -118,16 +126,16 @@ CFileSystem::~CFileSystem(){
 
 CFileSystem::CFileSystem(){
 	tmpfiles.clear();
-	char* buf;
 #ifndef WIN32
+	char* buf;
 	buf=getenv("HOME");
 	springdir=buf;
 	springdir.append("/.spring");
 #else
-	SHGetSpecialFolderLocation(0,CSIDL_MYDOCUMENTS,buf);
-	springdir=buf;
-	springdir.append("\My Games\Spring");
-	free(buf);
+	TCHAR pathMyDocs[MAX_PATH];
+	SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
+	springdir=pathMyDocs;
+	springdir.append("\\My Games\\Spring");
 #endif
 }
 

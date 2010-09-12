@@ -1,7 +1,7 @@
 #include "RapidDownloader.h"
-#include "FileSystem.h"
-#include "Util.h"
-#include "Downloader/IDownloader.h"
+#include "../../FileSystem.h"
+#include "../../Util.h"
+#include "../IDownloader.h"
 #include "Sdp.h"
 #include <stdio.h>
 #include <string>

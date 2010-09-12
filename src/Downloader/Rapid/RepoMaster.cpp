@@ -1,11 +1,11 @@
 #include "RepoMaster.h"
-#include "FileSystem.h"
+#include "../../FileSystem.h"
 #include "Repo.h"
 #include <string>
 #include <stdio.h>
 #include <zlib.h>
-#include "Util.h"
-#include "Downloader/IDownloader.h"
+#include "../../Util.h"
+#include "../IDownloader.h"
 
 void CRepoMaster::download(const std::string& name){
 	tmpFile=fileSystem->createTempFile();

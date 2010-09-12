@@ -5,9 +5,8 @@
 #include <unistd.h>
 #include <string>
 #include <string.h>
-#include "FileSystem.h"
 #include <zlib.h>
-#include "Util.h"
+#include "../../Util.h"
 
 
 /** *
@@ -122,6 +121,7 @@ bool CHttpDownloader::removeDownload(IDownload& download){
 }
 std::list<IDownload>* CHttpDownloader::search(const std::string& name){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+
 	return NULL;
 }
 void CHttpDownloader::start(IDownload* download){

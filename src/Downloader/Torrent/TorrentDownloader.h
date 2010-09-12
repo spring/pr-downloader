@@ -2,7 +2,7 @@
 #define TORRENT_DOWNLOADER_H
 
 #include <string>
-#include "Downloader/IDownloader.h"
+#include "../IDownloader.h"
 
 #include <libtorrent/entry.hpp>
 #include <libtorrent/bencode.hpp>

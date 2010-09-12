@@ -49,6 +49,7 @@ ELSE( NOT WIN32)
 	LINK_LIBRARIES( -mthreads torrent-rasterbar ${Boost_LIBRARIES} z ws2_32 mswsock  )
 ENDIF( NOT WIN32)
 
+subdirs(Downloader)
 
 
 set(myRapidFiles
@@ -57,7 +58,6 @@ set(myRapidFiles
 	md5.cpp
 	Downloader/IDownloader.cpp
 	Downloader/Torrent/TorrentDownloader.h
-	Downloader/Torrent/Torrent.cpp
 	Downloader/Torrent/TorrentDownloader.cpp
 	Downloader/Plasma/PlasmaDownloader.cpp
 	Downloader/Plasma/soap/soapC.cpp
