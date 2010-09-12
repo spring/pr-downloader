@@ -15,7 +15,7 @@
 void CSdp::download(){
 	if(downloaded) //allow download only once of the same sdp
 		return;
-	filename=fileSystem->getSpringDir() + "/packages/";
+	filename=fileSystem->getSpringDir() + PATH_DELIMITER+"packages"+PATH_DELIMITER;
 	if (!fileSystem->directory_exist(filename)){
 		fileSystem->create_subdirs(filename);
 	}

@@ -1,9 +1,9 @@
 =general=
  * make unit-sync compatible
- * remove hardcoded paths
  * verify / check if file is already downloaded before starting
  * allow it to be quiet on stdout/stderr
  * auto ban corrupted mirrors (temp-ban?)
+ * add lua-widget download support
 
 ==unitsync==
  * allow removal/cleanup of mod/map

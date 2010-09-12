@@ -56,4 +56,10 @@ private:
 
 #define fileSystem CFileSystem::GetInstance()
 
+#ifdef WIN32
+#define PATH_DELIMITER '\\'
+#else
+#define PATH_DELIMITER '/'
+#endif
+
 #endif

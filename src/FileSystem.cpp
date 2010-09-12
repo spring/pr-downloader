@@ -11,13 +11,6 @@
 #include <dirent.h>
 #include <limits.h>
 
-#ifdef WIN32
-#define PATH_DELIMITER '\\'
-#else
-#define PATH_DELIMITER '/'
-#endif
-
-
 CFileSystem* CFileSystem::singleton = NULL;
 
 bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) const{
@@ -122,9 +115,20 @@ CFileSystem::~CFileSystem(){
 	tmpfiles.clear();
 }
 
+
 CFileSystem::CFileSystem(){
 	tmpfiles.clear();
-	springdir="/home/abma/.spring";
+	char* buf;
+#ifndef WIN32
+	buf=getenv("HOME");
+	springdir=buf;
+	springdir.append("/.spring");
+#else
+	SHGetSpecialFolderLocation(0,CSIDL_MYDOCUMENTS,buf);
+	springdir=buf;
+	springdir.append("\My Games\Spring");
+	free(buf);
+#endif
 }
 
 void CFileSystem::Initialize(){
@@ -181,10 +185,12 @@ const std::string CFileSystem::getPoolFileName(CFileSystem::FileData* fdata) con
 
 	md5ItoA(fdata->md5, md5);
 	name=getSpringDir();
-	name += "/pool/";
+	name += PATH_DELIMITER;
+	name += "pool";
+	name += PATH_DELIMITER;
 	name += md5.at(0);
 	name += md5.at(1);
-	name += "/";
+	name += PATH_DELIMITER;
 	create_subdirs(name);
 	name += md5.substr(2);
 	name += ".gz";
@@ -205,7 +211,7 @@ int CFileSystem::validatePool(const std::string& path){
 			struct stat sb;
 			std::string tmp;
 			if (dentry->d_name[0]!='.'){
-				tmp=path+"/"+dentry->d_name;
+				tmp=path+PATH_DELIMITER+dentry->d_name;
 				stat(tmp.c_str(),&sb);
 				if((sb.st_mode&S_IFDIR)!=0){
 					res=res+validatePool(tmp);
