@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 2.6)
 
 set("downloaders"
 	"Http"
@@ -10,5 +9,6 @@ set("downloaders"
 
 subdirs( ${downloaders} )
 
-add_library("downloader" IDownloader.cpp)
+add_library("downloader" SHARED IDownloader.cpp)
 target_link_libraries("downloader" ${downloaders})
+
