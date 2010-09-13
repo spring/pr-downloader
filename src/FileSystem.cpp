@@ -10,6 +10,7 @@
 #include "Util.h"
 #include <dirent.h>
 #include <limits.h>
+#include <time.h>
 
 #ifdef WIN32
 	#include <windows.h>
@@ -239,5 +240,21 @@ bool CFileSystem::isOlder(const std::string filename, int secs){
 	if (stat(filename.c_str(),&sb)<0){
 		return true;
 	}
-	return (time(NULL)<sb.st_ctime+secs);
+	time_t t;
+#ifdef WIN32
+	SYSTEMTIME pTime;
+	struct tm tm;
+	GetSystemTime(&pTime);
+	memset(&tm, 0, sizeof(tm));
+	tm.tm_year = pTime.wYear - 1900;
+	tm.tm_mon = pTime.wMonth - 1;
+	tm.tm_mday = pTime.wDay;
+	tm.tm_hour = pTime.wHour;
+	tm.tm_min = pTime.wMinute;
+	tm.tm_sec = pTime.wSecond;
+	t = mktime(&tm);
+#else
+	time(&t);
+#endif
+	return (t<sb.st_ctime+secs);
 }
