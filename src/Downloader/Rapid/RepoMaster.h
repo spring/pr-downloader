@@ -18,7 +18,7 @@ public:
 /**
 	parses a rep master-file
 */
-	void parse();
+	bool parse();
 	void updateRepos();
 private:
 	std::list<CRepo*> repos;

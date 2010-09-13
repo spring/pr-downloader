@@ -61,6 +61,11 @@ public:
 
 	const std::string getPoolFileName(CFileSystem::FileData* fdata) const;
 	int validatePool(const std::string& path);
+
+	/**
+		check if file is older then secs, returns true if file is older or something goes wrong
+	*/
+	bool isOlder(const std::string filename, int secs);
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;

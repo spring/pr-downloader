@@ -1,4 +1,5 @@
 #include "RepoMaster.h"
+#include "RapidDownloader.h"
 #include "../../FileSystem.h"
 #include "Repo.h"
 #include <string>
@@ -12,6 +13,8 @@ void CRepoMaster::download(const std::string& name){
 	urlToPath(name,tmp);
 	this->path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
 	fileSystem->createSubdirs(path);
+	if (fileSystem->isOlder(path,REPO_MASTER_RECHECK_TIME) && parse()) //first try already downloaded file, as repo master file rarely changes
+		return;
 	httpDownload->addDownload(name, path);
 	httpDownload->start();
 	parse();
@@ -21,23 +24,29 @@ CRepoMaster::CRepoMaster(std::string& url){
 	this->url=url;
 }
 
-void CRepoMaster::parse(){
+bool CRepoMaster::parse(){
 	gzFile fp=gzopen(path.c_str(), "r");
 	if (fp==Z_NULL){
         printf("Could not open %s\n",path.c_str());
-		return;
+		return false;
 	}
     char buf[4096];
     repos.empty();
+    int i=0;
     while(gzgets(fp, buf, sizeof(buf))!=Z_NULL){
     	std::string tmp=buf;
 		std::string url=getStrByIdx(tmp,',',1);
+		i++;
 		if (url.size()>0){ //create new repo from url
 			CRepo* repotmp=new CRepo(url);
 			repos.push_back(repotmp);
+		}else{
+			printf("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
+			return false;
 		}
     }
     gzclose(fp);
+    return true;
 }
 
 void CRepoMaster::updateRepos(){

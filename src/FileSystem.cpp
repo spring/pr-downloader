@@ -250,3 +250,11 @@ int CFileSystem::validatePool(const std::string& path){
 	}
 	return res;
 }
+
+bool CFileSystem::isOlder(const std::string filename, int secs){
+	struct stat sb;
+	if (stat(filename.c_str(),&sb)<0){
+		return true;
+	}
+	return (time(NULL)<sb.st_ctime+secs);
+}

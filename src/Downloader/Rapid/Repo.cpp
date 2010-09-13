@@ -15,17 +15,20 @@ void CRepo::download(){
 	urlToPath(repourl,tmp);
 	this->tmpFile = fileSystem->getSpringDir() + PATH_DELIMITER + "rapid" + PATH_DELIMITER +tmp + PATH_DELIMITER +"versions.gz";
 	fileSystem->createSubdirs(tmpFile);
+	if (fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME) && parse()) //first try already downloaded file, as repo master file rarely changes
+		return;
+	fileSystem->createSubdirs(tmpFile);
 	httpDownload->addDownload(repourl + "/versions.gz", tmpFile);
 	httpDownload->start();
 	parse();
 }
 
 
-void CRepo::parse(){
+bool CRepo::parse(){
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
 	if (fp==Z_NULL){
         printf("Could not open %s\n",tmpFile.c_str());
-		return;
+		return false;
 	}
     char buf[4096];
 	sdps.empty();
@@ -49,4 +52,5 @@ void CRepo::parse(){
 		}
     }
     gzclose(fp);
+    return true;
 }

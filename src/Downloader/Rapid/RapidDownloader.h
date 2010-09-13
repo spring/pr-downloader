@@ -7,6 +7,9 @@
 #include <stdio.h>
 //FIXME: read from config / use this as default
 #define REPO_MASTER "http://repos.caspring.org/repos.gz"
+#define REPO_MASTER_RECHECK_TIME 3600 //how long to cache the repo-master file in secs without rechecking
+#define REPO_RECHECK_TIME 600
+
 #include "../IDownloader.h"
 
 class CSdp;

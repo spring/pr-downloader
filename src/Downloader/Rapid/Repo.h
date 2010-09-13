@@ -24,7 +24,7 @@ public:
 
 	<tag>,<md5>,<depends on (descriptive name)>,<descriptive name>
 	*/
-	void parse();
+	bool parse();
 private:
 	std::list<CSdp*> sdps;
 	std::string tmpFile;
