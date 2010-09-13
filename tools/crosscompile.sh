@@ -10,6 +10,8 @@ export MINGWHOST=i586-mingw32msvc
 export DOWNLOAD="wget -c"
 export PARALLEL="8"
 
+cd ..
+
 if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	${DOWNLOAD} "http://prdownloads.sourceforge.net/libpng/zlib-1.2.3.tar.gz?download" -O zlib-1.2.3.tar.gz
 	tar xifz zlib-1.2.3.tar.gz

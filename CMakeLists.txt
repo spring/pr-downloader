@@ -18,9 +18,9 @@ if   (MINGW)
         set(CMAKE_SHARED_LIBRARY_PREFIX "")
         set(CMAKE_SHARED_MODULE_PREFIX "")
 
-        set(CMAKE_CXX_FLAGS "-Wall -O0 -g -D_WIN32_WINNT=0x0501")
+        set(CMAKE_CXX_FLAGS "-Wall -O2 -g -D_WIN32_WINNT=0x0501")
 else ()
-        set(CMAKE_CXX_FLAGS "-Wall -O0 -g -fPIC")
+        set(CMAKE_CXX_FLAGS "-Wall -O2 -g -fPIC")
 endif ()
 
 find_package(CURL)
