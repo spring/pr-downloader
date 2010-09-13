@@ -9,4 +9,5 @@ public:
 	const IDownload* addDownload(const std::string& url, const std::string& filename="");
 	bool removeDownload(IDownload& download);
 	std::list<IDownload>* search(const std::string& name="");
+
 };

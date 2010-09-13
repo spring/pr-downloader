@@ -70,6 +70,7 @@ set(myRapidFiles
 	Downloader/Rapid/Sdp.cpp
 	Downloader/Http/HttpDownloader.cpp
 	Downloader/Widget/WidgetDownloader.cpp
+	Downloader/Widget/Widget.cpp
 	Downloader/Widget/pugixml/pugixml.cpp
 	Downloader/Widget/pugixml/pugixpath.cpp
 )

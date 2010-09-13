@@ -2,9 +2,8 @@
 #define WIDGET_DOWNLOADER_H
 
 #include "WidgetDownloader.h"
-#include "pugixml/pugixml.hpp"
+#include "Widget.h"
 #include "../../FileSystem.h"
-#include <iostream>
 
 void CWidgetDownloader::start(IDownload* download){
 
@@ -55,11 +54,8 @@ std::list<IDownload>* CWidgetDownloader::search(const std::string& name){
 		httpDownload->addDownload("http://spring.vsync.de/luaManager/lua_manager.php?m=0", path);
 		httpDownload->start();
 	}
+	CWidget* widget=new CWidget(path);
 
-	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file(path.c_str());
-	printf("Parsing %s\n", path.c_str());
-	std::cout << "Load result: " << result.description() << ", mesh name: " << doc.child("root").attribute("ID").value() << std::endl;
 
 	return NULL;
 }
