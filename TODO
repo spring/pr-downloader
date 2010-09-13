@@ -26,5 +26,5 @@
 =torrent=
 
 =widget=
- * add support for it http://spring.vsync.de/luaManager/lua_manager.php?m=0
+ * remove it? it does't to the other downloaders (widgets are not needed to play the game...)
  * backup for old widgets (before getting overwritten)
