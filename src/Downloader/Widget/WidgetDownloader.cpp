@@ -55,8 +55,9 @@ std::list<IDownload>* CWidgetDownloader::search(const std::string& name){
 		httpDownload->start();
 	}
 	CWidget* widget=new CWidget(path);
+//	std::list<IDownload>* widgets = new std::list<IDownload>* widgets;
 
-
+	delete(widget);
 	return NULL;
 }
 

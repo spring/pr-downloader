@@ -98,23 +98,6 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 	return true;
 }
 
-
-
-std::string CFileSystem::createTempFile(){
-	std::string tmp;
-#ifndef WIN32
-	tmp=tmpnam(NULL);
-#else
-	char buf[MAX_PATH];
-	char tmppath[MAX_PATH];
-	GetTempPath(sizeof(tmppath),tmppath);
-	GetTempFileName(tmppath,NULL,0,buf);
-	tmp.assign(buf);
-#endif
-	tmpfiles.push_back(tmp);
-	return tmp;
-}
-
 CFileSystem::~CFileSystem(){
 	std::list<std::string>::iterator it;
 	for (it = tmpfiles.begin();it != tmpfiles.end(); ++it) {

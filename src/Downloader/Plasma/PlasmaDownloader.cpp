@@ -76,7 +76,7 @@ void CPlasmaDownloader::start(IDownload* download){
 	std::list<std::string>::iterator it;
 	for(it=download->depend.begin(); it!=download->depend.end(); it++){
 		std::list<IDownload>* tmp=search((*it));
-		printf("%s\n downloading depends: ",tmp->front().name);
+		printf("%s\n downloading depends: ",tmp->front().name.c_str());
 		torrentDownload->start(&tmp->front());
 	}
 }
