@@ -40,3 +40,14 @@ target_link_libraries(rapid
 	${ADDITIONAL_LIBS}
 )
 
+IF(WIN32)
+	INSTALL(TARGETS rapid  ${RAPID_LIB} DESTINATION  ${CMAKE_SOURCE_DIR}/dist)
+	INSTALL(FILES
+		${MINGWLIBS}/lib/libboost_system-mt.dll
+		${MINGWLIBS}/lib/libboost_thread_win32-mt.dll
+		${MINGWLIBS}/lib/libboost_filesystem-mt.dll
+		${MINGWLIBS}/bin/libcurl-4.dll
+		${CMAKE_SOURCE_DIR}/data/mingwm10.dll
+	DESTINATION ${CMAKE_SOURCE_DIR}/dist)
+ENDIF()
+
