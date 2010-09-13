@@ -4,6 +4,8 @@
 #include <string>
 #include "../IDownloader.h"
 
+#define TORRENT_DISABLE_GEO_IP 1
+
 #include <libtorrent/entry.hpp>
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/session.hpp>

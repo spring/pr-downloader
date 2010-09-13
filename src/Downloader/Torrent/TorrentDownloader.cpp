@@ -1,10 +1,6 @@
 #include <string>
 #include "TorrentDownloader.h"
 
-#include <libtorrent/entry.hpp>
-#include <libtorrent/bencode.hpp>
-#include <libtorrent/session.hpp>
-#include <libtorrent/alert_types.hpp>
 #include "../../FileSystem.h"
 #include "../../Util.h"
 
