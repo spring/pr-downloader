@@ -1,14 +1,9 @@
 
-set("downloaders"
-	"Http"
-	"Plasma"
-	"Rapid"
-	"Torrent"
-	"Widget"
-)
+subdirs(Http)
+subdirs(Plasma)
+subdirs(Torrent)
+subdirs(Widget)
+subdirs(Rapid)
 
-subdirs( ${downloaders} )
 
-add_library("downloader" SHARED IDownloader.cpp)
-target_link_libraries("downloader" ${downloaders})
 

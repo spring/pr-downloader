@@ -1,4 +1,4 @@
-add_library("Widget"
+add_library(Widget
 	"WidgetDownloader.cpp"
 	"Widget.cpp"
 	"pugixml/pugixml.cpp"

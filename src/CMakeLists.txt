@@ -6,19 +6,37 @@ set(myRapidFiles
 	FileSystem.cpp
 	Util.cpp
 	md5.cpp
+	main.cpp
+	Downloader/IDownloader.cpp
 )
 
 set (RAPID "rapid")
-add_library(unitsync-ext ${myRapidFiles} ${downloader_LIBRARY})
-add_executable(rapid "main.cpp")
+set (RAPID_LIB "unitsync-ext")
 
-target_link_libraries(unitsync-ext downloader)
-target_link_libraries(rapid
-	unitsync-ext
-	${ZLIB_LIBRARIES}
+
+add_library(${RAPID_LIB} SHARED
+	${myRapidFiles}
+)
+
+target_link_libraries(${RAPID_LIB}
+	Rapid
+	Http
+	Plasma
+	Torrent
+	Widget
 	${CURL_LIBRARIES}
 	${LIBTORRENT_LIBRARY}
-	${BOOST_LIBRARIES}
+	${ZLIB_LIBRARIES}
+	${Boost_LIBRARIES}
 	${TORRENT_LIBRARY}
 	${CURL_LIBRARY}
+	${ADDITIONAL_LIBS}
 )
+
+add_executable(rapid ${myRapidFiles})
+
+target_link_libraries(rapid
+	${RAPID_LIB}
+	${ADDITIONAL_LIBS}
+)
+

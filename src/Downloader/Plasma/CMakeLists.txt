@@ -1,4 +1,4 @@
-add_library("Plasma"
+add_library(Plasma
 	PlasmaDownloader.cpp
 	soap/soapC.cpp
 	soap/soapPlasmaServiceSoap12Proxy.cpp
