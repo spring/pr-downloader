@@ -3,8 +3,11 @@
  * verify / check if file is already downloaded before starting
  * auto ban corrupted mirrors (temp-ban?)
  * add lua-widget download support
+ * add an --force switch to force redownloading/updating (override cache)
+ * make some things configureable
+ * fix build system (cross-compile + code-plugable)
 
-==unitsync==
+=unitsync=
  * allow removal/cleanup of mod/map
  * allow getting data directory from unitsync without scanning everything
  * allow it to be quiet on stdout/stderr
@@ -14,6 +17,7 @@
 =plasma=
  * finish it
  * add depends-support
+ * search for additional mirrors: http://springfiles.com/checkmirror.php?q=FILE_NAME&c=CATEGORY
 
 =rapid=
  * use /packages/selected.list for pinned tags / downloaded files
@@ -21,3 +25,6 @@
 
 =torrent=
 
+=widget=
+ * add support for it http://spring.vsync.de/luaManager/lua_manager.php?m=0
+ * backup for old widgets (before getting overwritten)

@@ -60,8 +60,6 @@ void CTorrentDownloader::start(IDownload* download){
 	}
 	libtorrent::torrent_info torrentInfo = torrentHandle.get_torrent_info();
 
-	http://springfiles.com/checkmirror.php?q=FILE_NAME&c=CATEGORY
-
 	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
 		it=download->mirror.begin();
 		httpDownload->addDownload(*it,download->name + addTorrentParams.ti->file_at(0).path.filename());

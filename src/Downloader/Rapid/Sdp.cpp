@@ -1,6 +1,6 @@
+#include "RapidDownloader.h"
 #include "RepoMaster.h"
 #include "Sdp.h"
-#include "../IDownloader.h"
 #include "../../FileSystem.h"
 #include "../../Util.h"
 #include <string>

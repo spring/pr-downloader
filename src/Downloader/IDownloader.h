@@ -54,13 +54,20 @@ public:
 		return plasmadl;
 	}
 	static IDownloader* GetTorrentInstance() {
-		return  torrentdl;
+		return torrentdl;
+	}
+	static IDownloader* GetWidgetInstance() {
+		return widgetdl;
 	}
 
-	//IDownloader(){};
-	//Initialize all Downloaders
+	/**
+		Initialize all Downloaders
+	*/
 	static void Initialize();
-	//Shutdown all Downloaders
+
+	/**
+		Shutdown all Downloaders
+	*/
 	static void Shutdown();
 	virtual ~IDownloader(){};
 
@@ -89,6 +96,7 @@ private:
 	static IDownloader* plasmadl;
 	static IDownloader* rapiddl;
 	static IDownloader* torrentdl;
+	static IDownloader* widgetdl;
 
 };
 
@@ -96,6 +104,7 @@ private:
 #define plasmaDownload IDownloader::GetPlasmaInstance()
 #define rapidDownload IDownloader::GetRapidInstance()
 #define torrentDownload IDownloader::GetTorrentInstance()
+#define widgetDownload IDownloader::GetWidgetInstance()
 
 
 #endif

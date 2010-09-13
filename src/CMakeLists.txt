@@ -68,7 +68,11 @@ set(myRapidFiles
 	Downloader/Rapid/RepoMaster.cpp
 	Downloader/Rapid/Repo.cpp
 	Downloader/Rapid/Sdp.cpp
-	Downloader/Http/HttpDownloader.cpp)
+	Downloader/Http/HttpDownloader.cpp
+	Downloader/Widget/WidgetDownloader.cpp
+	Downloader/Widget/pugixml/pugixml.cpp
+	Downloader/Widget/pugixml/pugixpath.cpp
+)
 
 set (RAPID "rapid")
 set (RAPID_LIB "unitsync-ext")

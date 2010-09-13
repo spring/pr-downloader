@@ -27,6 +27,7 @@ int main(int argc, char **argv){
 		PLASMA_DOWNLOAD,
 		PLASMA_SEARCH,
 		TORRENT_DOWNLOAD,
+		WIDGET_SEARCH,
 		HELP
 	};
 
@@ -37,6 +38,7 @@ int main(int argc, char **argv){
 		{"plasma-download"  , 1, 0, PLASMA_DOWNLOAD},
 		{"plasma-search"    , 1, 0, PLASMA_SEARCH},
 		{"torrent-download" , 1, 0, TORRENT_DOWNLOAD},
+		{"widget-search"    , 1, 0, WIDGET_SEARCH},
 		{"help"             , 0, 0, HELP},
 		{0                  , 0, 0, 0}
 	};
@@ -84,6 +86,12 @@ int main(int argc, char **argv){
 			case TORRENT_DOWNLOAD: {
 				torrentDownload->addDownload(optarg);
 				torrentDownload->start();
+				break;
+			}
+			case WIDGET_SEARCH: {
+				std::string tmp=optarg;
+				widgetDownload->search(tmp);
+				break;
 			}
 			case HELP:
 			default:{

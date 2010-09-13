@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.6)
 
-set("downloaders" "Plasma" "Rapid" "Torrent" "Http")
+set("downloaders"
+	"Http"
+	"Plasma"
+	"Rapid"
+	"Torrent"
+	"Widget"
+)
 
 subdirs( ${downloaders} )
 

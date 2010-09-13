@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <zlib.h>
 #include "../../Util.h"
-#include "../IDownloader.h"
 
 void CRepoMaster::download(const std::string& name){
 	std::string tmp;

@@ -5,6 +5,7 @@
 #include "Rapid/RapidDownloader.h"
 #include "Plasma/PlasmaDownloader.h"
 #include "Torrent/TorrentDownloader.h"
+#include "Widget/WidgetDownloader.h"
 
 class IDownloader;
 
@@ -12,6 +13,7 @@ IDownloader* IDownloader::httpdl=NULL;
 IDownloader* IDownloader::plasmadl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
 IDownloader* IDownloader::torrentdl=NULL;
+IDownloader* IDownloader::widgetdl=NULL;
 
 IDownload::IDownload(const std::string& url, const std::string& name, category cat){
 	this->url=url;
@@ -46,6 +48,7 @@ void IDownloader::Initialize(){
 	plasmadl=new CPlasmaDownloader();
 	rapiddl=new CRapidDownloader();
 	torrentdl=new CTorrentDownloader();
+	widgetdl=new CWidgetDownloader();
 }
 
 void IDownloader::Shutdown(){
