@@ -59,22 +59,22 @@ IDownloader* IDownloader::GetHttpInstance(){
 	return httpdl;
 }
 IDownloader* IDownloader::GetRapidInstance(){
-	if (httpdl==NULL)
+	if (rapiddl==NULL)
 		rapiddl=new CRapidDownloader();
 	return rapiddl;
 }
 IDownloader* IDownloader::GetPlasmaInstance(){
-	if (httpdl==NULL)
+	if (plasmadl==NULL)
 		plasmadl=new CPlasmaDownloader();
 	return plasmadl;
 }
 IDownloader* IDownloader::GetTorrentInstance(){
-	if (httpdl==NULL)
+	if (torrentdl==NULL)
 		torrentdl=new CTorrentDownloader();
 	return torrentdl;
 }
 IDownloader* IDownloader::GetWidgetInstance(){
-	if (httpdl==NULL)
+	if (widgetdl==NULL)
 		widgetdl=new CWidgetDownloader();
 	return widgetdl;
 }
