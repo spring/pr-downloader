@@ -124,7 +124,12 @@ CFileSystem::CFileSystem(){
 }
 
 void CFileSystem::Initialize(){
-	singleton=new CFileSystem();
+}
+
+CFileSystem* CFileSystem::GetInstance(){
+	if (singleton==NULL)
+		singleton=new CFileSystem();
+	return singleton;
 }
 
 void CFileSystem::Shutdown(){
@@ -245,7 +250,6 @@ bool CFileSystem::isOlder(const std::string filename, int secs){
 	SYSTEMTIME pTime;
 	struct tm tm;
 	GetSystemTime(&pTime);
-	memset(&tm, 0, sizeof(tm));
 	tm.tm_year = pTime.wYear - 1900;
 	tm.tm_mon = pTime.wMonth - 1;
 	tm.tm_mday = pTime.wDay;

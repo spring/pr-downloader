@@ -18,9 +18,7 @@ class CFileSystem{
 	static CFileSystem* singleton;
 
 public:
-	static inline CFileSystem* GetInstance() {
-		return singleton;
-	}
+	static CFileSystem* GetInstance();
 	static void Initialize();
 	static void Shutdown();
 

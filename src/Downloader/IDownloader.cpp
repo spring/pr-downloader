@@ -44,11 +44,6 @@ bool IDownloader::removeDownload(IDownload& download){
 }
 
 void IDownloader::Initialize(){
- 	httpdl=new CHttpDownloader();
-	plasmadl=new CPlasmaDownloader();
-	rapiddl=new CRapidDownloader();
-	torrentdl=new CTorrentDownloader();
-	widgetdl=new CWidgetDownloader();
 }
 
 void IDownloader::Shutdown(){
@@ -58,4 +53,29 @@ void IDownloader::Shutdown(){
 	delete(torrentdl);
 }
 
+IDownloader* IDownloader::GetHttpInstance(){
+	if (httpdl==NULL)
+		httpdl=new CHttpDownloader();
+	return httpdl;
+}
+IDownloader* IDownloader::GetRapidInstance(){
+	if (httpdl==NULL)
+		rapiddl=new CRapidDownloader();
+	return rapiddl;
+}
+IDownloader* IDownloader::GetPlasmaInstance(){
+	if (httpdl==NULL)
+		plasmadl=new CPlasmaDownloader();
+	return plasmadl;
+}
+IDownloader* IDownloader::GetTorrentInstance(){
+	if (httpdl==NULL)
+		torrentdl=new CTorrentDownloader();
+	return torrentdl;
+}
+IDownloader* IDownloader::GetWidgetInstance(){
+	if (httpdl==NULL)
+		widgetdl=new CWidgetDownloader();
+	return widgetdl;
+}
 

@@ -44,21 +44,11 @@ class IDownloader{
 protected:
 	std::list<IDownload*> downloads;
 public:
-	static IDownloader* GetHttpInstance() {
-		return httpdl;
-	}
-	static IDownloader* GetRapidInstance() {
-		return rapiddl;
-	}
-	static IDownloader* GetPlasmaInstance() {
-		return plasmadl;
-	}
-	static IDownloader* GetTorrentInstance() {
-		return torrentdl;
-	}
-	static IDownloader* GetWidgetInstance() {
-		return widgetdl;
-	}
+	static IDownloader* GetHttpInstance();
+	static IDownloader* GetRapidInstance();
+	static IDownloader* GetPlasmaInstance();
+	static IDownloader* GetTorrentInstance();
+	static IDownloader* GetWidgetInstance();
 
 	/**
 		Initialize all Downloaders
