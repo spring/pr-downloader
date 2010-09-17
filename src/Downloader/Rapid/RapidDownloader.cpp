@@ -13,6 +13,7 @@ CRapidDownloader::CRapidDownloader(){
 	std::string url(REPO_MASTER);
 	this->repoMaster=new CRepoMaster(url);
 	reposLoaded = false;
+	sdps.clear();
 }
 
 CRapidDownloader::~CRapidDownloader(){
@@ -20,8 +21,8 @@ CRapidDownloader::~CRapidDownloader(){
 }
 
 
-void CRapidDownloader::addRemoteDsp(CSdp& sdp){
-	sdps.push_back(&sdp);
+void CRapidDownloader::addRemoteDsp(CSdp* sdp){
+	sdps.push_back(sdp);
 }
 
 /**
@@ -32,7 +33,7 @@ static bool list_compare(CSdp* first ,CSdp*  second){
 	std::string name2;
 	name1.clear();
 	name2.clear();
-
+printf("%s\n",first->getShortName().c_str());
 	name1=(first->getShortName());
 	name2=(second->getShortName());
 	unsigned int len;
@@ -113,16 +114,18 @@ bool CRapidDownloader::removeDownload(IDownload& download){
 	search for a mod
 */
 std::list<IDownload>* CRapidDownloader::search(const std::string& name){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	printf("%s %s:%d  '%s'\n",__FILE__, __FUNCTION__ ,__LINE__, name.c_str() );
 	reloadRepos();
 	std::list<IDownload>*tmp;
 	tmp=new std::list<IDownload>;
 
 	sdps.sort(list_compare);
 	std::list<CSdp*>::iterator it;
-	for(it=sdps.begin();it!=sdps.end();++it){
+	printf("blaa\n");
+	for(it=this->sdps.begin();it!=this->sdps.end();++it){
 		IDownload* dl;
 		dl=new IDownload((*it)->getShortName().c_str(),(*it)->getName().c_str());
+		printf("test %s\n",name.c_str());
 		if (match_download_name(dl->name,name))
 			tmp->push_back(*dl);
 	}

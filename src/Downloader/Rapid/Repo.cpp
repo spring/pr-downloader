@@ -15,7 +15,8 @@ void CRepo::download(){
 	urlToPath(repourl,tmp);
 	this->tmpFile = fileSystem->getSpringDir() + PATH_DELIMITER + "rapid" + PATH_DELIMITER +tmp + PATH_DELIMITER +"versions.gz";
 	fileSystem->createSubdirs(tmpFile);
-	if (fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME) && parse()) //first try already downloaded file, as repo master file rarely changes
+	if (fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME))
+		if (parse()) //first try already downloaded file, as repo master file rarely changes
 		return;
 	fileSystem->createSubdirs(tmpFile);
 	httpDownload->addDownload(repourl + "/versions.gz", tmpFile);
@@ -48,7 +49,7 @@ bool CRepo::parse(){
 		if (shortname.size()>0){ //create new repo from url
 			CSdp* sdptmp=new CSdp(shortname, md5, name, depends, repourl);
 			CRapidDownloader* tmp=(CRapidDownloader*)rapidDownload;
-			tmp->addRemoteDsp(*sdptmp);
+			tmp->addRemoteDsp(sdptmp);
 		}
     }
     gzclose(fp);

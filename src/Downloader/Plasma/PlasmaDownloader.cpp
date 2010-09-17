@@ -6,7 +6,7 @@
 
 
 CPlasmaDownloader::CPlasmaDownloader(){
-	this->torrentPath=fileSystem->getSpringDir()+"/torrent/";
+	this->torrentPath=fileSystem->getSpringDir()+PATH_DELIMITER +  "torrent" + PATH_DELIMITER;
 	fileSystem->createSubdirs(this->torrentPath);
 }
 
@@ -52,10 +52,10 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	std::string saveto=fileSystem->getSpringDir();
 	IDownload::category cat;
 	if (result.resourceType==ns1__ResourceType__Map){
-		saveto.append("/maps/");
+		saveto.append(PATH_DELIMITER+"maps"+PATH_DELIMITER);
 		cat=IDownload::CAT_MAPS;
 	}else{
-		saveto.append("/mods/");
+		saveto.append(PATH_DELIMITER+"mods"+PATH_DELIMITER);
 		cat=IDownload::CAT_MODS;
 	}
 

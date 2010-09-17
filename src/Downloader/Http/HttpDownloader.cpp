@@ -50,7 +50,7 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 
 bool CHttpDownloader::download(const std::string& Url, const std::string& filename, int pos){
 	CURLcode res=CURLE_OK;
-    printf("Downloading %s to %s\n",Url.c_str(), filename.c_str());
+    printf("CHttpDownloader::download %s to %s\n",Url.c_str(), filename.c_str());
 
 	if(!curl) {
 		printf("Error initializing curl");

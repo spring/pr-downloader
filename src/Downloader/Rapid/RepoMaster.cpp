@@ -12,8 +12,9 @@ void CRepoMaster::download(const std::string& name){
 	urlToPath(name,tmp);
 	this->path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
 	fileSystem->createSubdirs(path);
-	if (fileSystem->isOlder(path,REPO_MASTER_RECHECK_TIME) && parse()) //first try already downloaded file, as repo master file rarely changes
-		return;
+	printf("%s %s:%d '%s'\n",__FILE__, __FUNCTION__ ,__LINE__, path.c_str());
+	if (fileSystem->isOlder(path,REPO_MASTER_RECHECK_TIME)) //first try already downloaded file, as repo master file rarely changes
+		if (parse()) return;
 	httpDownload->addDownload(name, path);
 	httpDownload->start();
 	parse();
@@ -29,6 +30,7 @@ bool CRepoMaster::parse(){
         printf("Could not open %s\n",path.c_str());
 		return false;
 	}
+	printf("parsing %s\n",path.c_str());
     char buf[4096];
     repos.empty();
     int i=0;
@@ -49,6 +51,7 @@ bool CRepoMaster::parse(){
 }
 
 void CRepoMaster::updateRepos(){
+	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	std::list<CRepo*>::iterator it;
 	for (it = repos.begin();it != repos.end(); ++it) {
 		(*it)->download();
