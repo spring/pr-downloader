@@ -35,12 +35,11 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 		printf("No file found for criteria %s\n",name.c_str());
 		return NULL;
 	}
-	printf("download ok\n");
 	std::string fileName=this->torrentPath;
 	fileName.append(*result.torrentFileName);
 
 
-	printf("%s\n",fileName.c_str());
+	printf("Saving torrent to %s\n",fileName.c_str());
 	xsd__base64Binary *torrent_buf=result.torrent;
 	FILE* f=fopen(fileName.c_str(),"wb");
 	fwrite(torrent_buf->__ptr, torrent_buf->__size, 1, f);
@@ -52,13 +51,17 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	std::string saveto=fileSystem->getSpringDir();
 	IDownload::category cat;
 	if (result.resourceType==ns1__ResourceType__Map){
-		saveto.append(PATH_DELIMITER+"maps"+PATH_DELIMITER);
+		saveto += PATH_DELIMITER;
+		saveto += "maps";
+		saveto += PATH_DELIMITER;
 		cat=IDownload::CAT_MAPS;
 	}else{
-		saveto.append(PATH_DELIMITER+"mods"+PATH_DELIMITER);
+		saveto += PATH_DELIMITER;
+		saveto += "mods";
+		saveto += PATH_DELIMITER;
 		cat=IDownload::CAT_MODS;
 	}
-
+	printf("Saving file to %s\n",saveto.c_str());
 	IDownload* dl=new IDownload(fileName,saveto,cat);
 	for(it=result.links->string.begin();it!=result.links->string.end(); it++){
 		dl->addMirror((*it).c_str());

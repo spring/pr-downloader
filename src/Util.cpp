@@ -147,6 +147,7 @@ void urlEncode(std::string& url){
 bool urlToPath(const std::string& url, std::string& path){
 	size_t pos=url.find("//");
 	if (pos==std::string::npos){ //not found
+		printf("urlToPath failed: %s\n",path.c_str());
 		return false;
 	}
 	path=url.substr(pos+2);
