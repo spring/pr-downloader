@@ -4,6 +4,7 @@
  * make some things configureable
  * fix build system (cross-compile + code-plugable)
  * make logging configurable, cron/script-compatible, quiet mode, remove printf?
+ * add version-check (for current stable / getting download-link / ...)
 
 =unitsync=
  * allow removal/cleanup of mod/map
