@@ -9,6 +9,7 @@
 #include <curl/curl.h>
 
 void CSdp::download(){
+	DEBUG_LINE("");
 	if(downloaded) //allow download only once of the same sdp
 		return;
 	filename=fileSystem->getSpringDir() + PATH_DELIMITER+"packages"+PATH_DELIMITER;

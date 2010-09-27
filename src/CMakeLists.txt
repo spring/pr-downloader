@@ -10,7 +10,7 @@ set(myRapidFiles
 	Downloader/IDownloader.cpp
 )
 
-set (RAPID "rapid")
+set (RAPID "pr-downloader")
 set (RAPID_LIB "unitsync-ext")
 
 
@@ -33,15 +33,15 @@ target_link_libraries(${RAPID_LIB}
 	${ADDITIONAL_LIBS}
 )
 
-add_executable(rapid ${myRapidFiles})
+add_executable(${RAPID} ${myRapidFiles})
 
-target_link_libraries(rapid
+target_link_libraries(${RAPID}
 	${RAPID_LIB}
 	${ADDITIONAL_LIBS}
 )
 
 IF(WIN32)
-	INSTALL(TARGETS rapid  ${RAPID_LIB} DESTINATION  ${CMAKE_SOURCE_DIR}/dist)
+	INSTALL(TARGETS ${RAPID} ${RAPID_LIB} DESTINATION  ${CMAKE_SOURCE_DIR}/dist)
 	INSTALL(FILES
 		${MINGWLIBS}/lib/libboost_system-mt.dll
 		${MINGWLIBS}/lib/libboost_thread_win32-mt.dll

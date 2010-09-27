@@ -11,6 +11,7 @@
 
 
 void CRepo::download(){
+	DEBUG_LINE("");
 	std::string tmp;
 	urlToPath(repourl,tmp);
 	this->tmpFile = fileSystem->getSpringDir() + PATH_DELIMITER + "rapid" + PATH_DELIMITER +tmp + PATH_DELIMITER +"versions.gz";
@@ -24,16 +25,17 @@ void CRepo::download(){
 	parse();
 }
 
-
 bool CRepo::parse(){
+	DEBUG_LINE(tmpFile.c_str());
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
 	if (fp==Z_NULL){
         printf("Could not open %s\n",tmpFile.c_str());
 		return false;
 	}
-    char buf[4096];
+    char buf[8192];
 	sdps.empty();
-    while(gzgets(fp, buf, sizeof(buf))!=Z_NULL){
+	char* res;
+    while((res=gzgets(fp, buf, sizeof(buf)))!=Z_NULL){
     	for(unsigned int i=0;i<sizeof(buf);i++){
     		if(buf[i]=='\n'){
     			buf[i]=0;
@@ -46,6 +48,7 @@ bool CRepo::parse(){
 		std::string md5=getStrByIdx(tmp,',',1);
 		std::string depends=getStrByIdx(tmp,',',2);
 		std::string name=getStrByIdx(tmp,',',3);
+		DEBUG_LINE(shortname.c_str());
 		if (shortname.size()>0){ //create new repo from url
 			CSdp* sdptmp=new CSdp(shortname, md5, name, depends, repourl);
 			CRapidDownloader* tmp=(CRapidDownloader*)rapidDownload;

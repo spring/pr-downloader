@@ -57,4 +57,8 @@ void urlEncode(std::string& url);
 	www.server.com\path\file.gz
 */
 bool urlToPath(const std::string& url, std::string& path);
+
+#define DEBUG_LINE(string) \
+	printf("%s:%d %s() %s\n", __FILE__, __LINE__, __FUNCTION__, string)
+
 #endif

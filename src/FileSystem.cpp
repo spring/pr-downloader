@@ -15,6 +15,7 @@
 #ifdef WIN32
 	#include <windows.h>
 	#include <shlobj.h>
+	#include <math.h>
 	#ifndef SHGFP_TYPE_CURRENT
 		#define SHGFP_TYPE_CURRENT 0
 	#endif
@@ -248,15 +249,10 @@ bool CFileSystem::isOlder(const std::string filename, int secs){
 	time_t t;
 #ifdef WIN32
 	SYSTEMTIME pTime;
-	struct tm tm;
+	_FILETIME pFTime;
 	GetSystemTime(&pTime);
-	tm.tm_year = pTime.wYear - 1900;
-	tm.tm_mon = pTime.wMonth - 1;
-	tm.tm_mday = pTime.wDay;
-	tm.tm_hour = pTime.wHour;
-	tm.tm_min = pTime.wMinute;
-	tm.tm_sec = pTime.wSecond;
-	t = mktime(&tm);
+	SystemTimeToFileTime(&pTime, &pFTime);
+	t = ((unsigned long long)(&pFTime) -	(unsigned long long)(116444736000000000))/ 10000000;
 #else
 	time(&t);
 #endif

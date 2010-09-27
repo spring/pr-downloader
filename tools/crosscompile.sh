@@ -1,6 +1,6 @@
 
 
-export PREFIX=/home/abma/Projects/donwloader/mingwlibs
+export PREFIX=/home/abma/Projects/downloader/mingwlibs
 export MINGW32CXX=i586-mingw32msvc-g++
 export MINGW32CC=i586-mingw32msvc-gcc
 export MINGW32RC=i586-mingw32msvc-windres

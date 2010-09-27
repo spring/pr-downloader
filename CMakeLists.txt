@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-project(rapid)
+project(pr-downloader)
 
 if   (MINGW)
         set(MINGWLIBS "${CMAKE_SOURCE_DIR}/mingwlibs" CACHE PATH "Location of the mingwlibs package")
@@ -20,7 +20,7 @@ if   (MINGW)
 
         set(CMAKE_CXX_FLAGS "-Wall -O2 -g -D_WIN32_WINNT=0x0501")
 else ()
-        set(CMAKE_CXX_FLAGS "-Wall -O2 -g -fPIC")
+        set(CMAKE_CXX_FLAGS "-Wall -O0 -g -fPIC")
 endif ()
 
 find_package(CURL)

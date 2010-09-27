@@ -22,6 +22,7 @@ CRapidDownloader::~CRapidDownloader(){
 
 
 void CRapidDownloader::addRemoteDsp(CSdp* sdp){
+	DEBUG_LINE("");
 	sdps.push_back(sdp);
 }
 
@@ -101,27 +102,26 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 
 
 const IDownload* CRapidDownloader::addDownload(const std::string& url, const std::string& filename){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	download_tag(url);
 	return NULL;
 }
 
 bool CRapidDownloader::removeDownload(IDownload& download){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	return true;
 }
 /**
 	search for a mod
 */
 std::list<IDownload>* CRapidDownloader::search(const std::string& name){
-	printf("%s %s:%d  '%s'\n",__FILE__, __FUNCTION__ ,__LINE__, name.c_str() );
+	DEBUG_LINE(name.c_str() );
 	reloadRepos();
 	std::list<IDownload>*tmp;
 	tmp=new std::list<IDownload>;
 
 	sdps.sort(list_compare);
 	std::list<CSdp*>::iterator it;
-	printf("blaa\n");
 	for(it=this->sdps.begin();it!=this->sdps.end();++it){
 		IDownload* dl;
 		dl=new IDownload((*it)->getShortName().c_str(),(*it)->getName().c_str());
@@ -135,7 +135,7 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name){
 	start a download
 */
 void CRapidDownloader::start(IDownload* download){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	if (download==NULL){
   		while (!downloads.empty()){
 	  		this->download_tag(downloads.front()->url);
