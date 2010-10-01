@@ -1,0 +1,110 @@
+[GAME]
+{
+	HostIP=;
+	HostPort=8452;
+	IsHost=1;
+	MyPlayerName=UnnamedPlayer;
+
+	ModHash=1509491964;
+	MapHash=1116696899;
+	Mapname=Coast To Coast Remake V2;
+	GameType=Spring Test Mod 0.1;
+
+	startpostype=3;
+	[mapoptions]
+	{
+	}
+	[modoptions]
+	{
+		chickens=0;
+		coop=1;
+		disablefeatures=0;
+		disablemapdamage=0;
+		easymetal=0;
+		fixedallies=1;
+		golly=0;
+		hiddenunits=0;
+		marketandbounty=0;
+		noceasefire=0;
+		reducedquality=0;
+		specialdecloak=0;
+		specialpower=0;
+		stayonteam=0;
+		xmas=0;
+		planetwars=;
+		cratermult=1;
+		damagemult=1;
+		energymult=1;
+		factorycostmult=1;
+		gracetime=2;
+		hilltime=10;
+		maxspeed=2;
+		maxunits=1500;
+		maxwind=2.5;
+		metalmult=1;
+		minspeed=0.5;
+		minwind=0;
+		terracostmult=1;
+		unitspeedmult=1;
+		waterlevel=0;
+		wreckagemult=1;
+		camode=normal;
+		commtype=default;
+		doesnotcountmode=debug;
+		gamemode=0;
+		sharemode=teammates;
+		shuffle=off;
+		startingresourcetype=facplopboost;
+		typemapsetting=keepequal;
+	}
+	NumRestrictions=0;
+	[RESTRICT]
+	{
+	}
+
+	NumPlayers=1;
+	NumUsers=2;
+
+	[PLAYER1]
+	{
+		Name=UnnamedPlayer;
+		CountryCode=;
+		Spectator=1;
+		Rank=0;
+		IsFromDemo=0;
+		Team=0;
+	}
+	[AI0]
+	{
+		Name=Bot1;
+		ShortName=NullAI;
+		Version=0.1;
+		Team=0;
+		IsFromDemo=0;
+		Host=1;
+		[Options]
+		{
+			maphack=0;
+			reporturl=http://myAIStats.myDomain.com/statsReceiver.cgi;
+			maxgroupsize=10;
+			resourcebonous=0;
+			aggressiveness=normal;
+		}
+	}
+
+	[TEAM0]
+	{
+		TeamLeader=1;
+		StartPosX=260;
+		StartPosZ=1118;
+		AllyTeam=0;
+		RGBColor=0.976471 1 0;
+		Side=Random;
+		Handicap=0;
+	}
+
+	[ALLYTEAM0]
+	{
+		NumAllies=0;
+	}
+}
