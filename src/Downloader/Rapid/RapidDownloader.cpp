@@ -22,7 +22,6 @@ CRapidDownloader::~CRapidDownloader(){
 
 
 void CRapidDownloader::addRemoteDsp(CSdp* sdp){
-	DEBUG_LINE("");
 	sdps.push_back(sdp);
 }
 
@@ -34,7 +33,7 @@ static bool list_compare(CSdp* first ,CSdp*  second){
 	std::string name2;
 	name1.clear();
 	name2.clear();
-printf("%s\n",first->getShortName().c_str());
+	printf("%s\n",first->getShortName().c_str());
 	name1=(first->getShortName());
 	name2=(second->getShortName());
 	unsigned int len;
@@ -120,7 +119,7 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name){
 	std::list<IDownload>*tmp;
 	tmp=new std::list<IDownload>;
 
-	sdps.sort(list_compare);
+//	sdps.sort(list_compare);
 	std::list<CSdp*>::iterator it;
 	for(it=this->sdps.begin();it!=this->sdps.end();++it){
 		IDownload* dl;

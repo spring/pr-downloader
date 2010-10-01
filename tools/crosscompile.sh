@@ -13,13 +13,13 @@ export PARALLEL="8"
 cd ..
 
 if [ ! -s ${PREFIX}/lib/libz.a ]; then
-	${DOWNLOAD} "http://prdownloads.sourceforge.net/libpng/zlib-1.2.3.tar.gz?download" -O zlib-1.2.3.tar.gz
-	tar xifz zlib-1.2.3.tar.gz
-	cd zlib-1.2.3
+	${DOWNLOAD} "http://prdownloads.sourceforge.net/libpng/zlib-1.2.5.tar.gz?download" -O zlib-1.2.5.tar.gz
+	tar xifz zlib-1.2.5.tar.gz
+	cd zlib-1.2.5
 	export CC=${MINGW32CC}
 	export CPP=${MINGW32CXX}
 	export LDSHARED=${MINGW32CC}
-	export AR="${MINGW32AR} rc"
+	export AR="${MINGW32AR}"
 	export RANLIB=${MINGW32RANLIB}
 	./configure --prefix=${PREFIX}
 	make install -j ${PARALLEL}

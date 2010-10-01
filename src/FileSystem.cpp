@@ -249,7 +249,7 @@ bool CFileSystem::isOlder(const std::string filename, int secs){
 	time_t t;
 #ifdef WIN32
 	SYSTEMTIME pTime;
-	_FILETIME pFTime;
+	FILETIME pFTime;
 	GetSystemTime(&pTime);
 	SystemTimeToFileTime(&pTime, &pFTime);
 	t = ((unsigned long long)(&pFTime) -	(unsigned long long)(116444736000000000))/ 10000000;

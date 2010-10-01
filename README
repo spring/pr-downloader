@@ -1,0 +1,19 @@
+what it wants to do:
+
+./run-test
+fetch + compile latest git
+fetch latest test-mod
+runs spring + testmod
+
+
+run-test.exe
+fetch + compile latest git
+fetch latest test-mod
+run spring + testmod
+
+
+what is needed:
+
+environement to compile spring (bad!)
+downloader for mod with tests included
+

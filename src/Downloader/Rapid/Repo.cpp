@@ -32,7 +32,7 @@ bool CRepo::parse(){
         printf("Could not open %s\n",tmpFile.c_str());
 		return false;
 	}
-    char buf[8192];
+   	char buf[1024];
 	sdps.empty();
 	char* res;
     while((res=gzgets(fp, buf, sizeof(buf)))!=Z_NULL){
@@ -48,7 +48,6 @@ bool CRepo::parse(){
 		std::string md5=getStrByIdx(tmp,',',1);
 		std::string depends=getStrByIdx(tmp,',',2);
 		std::string name=getStrByIdx(tmp,',',3);
-		DEBUG_LINE(shortname.c_str());
 		if (shortname.size()>0){ //create new repo from url
 			CSdp* sdptmp=new CSdp(shortname, md5, name, depends, repourl);
 			CRapidDownloader* tmp=(CRapidDownloader*)rapidDownload;
