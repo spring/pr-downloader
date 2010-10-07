@@ -11,7 +11,7 @@ CPlasmaDownloader::CPlasmaDownloader(){
 }
 
 std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	PlasmaServiceSoap12Proxy service;
 	_ns1__DownloadFile file;
 	_ns1__DownloadFileResponse result;
@@ -67,7 +67,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 }
 
 bool CPlasmaDownloader::start(IDownload* download){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	torrentDownload->start(download);
 	std::list<std::string>::iterator it;
 	for(it=download->depend.begin(); it!=download->depend.end(); it++){
@@ -80,10 +80,10 @@ bool CPlasmaDownloader::start(IDownload* download){
 }
 
 const IDownload* CPlasmaDownloader::addDownload(const std::string& url, const std::string& filename){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	return NULL;
 }
 bool CPlasmaDownloader::removeDownload(IDownload& download){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	return true;
 }

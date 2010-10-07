@@ -111,13 +111,13 @@ void CHttpDownloader::setStatsPos(unsigned int pos){
 
 
 const IDownload* CHttpDownloader::addDownload(const std::string& url, const std::string& filename){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	IDownload* dl=new IDownload(url,filename);
 	downloads.push_back(dl);
 	return NULL;
 }
 bool CHttpDownloader::removeDownload(IDownload& download){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	return true;
 }
 
@@ -136,6 +136,7 @@ static size_t write_mem(void *ptr, size_t size, size_t nmemb, void *data){
 
 
 std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDownload::category cat){
+	DEBUG_LINE(name.c_str());
 	pos=0;
 	memset(buf,0,sizeof(buf));
 	CURL *curl_handle;
@@ -188,7 +189,7 @@ std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDown
 }
 
 std::list<IDownload>* CHttpDownloader::search(const std::string& name){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	std::list<IDownload>* res;
 	res=realSearch(name+".sd7", IDownload::CAT_MAPS);
 	if (res->size()>0) return res;
@@ -202,7 +203,7 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name){
 }
 
 bool CHttpDownloader::start(IDownload* download){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	if (download!=NULL){
 		this->download(download->url,download->name);
 	}else while (!downloads.empty()){
