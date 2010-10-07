@@ -123,15 +123,12 @@ int main(int argc, char **argv){
 				break;
 			}
 			case DOWNLOAD:{ //first try to download with rapid, then with plasma, then http-search
-				rapidDownload->search(optarg);
-				rapidDownload->addDownload(optarg);
-				if (!rapidDownload->start()){
-
-					std::list <IDownload>* tmplist=plasmaDownload->search(optarg);
-					std::list <IDownload>::iterator it;
-					it=tmplist->begin();
-					plasmaDownload->start(&*it);
-				}
+				std::list<IDownload>* res=rapidDownload->search(optarg);
+				if ((res!=NULL) && (res->size()>0) && (rapidDownload->start(&res->front())))
+					break;
+				res=plasmaDownload->search(optarg);
+				if ((res!=NULL) && (res->size()>0))
+					plasmaDownload->start(&res->front());
 				break;
 			}
 			case HELP:

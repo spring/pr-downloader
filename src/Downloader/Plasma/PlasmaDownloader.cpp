@@ -80,7 +80,8 @@ bool CPlasmaDownloader::start(IDownload* download){
 	for(it=download->depend.begin(); it!=download->depend.end(); it++){
 		std::list<IDownload>* tmp=search((*it));
 		printf("%s\n downloading depends: ",tmp->front().name.c_str());
-		torrentDownload->start(&tmp->front());
+		if (!torrentDownload->start(&tmp->front()))
+			return false;
 	}
 	return true;
 }

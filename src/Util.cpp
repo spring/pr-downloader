@@ -132,7 +132,7 @@ unsigned int intmin(int x, int y){
 bool match_download_name(const std::string &str1,const std::string& str2){
 	if (str2=="") return true;
 	if (str2=="*") return true;
-	if (str1==str2) return false;
+	if (str1==str2) return true;
 	return false;
 }
 

@@ -66,9 +66,10 @@ bool CSdp::download(){
 		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		files.clear();
 		printf("Sucessfully downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
-	}else
+	}else{
 		printf("Already downloaded: %s\n", shortname.c_str());
-
+		downloaded=true;
+	}
 	return downloaded;
 }
 

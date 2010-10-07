@@ -70,7 +70,8 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 			if (!(*it)->download())
 				return false;
 			if ((*it)->getDepends().length()>0){
-				download_name((*it)->getDepends());
+				if (!download_name((*it)->getDepends()))
+					return false;
 			}
 			return true;
 		}
@@ -89,9 +90,11 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 	for(it=sdps.begin();it!=sdps.end();++it){
 		if ((*it)->getName().compare(longname)==0){
 			printf("Found Depends, downloading %s\n", (*it)->getName().c_str());
-			(*it)->download();
+			if (!(*it)->download())
+				return false;
 			if ((*it)->getDepends().length()>0){
-				download_name((*it)->getDepends(),reccounter+1); //FIXME: this could be an infinite loop
+				if (!download_name((*it)->getDepends(),reccounter+1))
+					return false;
 			}
 			return true;
 		}
@@ -122,10 +125,10 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name){
 	sdps.sort(list_compare);
 	std::list<CSdp*>::iterator it;
 	for(it=this->sdps.begin();it!=this->sdps.end();++it){
-		IDownload* dl;
-		dl=new IDownload((*it)->getShortName().c_str(),(*it)->getName().c_str());
-		if (match_download_name(dl->name,name))
+		if (match_download_name((*it)->getShortName().c_str(),name)){
+			IDownload* dl=new IDownload((*it)->getShortName().c_str(),(*it)->getName().c_str());
 			tmp->push_back(*dl);
+		}
 	}
 	return tmp;
 }
@@ -136,12 +139,12 @@ bool CRapidDownloader::start(IDownload* download){
 	DEBUG_LINE("");
 	if (download==NULL){
   		while (!downloads.empty()){
-	  		this->download_tag(downloads.front()->url);
+			if (!this->download_tag(downloads.front()->url))
+				return false;
 			downloads.pop_front();
 		}
 	}else{
-		this->download_tag(download->url);
+		return this->download_tag(download->url);
 	}
 	return true;
 }
-
