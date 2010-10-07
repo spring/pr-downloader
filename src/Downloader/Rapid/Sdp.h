@@ -14,6 +14,8 @@ public:
 		this->url=url;
 		this->downloaded=false;
 		this->depends=depends;
+		this->file_handle=NULL;
+		this->downlooadInitialized=false;
 	}
 	/**
 		download a mod, we already know the host where to download from + the md5 of the sdp file

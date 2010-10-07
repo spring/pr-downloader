@@ -26,7 +26,7 @@ if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	cd ..
 fi
 
-if [ ! -s ${PREFIX}/lib/libcurl.a ]; then
+if [ ! -s ${PREFIX}/lib/libcurl.dll.a ]; then
 	export CC=${MINGW32CC}
 	export CXX=${MINGW32CXX}
 	wget -c http://curl.haxx.se/download/curl-7.21.1.tar.bz2
