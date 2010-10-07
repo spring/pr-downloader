@@ -7,12 +7,14 @@
 #include <stdio.h>
 
 class CRepo;
+class CRapidDownloader;
 
 class CRepoMaster{
 	std::string path;
 	std::string url;
+	CRapidDownloader* rapid;
 public:
-	CRepoMaster(std::string& masterurl);
+	CRepoMaster(std::string& masterurl, CRapidDownloader* rapid);
 	~CRepoMaster();
 	void download(const std::string& name);
 /**

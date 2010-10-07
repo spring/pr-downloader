@@ -4,12 +4,15 @@
 
 #include <list>
 class CSdp;
+class CRapidDownloader;
 
 class CRepo{
 	std::string repourl;
+	 CRapidDownloader* rapid;
 public:
-	CRepo(const std::string& repourl){
+	CRepo(const std::string& repourl, CRapidDownloader* rapid){
 		this->repourl=repourl;
+		this->rapid=rapid;
 	}
 
 	/**

@@ -20,8 +20,9 @@ void CRepoMaster::download(const std::string& name){
 	parse();
 }
 
-CRepoMaster::CRepoMaster(std::string& url){
+CRepoMaster::CRepoMaster(std::string& url, CRapidDownloader* rapid){
 	this->url=url;
+	this->rapid=rapid;
 }
 
 bool CRepoMaster::parse(){
@@ -38,7 +39,7 @@ bool CRepoMaster::parse(){
 		std::string url=getStrByIdx(tmp,',',1);
 		i++;
 		if (url.size()>0){ //create new repo from url
-			CRepo* repotmp=new CRepo(url);
+			CRepo* repotmp=new CRepo(url, rapid);
 			repos.push_back(repotmp);
 		}else{
 			printf("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);

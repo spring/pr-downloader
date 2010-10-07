@@ -11,7 +11,7 @@
 
 CRapidDownloader::CRapidDownloader(){
 	std::string url(REPO_MASTER);
-	this->repoMaster=new CRepoMaster(url);
+	this->repoMaster=new CRepoMaster(url, this);
 	reposLoaded = false;
 	sdps.clear();
 }
@@ -33,7 +33,6 @@ static bool list_compare(CSdp* first ,CSdp*  second){
 	std::string name2;
 	name1.clear();
 	name2.clear();
-	printf("%s\n",first->getShortName().c_str());
 	name1=(first->getShortName());
 	name2=(second->getShortName());
 	unsigned int len;
@@ -119,12 +118,11 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name){
 	std::list<IDownload>*tmp;
 	tmp=new std::list<IDownload>;
 
-//	sdps.sort(list_compare);
+	sdps.sort(list_compare);
 	std::list<CSdp*>::iterator it;
 	for(it=this->sdps.begin();it!=this->sdps.end();++it){
 		IDownload* dl;
 		dl=new IDownload((*it)->getShortName().c_str(),(*it)->getName().c_str());
-		printf("test %s\n",name.c_str());
 		if (match_download_name(dl->name,name))
 			tmp->push_back(*dl);
 	}
