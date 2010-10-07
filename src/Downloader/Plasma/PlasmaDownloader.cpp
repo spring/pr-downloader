@@ -2,6 +2,7 @@
 #include "soap/PlasmaServiceSoap.nsmap"
 #include "PlasmaDownloader.h"
 #include "../../FileSystem.h"
+#include "../../Util.h"
 
 
 
