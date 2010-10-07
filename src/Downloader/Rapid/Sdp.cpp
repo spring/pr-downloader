@@ -8,10 +8,10 @@
 #include <stdio.h>
 #include <curl/curl.h>
 
-void CSdp::download(){
+bool CSdp::download(){
 	DEBUG_LINE("");
 	if(downloaded) //allow download only once of the same sdp
-		return;
+		return true;
 	filename=fileSystem->getSpringDir() + PATH_DELIMITER+"packages"+PATH_DELIMITER;
 	if (!fileSystem->directoryExists(filename)){
 		fileSystem->createSubdirs(filename);
@@ -63,13 +63,13 @@ void CSdp::download(){
 	printf("\r%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
 	if (count>0){
 //FIXME	httpDownload->setCount(count);
-		downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
+		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		files.clear();
 		printf("Sucessfully downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
 	}else
 		printf("Already downloaded: %s\n", shortname.c_str());
 
-	downloaded=true;
+	return downloaded;
 }
 
 /**
@@ -193,7 +193,7 @@ int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloaded,
 	return 0;
 }
 
-void CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData*>& files){
+bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData*>& files){
 	CURL* curl;
 	CURLcode res;
 	curl = curl_easy_init();
@@ -231,11 +231,13 @@ void CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData*>& fil
 
 		res = curl_easy_perform(curl);
 		printf("\n"); //new line because of progressbar
-		if (res!=CURLE_OK){
-			printf("%s\n",curl_easy_strerror(res));
-		}
 		free(dest);
 		/* always cleanup */
 		curl_easy_cleanup(curl);
-  }
+		if (res!=CURLE_OK){
+			printf("%s\n",curl_easy_strerror(res));
+			return false;
+		}
+	}
+	return true;
 }

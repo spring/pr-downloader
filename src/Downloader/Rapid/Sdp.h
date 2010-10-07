@@ -21,8 +21,7 @@ public:
 		download a mod, we already know the host where to download from + the md5 of the sdp file
 		we have to download the sdp + parse it + download associated files
 	*/
-	void download();
-	void parse();
+	bool download();
 	/**
 		returns md5 of a repo
 	*/
@@ -60,6 +59,7 @@ public:
 	unsigned int cursize;
 
 private:
+	void parse();
 /**
 	download files streamed
 	streamer.cgi works as follows:
@@ -87,7 +87,7 @@ e: application/x-www-form-urlencoded..Connection: close..User-Agent: Python
 T 192.168.1.2:33202 -> 94.23.170.70:80 [AP]
 ......zL..c`..`d.....K.n/....
 */
-	void downloadStream(std::string url,std::list<CFileSystem::FileData*>& files);
+	bool downloadStream(std::string url,std::list<CFileSystem::FileData*>& files);
 	std::string name;
 	std::string md5;
 	std::string shortname;

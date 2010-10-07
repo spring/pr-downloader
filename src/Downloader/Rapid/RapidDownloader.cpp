@@ -67,7 +67,8 @@ bool CRapidDownloader::download_tag(const std::string& modname){
 	for(it=sdps.begin();it!=sdps.end();++it){
 		if ((*it)->getShortName().compare(modname)==0){
 			printf("Found Repository, downloading %s\n", (*it)->getName().c_str());
-			(*it)->download();
+			if (!(*it)->download())
+				return false;
 			if ((*it)->getDepends().length()>0){
 				download_name((*it)->getDepends());
 			}
