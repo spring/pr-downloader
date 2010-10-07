@@ -21,14 +21,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	int res;
 	res=service.DownloadFile(&file, &result);
 	if (res != SOAP_OK){
-		switch(res){
-			case SOAP_TCP_ERROR:
-				printf("Couldn't connect to soap-server\n");
-				break;
-
-			default:
-				printf("Soap error: %d\n",res);
-		}
+		printf("Soap error: %d: %s\n",res, service.soap_fault_string());
 		return NULL;
 	}
 	if (!result.DownloadFileResult){
