@@ -5,7 +5,7 @@
 #include "../../Util.h"
 
 bool CTorrentDownloader::download(const std::string& torrentfile, const std::string& filename){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	return true;
 }
 
@@ -21,7 +21,7 @@ int CTorrentDownloader::getProcess(const libtorrent::torrent_handle& torrentHand
 }
 
 bool CTorrentDownloader::start(IDownload* download){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	if (download==NULL)
 		return false;
 	libtorrent::session torrentSession;
@@ -88,16 +88,16 @@ bool CTorrentDownloader::start(IDownload* download){
 }
 
 const IDownload* CTorrentDownloader::addDownload(const std::string& url, const std::string& filename){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	return NULL;
 }
 
 bool CTorrentDownloader::removeDownload(IDownload& download){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	return true;
 }
 
 std::list<IDownload>* CTorrentDownloader::search(const std::string& name){
-	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
+	DEBUG_LINE("");
 	return NULL;
 }
