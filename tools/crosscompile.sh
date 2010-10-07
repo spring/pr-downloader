@@ -32,7 +32,10 @@ if [ ! -s ${PREFIX}/lib/libcurl.a ]; then
 	wget -c http://curl.haxx.se/download/curl-7.21.1.tar.bz2
 	tar xifj curl-7.21.1.tar.bz2
 	cd curl-7.21.1
-	./configure --host=${MINGWHOST} --prefix=${PREFIX}
+	./configure --host=${MINGWHOST} --prefix=${PREFIX} \
+		--disable-ftp --disable-dict --disable-imap --disable-pop3 \
+		--disable-smtp --disable-telnet --disable-tftp --disable-ldap \
+		--disable-rtsp --disable-manual --enable-static=no
 	make install -j ${PARALLEL}
 	cd ..
 fi
