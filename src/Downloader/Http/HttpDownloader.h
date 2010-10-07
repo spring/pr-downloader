@@ -32,6 +32,7 @@ private:
 	CURL *curl;
 	unsigned int stats_count;
 	unsigned int stats_filepos;
+	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);
 };
 
 #endif

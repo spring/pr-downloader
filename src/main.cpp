@@ -22,6 +22,8 @@ enum{
 	RAPID_DOWNLOAD=0,
 	RAPID_VALIDATE,
 	RAPID_LIST,
+	HTTP_SEARCH,
+	HTTP_DOWNLOAD,
 	PLASMA_DOWNLOAD,
 	PLASMA_SEARCH,
 	TORRENT_DOWNLOAD,
@@ -37,6 +39,8 @@ static struct option long_options[] = {
 	{"rapid-list"              , 0, 0, RAPID_LIST},
 	{"plasma-download"         , 1, 0, PLASMA_DOWNLOAD},
 	{"plasma-search"           , 1, 0, PLASMA_SEARCH},
+	{"http-download"           , 1, 0, HTTP_DOWNLOAD},
+	{"http-search"             , 1, 0, HTTP_SEARCH},
 	{"torrent-download"        , 1, 0, TORRENT_DOWNLOAD},
 	{"widget-search"           , 1, 0, WIDGET_SEARCH},
 	{"filesystem-writepath"    , 0, 0, FILESYSTEM_WRITEPATH},
@@ -122,13 +126,32 @@ int main(int argc, char **argv){
 				printf("%s\n",fileSystem->getSpringDir().c_str());
 				break;
 			}
+			case HTTP_SEARCH:{
+				std::list<IDownload>* list=httpDownload->search(optarg);
+				if (list==NULL)
+					break;
+				std::list<IDownload>::iterator it;
+				for(it=list->begin();it!=list->end();++it){
+					printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
+				}
+				break;
+			}
+			case HTTP_DOWNLOAD: {
+				std::list<IDownload>* res=httpDownload->search(optarg);
+				if ((res!=NULL) && (res->size()>0))
+					httpDownload->start(&res->front());
+				break;
+			}
 			case DOWNLOAD:{ //first try to download with rapid, then with plasma, then http-search
 				std::list<IDownload>* res=rapidDownload->search(optarg);
 				if ((res!=NULL) && (res->size()>0) && (rapidDownload->start(&res->front())))
 					break;
 				res=plasmaDownload->search(optarg);
+				if ((res!=NULL) && (res->size()>0) && plasmaDownload->start(&res->front()))
+					break;
+				res=httpDownload->search(optarg);
 				if ((res!=NULL) && (res->size()>0))
-					plasmaDownload->start(&res->front());
+					httpDownload->start(&res->front());
 				break;
 			}
 			case HELP:

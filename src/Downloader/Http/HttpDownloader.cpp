@@ -81,10 +81,11 @@ CHttpDownloader::CHttpDownloader(){
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
-    curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
-    curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, this);
-    stats_filepos=1;
-    stats_count=1;
+	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
+	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, this);
+	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+	stats_filepos=1;
+	stats_count=1;
 }
 
 CHttpDownloader::~CHttpDownloader(){
@@ -119,14 +120,92 @@ bool CHttpDownloader::removeDownload(IDownload& download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	return true;
 }
+
+char buf[4096];
+int pos;
+
+static size_t write_mem(void *ptr, size_t size, size_t nmemb, void *data){
+	size_t realsize = size * nmemb;
+	if (pos+realsize>sizeof(buf))
+		return 0;
+	memcpy(&buf[pos],ptr,realsize);
+	pos=pos+realsize;
+	return realsize;
+}
+
+
+
+std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDownload::category cat){
+	pos=0;
+	memset(buf,0,sizeof(buf));
+	CURL *curl_handle;
+	curl_handle=curl_easy_init();
+	if (curl_handle){
+		std::string url;
+		std::string filename;
+		filename=fileSystem->getSpringDir();
+		filename+=PATH_DELIMITER;
+		switch (cat){
+			case IDownload::CAT_MODS:
+				url="http://www.springfiles.com/checkmirror.php?c=mods&q=";
+				filename+="mods";
+			break;
+			default:
+				url="http://www.springfiles.com/checkmirror.php?c=maps&q=";
+				filename+="maps";
+			break;
+		}
+		filename+=PATH_DELIMITER;
+		filename+=name;
+		url+=name;
+
+		curl_easy_setopt(curl_handle, CURLOPT_URL,url.c_str());
+		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_mem);
+		curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, true);
+		curl_easy_perform(curl_handle);
+
+		std::list<IDownload>* res;
+		res=new std::list<IDownload>;
+		int start=-1;
+		for(unsigned int i=0;i<sizeof(buf);i++){ //extract urls of result in buf
+			if (buf[i]=='\'' ){
+				if (start==-1){
+					start=i;
+				}else{
+					buf[i]=0;
+					std::string url;
+					url.assign(&buf[start+1]);
+					IDownload* tmp=new IDownload(url,filename, cat);
+					res->push_back(*tmp);
+					start=-1;
+				}
+			}
+		}
+		return res;
+	}
+	return NULL;
+
+}
+
 std::list<IDownload>* CHttpDownloader::search(const std::string& name){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
-
+	std::list<IDownload>* res;
+	res=realSearch(name+".sd7", IDownload::CAT_MAPS);
+	if (res->size()>0) return res;
+	res=realSearch(name+".sdz", IDownload::CAT_MAPS);
+	if (res->size()>0) return res;
+	res=realSearch(name+".sd7", IDownload::CAT_MODS);
+	if (res->size()>0) return res;
+	res=realSearch(name+".sdz", IDownload::CAT_MODS);
+	if (res->size()>0) return res;
 	return NULL;
 }
+
 bool CHttpDownloader::start(IDownload* download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
-  	while (!downloads.empty()){
+	if (download!=NULL){
+		this->download(download->url,download->name);
+	}else while (!downloads.empty()){
   		this->download(downloads.front()->url,downloads.front()->name);
 		downloads.pop_front();
 	}
