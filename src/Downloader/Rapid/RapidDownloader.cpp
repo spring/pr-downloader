@@ -131,7 +131,7 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name){
 /**
 	start a download
 */
-void CRapidDownloader::start(IDownload* download){
+bool CRapidDownloader::start(IDownload* download){
 	DEBUG_LINE("");
 	if (download==NULL){
   		while (!downloads.empty()){
@@ -141,5 +141,6 @@ void CRapidDownloader::start(IDownload* download){
 	}else{
 		this->download_tag(download->url);
 	}
+	return true;
 }
 

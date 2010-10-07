@@ -31,7 +31,7 @@ public:
 	virtual const IDownload* addDownload(const std::string& url, const std::string& filename);
 	virtual bool removeDownload(IDownload& download);
 	virtual std::list<IDownload>* search(const std::string& name);
-	virtual void start(IDownload* download);
+	virtual bool start(IDownload* download);
 
 private:
 	bool download_name(const std::string& longname, int reccounter=0);

@@ -5,8 +5,8 @@
 #include "Widget.h"
 #include "../../FileSystem.h"
 
-void CWidgetDownloader::start(IDownload* download){
-
+bool CWidgetDownloader::start(IDownload* download){
+	return true;
 }
 
 const IDownload* CWidgetDownloader::addDownload(const std::string& url, const std::string& filename){

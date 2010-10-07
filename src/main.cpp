@@ -27,6 +27,7 @@ enum{
 	TORRENT_DOWNLOAD,
 	WIDGET_SEARCH,
 	FILESYSTEM_WRITEPATH,
+	DOWNLOAD,
 	HELP
 };
 
@@ -39,6 +40,7 @@ static struct option long_options[] = {
 	{"torrent-download"        , 1, 0, TORRENT_DOWNLOAD},
 	{"widget-search"           , 1, 0, WIDGET_SEARCH},
 	{"filesystem-writepath"    , 0, 0, FILESYSTEM_WRITEPATH},
+	{"download"                , 1, 0, DOWNLOAD},
 	{"help"                    , 0, 0, HELP},
 	{0                         , 0, 0, 0}
 };
@@ -67,7 +69,7 @@ int main(int argc, char **argv){
 
 	CFileSystem::Initialize();
 	IDownloader::Initialize();
-		
+
 	while(true){
 		int option_index = 0;
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
@@ -78,7 +80,6 @@ int main(int argc, char **argv){
 				rapidDownload->search(optarg);
 				rapidDownload->addDownload(optarg);
 				rapidDownload->start();
-
 				break;
 			}
 			case RAPID_VALIDATE:{
@@ -119,6 +120,18 @@ int main(int argc, char **argv){
 			}
 			case FILESYSTEM_WRITEPATH: {
 				printf("%s\n",fileSystem->getSpringDir().c_str());
+				break;
+			}
+			case DOWNLOAD:{ //first try to download with rapid, then with plasma, then http-search
+				rapidDownload->search(optarg);
+				rapidDownload->addDownload(optarg);
+				if (!rapidDownload->start()){
+
+					std::list <IDownload>* tmplist=plasmaDownload->search(optarg);
+					std::list <IDownload>::iterator it;
+					it=tmplist->begin();
+					plasmaDownload->start(&*it);
+				}
 				break;
 			}
 			case HELP:

@@ -73,7 +73,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
 	return dlres;
 }
 
-void CPlasmaDownloader::start(IDownload* download){
+bool CPlasmaDownloader::start(IDownload* download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	torrentDownload->start(download);
 	std::list<std::string>::iterator it;
@@ -82,6 +82,7 @@ void CPlasmaDownloader::start(IDownload* download){
 		printf("%s\n downloading depends: ",tmp->front().name.c_str());
 		torrentDownload->start(&tmp->front());
 	}
+	return true;
 }
 
 const IDownload* CPlasmaDownloader::addDownload(const std::string& url, const std::string& filename){

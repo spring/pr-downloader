@@ -124,10 +124,11 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name){
 
 	return NULL;
 }
-void CHttpDownloader::start(IDownload* download){
+bool CHttpDownloader::start(IDownload* download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
   	while (!downloads.empty()){
   		this->download(downloads.front()->url,downloads.front()->name);
 		downloads.pop_front();
 	}
+	return true;
 }

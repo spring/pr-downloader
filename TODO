@@ -2,7 +2,7 @@
  * make unit-sync compatible
  * add an --force switch to force redownloading/updating (override cache)
  * make some things configureable
- * fix build system (cross-compile + code-plugable)
+ * fix build system (code-plugable)
  * make logging configurable, cron/script-compatible, quiet mode, remove printf?
  * add version-check (for current stable / getting download-link / ...)
 
@@ -17,9 +17,9 @@
  * search for additional mirrors: http://springfiles.com/checkmirror.php?q=FILE_NAME&c=CATEGORY
 
 =rapid=
- * keeping a file in .spring/rapid/repos.caspring.org/versions.gz breaks original rapid
  * use /packages/selected.list for pinned tags / downloaded files
  * dont download directly to pool or packages dir but to a temp dir
+ * use c++ streams
 
 =torrent=
  * auto ban corrupted mirrors (temp-ban?)
@@ -27,3 +27,4 @@
 =widget=
  * remove it or finish it? it does't to the other downloaders (widgets are not needed to play the game...)
  * backup for old widgets (before getting overwritten)
+

@@ -20,10 +20,10 @@ int CTorrentDownloader::getProcess(const libtorrent::torrent_handle& torrentHand
 	return sum;
 }
 
-void CTorrentDownloader::start(IDownload* download){
+bool CTorrentDownloader::start(IDownload* download){
 	printf("%s %s:%d \n",__FILE__, __FUNCTION__ ,__LINE__);
 	if (download==NULL)
-		return;
+		return false;
 	libtorrent::session torrentSession;
 
 //	s=new libtorrent::session();
@@ -59,8 +59,7 @@ void CTorrentDownloader::start(IDownload* download){
 	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
 		it=download->mirror.begin();
 		httpDownload->addDownload(*it,download->name + addTorrentParams.ti->file_at(0).path.filename());
-		httpDownload->start();
-		return;
+		return httpDownload->start();
 	}
 
     while( (!torrentHandle.is_finished()) && (!torrentHandle.is_seed()) && (torrentHandle.is_valid())){
@@ -85,7 +84,7 @@ void CTorrentDownloader::start(IDownload* download){
     printf("download finished, shuting down torrent...\n");
     torrentSession.pause();
 	printf("shut down!\n");
-
+	return true;
 }
 
 const IDownload* CTorrentDownloader::addDownload(const std::string& url, const std::string& filename){

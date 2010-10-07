@@ -64,8 +64,9 @@ public:
 	/**
 		start specific download, or start all if parameter = NULL
 		download could also be a new download
+		@return returns true, when download was successfull
 	*/
-	virtual void start(IDownload* download = NULL)=0;
+	virtual bool start(IDownload* download = NULL)=0;
 
 	/**
 		add a download to the download list
