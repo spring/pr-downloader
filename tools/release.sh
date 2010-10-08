@@ -18,5 +18,5 @@ ${ZIP} rapid_dbg.7z $FILESDBG
 ls -lh rapid_dbg.7z
 
 cd ../src
-cppcheck --enable=all --quiet --quiet .
+cppcheck --enable=all --quiet .
 
