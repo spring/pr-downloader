@@ -58,27 +58,6 @@ bool CRapidDownloader::reloadRepos(){
 	reposLoaded=true;
 	return true;
 }
-/**
-	download by tag, for example "ba:stable"
-*/
-bool CRapidDownloader::download_tag(const std::string& modname){
-	reloadRepos();
-	std::list<CSdp*>::iterator it;
-	for(it=sdps.begin();it!=sdps.end();++it){
-		if ((*it)->getShortName().compare(modname)==0){
-			printf("Found Repository, downloading %s\n", (*it)->getName().c_str());
-			if (!(*it)->download())
-				return false;
-			if ((*it)->getDepends().length()>0){
-				if (!download_name((*it)->getDepends()))
-					return false;
-			}
-			return true;
-		}
-	}
-	printf("Couldn't find %s\n", modname.c_str());
-	return false;
-}
 
 /**
 	download by name, for example "Complete Annihilation revision 1234"
@@ -127,5 +106,20 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownloa
 */
 bool CRapidDownloader::download(IDownload& download){
 	DEBUG_LINE("");
-	return this->download_tag(download.url);
+	reloadRepos();
+	std::list<CSdp*>::iterator it;
+	for(it=sdps.begin();it!=sdps.end();++it){
+		if ((*it)->getShortName().compare(download.url)==0){
+			printf("Found Repository, downloading %s\n", (*it)->getName().c_str());
+			if (!(*it)->download())
+				return false;
+			if ((*it)->getDepends().length()>0){
+				if (!download_name((*it)->getDepends()))
+					return false;
+			}
+			return true;
+		}
+	}
+	printf("Couldn't find %s\n", download.url.c_str());
+	return false;
 }

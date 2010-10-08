@@ -48,33 +48,6 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 	return written;
 }
 
-bool CHttpDownloader::download(const std::string& Url, const std::string& filename, int pos){
-	CURLcode res=CURLE_OK;
-    printf("CHttpDownloader::download %s to %s\n",Url.c_str(), filename.c_str());
-
-	if(!curl) {
-		printf("Error initializing curl");
-		return false;
-	}
-	FILE* fp = fopen(filename.c_str() ,"wb+");
-	if (fp<=NULL){
-        printf("CHttpDownloader:: Could not open %s\n",filename.c_str());
-		return false;
-	}
-	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-	curl_easy_setopt(curl, CURLOPT_URL, Url.c_str());
-	res = curl_easy_perform(curl);
-	fclose(fp);
-	printf("\n"); //new line because of downloadbar
-	if (res!=0){
-		printf("error downloading %s\n",Url.c_str());
-		unlink(filename.c_str());
-		return false;
-  }
-  return true;
-}
-
 CHttpDownloader::CHttpDownloader(){
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl = curl_easy_init();
@@ -188,5 +161,29 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 
 bool CHttpDownloader::download(IDownload& download){
 	DEBUG_LINE("");
-	return this->download(download.url,download.name);
+
+	CURLcode res=CURLE_OK;
+    printf("CHttpDownloader::download %s to %s\n",download.url.c_str(), download.name.c_str());
+
+	if(!curl) {
+		printf("Error initializing curl");
+		return false;
+	}
+	FILE* fp = fopen(download.name.c_str() ,"wb+");
+	if (fp<=NULL){
+        printf("CHttpDownloader:: Could not open %s\n",download.name.c_str());
+		return false;
+	}
+	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+	curl_easy_setopt(curl, CURLOPT_URL, download.url.c_str());
+	res = curl_easy_perform(curl);
+	fclose(fp);
+	printf("\n"); //new line because of downloadbar
+	if (res!=0){
+		printf("error downloading %s\n",download.url.c_str());
+		unlink(download.name.c_str());
+		return false;
+	}
+	return true;
 }
