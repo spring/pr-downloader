@@ -103,16 +103,6 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 }
 
 
-const IDownload* CRapidDownloader::addDownload(const std::string& url, const std::string& filename){
-	DEBUG_LINE("");
-	download_tag(url);
-	return NULL;
-}
-
-bool CRapidDownloader::removeDownload(IDownload& download){
-	DEBUG_LINE("");
-	return true;
-}
 /**
 	search for a mod
 */
@@ -135,16 +125,7 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownloa
 /**
 	start a download
 */
-bool CRapidDownloader::start(IDownload* download){
+bool CRapidDownloader::download(IDownload& download){
 	DEBUG_LINE("");
-	if (download==NULL){
-  		while (!downloads.empty()){
-			if (!this->download_tag(downloads.front()->url))
-				return false;
-			downloads.pop_front();
-		}
-	}else{
-		return this->download_tag(download->url);
-	}
-	return true;
+	return this->download_tag(download.url);
 }

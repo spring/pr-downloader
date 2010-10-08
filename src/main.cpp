@@ -71,14 +71,14 @@ void show_help(const char* cmd){
 
 bool download(const std::string name, IDownload::category cat){
 	std::list<IDownload>* res=rapidDownload->search(optarg, cat);
-	if ((res!=NULL) && (res->size()>0) && (rapidDownload->start(&res->front())))
+	if ((res!=NULL) && (res->size()>0) && (rapidDownload->download(*res)))
 		return true;
 	res=plasmaDownload->search(optarg, cat);
-	if ((res!=NULL) && (res->size()>0) && plasmaDownload->start(&res->front()))
+	if ((res!=NULL) && (res->size()>0) && plasmaDownload->download(*res))
 		return true;
 	res=httpDownload->search(optarg, cat);
 	if ((res!=NULL) && (res->size()>0))
-		return httpDownload->start(&res->front());
+		return httpDownload->download(*res);
 	return false;
 }
 
@@ -94,11 +94,11 @@ int main(int argc, char **argv){
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
 		if (c == -1)
 			break;
+		std::list<IDownload>* list;
 		switch(c){
 			case RAPID_DOWNLOAD:{
-				rapidDownload->search(optarg);
-				rapidDownload->addDownload(optarg);
-				rapidDownload->start();
+				list=rapidDownload->search(optarg);
+				rapidDownload->download(*list);
 				break;
 			}
 			case RAPID_VALIDATE:{
@@ -120,16 +120,13 @@ int main(int argc, char **argv){
 				plasmaDownload->search(tmp);
 			}
 			case PLASMA_DOWNLOAD: {
-				std::string tmp=optarg;
-				std::list <IDownload>* tmplist=plasmaDownload->search(tmp);
-				std::list <IDownload>::iterator it;
-				it=tmplist->begin();
-				plasmaDownload->start(&*it);
+				list=plasmaDownload->search(optarg);
+				plasmaDownload->download(*list);
 				break;
 			}
 			case TORRENT_DOWNLOAD: {
-				torrentDownload->addDownload(optarg);
-				torrentDownload->start();
+				list=torrentDownload->search(optarg);
+				torrentDownload->download(*list);
 				break;
 			}
 			case WIDGET_SEARCH: {
@@ -152,9 +149,8 @@ int main(int argc, char **argv){
 				break;
 			}
 			case HTTP_DOWNLOAD: {
-				std::list<IDownload>* res=httpDownload->search(optarg);
-				if ((res!=NULL) && (res->size()>0))
-					httpDownload->start(&res->front());
+				list=httpDownload->search(optarg);
+				httpDownload->download(*list);
 				break;
 			}
 			case DOWNLOAD_MAP:{

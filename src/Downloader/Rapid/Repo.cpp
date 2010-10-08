@@ -9,7 +9,6 @@
 #include <stdio.h>
 
 
-
 void CRepo::download(){
 	DEBUG_LINE("");
 	std::string tmp;
@@ -20,8 +19,8 @@ void CRepo::download(){
 		if (parse()) //first try already downloaded file, as repo master file rarely changes
 		return;
 	fileSystem->createSubdirs(tmpFile);
-	httpDownload->addDownload(repourl + "/versions.gz", tmpFile);
-	httpDownload->start();
+	IDownload dl(repourl + "/versions.gz", tmpFile);
+	httpDownload->download(dl);
 	parse();
 }
 

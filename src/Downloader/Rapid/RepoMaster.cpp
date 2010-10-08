@@ -15,8 +15,8 @@ void CRepoMaster::download(const std::string& name){
 	DEBUG_LINE(name.c_str());
 	if (fileSystem->isOlder(path,REPO_MASTER_RECHECK_TIME)) //first try already downloaded file, as repo master file rarely changes
 		if (parse()) return;
-	httpDownload->addDownload(name, path);
-	httpDownload->start();
+	IDownload dl(name,path);
+	httpDownload->download(dl);
 	parse();
 }
 

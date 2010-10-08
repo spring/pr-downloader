@@ -31,6 +31,7 @@ public:
 	std::string url; //url to download
 	std::string name; //name, in most cases the filename to save to
 	std::list<std::string> depend; //list of all depends
+	bool downloaded; //file was downloaded?
 	/**
 		returns the string name of a category
 	*/
@@ -41,8 +42,6 @@ public:
 };
 
 class IDownloader{
-protected:
-	std::list<IDownload*> downloads;
 public:
 	static IDownloader* GetHttpInstance();
 	static IDownloader* GetRapidInstance();
@@ -62,21 +61,24 @@ public:
 	virtual ~IDownloader(){};
 
 	/**
-		start specific download, or start all if parameter = NULL
-		download could also be a new download
+		download specificed downloads
 		@return returns true, when download was successfull
 	*/
-	virtual bool start(IDownload* download = NULL)=0;
+	virtual bool download(IDownload& dl)=0;
+	bool download(std::list<IDownload>& download){
+		std::list<IDownload>::iterator it;
+		bool res=true;
+		for(it=download.begin();it!=download.end();++it){
+			(*it).downloaded=this->download(*it);
+			if(!(*it).downloaded){
+				res=false;
+			}
+		}
+		return res;
+	}
 
-	/**
-		add a download to the download list
-	*/
-	virtual const IDownload* addDownload(const std::string& url, const std::string& filename="")=0;
 
-	/**
-		remove the specified download
-	*/
-	virtual bool removeDownload(IDownload& download)=0;
+
 	/**
 		search for a string at the downloader
 	*/

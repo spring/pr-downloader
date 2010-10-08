@@ -109,18 +109,6 @@ void CHttpDownloader::setStatsPos(unsigned int pos){
 	this->stats_filepos=pos;
 }
 
-
-const IDownload* CHttpDownloader::addDownload(const std::string& url, const std::string& filename){
-	DEBUG_LINE("");
-	IDownload* dl=new IDownload(url,filename);
-	downloads.push_back(dl);
-	return NULL;
-}
-bool CHttpDownloader::removeDownload(IDownload& download){
-	DEBUG_LINE("");
-	return true;
-}
-
 char buf[4096];
 int pos;
 
@@ -198,13 +186,7 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 	return NULL;
 }
 
-bool CHttpDownloader::start(IDownload* download){
+bool CHttpDownloader::download(IDownload& download){
 	DEBUG_LINE("");
-	if (download!=NULL){
-		this->download(download->url,download->name);
-	}else while (!downloads.empty()){
-  		this->download(downloads.front()->url,downloads.front()->name);
-		downloads.pop_front();
-	}
-	return true;
+	return this->download(download.url,download.name);
 }

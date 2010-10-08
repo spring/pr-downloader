@@ -5,9 +5,7 @@ class CWidgetDownloader: public IDownloader{
 public:
 	CWidgetDownloader(){};
 	~CWidgetDownloader(){};
-	bool start(IDownload* download = NULL);
-	const IDownload* addDownload(const std::string& url, const std::string& filename="");
-	bool removeDownload(IDownload& download);
+	bool download(IDownload& download);
 	std::list<IDownload>* search(const std::string& name, IDownload::category=IDownload::CAT_NONE);
 
 };

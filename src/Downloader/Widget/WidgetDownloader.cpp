@@ -5,14 +5,7 @@
 #include "Widget.h"
 #include "../../FileSystem.h"
 
-bool CWidgetDownloader::start(IDownload* download){
-	return true;
-}
-
-const IDownload* CWidgetDownloader::addDownload(const std::string& url, const std::string& filename){
-	return NULL;
-}
-bool CWidgetDownloader::removeDownload(IDownload& download){
+bool CWidgetDownloader::download(IDownload& download){
 	return true;
 }
 
@@ -51,8 +44,11 @@ std::list<IDownload>* CWidgetDownloader::search(const std::string& name, IDownlo
 	path=path+PATH_DELIMITER + "rapid" + PATH_DELIMITER + "Widgets.xml";
 
 	if (!fileSystem->isOlder(path,WIDGET_RECHECK_TIME)){
-		httpDownload->addDownload("http://spring.vsync.de/luaManager/lua_manager.php?m=0", path);
-		httpDownload->start();
+		std::list<IDownload> dllist;
+		dllist.clear();
+		IDownload dl("http://spring.vsync.de/luaManager/lua_manager.php?m=0", path);
+		dllist.push_back(dl);
+		httpDownload->download(dllist);
 	}
 	CWidget* widget=new CWidget(path);
 //	std::list<IDownload>* widgets = new std::list<IDownload>* widgets;

@@ -4,11 +4,6 @@
 #include "../../FileSystem.h"
 #include "../../Util.h"
 
-bool CTorrentDownloader::download(const std::string& torrentfile, const std::string& filename){
-	DEBUG_LINE("");
-	return true;
-}
-
 int CTorrentDownloader::getProcess(const libtorrent::torrent_handle& torrentHandle){
 	std::vector<libtorrent::size_type> progress;
 	torrentHandle.file_progress(progress);
@@ -20,13 +15,9 @@ int CTorrentDownloader::getProcess(const libtorrent::torrent_handle& torrentHand
 	return sum;
 }
 
-bool CTorrentDownloader::start(IDownload* download){
+bool CTorrentDownloader::download(IDownload& download){
 	DEBUG_LINE("");
-	if (download==NULL)
-		return false;
 	libtorrent::session torrentSession;
-
-//	s=new libtorrent::session();
 
     libtorrent::session_settings setting;
     setting.tracker_completion_timeout=1;
@@ -39,17 +30,17 @@ bool CTorrentDownloader::start(IDownload* download){
 	torrentSession.listen_on(std::make_pair(6881, 6889));
 
 	libtorrent::add_torrent_params addTorrentParams;
-	addTorrentParams.save_path = download->name; //name contains the path, because torrents already include the filenames
-    addTorrentParams.ti = new libtorrent::torrent_info(download->url.c_str());
+	addTorrentParams.save_path = download.name; //name contains the path, because torrents already include the filenames
+    addTorrentParams.ti = new libtorrent::torrent_info(download.url.c_str());
 	for (int i=0; i<addTorrentParams.ti->num_files(); i++){
 		printf("File %d in torrent: %s\n",i, addTorrentParams.ti->file_at(i).path.filename().c_str());
 	}
 
-    printf("Downloading torrent to %s\n", download->name.c_str());
+    printf("Downloading torrent to %s\n", download.name.c_str());
     libtorrent::torrent_handle torrentHandle=torrentSession.add_torrent(addTorrentParams);
 
     std::list<std::string>::iterator it;
-	for(it=download->mirror.begin(); it!=download->mirror.end(); it++){
+	for(it=download.mirror.begin(); it!=download.mirror.end(); it++){
 		printf("Adding webseed to torrent %s\n",(*it).c_str());
 		urlEncode(*it);
 		torrentHandle.add_url_seed(*it);
@@ -57,9 +48,9 @@ bool CTorrentDownloader::start(IDownload* download){
 	libtorrent::torrent_info torrentInfo = torrentHandle.get_torrent_info();
 
 	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
-		it=download->mirror.begin();
-		httpDownload->addDownload(*it,download->name + addTorrentParams.ti->file_at(0).path.filename());
-		return httpDownload->start();
+		it=download.mirror.begin();
+		IDownload dl(*it,download.name + addTorrentParams.ti->file_at(0).path.filename());
+		return httpDownload->download(dl);
 	}
 
     while( (!torrentHandle.is_finished()) && (!torrentHandle.is_seed()) && (torrentHandle.is_valid())){
@@ -84,16 +75,6 @@ bool CTorrentDownloader::start(IDownload* download){
     printf("download finished, shuting down torrent...\n");
     torrentSession.pause();
 	printf("shut down!\n");
-	return true;
-}
-
-const IDownload* CTorrentDownloader::addDownload(const std::string& url, const std::string& filename){
-	DEBUG_LINE("");
-	return NULL;
-}
-
-bool CTorrentDownloader::removeDownload(IDownload& download){
-	DEBUG_LINE("");
 	return true;
 }
 

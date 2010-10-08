@@ -19,6 +19,7 @@ IDownload::IDownload(const std::string& url, const std::string& name, category c
 	this->url=url;
 	this->name=name;
 	this->cat=cat;
+	this->downloaded=false;
 }
 
 
@@ -29,17 +30,6 @@ bool IDownload::addMirror(const std::string& url){
 
 bool IDownload::addDepend(const std::string& depend){
 	this->depend.push_back(depend);
-	return true;
-}
-
-const IDownload* IDownloader::addDownload(const std::string& url, const std::string& filename){
-	IDownload* dl=new IDownload(url,filename);
-	downloads.push_back(dl);
-	return dl;
-}
-
-bool IDownloader::removeDownload(IDownload& download){
-	this->downloads.remove(&download);
 	return true;
 }
 
