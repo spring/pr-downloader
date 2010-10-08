@@ -61,10 +61,14 @@ public:
 	virtual ~IDownloader(){};
 
 	/**
-		download specificed downloads
+		download specificed download
 		@return returns true, when download was successfull
 	*/
 	virtual bool download(IDownload& dl)=0;
+	/**
+		download all downloads in list
+		@return returns true, when all downloads were successfull
+	*/
 	bool download(std::list<IDownload>& download){
 		std::list<IDownload>::iterator it;
 		bool res=true;

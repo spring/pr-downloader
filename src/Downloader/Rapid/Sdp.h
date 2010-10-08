@@ -16,6 +16,10 @@ public:
 		this->depends=depends;
 		this->file_handle=NULL;
 		this->downlooadInitialized=false;
+		this->cursize=0;
+		memset(this->cursize_buf,sizeof(this->cursize_buf),0);
+		this->skipped=false;
+		this->file_pos=0;
 	}
 	/**
 		download a mod, we already know the host where to download from + the md5 of the sdp file

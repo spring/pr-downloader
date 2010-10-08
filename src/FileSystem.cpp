@@ -156,7 +156,6 @@ void CFileSystem::createSubdirs (const std::string& path) const {
 	if (path[path.length()]!=PATH_DELIMITER){
 		tmp=tmp.substr(0,tmp.rfind(PATH_DELIMITER));
 	}
-	bool run=false;
 	for (unsigned int i=0;i<tmp.size(); i++){
 		char c=tmp.at(i);
 		if (c==PATH_DELIMITER){
@@ -165,7 +164,6 @@ void CFileSystem::createSubdirs (const std::string& path) const {
 #else
 			mkdir(tmp.substr(0,i).c_str(),0777);
 #endif
-			run=true;
 		}
 	}
 #ifdef WIN32
@@ -236,12 +234,12 @@ int CFileSystem::validatePool(const std::string& path){
 			}
 
 		}
-
 	}
+	closedir(d);
 	return res;
 }
 
-bool CFileSystem::isOlder(const std::string filename, int secs){
+bool CFileSystem::isOlder(const std::string& filename, int secs){
 	struct stat sb;
 	if (stat(filename.c_str(),&sb)<0){
 		return true;

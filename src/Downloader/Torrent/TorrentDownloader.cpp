@@ -40,7 +40,7 @@ bool CTorrentDownloader::download(IDownload& download){
     libtorrent::torrent_handle torrentHandle=torrentSession.add_torrent(addTorrentParams);
 
     std::list<std::string>::iterator it;
-	for(it=download.mirror.begin(); it!=download.mirror.end(); it++){
+	for(it=download.mirror.begin(); it!=download.mirror.end(); ++it){
 		printf("Adding webseed to torrent %s\n",(*it).c_str());
 		urlEncode(*it);
 		torrentHandle.add_url_seed(*it);

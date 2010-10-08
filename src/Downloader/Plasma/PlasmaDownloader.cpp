@@ -57,10 +57,10 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 	}
 	printf("Saving file to %s\n",saveto.c_str());
 	IDownload* dl=new IDownload(fileName,saveto,cat);
-	for(it=result.links->string.begin();it!=result.links->string.end(); it++){
+	for(it=result.links->string.begin();it!=result.links->string.end(); ++it){
 		dl->addMirror((*it).c_str());
 	}
-	for(it=result.dependencies->string.begin();it!=result.dependencies->string.end(); it++){
+	for(it=result.dependencies->string.begin();it!=result.dependencies->string.end(); ++it){
 		dl->addDepend((*it).c_str());
 	}
 	dlres->push_back(*dl);

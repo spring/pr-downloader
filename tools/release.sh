@@ -17,3 +17,5 @@ ls -lh rapid.7z
 ${ZIP} rapid_dbg.7z $FILESDBG
 ls -lh rapid_dbg.7z
 
+cppcheck --enable=all --quiet --quiet src
+

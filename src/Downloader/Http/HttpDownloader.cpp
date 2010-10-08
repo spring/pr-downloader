@@ -137,7 +137,7 @@ std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDown
 					buf[i]=0;
 					std::string url;
 					url.assign(&buf[start+1]);
-					IDownload* tmp=new IDownload(url,filename, cat);
+					IDownload tmp(url,filename, cat);
 					res->push_back(*tmp);
 					start=-1;
 				}
@@ -153,9 +153,9 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 	DEBUG_LINE("");
 	std::list<IDownload>* res;
 	res=realSearch(name+".sd7", cat);
-	if (res->size()>0) return res;
+	if (res->empty()) return res;
 	res=realSearch(name+".sdz", cat);
-	if (res->size()>0) return res;
+	if (res->empty()) return res;
 	return NULL;
 }
 
@@ -170,7 +170,7 @@ bool CHttpDownloader::download(IDownload& download){
 		return false;
 	}
 	FILE* fp = fopen(download.name.c_str() ,"wb+");
-	if (fp<=NULL){
+	if (fp==NULL){
         printf("CHttpDownloader:: Could not open %s\n",download.name.c_str());
 		return false;
 	}

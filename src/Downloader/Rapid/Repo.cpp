@@ -33,8 +33,7 @@ bool CRepo::parse(){
 	}
    	char buf[1024];
 	sdps.empty();
-	char* res;
-    while((res=gzgets(fp, buf, sizeof(buf)))!=Z_NULL){
+    while((gzgets(fp, buf, sizeof(buf)))!=Z_NULL){
     	for(unsigned int i=0;i<sizeof(buf);i++){
     		if(buf[i]=='\n'){
     			buf[i]=0;

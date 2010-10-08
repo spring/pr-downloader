@@ -63,7 +63,7 @@ public:
 	/**
 		check if file is older then secs, returns true if file is older or something goes wrong
 	*/
-	bool isOlder(const std::string filename, int secs);
+	bool isOlder(const std::string& filename, int secs);
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;

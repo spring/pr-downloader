@@ -196,9 +196,9 @@ int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloaded,
 
 bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData*>& files){
 	CURL* curl;
-	CURLcode res;
 	curl = curl_easy_init();
 	if(curl) {
+		CURLcode res;
 		printf("Downloading stream: %s\n",url.c_str());
 
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -212,7 +212,7 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData*>& fil
 		int destlen=files.size()*2;
 		printf("%d %d %d\n",(int)files.size(),buflen,destlen);
 		int i=0;
-		for(it=files.begin();it!=files.end();it++){
+		for(it=files.begin();it!=files.end();++it){
 			if ((*it)->download==true)
 				buf[i/8] = buf[i/8] + (1<<(i%8));
 			i++;
