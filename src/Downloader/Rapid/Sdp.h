@@ -4,6 +4,7 @@
 
 #include "RepoMaster.h"
 #include "../../FileSystem.h"
+#include <string.h>
 
 class CSdp{
 public:
