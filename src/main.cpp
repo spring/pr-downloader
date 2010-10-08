@@ -71,10 +71,10 @@ void show_help(const char* cmd){
 
 bool download(const std::string& name, IDownload::category cat){
 	std::list<IDownload>* res=rapidDownload->search(optarg, cat);
-	if ((res!=NULL) && (!res->empty())) && (rapidDownload->download(*res)))
+	if ((res!=NULL) && (!res->empty()) && (rapidDownload->download(*res)))
 		return true;
 	res=plasmaDownload->search(optarg, cat);
-	if ((res!=NULL) && (!res->empty())) && plasmaDownload->download(*res))
+	if ((res!=NULL) && (!res->empty()) && plasmaDownload->download(*res))
 		return true;
 	res=httpDownload->search(optarg, cat);
 	if ((res!=NULL) && (!res->empty()))

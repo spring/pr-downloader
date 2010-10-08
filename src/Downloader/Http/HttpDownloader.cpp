@@ -138,7 +138,7 @@ std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDown
 					std::string url;
 					url.assign(&buf[start+1]);
 					IDownload tmp(url,filename, cat);
-					res->push_back(*tmp);
+					res->push_back(tmp);
 					start=-1;
 				}
 			}
