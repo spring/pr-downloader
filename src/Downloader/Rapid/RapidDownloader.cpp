@@ -84,7 +84,7 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 
 
 /**
-	search for a mod
+	search for a mod, searches for the short + long name
 */
 std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownload::category cat){
 	DEBUG_LINE(name.c_str() );
@@ -109,7 +109,5 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownloa
 bool CRapidDownloader::download(IDownload& download){
 	DEBUG_LINE(download.name.c_str());
 	reloadRepos();
-	if (!download_name(download.name,0))
-		printf("Couldn't find %s\n", download.url.c_str());
-	return false;
+	return download_name(download.name,0);
 }
