@@ -10,6 +10,8 @@ function gadget:GetInfo()
 	}
 end
 
+if (gadgetHandler:IsSyncedCode()) then
+
 -- TODO hideinterface
 -- load widgets specified by command-line
 -- autoexit
@@ -29,11 +31,38 @@ function tellme(symbol, name)
 		Spring.Echo(name)
 	end
 end
+
 function gadget:Initialize()
-	Spring.Echo( "--------------------------------------")
---	tellme(_G.System, "")
-	Spring.Echo()
-	Spring.Echo( "--------------------------------------")
+	Spring.SendCommands("hideinterface")
+end
+
+function gadget:GameFrame(n)
+	if n==0 then
+		Spring.Echo("test")
+--		Spring.SendCommands("hideinterface")
+		Spring.SendCommands("cheat 1")
+		Spring.SendCommands("addplayer")
+	end
+	if n==1 then
+		Spring.CreateUnit("corcom" , 2700 , 1100 , 10, 0, 0 )
+		Spring.CreateUnit("armbanth" , 0 , 0 , 0, 0, 1 )
+	end
+	if n==2 then
+		Spring.SendCommands("aikill 0")
+	end
+	if n==10 then
+		Spring.SendCommands("aicontrol 0 RAI 0.601")
+		Spring.SendCommands("setmaxspeed 100")
+		Spring.SendCommands("setminspeed 100")
+	end
+	if n==100000 then
+		Spring.SendCommands("screenshot")
+		Spring.SendCommands("pause")
+	end
+end
+function gadget:EndGame()
+	Spring.SendCommands("quit")
+	Spring.SendCommands("quitforce")
 end
 
 
@@ -45,3 +74,9 @@ function gadget:UnitCreated(unitID, unitDefID, unitTeam)
 	Spring.Echo( "Hello Unit " .. unitID)
 
 end
+
+
+
+
+end
+

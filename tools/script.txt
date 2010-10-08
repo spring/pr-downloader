@@ -5,9 +5,7 @@
 	IsHost=1;
 	MyPlayerName=UnnamedPlayer;
 
-	ModHash=1509491964;
-	MapHash=1116696899;
-	Mapname=Coast To Coast Remake V2;
+	Mapname=Sherwood-V1;
 	GameType=Spring Test Mod 0.1;
 
 	startpostype=3;
