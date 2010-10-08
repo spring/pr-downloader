@@ -210,8 +210,10 @@ int CFileSystem::validatePool(const std::string& path){
 				stat(tmp.c_str(),&sb);
 				if((sb.st_mode&S_IFDIR)!=0){
 					res=res+validatePool(tmp);
-					printf("Valid files: %d\r",res);
-					fflush(stdout);
+					if (res%13==0){
+						printf("Valid files: %d\r",res);
+						fflush(stdout);
+					}
 				}else{
 					FileData filedata;
 					std::string md5;
