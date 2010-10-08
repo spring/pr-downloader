@@ -97,7 +97,7 @@ bool CTorrentDownloader::removeDownload(IDownload& download){
 	return true;
 }
 
-std::list<IDownload>* CTorrentDownloader::search(const std::string& name){
+std::list<IDownload>* CTorrentDownloader::search(const std::string& name, IDownload::category cat){
 	DEBUG_LINE("");
 	return NULL;
 }

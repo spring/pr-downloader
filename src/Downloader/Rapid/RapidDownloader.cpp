@@ -116,7 +116,7 @@ bool CRapidDownloader::removeDownload(IDownload& download){
 /**
 	search for a mod
 */
-std::list<IDownload>* CRapidDownloader::search(const std::string& name){
+std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownload::category cat){
 	DEBUG_LINE(name.c_str() );
 	reloadRepos();
 	std::list<IDownload>*tmp;

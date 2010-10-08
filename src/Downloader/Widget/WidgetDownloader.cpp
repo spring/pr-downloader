@@ -46,7 +46,7 @@ bool CWidgetDownloader::removeDownload(IDownload& download){
 
 */
 
-std::list<IDownload>* CWidgetDownloader::search(const std::string& name){
+std::list<IDownload>* CWidgetDownloader::search(const std::string& name, IDownload::category cat){
 	std::string path=fileSystem->getSpringDir();
 	path=path+PATH_DELIMITER + "rapid" + PATH_DELIMITER + "Widgets.xml";
 

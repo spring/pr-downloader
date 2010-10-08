@@ -30,7 +30,7 @@ public:
 	virtual void addRemoteDsp(CSdp* dsp);
 	virtual const IDownload* addDownload(const std::string& url, const std::string& filename);
 	virtual bool removeDownload(IDownload& download);
-	virtual std::list<IDownload>* search(const std::string& name);
+	virtual std::list<IDownload>* search(const std::string& name, IDownload::category=IDownload::CAT_NONE);
 	virtual bool start(IDownload* download);
 
 private:

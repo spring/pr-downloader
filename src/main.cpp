@@ -29,7 +29,8 @@ enum{
 	TORRENT_DOWNLOAD,
 	WIDGET_SEARCH,
 	FILESYSTEM_WRITEPATH,
-	DOWNLOAD,
+	DOWNLOAD_MAP,
+	DOWNLOAD_MOD,
 	HELP
 };
 
@@ -42,9 +43,10 @@ static struct option long_options[] = {
 	{"http-download"           , 1, 0, HTTP_DOWNLOAD},
 	{"http-search"             , 1, 0, HTTP_SEARCH},
 	{"torrent-download"        , 1, 0, TORRENT_DOWNLOAD},
+	{"download-map"            , 1, 0, DOWNLOAD_MAP},
+	{"download-mod"            , 1, 0, DOWNLOAD_MOD},
 	{"widget-search"           , 1, 0, WIDGET_SEARCH},
 	{"filesystem-writepath"    , 0, 0, FILESYSTEM_WRITEPATH},
-	{"download"                , 1, 0, DOWNLOAD},
 	{"help"                    , 0, 0, HELP},
 	{0                         , 0, 0, 0}
 };
@@ -65,6 +67,19 @@ void show_help(const char* cmd){
 	}
 	printf("\n");
 	exit(1);
+}
+
+bool download(const std::string name, IDownload::category cat){
+	std::list<IDownload>* res=rapidDownload->search(optarg, cat);
+	if ((res!=NULL) && (res->size()>0) && (rapidDownload->start(&res->front())))
+		return true;
+	res=plasmaDownload->search(optarg, cat);
+	if ((res!=NULL) && (res->size()>0) && plasmaDownload->start(&res->front()))
+		return true;
+	res=httpDownload->search(optarg, cat);
+	if ((res!=NULL) && (res->size()>0))
+		return httpDownload->start(&res->front());
+	return false;
 }
 
 int main(int argc, char **argv){
@@ -142,16 +157,12 @@ int main(int argc, char **argv){
 					httpDownload->start(&res->front());
 				break;
 			}
-			case DOWNLOAD:{ //first try to download with rapid, then with plasma, then http-search
-				std::list<IDownload>* res=rapidDownload->search(optarg);
-				if ((res!=NULL) && (res->size()>0) && (rapidDownload->start(&res->front())))
-					break;
-				res=plasmaDownload->search(optarg);
-				if ((res!=NULL) && (res->size()>0) && plasmaDownload->start(&res->front()))
-					break;
-				res=httpDownload->search(optarg);
-				if ((res!=NULL) && (res->size()>0))
-					httpDownload->start(&res->front());
+			case DOWNLOAD_MAP:{
+				download(optarg, IDownload::CAT_MAPS);
+				break;
+			}
+			case DOWNLOAD_MOD:{
+				download(optarg, IDownload::CAT_MODS);
 				break;
 			}
 			case HELP:

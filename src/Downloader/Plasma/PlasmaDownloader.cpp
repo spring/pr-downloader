@@ -11,7 +11,7 @@ CPlasmaDownloader::CPlasmaDownloader(){
 	fileSystem->createSubdirs(this->torrentPath);
 }
 
-std::list<IDownload>* CPlasmaDownloader::search(const std::string& name){
+std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownload::category category){
 	DEBUG_LINE("");
 	PlasmaServiceSoap12Proxy service;
 	_ns1__DownloadFile file;

@@ -188,16 +188,12 @@ std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDown
 
 }
 
-std::list<IDownload>* CHttpDownloader::search(const std::string& name){
+std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload::category cat){
 	DEBUG_LINE("");
 	std::list<IDownload>* res;
-	res=realSearch(name+".sd7", IDownload::CAT_MAPS);
+	res=realSearch(name+".sd7", cat);
 	if (res->size()>0) return res;
-	res=realSearch(name+".sdz", IDownload::CAT_MAPS);
-	if (res->size()>0) return res;
-	res=realSearch(name+".sd7", IDownload::CAT_MODS);
-	if (res->size()>0) return res;
-	res=realSearch(name+".sdz", IDownload::CAT_MODS);
+	res=realSearch(name+".sdz", cat);
 	if (res->size()>0) return res;
 	return NULL;
 }

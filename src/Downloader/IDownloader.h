@@ -80,7 +80,7 @@ public:
 	/**
 		search for a string at the downloader
 	*/
-	virtual std::list<IDownload>* search(const std::string& name="")=0;
+	virtual std::list<IDownload>* search(const std::string& name="", IDownload::category=IDownload::CAT_NONE)=0;
 
 private:
 	static IDownloader* httpdl;
