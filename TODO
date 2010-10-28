@@ -4,6 +4,7 @@
  * make some things configureable
  * fix build system (code-plugable)
  * make logging configurable, cron/script-compatible, quiet mode, remove printf?
+ * keep somewhere a log what happened
  * add version-check (for current stable / getting download-link / ...)
 
 =unitsync=
@@ -12,19 +13,21 @@
  * allow it to be quiet on stdout/stderr
 
 =http=
+ * if filename != modname, file can't be found through current sf interface
 
 =plasma=
- * search for additional mirrors: http://springfiles.com/checkmirror.php?q=FILE_NAME&c=CATEGORY
 
 =rapid=
  * use /packages/selected.list for pinned tags / downloaded files
  * dont download directly to pool or packages dir but to a temp dir
  * use c++ streams
+ * (clean?) duplicate search results (with same md5)
+ * delete old mods?
 
 =torrent=
  * auto ban corrupted mirrors (temp-ban?)
+ * quicker shutdown
 
 =widget=
- * remove it or finish it? it does't to the other downloaders (widgets are not needed to play the game...)
+ * remove it or finish it? it does't fit to the other downloaders (widgets are not needed to play the game...)
  * backup for old widgets (before getting overwritten)
-
