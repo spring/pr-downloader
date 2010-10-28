@@ -6,6 +6,8 @@
 #include "../../FileSystem.h"
 #include <string.h>
 
+#define LENGTH_SIZE 4
+
 class CSdp{
 public:
 	CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url){
@@ -18,7 +20,7 @@ public:
 		this->file_handle=NULL;
 		this->downlooadInitialized=false;
 		this->cursize=0;
-		memset(this->cursize_buf,sizeof(this->cursize_buf),0);
+		memset(this->cursize_buf,LENGTH_SIZE,0);
 		this->skipped=false;
 		this->file_pos=0;
 	}
@@ -60,7 +62,7 @@ public:
 
 	unsigned int file_pos;
 	unsigned int skipped;
-	unsigned char cursize_buf[4];
+	unsigned char cursize_buf[LENGTH_SIZE];
 	unsigned int cursize;
 
 private:

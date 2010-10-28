@@ -113,17 +113,17 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 //				printf("difficulty %d\n",skipped);
 			}
 			if (sdp->skipped<4){ // check if we skipped all 4 bytes, if not so, skip them
-				int toskip=intmin(buf_end-buf_pos,4-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
+				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
 				for(int i=0;i<toskip;i++) //copy bufs avaiable
 					sdp->cursize_buf[i]=buf_pos[i];
 //				printf("toskip: %d skipped: %d\n",toskip,skipped);
 				sdp->skipped=toskip+sdp->skipped;
 				buf_pos=buf_pos+sdp->skipped;
-				if (sdp->skipped==4){
+				if (sdp->skipped==LENGTH_SIZE){
 					(*sdp->list_it)->compsize=parse_int32(sdp->cursize_buf);
 				}
 			}
-			if (sdp->skipped==4){
+			if (sdp->skipped==LENGTH_SIZE){
 				int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
 					buf_end-buf_pos);
 //				printf("%s %d %ld %ld %ld %d %d %d %d %d\n",file_name.c_str(), (*list_it)->compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , skipped, file_pos);
@@ -131,12 +131,16 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 				if (towrite>0){
 					res=fwrite(buf_pos,1,towrite,sdp->file_handle);
 					if (res!=towrite){
-						printf("fwrite didn't write all\n");
+						printf("fwrite error\n");
+						return -1;
 					}
 					if(res<=0){
 						printf("\nwrote error: %d\n", res);
 						return -1;
 					}
+				}else if (towrite<0){
+					DEBUG_LINE("Fatal, something went wrong here!\n");
+					return -1;
 				}
 
 				buf_pos=buf_pos+res;

@@ -68,7 +68,7 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 	if (reccounter>10)
 		return false;
 	for(it=sdps.begin();it!=sdps.end();++it){
-		if ((*it)->getName().compare(longname)==0){
+		if (match_download_name((*it)->getName(),longname)){
 			printf("Found Depends, downloading %s\n", (*it)->getName().c_str());
 			if (!(*it)->download())
 				return false;

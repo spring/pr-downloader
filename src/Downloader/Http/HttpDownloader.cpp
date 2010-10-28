@@ -153,9 +153,9 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 	DEBUG_LINE("");
 	std::list<IDownload>* res;
 	res=realSearch(name+".sd7", cat);
-	if (res->empty()) return res;
+	if (!res->empty()) return res;
 	res=realSearch(name+".sdz", cat);
-	if (res->empty()) return res;
+	if (!res->empty()) return res;
 	return NULL;
 }
 
