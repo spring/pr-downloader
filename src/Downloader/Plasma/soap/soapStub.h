@@ -17,16 +17,22 @@
 \******************************************************************************/
 
 
+#ifndef SOAP_TYPE_ns1__ResourceType
+#define SOAP_TYPE_ns1__ResourceType (35)
+/* ns1:ResourceType */
+enum ns1__ResourceType {ns1__ResourceType__Map = 0, ns1__ResourceType__Mod = 1};
+#endif
+
 #ifndef SOAP_TYPE_ns1__ReturnValue
-#define SOAP_TYPE_ns1__ReturnValue (28)
+#define SOAP_TYPE_ns1__ReturnValue (36)
 /* ns1:ReturnValue */
 enum ns1__ReturnValue {ns1__ReturnValue__Ok = 0, ns1__ReturnValue__InvalidLogin = 1, ns1__ReturnValue__ResourceNotFound = 2, ns1__ReturnValue__InternalNameAlreadyExistsWithDifferentSpringHash = 3, ns1__ReturnValue__Md5AlreadyExists = 4, ns1__ReturnValue__Md5AlreadyExistsWithDifferentName = 5};
 #endif
 
-#ifndef SOAP_TYPE_ns1__ResourceType
-#define SOAP_TYPE_ns1__ResourceType (29)
-/* ns1:ResourceType */
-enum ns1__ResourceType {ns1__ResourceType__Map = 0, ns1__ResourceType__Mod = 1};
+#ifndef SOAP_TYPE_ns1__ProgramType
+#define SOAP_TYPE_ns1__ProgramType (37)
+/* ns1:ProgramType */
+enum ns1__ProgramType {ns1__ProgramType__MissionEditor = 0};
 #endif
 
 /******************************************************************************\
@@ -176,52 +182,33 @@ public:
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__DeleteResource
-#define SOAP_TYPE__ns1__DeleteResource (18)
-/* ns1:DeleteResource */
-class SOAP_CMAC _ns1__DeleteResource
+#ifndef SOAP_TYPE_ns1__ScriptMissionData
+#define SOAP_TYPE_ns1__ScriptMissionData (18)
+/* ns1:ScriptMissionData */
+class SOAP_CMAC ns1__ScriptMissionData
 {
 public:
-	std::string *login;	/* optional element of type xsd:string */
-	std::string *password;	/* optional element of type xsd:string */
-	std::string *internalName;	/* optional element of type xsd:string */
+	ns1__ArrayOfString *ManualDependencies;	/* optional element of type ns1:ArrayOfString */
+	std::string *MapName;	/* optional element of type xsd:string */
+	std::string *ModTag;	/* optional element of type xsd:string */
+	std::string *Name;	/* optional element of type xsd:string */
+	std::string *StartScript;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 18; } /* = unique id SOAP_TYPE__ns1__DeleteResource */
+	virtual int soap_type() const { return 18; } /* = unique id SOAP_TYPE_ns1__ScriptMissionData */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__DeleteResource() : login(NULL), password(NULL), internalName(NULL), soap(NULL) { }
-	virtual ~_ns1__DeleteResource() { }
-};
-#endif
-
-#ifndef SOAP_TYPE__ns1__DeleteResourceResponse
-#define SOAP_TYPE__ns1__DeleteResourceResponse (19)
-/* ns1:DeleteResourceResponse */
-class SOAP_CMAC _ns1__DeleteResourceResponse
-{
-public:
-	enum ns1__ReturnValue DeleteResourceResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type ns1:ReturnValue */
-	struct soap *soap;	/* transient */
-public:
-	virtual int soap_type() const { return 19; } /* = unique id SOAP_TYPE__ns1__DeleteResourceResponse */
-	virtual void soap_default(struct soap*);
-	virtual void soap_serialize(struct soap*) const;
-	virtual int soap_put(struct soap*, const char*, const char*) const;
-	virtual int soap_out(struct soap*, const char*, int, const char*) const;
-	virtual void *soap_get(struct soap*, const char*, const char*);
-	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__DeleteResourceResponse() : DeleteResourceResult((enum ns1__ReturnValue)0), soap(NULL) { }
-	virtual ~_ns1__DeleteResourceResponse() { }
+	         ns1__ScriptMissionData() : ManualDependencies(NULL), MapName(NULL), ModTag(NULL), Name(NULL), StartScript(NULL), soap(NULL) { }
+	virtual ~ns1__ScriptMissionData() { }
 };
 #endif
 
 #ifndef SOAP_TYPE__ns1__DownloadFile
-#define SOAP_TYPE__ns1__DownloadFile (20)
+#define SOAP_TYPE__ns1__DownloadFile (19)
 /* ns1:DownloadFile */
 class SOAP_CMAC _ns1__DownloadFile
 {
@@ -229,7 +216,7 @@ public:
 	std::string *internalName;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 20; } /* = unique id SOAP_TYPE__ns1__DownloadFile */
+	virtual int soap_type() const { return 19; } /* = unique id SOAP_TYPE__ns1__DownloadFile */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -242,7 +229,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE__ns1__DownloadFileResponse
-#define SOAP_TYPE__ns1__DownloadFileResponse (21)
+#define SOAP_TYPE__ns1__DownloadFileResponse (20)
 /* ns1:DownloadFileResponse */
 class SOAP_CMAC _ns1__DownloadFileResponse
 {
@@ -255,7 +242,7 @@ public:
 	std::string *torrentFileName;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 21; } /* = unique id SOAP_TYPE__ns1__DownloadFileResponse */
+	virtual int soap_type() const { return 20; } /* = unique id SOAP_TYPE__ns1__DownloadFileResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -268,7 +255,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE__ns1__GetResourceData
-#define SOAP_TYPE__ns1__GetResourceData (22)
+#define SOAP_TYPE__ns1__GetResourceData (21)
 /* ns1:GetResourceData */
 class SOAP_CMAC _ns1__GetResourceData
 {
@@ -277,7 +264,7 @@ public:
 	std::string *internalName;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 22; } /* = unique id SOAP_TYPE__ns1__GetResourceData */
+	virtual int soap_type() const { return 21; } /* = unique id SOAP_TYPE__ns1__GetResourceData */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -290,7 +277,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE__ns1__GetResourceDataResponse
-#define SOAP_TYPE__ns1__GetResourceDataResponse (23)
+#define SOAP_TYPE__ns1__GetResourceDataResponse (22)
 /* ns1:GetResourceDataResponse */
 class SOAP_CMAC _ns1__GetResourceDataResponse
 {
@@ -298,7 +285,7 @@ public:
 	ns1__ResourceData *GetResourceDataResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type ns1:ResourceData */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 23; } /* = unique id SOAP_TYPE__ns1__GetResourceDataResponse */
+	virtual int soap_type() const { return 22; } /* = unique id SOAP_TYPE__ns1__GetResourceDataResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -311,48 +298,134 @@ public:
 #endif
 
 #ifndef SOAP_TYPE__ns1__GetResourceList
-#define SOAP_TYPE__ns1__GetResourceList (24)
+#define SOAP_TYPE__ns1__GetResourceList (23)
 /* ns1:GetResourceList */
 class SOAP_CMAC _ns1__GetResourceList
 {
 public:
+	time_t *lastChange;	/* required element of type xsd:dateTime */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 24; } /* = unique id SOAP_TYPE__ns1__GetResourceList */
+	virtual int soap_type() const { return 23; } /* = unique id SOAP_TYPE__ns1__GetResourceList */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__GetResourceList() : soap(NULL) { }
+	         _ns1__GetResourceList() : lastChange(NULL), soap(NULL) { }
 	virtual ~_ns1__GetResourceList() { }
 };
 #endif
 
 #ifndef SOAP_TYPE__ns1__GetResourceListResponse
-#define SOAP_TYPE__ns1__GetResourceListResponse (25)
+#define SOAP_TYPE__ns1__GetResourceListResponse (24)
 /* ns1:GetResourceListResponse */
 class SOAP_CMAC _ns1__GetResourceListResponse
 {
 public:
 	ns1__ArrayOfResourceData *GetResourceListResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type ns1:ArrayOfResourceData */
+	time_t currentTime;	/* required element of type xsd:dateTime */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 25; } /* = unique id SOAP_TYPE__ns1__GetResourceListResponse */
+	virtual int soap_type() const { return 24; } /* = unique id SOAP_TYPE__ns1__GetResourceListResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__GetResourceListResponse() : GetResourceListResult(NULL), soap(NULL) { }
+	         _ns1__GetResourceListResponse() : GetResourceListResult(NULL), currentTime(0), soap(NULL) { }
 	virtual ~_ns1__GetResourceListResponse() { }
 };
 #endif
 
+#ifndef SOAP_TYPE__ns1__GetScriptMissionData
+#define SOAP_TYPE__ns1__GetScriptMissionData (25)
+/* ns1:GetScriptMissionData */
+class SOAP_CMAC _ns1__GetScriptMissionData
+{
+public:
+	std::string *name;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 25; } /* = unique id SOAP_TYPE__ns1__GetScriptMissionData */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _ns1__GetScriptMissionData() : name(NULL), soap(NULL) { }
+	virtual ~_ns1__GetScriptMissionData() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__ns1__GetScriptMissionDataResponse
+#define SOAP_TYPE__ns1__GetScriptMissionDataResponse (26)
+/* ns1:GetScriptMissionDataResponse */
+class SOAP_CMAC _ns1__GetScriptMissionDataResponse
+{
+public:
+	ns1__ScriptMissionData *GetScriptMissionDataResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type ns1:ScriptMissionData */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 26; } /* = unique id SOAP_TYPE__ns1__GetScriptMissionDataResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _ns1__GetScriptMissionDataResponse() : GetScriptMissionDataResult(NULL), soap(NULL) { }
+	virtual ~_ns1__GetScriptMissionDataResponse() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__ns1__NotifyMissionRun
+#define SOAP_TYPE__ns1__NotifyMissionRun (27)
+/* ns1:NotifyMissionRun */
+class SOAP_CMAC _ns1__NotifyMissionRun
+{
+public:
+	std::string *login;	/* optional element of type xsd:string */
+	std::string *missionName;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 27; } /* = unique id SOAP_TYPE__ns1__NotifyMissionRun */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _ns1__NotifyMissionRun() : login(NULL), missionName(NULL), soap(NULL) { }
+	virtual ~_ns1__NotifyMissionRun() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__ns1__NotifyMissionRunResponse
+#define SOAP_TYPE__ns1__NotifyMissionRunResponse (28)
+/* ns1:NotifyMissionRunResponse */
+class SOAP_CMAC _ns1__NotifyMissionRunResponse
+{
+public:
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 28; } /* = unique id SOAP_TYPE__ns1__NotifyMissionRunResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _ns1__NotifyMissionRunResponse() : soap(NULL) { }
+	virtual ~_ns1__NotifyMissionRunResponse() { }
+};
+#endif
+
 #ifndef SOAP_TYPE__ns1__RegisterResource
-#define SOAP_TYPE__ns1__RegisterResource (26)
+#define SOAP_TYPE__ns1__RegisterResource (29)
 /* ns1:RegisterResource */
 class SOAP_CMAC _ns1__RegisterResource
 {
@@ -373,7 +446,7 @@ public:
 	xsd__base64Binary *torrentData;	/* optional element of type xsd:base64Binary */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 26; } /* = unique id SOAP_TYPE__ns1__RegisterResource */
+	virtual int soap_type() const { return 29; } /* = unique id SOAP_TYPE__ns1__RegisterResource */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -386,7 +459,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE__ns1__RegisterResourceResponse
-#define SOAP_TYPE__ns1__RegisterResourceResponse (27)
+#define SOAP_TYPE__ns1__RegisterResourceResponse (30)
 /* ns1:RegisterResourceResponse */
 class SOAP_CMAC _ns1__RegisterResourceResponse
 {
@@ -394,7 +467,7 @@ public:
 	enum ns1__ReturnValue RegisterResourceResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type ns1:ReturnValue */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 27; } /* = unique id SOAP_TYPE__ns1__RegisterResourceResponse */
+	virtual int soap_type() const { return 30; } /* = unique id SOAP_TYPE__ns1__RegisterResourceResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
@@ -406,18 +479,98 @@ public:
 };
 #endif
 
-#ifndef SOAP_TYPE___ns2__DeleteResource
-#define SOAP_TYPE___ns2__DeleteResource (45)
-/* Operation wrapper: */
-struct __ns2__DeleteResource
+#ifndef SOAP_TYPE__ns1__SubmitMissionScore
+#define SOAP_TYPE__ns1__SubmitMissionScore (31)
+/* ns1:SubmitMissionScore */
+class SOAP_CMAC _ns1__SubmitMissionScore
 {
 public:
-	_ns1__DeleteResource *ns1__DeleteResource;	/* optional element of type ns1:DeleteResource */
+	std::string *login;	/* optional element of type xsd:string */
+	std::string *passwordHash;	/* optional element of type xsd:string */
+	std::string *missionName;	/* optional element of type xsd:string */
+	int score;	/* required element of type xsd:int */
+	int gameSeconds;	/* required element of type xsd:int */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 31; } /* = unique id SOAP_TYPE__ns1__SubmitMissionScore */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _ns1__SubmitMissionScore() : login(NULL), passwordHash(NULL), missionName(NULL), score(0), gameSeconds(0), soap(NULL) { }
+	virtual ~_ns1__SubmitMissionScore() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__ns1__SubmitMissionScoreResponse
+#define SOAP_TYPE__ns1__SubmitMissionScoreResponse (32)
+/* ns1:SubmitMissionScoreResponse */
+class SOAP_CMAC _ns1__SubmitMissionScoreResponse
+{
+public:
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 32; } /* = unique id SOAP_TYPE__ns1__SubmitMissionScoreResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _ns1__SubmitMissionScoreResponse() : soap(NULL) { }
+	virtual ~_ns1__SubmitMissionScoreResponse() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__ns1__SubmitStackTrace
+#define SOAP_TYPE__ns1__SubmitStackTrace (33)
+/* ns1:SubmitStackTrace */
+class SOAP_CMAC _ns1__SubmitStackTrace
+{
+public:
+	enum ns1__ProgramType programType;	/* required element of type ns1:ProgramType */
+	std::string *playerName;	/* optional element of type xsd:string */
+	std::string *exception;	/* optional element of type xsd:string */
+	std::string *extraData;	/* optional element of type xsd:string */
+	std::string *programVersion;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 33; } /* = unique id SOAP_TYPE__ns1__SubmitStackTrace */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _ns1__SubmitStackTrace() : programType((enum ns1__ProgramType)0), playerName(NULL), exception(NULL), extraData(NULL), programVersion(NULL), soap(NULL) { }
+	virtual ~_ns1__SubmitStackTrace() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__ns1__SubmitStackTraceResponse
+#define SOAP_TYPE__ns1__SubmitStackTraceResponse (34)
+/* ns1:SubmitStackTraceResponse */
+class SOAP_CMAC _ns1__SubmitStackTraceResponse
+{
+public:
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 34; } /* = unique id SOAP_TYPE__ns1__SubmitStackTraceResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _ns1__SubmitStackTraceResponse() : soap(NULL) { }
+	virtual ~_ns1__SubmitStackTraceResponse() { }
 };
 #endif
 
 #ifndef SOAP_TYPE___ns2__DownloadFile
-#define SOAP_TYPE___ns2__DownloadFile (49)
+#define SOAP_TYPE___ns2__DownloadFile (56)
 /* Operation wrapper: */
 struct __ns2__DownloadFile
 {
@@ -427,7 +580,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE___ns2__GetResourceData
-#define SOAP_TYPE___ns2__GetResourceData (53)
+#define SOAP_TYPE___ns2__GetResourceData (60)
 /* Operation wrapper: */
 struct __ns2__GetResourceData
 {
@@ -437,7 +590,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE___ns2__GetResourceList
-#define SOAP_TYPE___ns2__GetResourceList (57)
+#define SOAP_TYPE___ns2__GetResourceList (64)
 /* Operation wrapper: */
 struct __ns2__GetResourceList
 {
@@ -446,8 +599,28 @@ public:
 };
 #endif
 
+#ifndef SOAP_TYPE___ns2__GetScriptMissionData
+#define SOAP_TYPE___ns2__GetScriptMissionData (68)
+/* Operation wrapper: */
+struct __ns2__GetScriptMissionData
+{
+public:
+	_ns1__GetScriptMissionData *ns1__GetScriptMissionData;	/* optional element of type ns1:GetScriptMissionData */
+};
+#endif
+
+#ifndef SOAP_TYPE___ns2__NotifyMissionRun
+#define SOAP_TYPE___ns2__NotifyMissionRun (72)
+/* Operation wrapper: */
+struct __ns2__NotifyMissionRun
+{
+public:
+	_ns1__NotifyMissionRun *ns1__NotifyMissionRun;	/* optional element of type ns1:NotifyMissionRun */
+};
+#endif
+
 #ifndef SOAP_TYPE___ns2__RegisterResource
-#define SOAP_TYPE___ns2__RegisterResource (61)
+#define SOAP_TYPE___ns2__RegisterResource (76)
 /* Operation wrapper: */
 struct __ns2__RegisterResource
 {
@@ -456,18 +629,28 @@ public:
 };
 #endif
 
-#ifndef SOAP_TYPE___ns3__DeleteResource
-#define SOAP_TYPE___ns3__DeleteResource (63)
+#ifndef SOAP_TYPE___ns2__SubmitMissionScore
+#define SOAP_TYPE___ns2__SubmitMissionScore (80)
 /* Operation wrapper: */
-struct __ns3__DeleteResource
+struct __ns2__SubmitMissionScore
 {
 public:
-	_ns1__DeleteResource *ns1__DeleteResource;	/* optional element of type ns1:DeleteResource */
+	_ns1__SubmitMissionScore *ns1__SubmitMissionScore;	/* optional element of type ns1:SubmitMissionScore */
+};
+#endif
+
+#ifndef SOAP_TYPE___ns2__SubmitStackTrace
+#define SOAP_TYPE___ns2__SubmitStackTrace (84)
+/* Operation wrapper: */
+struct __ns2__SubmitStackTrace
+{
+public:
+	_ns1__SubmitStackTrace *ns1__SubmitStackTrace;	/* optional element of type ns1:SubmitStackTrace */
 };
 #endif
 
 #ifndef SOAP_TYPE___ns3__DownloadFile
-#define SOAP_TYPE___ns3__DownloadFile (65)
+#define SOAP_TYPE___ns3__DownloadFile (86)
 /* Operation wrapper: */
 struct __ns3__DownloadFile
 {
@@ -477,7 +660,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE___ns3__GetResourceData
-#define SOAP_TYPE___ns3__GetResourceData (67)
+#define SOAP_TYPE___ns3__GetResourceData (88)
 /* Operation wrapper: */
 struct __ns3__GetResourceData
 {
@@ -487,7 +670,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE___ns3__GetResourceList
-#define SOAP_TYPE___ns3__GetResourceList (69)
+#define SOAP_TYPE___ns3__GetResourceList (90)
 /* Operation wrapper: */
 struct __ns3__GetResourceList
 {
@@ -496,8 +679,28 @@ public:
 };
 #endif
 
+#ifndef SOAP_TYPE___ns3__GetScriptMissionData
+#define SOAP_TYPE___ns3__GetScriptMissionData (92)
+/* Operation wrapper: */
+struct __ns3__GetScriptMissionData
+{
+public:
+	_ns1__GetScriptMissionData *ns1__GetScriptMissionData;	/* optional element of type ns1:GetScriptMissionData */
+};
+#endif
+
+#ifndef SOAP_TYPE___ns3__NotifyMissionRun
+#define SOAP_TYPE___ns3__NotifyMissionRun (94)
+/* Operation wrapper: */
+struct __ns3__NotifyMissionRun
+{
+public:
+	_ns1__NotifyMissionRun *ns1__NotifyMissionRun;	/* optional element of type ns1:NotifyMissionRun */
+};
+#endif
+
 #ifndef SOAP_TYPE___ns3__RegisterResource
-#define SOAP_TYPE___ns3__RegisterResource (71)
+#define SOAP_TYPE___ns3__RegisterResource (96)
 /* Operation wrapper: */
 struct __ns3__RegisterResource
 {
@@ -506,8 +709,28 @@ public:
 };
 #endif
 
+#ifndef SOAP_TYPE___ns3__SubmitMissionScore
+#define SOAP_TYPE___ns3__SubmitMissionScore (98)
+/* Operation wrapper: */
+struct __ns3__SubmitMissionScore
+{
+public:
+	_ns1__SubmitMissionScore *ns1__SubmitMissionScore;	/* optional element of type ns1:SubmitMissionScore */
+};
+#endif
+
+#ifndef SOAP_TYPE___ns3__SubmitStackTrace
+#define SOAP_TYPE___ns3__SubmitStackTrace (100)
+/* Operation wrapper: */
+struct __ns3__SubmitStackTrace
+{
+public:
+	_ns1__SubmitStackTrace *ns1__SubmitStackTrace;	/* optional element of type ns1:SubmitStackTrace */
+};
+#endif
+
 #ifndef SOAP_TYPE_SOAP_ENV__Header
-#define SOAP_TYPE_SOAP_ENV__Header (72)
+#define SOAP_TYPE_SOAP_ENV__Header (101)
 /* SOAP Header: */
 struct SOAP_ENV__Header
 {
@@ -519,7 +742,7 @@ private:
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (73)
+#define SOAP_TYPE_SOAP_ENV__Code (102)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -530,7 +753,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (75)
+#define SOAP_TYPE_SOAP_ENV__Detail (104)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -542,7 +765,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (78)
+#define SOAP_TYPE_SOAP_ENV__Reason (107)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
@@ -552,7 +775,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (79)
+#define SOAP_TYPE_SOAP_ENV__Fault (108)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {

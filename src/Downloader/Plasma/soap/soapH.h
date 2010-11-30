@@ -69,8 +69,17 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_unsignedInt(struct soap*, const char*, int, c
 SOAP_FMAC3 unsigned int * SOAP_FMAC4 soap_get_unsignedInt(struct soap*, unsigned int *, const char*, const char*);
 SOAP_FMAC3 unsigned int * SOAP_FMAC4 soap_in_unsignedInt(struct soap*, const char*, unsigned int *, const char*);
 
+#ifndef SOAP_TYPE_time
+#define SOAP_TYPE_time (49)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_time(struct soap*, time_t *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_time(struct soap*, const time_t *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_time(struct soap*, const char*, int, const time_t *, const char*);
+SOAP_FMAC3 time_t * SOAP_FMAC4 soap_get_time(struct soap*, time_t *, const char*, const char*);
+SOAP_FMAC3 time_t * SOAP_FMAC4 soap_in_time(struct soap*, const char*, time_t *, const char*);
+
 #ifndef SOAP_TYPE_bool
-#define SOAP_TYPE_bool (39)
+#define SOAP_TYPE_bool (47)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_bool(struct soap*, bool *);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_bool(struct soap*, const bool *, const char*, const char*);
@@ -82,21 +91,21 @@ SOAP_FMAC3 bool * SOAP_FMAC4 soap_in_bool(struct soap*, const char*, bool *, con
 
 SOAP_FMAC3S int SOAP_FMAC4S soap_s2bool(struct soap*, const char*, bool *);
 
-#ifndef SOAP_TYPE_ns1__ResourceType
-#define SOAP_TYPE_ns1__ResourceType (29)
+#ifndef SOAP_TYPE_ns1__ProgramType
+#define SOAP_TYPE_ns1__ProgramType (37)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_ns1__ResourceType(struct soap*, enum ns1__ResourceType *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_ns1__ResourceType(struct soap*, const enum ns1__ResourceType *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_ns1__ResourceType(struct soap*, const char*, int, const enum ns1__ResourceType *, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_ns1__ProgramType(struct soap*, enum ns1__ProgramType *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_ns1__ProgramType(struct soap*, const enum ns1__ProgramType *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_ns1__ProgramType(struct soap*, const char*, int, const enum ns1__ProgramType *, const char*);
 
-SOAP_FMAC3S const char* SOAP_FMAC4S soap_ns1__ResourceType2s(struct soap*, enum ns1__ResourceType);
-SOAP_FMAC3 enum ns1__ResourceType * SOAP_FMAC4 soap_get_ns1__ResourceType(struct soap*, enum ns1__ResourceType *, const char*, const char*);
-SOAP_FMAC3 enum ns1__ResourceType * SOAP_FMAC4 soap_in_ns1__ResourceType(struct soap*, const char*, enum ns1__ResourceType *, const char*);
+SOAP_FMAC3S const char* SOAP_FMAC4S soap_ns1__ProgramType2s(struct soap*, enum ns1__ProgramType);
+SOAP_FMAC3 enum ns1__ProgramType * SOAP_FMAC4 soap_get_ns1__ProgramType(struct soap*, enum ns1__ProgramType *, const char*, const char*);
+SOAP_FMAC3 enum ns1__ProgramType * SOAP_FMAC4 soap_in_ns1__ProgramType(struct soap*, const char*, enum ns1__ProgramType *, const char*);
 
-SOAP_FMAC3S int SOAP_FMAC4S soap_s2ns1__ResourceType(struct soap*, const char*, enum ns1__ResourceType *);
+SOAP_FMAC3S int SOAP_FMAC4S soap_s2ns1__ProgramType(struct soap*, const char*, enum ns1__ProgramType *);
 
 #ifndef SOAP_TYPE_ns1__ReturnValue
-#define SOAP_TYPE_ns1__ReturnValue (28)
+#define SOAP_TYPE_ns1__ReturnValue (36)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_ns1__ReturnValue(struct soap*, enum ns1__ReturnValue *);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_ns1__ReturnValue(struct soap*, const enum ns1__ReturnValue *, const char*, const char*);
@@ -108,8 +117,21 @@ SOAP_FMAC3 enum ns1__ReturnValue * SOAP_FMAC4 soap_in_ns1__ReturnValue(struct so
 
 SOAP_FMAC3S int SOAP_FMAC4S soap_s2ns1__ReturnValue(struct soap*, const char*, enum ns1__ReturnValue *);
 
+#ifndef SOAP_TYPE_ns1__ResourceType
+#define SOAP_TYPE_ns1__ResourceType (35)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_ns1__ResourceType(struct soap*, enum ns1__ResourceType *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_ns1__ResourceType(struct soap*, const enum ns1__ResourceType *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_ns1__ResourceType(struct soap*, const char*, int, const enum ns1__ResourceType *, const char*);
+
+SOAP_FMAC3S const char* SOAP_FMAC4S soap_ns1__ResourceType2s(struct soap*, enum ns1__ResourceType);
+SOAP_FMAC3 enum ns1__ResourceType * SOAP_FMAC4 soap_get_ns1__ResourceType(struct soap*, enum ns1__ResourceType *, const char*, const char*);
+SOAP_FMAC3 enum ns1__ResourceType * SOAP_FMAC4 soap_in_ns1__ResourceType(struct soap*, const char*, enum ns1__ResourceType *, const char*);
+
+SOAP_FMAC3S int SOAP_FMAC4S soap_s2ns1__ResourceType(struct soap*, const char*, enum ns1__ResourceType *);
+
 #ifndef SOAP_TYPE_std__string
-#define SOAP_TYPE_std__string (30)
+#define SOAP_TYPE_std__string (38)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__string(struct soap*, std::string *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__string(struct soap*, const std::string *);
@@ -122,8 +144,56 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_delete_std__string(struct soap*, std::string*);
 SOAP_FMAC3 std::string * SOAP_FMAC4 soap_instantiate_std__string(struct soap*, int, const char*, const char*, size_t*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__string(struct soap*, int, int, void*, size_t, const void*, size_t);
 
+#ifndef SOAP_TYPE__ns1__SubmitStackTraceResponse
+#define SOAP_TYPE__ns1__SubmitStackTraceResponse (34)
+#endif
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__SubmitStackTraceResponse(struct soap*, const char*, int, const _ns1__SubmitStackTraceResponse *, const char*);
+SOAP_FMAC3 _ns1__SubmitStackTraceResponse * SOAP_FMAC4 soap_get__ns1__SubmitStackTraceResponse(struct soap*, _ns1__SubmitStackTraceResponse *, const char*, const char*);
+SOAP_FMAC3 _ns1__SubmitStackTraceResponse * SOAP_FMAC4 soap_in__ns1__SubmitStackTraceResponse(struct soap*, const char*, _ns1__SubmitStackTraceResponse *, const char*);
+SOAP_FMAC5 _ns1__SubmitStackTraceResponse * SOAP_FMAC6 soap_new__ns1__SubmitStackTraceResponse(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__SubmitStackTraceResponse(struct soap*, _ns1__SubmitStackTraceResponse*);
+SOAP_FMAC3 _ns1__SubmitStackTraceResponse * SOAP_FMAC4 soap_instantiate__ns1__SubmitStackTraceResponse(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__SubmitStackTraceResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE__ns1__SubmitStackTrace
+#define SOAP_TYPE__ns1__SubmitStackTrace (33)
+#endif
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__SubmitStackTrace(struct soap*, const char*, int, const _ns1__SubmitStackTrace *, const char*);
+SOAP_FMAC3 _ns1__SubmitStackTrace * SOAP_FMAC4 soap_get__ns1__SubmitStackTrace(struct soap*, _ns1__SubmitStackTrace *, const char*, const char*);
+SOAP_FMAC3 _ns1__SubmitStackTrace * SOAP_FMAC4 soap_in__ns1__SubmitStackTrace(struct soap*, const char*, _ns1__SubmitStackTrace *, const char*);
+SOAP_FMAC5 _ns1__SubmitStackTrace * SOAP_FMAC6 soap_new__ns1__SubmitStackTrace(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__SubmitStackTrace(struct soap*, _ns1__SubmitStackTrace*);
+SOAP_FMAC3 _ns1__SubmitStackTrace * SOAP_FMAC4 soap_instantiate__ns1__SubmitStackTrace(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__SubmitStackTrace(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE__ns1__SubmitMissionScoreResponse
+#define SOAP_TYPE__ns1__SubmitMissionScoreResponse (32)
+#endif
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__SubmitMissionScoreResponse(struct soap*, const char*, int, const _ns1__SubmitMissionScoreResponse *, const char*);
+SOAP_FMAC3 _ns1__SubmitMissionScoreResponse * SOAP_FMAC4 soap_get__ns1__SubmitMissionScoreResponse(struct soap*, _ns1__SubmitMissionScoreResponse *, const char*, const char*);
+SOAP_FMAC3 _ns1__SubmitMissionScoreResponse * SOAP_FMAC4 soap_in__ns1__SubmitMissionScoreResponse(struct soap*, const char*, _ns1__SubmitMissionScoreResponse *, const char*);
+SOAP_FMAC5 _ns1__SubmitMissionScoreResponse * SOAP_FMAC6 soap_new__ns1__SubmitMissionScoreResponse(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__SubmitMissionScoreResponse(struct soap*, _ns1__SubmitMissionScoreResponse*);
+SOAP_FMAC3 _ns1__SubmitMissionScoreResponse * SOAP_FMAC4 soap_instantiate__ns1__SubmitMissionScoreResponse(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__SubmitMissionScoreResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE__ns1__SubmitMissionScore
+#define SOAP_TYPE__ns1__SubmitMissionScore (31)
+#endif
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__SubmitMissionScore(struct soap*, const char*, int, const _ns1__SubmitMissionScore *, const char*);
+SOAP_FMAC3 _ns1__SubmitMissionScore * SOAP_FMAC4 soap_get__ns1__SubmitMissionScore(struct soap*, _ns1__SubmitMissionScore *, const char*, const char*);
+SOAP_FMAC3 _ns1__SubmitMissionScore * SOAP_FMAC4 soap_in__ns1__SubmitMissionScore(struct soap*, const char*, _ns1__SubmitMissionScore *, const char*);
+SOAP_FMAC5 _ns1__SubmitMissionScore * SOAP_FMAC6 soap_new__ns1__SubmitMissionScore(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__SubmitMissionScore(struct soap*, _ns1__SubmitMissionScore*);
+SOAP_FMAC3 _ns1__SubmitMissionScore * SOAP_FMAC4 soap_instantiate__ns1__SubmitMissionScore(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__SubmitMissionScore(struct soap*, int, int, void*, size_t, const void*, size_t);
+
 #ifndef SOAP_TYPE__ns1__RegisterResourceResponse
-#define SOAP_TYPE__ns1__RegisterResourceResponse (27)
+#define SOAP_TYPE__ns1__RegisterResourceResponse (30)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__RegisterResourceResponse(struct soap*, const char*, int, const _ns1__RegisterResourceResponse *, const char*);
@@ -135,7 +205,7 @@ SOAP_FMAC3 _ns1__RegisterResourceResponse * SOAP_FMAC4 soap_instantiate__ns1__Re
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__RegisterResourceResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE__ns1__RegisterResource
-#define SOAP_TYPE__ns1__RegisterResource (26)
+#define SOAP_TYPE__ns1__RegisterResource (29)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__RegisterResource(struct soap*, const char*, int, const _ns1__RegisterResource *, const char*);
@@ -146,8 +216,56 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__RegisterResource(struct soap*, _ns1
 SOAP_FMAC3 _ns1__RegisterResource * SOAP_FMAC4 soap_instantiate__ns1__RegisterResource(struct soap*, int, const char*, const char*, size_t*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__RegisterResource(struct soap*, int, int, void*, size_t, const void*, size_t);
 
+#ifndef SOAP_TYPE__ns1__NotifyMissionRunResponse
+#define SOAP_TYPE__ns1__NotifyMissionRunResponse (28)
+#endif
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__NotifyMissionRunResponse(struct soap*, const char*, int, const _ns1__NotifyMissionRunResponse *, const char*);
+SOAP_FMAC3 _ns1__NotifyMissionRunResponse * SOAP_FMAC4 soap_get__ns1__NotifyMissionRunResponse(struct soap*, _ns1__NotifyMissionRunResponse *, const char*, const char*);
+SOAP_FMAC3 _ns1__NotifyMissionRunResponse * SOAP_FMAC4 soap_in__ns1__NotifyMissionRunResponse(struct soap*, const char*, _ns1__NotifyMissionRunResponse *, const char*);
+SOAP_FMAC5 _ns1__NotifyMissionRunResponse * SOAP_FMAC6 soap_new__ns1__NotifyMissionRunResponse(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__NotifyMissionRunResponse(struct soap*, _ns1__NotifyMissionRunResponse*);
+SOAP_FMAC3 _ns1__NotifyMissionRunResponse * SOAP_FMAC4 soap_instantiate__ns1__NotifyMissionRunResponse(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__NotifyMissionRunResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE__ns1__NotifyMissionRun
+#define SOAP_TYPE__ns1__NotifyMissionRun (27)
+#endif
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__NotifyMissionRun(struct soap*, const char*, int, const _ns1__NotifyMissionRun *, const char*);
+SOAP_FMAC3 _ns1__NotifyMissionRun * SOAP_FMAC4 soap_get__ns1__NotifyMissionRun(struct soap*, _ns1__NotifyMissionRun *, const char*, const char*);
+SOAP_FMAC3 _ns1__NotifyMissionRun * SOAP_FMAC4 soap_in__ns1__NotifyMissionRun(struct soap*, const char*, _ns1__NotifyMissionRun *, const char*);
+SOAP_FMAC5 _ns1__NotifyMissionRun * SOAP_FMAC6 soap_new__ns1__NotifyMissionRun(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__NotifyMissionRun(struct soap*, _ns1__NotifyMissionRun*);
+SOAP_FMAC3 _ns1__NotifyMissionRun * SOAP_FMAC4 soap_instantiate__ns1__NotifyMissionRun(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__NotifyMissionRun(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE__ns1__GetScriptMissionDataResponse
+#define SOAP_TYPE__ns1__GetScriptMissionDataResponse (26)
+#endif
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__GetScriptMissionDataResponse(struct soap*, const char*, int, const _ns1__GetScriptMissionDataResponse *, const char*);
+SOAP_FMAC3 _ns1__GetScriptMissionDataResponse * SOAP_FMAC4 soap_get__ns1__GetScriptMissionDataResponse(struct soap*, _ns1__GetScriptMissionDataResponse *, const char*, const char*);
+SOAP_FMAC3 _ns1__GetScriptMissionDataResponse * SOAP_FMAC4 soap_in__ns1__GetScriptMissionDataResponse(struct soap*, const char*, _ns1__GetScriptMissionDataResponse *, const char*);
+SOAP_FMAC5 _ns1__GetScriptMissionDataResponse * SOAP_FMAC6 soap_new__ns1__GetScriptMissionDataResponse(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__GetScriptMissionDataResponse(struct soap*, _ns1__GetScriptMissionDataResponse*);
+SOAP_FMAC3 _ns1__GetScriptMissionDataResponse * SOAP_FMAC4 soap_instantiate__ns1__GetScriptMissionDataResponse(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__GetScriptMissionDataResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE__ns1__GetScriptMissionData
+#define SOAP_TYPE__ns1__GetScriptMissionData (25)
+#endif
+
+SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__GetScriptMissionData(struct soap*, const char*, int, const _ns1__GetScriptMissionData *, const char*);
+SOAP_FMAC3 _ns1__GetScriptMissionData * SOAP_FMAC4 soap_get__ns1__GetScriptMissionData(struct soap*, _ns1__GetScriptMissionData *, const char*, const char*);
+SOAP_FMAC3 _ns1__GetScriptMissionData * SOAP_FMAC4 soap_in__ns1__GetScriptMissionData(struct soap*, const char*, _ns1__GetScriptMissionData *, const char*);
+SOAP_FMAC5 _ns1__GetScriptMissionData * SOAP_FMAC6 soap_new__ns1__GetScriptMissionData(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__GetScriptMissionData(struct soap*, _ns1__GetScriptMissionData*);
+SOAP_FMAC3 _ns1__GetScriptMissionData * SOAP_FMAC4 soap_instantiate__ns1__GetScriptMissionData(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__GetScriptMissionData(struct soap*, int, int, void*, size_t, const void*, size_t);
+
 #ifndef SOAP_TYPE__ns1__GetResourceListResponse
-#define SOAP_TYPE__ns1__GetResourceListResponse (25)
+#define SOAP_TYPE__ns1__GetResourceListResponse (24)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__GetResourceListResponse(struct soap*, const char*, int, const _ns1__GetResourceListResponse *, const char*);
@@ -159,7 +277,7 @@ SOAP_FMAC3 _ns1__GetResourceListResponse * SOAP_FMAC4 soap_instantiate__ns1__Get
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__GetResourceListResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE__ns1__GetResourceList
-#define SOAP_TYPE__ns1__GetResourceList (24)
+#define SOAP_TYPE__ns1__GetResourceList (23)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__GetResourceList(struct soap*, const char*, int, const _ns1__GetResourceList *, const char*);
@@ -171,7 +289,7 @@ SOAP_FMAC3 _ns1__GetResourceList * SOAP_FMAC4 soap_instantiate__ns1__GetResource
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__GetResourceList(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE__ns1__GetResourceDataResponse
-#define SOAP_TYPE__ns1__GetResourceDataResponse (23)
+#define SOAP_TYPE__ns1__GetResourceDataResponse (22)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__GetResourceDataResponse(struct soap*, const char*, int, const _ns1__GetResourceDataResponse *, const char*);
@@ -183,7 +301,7 @@ SOAP_FMAC3 _ns1__GetResourceDataResponse * SOAP_FMAC4 soap_instantiate__ns1__Get
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__GetResourceDataResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE__ns1__GetResourceData
-#define SOAP_TYPE__ns1__GetResourceData (22)
+#define SOAP_TYPE__ns1__GetResourceData (21)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__GetResourceData(struct soap*, const char*, int, const _ns1__GetResourceData *, const char*);
@@ -195,7 +313,7 @@ SOAP_FMAC3 _ns1__GetResourceData * SOAP_FMAC4 soap_instantiate__ns1__GetResource
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__GetResourceData(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE__ns1__DownloadFileResponse
-#define SOAP_TYPE__ns1__DownloadFileResponse (21)
+#define SOAP_TYPE__ns1__DownloadFileResponse (20)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__DownloadFileResponse(struct soap*, const char*, int, const _ns1__DownloadFileResponse *, const char*);
@@ -207,7 +325,7 @@ SOAP_FMAC3 _ns1__DownloadFileResponse * SOAP_FMAC4 soap_instantiate__ns1__Downlo
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__DownloadFileResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE__ns1__DownloadFile
-#define SOAP_TYPE__ns1__DownloadFile (20)
+#define SOAP_TYPE__ns1__DownloadFile (19)
 #endif
 
 SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__DownloadFile(struct soap*, const char*, int, const _ns1__DownloadFile *, const char*);
@@ -218,29 +336,17 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__DownloadFile(struct soap*, _ns1__Do
 SOAP_FMAC3 _ns1__DownloadFile * SOAP_FMAC4 soap_instantiate__ns1__DownloadFile(struct soap*, int, const char*, const char*, size_t*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__DownloadFile(struct soap*, int, int, void*, size_t, const void*, size_t);
 
-#ifndef SOAP_TYPE__ns1__DeleteResourceResponse
-#define SOAP_TYPE__ns1__DeleteResourceResponse (19)
+#ifndef SOAP_TYPE_ns1__ScriptMissionData
+#define SOAP_TYPE_ns1__ScriptMissionData (18)
 #endif
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__DeleteResourceResponse(struct soap*, const char*, int, const _ns1__DeleteResourceResponse *, const char*);
-SOAP_FMAC3 _ns1__DeleteResourceResponse * SOAP_FMAC4 soap_get__ns1__DeleteResourceResponse(struct soap*, _ns1__DeleteResourceResponse *, const char*, const char*);
-SOAP_FMAC3 _ns1__DeleteResourceResponse * SOAP_FMAC4 soap_in__ns1__DeleteResourceResponse(struct soap*, const char*, _ns1__DeleteResourceResponse *, const char*);
-SOAP_FMAC5 _ns1__DeleteResourceResponse * SOAP_FMAC6 soap_new__ns1__DeleteResourceResponse(struct soap*, int);
-SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__DeleteResourceResponse(struct soap*, _ns1__DeleteResourceResponse*);
-SOAP_FMAC3 _ns1__DeleteResourceResponse * SOAP_FMAC4 soap_instantiate__ns1__DeleteResourceResponse(struct soap*, int, const char*, const char*, size_t*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__DeleteResourceResponse(struct soap*, int, int, void*, size_t, const void*, size_t);
-
-#ifndef SOAP_TYPE__ns1__DeleteResource
-#define SOAP_TYPE__ns1__DeleteResource (18)
-#endif
-
-SOAP_FMAC3 int SOAP_FMAC4 soap_out__ns1__DeleteResource(struct soap*, const char*, int, const _ns1__DeleteResource *, const char*);
-SOAP_FMAC3 _ns1__DeleteResource * SOAP_FMAC4 soap_get__ns1__DeleteResource(struct soap*, _ns1__DeleteResource *, const char*, const char*);
-SOAP_FMAC3 _ns1__DeleteResource * SOAP_FMAC4 soap_in__ns1__DeleteResource(struct soap*, const char*, _ns1__DeleteResource *, const char*);
-SOAP_FMAC5 _ns1__DeleteResource * SOAP_FMAC6 soap_new__ns1__DeleteResource(struct soap*, int);
-SOAP_FMAC5 void SOAP_FMAC6 soap_delete__ns1__DeleteResource(struct soap*, _ns1__DeleteResource*);
-SOAP_FMAC3 _ns1__DeleteResource * SOAP_FMAC4 soap_instantiate__ns1__DeleteResource(struct soap*, int, const char*, const char*, size_t*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy__ns1__DeleteResource(struct soap*, int, int, void*, size_t, const void*, size_t);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_ns1__ScriptMissionData(struct soap*, const char*, int, const ns1__ScriptMissionData *, const char*);
+SOAP_FMAC3 ns1__ScriptMissionData * SOAP_FMAC4 soap_get_ns1__ScriptMissionData(struct soap*, ns1__ScriptMissionData *, const char*, const char*);
+SOAP_FMAC3 ns1__ScriptMissionData * SOAP_FMAC4 soap_in_ns1__ScriptMissionData(struct soap*, const char*, ns1__ScriptMissionData *, const char*);
+SOAP_FMAC5 ns1__ScriptMissionData * SOAP_FMAC6 soap_new_ns1__ScriptMissionData(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete_ns1__ScriptMissionData(struct soap*, ns1__ScriptMissionData*);
+SOAP_FMAC3 ns1__ScriptMissionData * SOAP_FMAC4 soap_instantiate_ns1__ScriptMissionData(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_ns1__ScriptMissionData(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_ns1__ArrayOfResourceData
 #define SOAP_TYPE_ns1__ArrayOfResourceData (17)
@@ -316,7 +422,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_xsd__base64Binary(struct soap*, int, int, v
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (79)
+#define SOAP_TYPE_SOAP_ENV__Fault (108)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Fault(struct soap*, struct SOAP_ENV__Fault *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Fault(struct soap*, const struct SOAP_ENV__Fault *);
@@ -334,7 +440,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Fault(struct soap*, int, int, voi
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (78)
+#define SOAP_TYPE_SOAP_ENV__Reason (107)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Reason(struct soap*, const struct SOAP_ENV__Reason *);
@@ -352,7 +458,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Reason(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (75)
+#define SOAP_TYPE_SOAP_ENV__Detail (104)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Detail(struct soap*, const struct SOAP_ENV__Detail *);
@@ -370,7 +476,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Detail(struct soap*, int, int, vo
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (73)
+#define SOAP_TYPE_SOAP_ENV__Code (102)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Code(struct soap*, const struct SOAP_ENV__Code *);
@@ -388,7 +494,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Code(struct soap*, int, int, void
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_SOAP_ENV__Header
-#define SOAP_TYPE_SOAP_ENV__Header (72)
+#define SOAP_TYPE_SOAP_ENV__Header (101)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_SOAP_ENV__Header(struct soap*, struct SOAP_ENV__Header *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_SOAP_ENV__Header(struct soap*, const struct SOAP_ENV__Header *);
@@ -403,8 +509,36 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Header(struct soap*, int, int, vo
 
 #endif
 
+#ifndef SOAP_TYPE___ns3__SubmitStackTrace
+#define SOAP_TYPE___ns3__SubmitStackTrace (100)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns3__SubmitStackTrace(struct soap*, struct __ns3__SubmitStackTrace *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns3__SubmitStackTrace(struct soap*, const struct __ns3__SubmitStackTrace *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns3__SubmitStackTrace(struct soap*, const struct __ns3__SubmitStackTrace *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns3__SubmitStackTrace(struct soap*, const char*, int, const struct __ns3__SubmitStackTrace *, const char*);
+SOAP_FMAC3 struct __ns3__SubmitStackTrace * SOAP_FMAC4 soap_get___ns3__SubmitStackTrace(struct soap*, struct __ns3__SubmitStackTrace *, const char*, const char*);
+SOAP_FMAC3 struct __ns3__SubmitStackTrace * SOAP_FMAC4 soap_in___ns3__SubmitStackTrace(struct soap*, const char*, struct __ns3__SubmitStackTrace *, const char*);
+SOAP_FMAC5 struct __ns3__SubmitStackTrace * SOAP_FMAC6 soap_new___ns3__SubmitStackTrace(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns3__SubmitStackTrace(struct soap*, struct __ns3__SubmitStackTrace*);
+SOAP_FMAC3 struct __ns3__SubmitStackTrace * SOAP_FMAC4 soap_instantiate___ns3__SubmitStackTrace(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns3__SubmitStackTrace(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE___ns3__SubmitMissionScore
+#define SOAP_TYPE___ns3__SubmitMissionScore (98)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns3__SubmitMissionScore(struct soap*, struct __ns3__SubmitMissionScore *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns3__SubmitMissionScore(struct soap*, const struct __ns3__SubmitMissionScore *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns3__SubmitMissionScore(struct soap*, const struct __ns3__SubmitMissionScore *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns3__SubmitMissionScore(struct soap*, const char*, int, const struct __ns3__SubmitMissionScore *, const char*);
+SOAP_FMAC3 struct __ns3__SubmitMissionScore * SOAP_FMAC4 soap_get___ns3__SubmitMissionScore(struct soap*, struct __ns3__SubmitMissionScore *, const char*, const char*);
+SOAP_FMAC3 struct __ns3__SubmitMissionScore * SOAP_FMAC4 soap_in___ns3__SubmitMissionScore(struct soap*, const char*, struct __ns3__SubmitMissionScore *, const char*);
+SOAP_FMAC5 struct __ns3__SubmitMissionScore * SOAP_FMAC6 soap_new___ns3__SubmitMissionScore(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns3__SubmitMissionScore(struct soap*, struct __ns3__SubmitMissionScore*);
+SOAP_FMAC3 struct __ns3__SubmitMissionScore * SOAP_FMAC4 soap_instantiate___ns3__SubmitMissionScore(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns3__SubmitMissionScore(struct soap*, int, int, void*, size_t, const void*, size_t);
+
 #ifndef SOAP_TYPE___ns3__RegisterResource
-#define SOAP_TYPE___ns3__RegisterResource (71)
+#define SOAP_TYPE___ns3__RegisterResource (96)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns3__RegisterResource(struct soap*, struct __ns3__RegisterResource *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns3__RegisterResource(struct soap*, const struct __ns3__RegisterResource *);
@@ -417,8 +551,36 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns3__RegisterResource(struct soap*, str
 SOAP_FMAC3 struct __ns3__RegisterResource * SOAP_FMAC4 soap_instantiate___ns3__RegisterResource(struct soap*, int, const char*, const char*, size_t*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns3__RegisterResource(struct soap*, int, int, void*, size_t, const void*, size_t);
 
+#ifndef SOAP_TYPE___ns3__NotifyMissionRun
+#define SOAP_TYPE___ns3__NotifyMissionRun (94)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns3__NotifyMissionRun(struct soap*, struct __ns3__NotifyMissionRun *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns3__NotifyMissionRun(struct soap*, const struct __ns3__NotifyMissionRun *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns3__NotifyMissionRun(struct soap*, const struct __ns3__NotifyMissionRun *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns3__NotifyMissionRun(struct soap*, const char*, int, const struct __ns3__NotifyMissionRun *, const char*);
+SOAP_FMAC3 struct __ns3__NotifyMissionRun * SOAP_FMAC4 soap_get___ns3__NotifyMissionRun(struct soap*, struct __ns3__NotifyMissionRun *, const char*, const char*);
+SOAP_FMAC3 struct __ns3__NotifyMissionRun * SOAP_FMAC4 soap_in___ns3__NotifyMissionRun(struct soap*, const char*, struct __ns3__NotifyMissionRun *, const char*);
+SOAP_FMAC5 struct __ns3__NotifyMissionRun * SOAP_FMAC6 soap_new___ns3__NotifyMissionRun(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns3__NotifyMissionRun(struct soap*, struct __ns3__NotifyMissionRun*);
+SOAP_FMAC3 struct __ns3__NotifyMissionRun * SOAP_FMAC4 soap_instantiate___ns3__NotifyMissionRun(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns3__NotifyMissionRun(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE___ns3__GetScriptMissionData
+#define SOAP_TYPE___ns3__GetScriptMissionData (92)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns3__GetScriptMissionData(struct soap*, struct __ns3__GetScriptMissionData *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns3__GetScriptMissionData(struct soap*, const struct __ns3__GetScriptMissionData *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns3__GetScriptMissionData(struct soap*, const struct __ns3__GetScriptMissionData *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns3__GetScriptMissionData(struct soap*, const char*, int, const struct __ns3__GetScriptMissionData *, const char*);
+SOAP_FMAC3 struct __ns3__GetScriptMissionData * SOAP_FMAC4 soap_get___ns3__GetScriptMissionData(struct soap*, struct __ns3__GetScriptMissionData *, const char*, const char*);
+SOAP_FMAC3 struct __ns3__GetScriptMissionData * SOAP_FMAC4 soap_in___ns3__GetScriptMissionData(struct soap*, const char*, struct __ns3__GetScriptMissionData *, const char*);
+SOAP_FMAC5 struct __ns3__GetScriptMissionData * SOAP_FMAC6 soap_new___ns3__GetScriptMissionData(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns3__GetScriptMissionData(struct soap*, struct __ns3__GetScriptMissionData*);
+SOAP_FMAC3 struct __ns3__GetScriptMissionData * SOAP_FMAC4 soap_instantiate___ns3__GetScriptMissionData(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns3__GetScriptMissionData(struct soap*, int, int, void*, size_t, const void*, size_t);
+
 #ifndef SOAP_TYPE___ns3__GetResourceList
-#define SOAP_TYPE___ns3__GetResourceList (69)
+#define SOAP_TYPE___ns3__GetResourceList (90)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns3__GetResourceList(struct soap*, struct __ns3__GetResourceList *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns3__GetResourceList(struct soap*, const struct __ns3__GetResourceList *);
@@ -432,7 +594,7 @@ SOAP_FMAC3 struct __ns3__GetResourceList * SOAP_FMAC4 soap_instantiate___ns3__Ge
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns3__GetResourceList(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE___ns3__GetResourceData
-#define SOAP_TYPE___ns3__GetResourceData (67)
+#define SOAP_TYPE___ns3__GetResourceData (88)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns3__GetResourceData(struct soap*, struct __ns3__GetResourceData *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns3__GetResourceData(struct soap*, const struct __ns3__GetResourceData *);
@@ -446,7 +608,7 @@ SOAP_FMAC3 struct __ns3__GetResourceData * SOAP_FMAC4 soap_instantiate___ns3__Ge
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns3__GetResourceData(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE___ns3__DownloadFile
-#define SOAP_TYPE___ns3__DownloadFile (65)
+#define SOAP_TYPE___ns3__DownloadFile (86)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns3__DownloadFile(struct soap*, struct __ns3__DownloadFile *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns3__DownloadFile(struct soap*, const struct __ns3__DownloadFile *);
@@ -459,22 +621,36 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns3__DownloadFile(struct soap*, struct 
 SOAP_FMAC3 struct __ns3__DownloadFile * SOAP_FMAC4 soap_instantiate___ns3__DownloadFile(struct soap*, int, const char*, const char*, size_t*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns3__DownloadFile(struct soap*, int, int, void*, size_t, const void*, size_t);
 
-#ifndef SOAP_TYPE___ns3__DeleteResource
-#define SOAP_TYPE___ns3__DeleteResource (63)
+#ifndef SOAP_TYPE___ns2__SubmitStackTrace
+#define SOAP_TYPE___ns2__SubmitStackTrace (84)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns3__DeleteResource(struct soap*, struct __ns3__DeleteResource *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns3__DeleteResource(struct soap*, const struct __ns3__DeleteResource *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns3__DeleteResource(struct soap*, const struct __ns3__DeleteResource *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns3__DeleteResource(struct soap*, const char*, int, const struct __ns3__DeleteResource *, const char*);
-SOAP_FMAC3 struct __ns3__DeleteResource * SOAP_FMAC4 soap_get___ns3__DeleteResource(struct soap*, struct __ns3__DeleteResource *, const char*, const char*);
-SOAP_FMAC3 struct __ns3__DeleteResource * SOAP_FMAC4 soap_in___ns3__DeleteResource(struct soap*, const char*, struct __ns3__DeleteResource *, const char*);
-SOAP_FMAC5 struct __ns3__DeleteResource * SOAP_FMAC6 soap_new___ns3__DeleteResource(struct soap*, int);
-SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns3__DeleteResource(struct soap*, struct __ns3__DeleteResource*);
-SOAP_FMAC3 struct __ns3__DeleteResource * SOAP_FMAC4 soap_instantiate___ns3__DeleteResource(struct soap*, int, const char*, const char*, size_t*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns3__DeleteResource(struct soap*, int, int, void*, size_t, const void*, size_t);
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns2__SubmitStackTrace(struct soap*, struct __ns2__SubmitStackTrace *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns2__SubmitStackTrace(struct soap*, const struct __ns2__SubmitStackTrace *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns2__SubmitStackTrace(struct soap*, const struct __ns2__SubmitStackTrace *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns2__SubmitStackTrace(struct soap*, const char*, int, const struct __ns2__SubmitStackTrace *, const char*);
+SOAP_FMAC3 struct __ns2__SubmitStackTrace * SOAP_FMAC4 soap_get___ns2__SubmitStackTrace(struct soap*, struct __ns2__SubmitStackTrace *, const char*, const char*);
+SOAP_FMAC3 struct __ns2__SubmitStackTrace * SOAP_FMAC4 soap_in___ns2__SubmitStackTrace(struct soap*, const char*, struct __ns2__SubmitStackTrace *, const char*);
+SOAP_FMAC5 struct __ns2__SubmitStackTrace * SOAP_FMAC6 soap_new___ns2__SubmitStackTrace(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns2__SubmitStackTrace(struct soap*, struct __ns2__SubmitStackTrace*);
+SOAP_FMAC3 struct __ns2__SubmitStackTrace * SOAP_FMAC4 soap_instantiate___ns2__SubmitStackTrace(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns2__SubmitStackTrace(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE___ns2__SubmitMissionScore
+#define SOAP_TYPE___ns2__SubmitMissionScore (80)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns2__SubmitMissionScore(struct soap*, struct __ns2__SubmitMissionScore *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns2__SubmitMissionScore(struct soap*, const struct __ns2__SubmitMissionScore *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns2__SubmitMissionScore(struct soap*, const struct __ns2__SubmitMissionScore *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns2__SubmitMissionScore(struct soap*, const char*, int, const struct __ns2__SubmitMissionScore *, const char*);
+SOAP_FMAC3 struct __ns2__SubmitMissionScore * SOAP_FMAC4 soap_get___ns2__SubmitMissionScore(struct soap*, struct __ns2__SubmitMissionScore *, const char*, const char*);
+SOAP_FMAC3 struct __ns2__SubmitMissionScore * SOAP_FMAC4 soap_in___ns2__SubmitMissionScore(struct soap*, const char*, struct __ns2__SubmitMissionScore *, const char*);
+SOAP_FMAC5 struct __ns2__SubmitMissionScore * SOAP_FMAC6 soap_new___ns2__SubmitMissionScore(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns2__SubmitMissionScore(struct soap*, struct __ns2__SubmitMissionScore*);
+SOAP_FMAC3 struct __ns2__SubmitMissionScore * SOAP_FMAC4 soap_instantiate___ns2__SubmitMissionScore(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns2__SubmitMissionScore(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE___ns2__RegisterResource
-#define SOAP_TYPE___ns2__RegisterResource (61)
+#define SOAP_TYPE___ns2__RegisterResource (76)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns2__RegisterResource(struct soap*, struct __ns2__RegisterResource *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns2__RegisterResource(struct soap*, const struct __ns2__RegisterResource *);
@@ -487,8 +663,36 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns2__RegisterResource(struct soap*, str
 SOAP_FMAC3 struct __ns2__RegisterResource * SOAP_FMAC4 soap_instantiate___ns2__RegisterResource(struct soap*, int, const char*, const char*, size_t*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns2__RegisterResource(struct soap*, int, int, void*, size_t, const void*, size_t);
 
+#ifndef SOAP_TYPE___ns2__NotifyMissionRun
+#define SOAP_TYPE___ns2__NotifyMissionRun (72)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns2__NotifyMissionRun(struct soap*, struct __ns2__NotifyMissionRun *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns2__NotifyMissionRun(struct soap*, const struct __ns2__NotifyMissionRun *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns2__NotifyMissionRun(struct soap*, const struct __ns2__NotifyMissionRun *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns2__NotifyMissionRun(struct soap*, const char*, int, const struct __ns2__NotifyMissionRun *, const char*);
+SOAP_FMAC3 struct __ns2__NotifyMissionRun * SOAP_FMAC4 soap_get___ns2__NotifyMissionRun(struct soap*, struct __ns2__NotifyMissionRun *, const char*, const char*);
+SOAP_FMAC3 struct __ns2__NotifyMissionRun * SOAP_FMAC4 soap_in___ns2__NotifyMissionRun(struct soap*, const char*, struct __ns2__NotifyMissionRun *, const char*);
+SOAP_FMAC5 struct __ns2__NotifyMissionRun * SOAP_FMAC6 soap_new___ns2__NotifyMissionRun(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns2__NotifyMissionRun(struct soap*, struct __ns2__NotifyMissionRun*);
+SOAP_FMAC3 struct __ns2__NotifyMissionRun * SOAP_FMAC4 soap_instantiate___ns2__NotifyMissionRun(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns2__NotifyMissionRun(struct soap*, int, int, void*, size_t, const void*, size_t);
+
+#ifndef SOAP_TYPE___ns2__GetScriptMissionData
+#define SOAP_TYPE___ns2__GetScriptMissionData (68)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns2__GetScriptMissionData(struct soap*, struct __ns2__GetScriptMissionData *);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns2__GetScriptMissionData(struct soap*, const struct __ns2__GetScriptMissionData *);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns2__GetScriptMissionData(struct soap*, const struct __ns2__GetScriptMissionData *, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns2__GetScriptMissionData(struct soap*, const char*, int, const struct __ns2__GetScriptMissionData *, const char*);
+SOAP_FMAC3 struct __ns2__GetScriptMissionData * SOAP_FMAC4 soap_get___ns2__GetScriptMissionData(struct soap*, struct __ns2__GetScriptMissionData *, const char*, const char*);
+SOAP_FMAC3 struct __ns2__GetScriptMissionData * SOAP_FMAC4 soap_in___ns2__GetScriptMissionData(struct soap*, const char*, struct __ns2__GetScriptMissionData *, const char*);
+SOAP_FMAC5 struct __ns2__GetScriptMissionData * SOAP_FMAC6 soap_new___ns2__GetScriptMissionData(struct soap*, int);
+SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns2__GetScriptMissionData(struct soap*, struct __ns2__GetScriptMissionData*);
+SOAP_FMAC3 struct __ns2__GetScriptMissionData * SOAP_FMAC4 soap_instantiate___ns2__GetScriptMissionData(struct soap*, int, const char*, const char*, size_t*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns2__GetScriptMissionData(struct soap*, int, int, void*, size_t, const void*, size_t);
+
 #ifndef SOAP_TYPE___ns2__GetResourceList
-#define SOAP_TYPE___ns2__GetResourceList (57)
+#define SOAP_TYPE___ns2__GetResourceList (64)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns2__GetResourceList(struct soap*, struct __ns2__GetResourceList *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns2__GetResourceList(struct soap*, const struct __ns2__GetResourceList *);
@@ -502,7 +706,7 @@ SOAP_FMAC3 struct __ns2__GetResourceList * SOAP_FMAC4 soap_instantiate___ns2__Ge
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns2__GetResourceList(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE___ns2__GetResourceData
-#define SOAP_TYPE___ns2__GetResourceData (53)
+#define SOAP_TYPE___ns2__GetResourceData (60)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns2__GetResourceData(struct soap*, struct __ns2__GetResourceData *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns2__GetResourceData(struct soap*, const struct __ns2__GetResourceData *);
@@ -516,7 +720,7 @@ SOAP_FMAC3 struct __ns2__GetResourceData * SOAP_FMAC4 soap_instantiate___ns2__Ge
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns2__GetResourceData(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE___ns2__DownloadFile
-#define SOAP_TYPE___ns2__DownloadFile (49)
+#define SOAP_TYPE___ns2__DownloadFile (56)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns2__DownloadFile(struct soap*, struct __ns2__DownloadFile *);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns2__DownloadFile(struct soap*, const struct __ns2__DownloadFile *);
@@ -529,24 +733,10 @@ SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns2__DownloadFile(struct soap*, struct 
 SOAP_FMAC3 struct __ns2__DownloadFile * SOAP_FMAC4 soap_instantiate___ns2__DownloadFile(struct soap*, int, const char*, const char*, size_t*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns2__DownloadFile(struct soap*, int, int, void*, size_t, const void*, size_t);
 
-#ifndef SOAP_TYPE___ns2__DeleteResource
-#define SOAP_TYPE___ns2__DeleteResource (45)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_default___ns2__DeleteResource(struct soap*, struct __ns2__DeleteResource *);
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___ns2__DeleteResource(struct soap*, const struct __ns2__DeleteResource *);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put___ns2__DeleteResource(struct soap*, const struct __ns2__DeleteResource *, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out___ns2__DeleteResource(struct soap*, const char*, int, const struct __ns2__DeleteResource *, const char*);
-SOAP_FMAC3 struct __ns2__DeleteResource * SOAP_FMAC4 soap_get___ns2__DeleteResource(struct soap*, struct __ns2__DeleteResource *, const char*, const char*);
-SOAP_FMAC3 struct __ns2__DeleteResource * SOAP_FMAC4 soap_in___ns2__DeleteResource(struct soap*, const char*, struct __ns2__DeleteResource *, const char*);
-SOAP_FMAC5 struct __ns2__DeleteResource * SOAP_FMAC6 soap_new___ns2__DeleteResource(struct soap*, int);
-SOAP_FMAC5 void SOAP_FMAC6 soap_delete___ns2__DeleteResource(struct soap*, struct __ns2__DeleteResource*);
-SOAP_FMAC3 struct __ns2__DeleteResource * SOAP_FMAC4 soap_instantiate___ns2__DeleteResource(struct soap*, int, const char*, const char*, size_t*);
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy___ns2__DeleteResource(struct soap*, int, int, void*, size_t, const void*, size_t);
-
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Reason
-#define SOAP_TYPE_PointerToSOAP_ENV__Reason (81)
+#define SOAP_TYPE_PointerToSOAP_ENV__Reason (110)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToSOAP_ENV__Reason(struct soap*, struct SOAP_ENV__Reason *const*, const char*, const char*);
@@ -559,7 +749,7 @@ SOAP_FMAC3 struct SOAP_ENV__Reason ** SOAP_FMAC4 soap_in_PointerToSOAP_ENV__Reas
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Detail
-#define SOAP_TYPE_PointerToSOAP_ENV__Detail (80)
+#define SOAP_TYPE_PointerToSOAP_ENV__Detail (109)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToSOAP_ENV__Detail(struct soap*, struct SOAP_ENV__Detail *const*, const char*, const char*);
@@ -572,7 +762,7 @@ SOAP_FMAC3 struct SOAP_ENV__Detail ** SOAP_FMAC4 soap_in_PointerToSOAP_ENV__Deta
 #ifndef WITH_NOGLOBAL
 
 #ifndef SOAP_TYPE_PointerToSOAP_ENV__Code
-#define SOAP_TYPE_PointerToSOAP_ENV__Code (74)
+#define SOAP_TYPE_PointerToSOAP_ENV__Code (103)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToSOAP_ENV__Code(struct soap*, struct SOAP_ENV__Code *const*, const char*, const char*);
@@ -582,8 +772,44 @@ SOAP_FMAC3 struct SOAP_ENV__Code ** SOAP_FMAC4 soap_in_PointerToSOAP_ENV__Code(s
 
 #endif
 
+#ifndef SOAP_TYPE_PointerTo_ns1__SubmitStackTraceResponse
+#define SOAP_TYPE_PointerTo_ns1__SubmitStackTraceResponse (82)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__SubmitStackTraceResponse(struct soap*, _ns1__SubmitStackTraceResponse *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__SubmitStackTraceResponse(struct soap*, _ns1__SubmitStackTraceResponse *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__SubmitStackTraceResponse(struct soap*, const char *, int, _ns1__SubmitStackTraceResponse *const*, const char *);
+SOAP_FMAC3 _ns1__SubmitStackTraceResponse ** SOAP_FMAC4 soap_get_PointerTo_ns1__SubmitStackTraceResponse(struct soap*, _ns1__SubmitStackTraceResponse **, const char*, const char*);
+SOAP_FMAC3 _ns1__SubmitStackTraceResponse ** SOAP_FMAC4 soap_in_PointerTo_ns1__SubmitStackTraceResponse(struct soap*, const char*, _ns1__SubmitStackTraceResponse **, const char*);
+
+#ifndef SOAP_TYPE_PointerTo_ns1__SubmitStackTrace
+#define SOAP_TYPE_PointerTo_ns1__SubmitStackTrace (81)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__SubmitStackTrace(struct soap*, _ns1__SubmitStackTrace *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__SubmitStackTrace(struct soap*, _ns1__SubmitStackTrace *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__SubmitStackTrace(struct soap*, const char *, int, _ns1__SubmitStackTrace *const*, const char *);
+SOAP_FMAC3 _ns1__SubmitStackTrace ** SOAP_FMAC4 soap_get_PointerTo_ns1__SubmitStackTrace(struct soap*, _ns1__SubmitStackTrace **, const char*, const char*);
+SOAP_FMAC3 _ns1__SubmitStackTrace ** SOAP_FMAC4 soap_in_PointerTo_ns1__SubmitStackTrace(struct soap*, const char*, _ns1__SubmitStackTrace **, const char*);
+
+#ifndef SOAP_TYPE_PointerTo_ns1__SubmitMissionScoreResponse
+#define SOAP_TYPE_PointerTo_ns1__SubmitMissionScoreResponse (78)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__SubmitMissionScoreResponse(struct soap*, _ns1__SubmitMissionScoreResponse *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__SubmitMissionScoreResponse(struct soap*, _ns1__SubmitMissionScoreResponse *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__SubmitMissionScoreResponse(struct soap*, const char *, int, _ns1__SubmitMissionScoreResponse *const*, const char *);
+SOAP_FMAC3 _ns1__SubmitMissionScoreResponse ** SOAP_FMAC4 soap_get_PointerTo_ns1__SubmitMissionScoreResponse(struct soap*, _ns1__SubmitMissionScoreResponse **, const char*, const char*);
+SOAP_FMAC3 _ns1__SubmitMissionScoreResponse ** SOAP_FMAC4 soap_in_PointerTo_ns1__SubmitMissionScoreResponse(struct soap*, const char*, _ns1__SubmitMissionScoreResponse **, const char*);
+
+#ifndef SOAP_TYPE_PointerTo_ns1__SubmitMissionScore
+#define SOAP_TYPE_PointerTo_ns1__SubmitMissionScore (77)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__SubmitMissionScore(struct soap*, _ns1__SubmitMissionScore *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__SubmitMissionScore(struct soap*, _ns1__SubmitMissionScore *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__SubmitMissionScore(struct soap*, const char *, int, _ns1__SubmitMissionScore *const*, const char *);
+SOAP_FMAC3 _ns1__SubmitMissionScore ** SOAP_FMAC4 soap_get_PointerTo_ns1__SubmitMissionScore(struct soap*, _ns1__SubmitMissionScore **, const char*, const char*);
+SOAP_FMAC3 _ns1__SubmitMissionScore ** SOAP_FMAC4 soap_in_PointerTo_ns1__SubmitMissionScore(struct soap*, const char*, _ns1__SubmitMissionScore **, const char*);
+
 #ifndef SOAP_TYPE_PointerTo_ns1__RegisterResourceResponse
-#define SOAP_TYPE_PointerTo_ns1__RegisterResourceResponse (59)
+#define SOAP_TYPE_PointerTo_ns1__RegisterResourceResponse (74)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__RegisterResourceResponse(struct soap*, _ns1__RegisterResourceResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__RegisterResourceResponse(struct soap*, _ns1__RegisterResourceResponse *const*, const char*, const char*);
@@ -592,7 +818,7 @@ SOAP_FMAC3 _ns1__RegisterResourceResponse ** SOAP_FMAC4 soap_get_PointerTo_ns1__
 SOAP_FMAC3 _ns1__RegisterResourceResponse ** SOAP_FMAC4 soap_in_PointerTo_ns1__RegisterResourceResponse(struct soap*, const char*, _ns1__RegisterResourceResponse **, const char*);
 
 #ifndef SOAP_TYPE_PointerTo_ns1__RegisterResource
-#define SOAP_TYPE_PointerTo_ns1__RegisterResource (58)
+#define SOAP_TYPE_PointerTo_ns1__RegisterResource (73)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__RegisterResource(struct soap*, _ns1__RegisterResource *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__RegisterResource(struct soap*, _ns1__RegisterResource *const*, const char*, const char*);
@@ -600,8 +826,44 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__RegisterResource(struct soap*,
 SOAP_FMAC3 _ns1__RegisterResource ** SOAP_FMAC4 soap_get_PointerTo_ns1__RegisterResource(struct soap*, _ns1__RegisterResource **, const char*, const char*);
 SOAP_FMAC3 _ns1__RegisterResource ** SOAP_FMAC4 soap_in_PointerTo_ns1__RegisterResource(struct soap*, const char*, _ns1__RegisterResource **, const char*);
 
+#ifndef SOAP_TYPE_PointerTo_ns1__NotifyMissionRunResponse
+#define SOAP_TYPE_PointerTo_ns1__NotifyMissionRunResponse (70)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__NotifyMissionRunResponse(struct soap*, _ns1__NotifyMissionRunResponse *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__NotifyMissionRunResponse(struct soap*, _ns1__NotifyMissionRunResponse *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__NotifyMissionRunResponse(struct soap*, const char *, int, _ns1__NotifyMissionRunResponse *const*, const char *);
+SOAP_FMAC3 _ns1__NotifyMissionRunResponse ** SOAP_FMAC4 soap_get_PointerTo_ns1__NotifyMissionRunResponse(struct soap*, _ns1__NotifyMissionRunResponse **, const char*, const char*);
+SOAP_FMAC3 _ns1__NotifyMissionRunResponse ** SOAP_FMAC4 soap_in_PointerTo_ns1__NotifyMissionRunResponse(struct soap*, const char*, _ns1__NotifyMissionRunResponse **, const char*);
+
+#ifndef SOAP_TYPE_PointerTo_ns1__NotifyMissionRun
+#define SOAP_TYPE_PointerTo_ns1__NotifyMissionRun (69)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__NotifyMissionRun(struct soap*, _ns1__NotifyMissionRun *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__NotifyMissionRun(struct soap*, _ns1__NotifyMissionRun *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__NotifyMissionRun(struct soap*, const char *, int, _ns1__NotifyMissionRun *const*, const char *);
+SOAP_FMAC3 _ns1__NotifyMissionRun ** SOAP_FMAC4 soap_get_PointerTo_ns1__NotifyMissionRun(struct soap*, _ns1__NotifyMissionRun **, const char*, const char*);
+SOAP_FMAC3 _ns1__NotifyMissionRun ** SOAP_FMAC4 soap_in_PointerTo_ns1__NotifyMissionRun(struct soap*, const char*, _ns1__NotifyMissionRun **, const char*);
+
+#ifndef SOAP_TYPE_PointerTo_ns1__GetScriptMissionDataResponse
+#define SOAP_TYPE_PointerTo_ns1__GetScriptMissionDataResponse (66)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__GetScriptMissionDataResponse(struct soap*, _ns1__GetScriptMissionDataResponse *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__GetScriptMissionDataResponse(struct soap*, _ns1__GetScriptMissionDataResponse *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__GetScriptMissionDataResponse(struct soap*, const char *, int, _ns1__GetScriptMissionDataResponse *const*, const char *);
+SOAP_FMAC3 _ns1__GetScriptMissionDataResponse ** SOAP_FMAC4 soap_get_PointerTo_ns1__GetScriptMissionDataResponse(struct soap*, _ns1__GetScriptMissionDataResponse **, const char*, const char*);
+SOAP_FMAC3 _ns1__GetScriptMissionDataResponse ** SOAP_FMAC4 soap_in_PointerTo_ns1__GetScriptMissionDataResponse(struct soap*, const char*, _ns1__GetScriptMissionDataResponse **, const char*);
+
+#ifndef SOAP_TYPE_PointerTo_ns1__GetScriptMissionData
+#define SOAP_TYPE_PointerTo_ns1__GetScriptMissionData (65)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__GetScriptMissionData(struct soap*, _ns1__GetScriptMissionData *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__GetScriptMissionData(struct soap*, _ns1__GetScriptMissionData *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__GetScriptMissionData(struct soap*, const char *, int, _ns1__GetScriptMissionData *const*, const char *);
+SOAP_FMAC3 _ns1__GetScriptMissionData ** SOAP_FMAC4 soap_get_PointerTo_ns1__GetScriptMissionData(struct soap*, _ns1__GetScriptMissionData **, const char*, const char*);
+SOAP_FMAC3 _ns1__GetScriptMissionData ** SOAP_FMAC4 soap_in_PointerTo_ns1__GetScriptMissionData(struct soap*, const char*, _ns1__GetScriptMissionData **, const char*);
+
 #ifndef SOAP_TYPE_PointerTo_ns1__GetResourceListResponse
-#define SOAP_TYPE_PointerTo_ns1__GetResourceListResponse (55)
+#define SOAP_TYPE_PointerTo_ns1__GetResourceListResponse (62)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__GetResourceListResponse(struct soap*, _ns1__GetResourceListResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__GetResourceListResponse(struct soap*, _ns1__GetResourceListResponse *const*, const char*, const char*);
@@ -610,7 +872,7 @@ SOAP_FMAC3 _ns1__GetResourceListResponse ** SOAP_FMAC4 soap_get_PointerTo_ns1__G
 SOAP_FMAC3 _ns1__GetResourceListResponse ** SOAP_FMAC4 soap_in_PointerTo_ns1__GetResourceListResponse(struct soap*, const char*, _ns1__GetResourceListResponse **, const char*);
 
 #ifndef SOAP_TYPE_PointerTo_ns1__GetResourceList
-#define SOAP_TYPE_PointerTo_ns1__GetResourceList (54)
+#define SOAP_TYPE_PointerTo_ns1__GetResourceList (61)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__GetResourceList(struct soap*, _ns1__GetResourceList *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__GetResourceList(struct soap*, _ns1__GetResourceList *const*, const char*, const char*);
@@ -619,7 +881,7 @@ SOAP_FMAC3 _ns1__GetResourceList ** SOAP_FMAC4 soap_get_PointerTo_ns1__GetResour
 SOAP_FMAC3 _ns1__GetResourceList ** SOAP_FMAC4 soap_in_PointerTo_ns1__GetResourceList(struct soap*, const char*, _ns1__GetResourceList **, const char*);
 
 #ifndef SOAP_TYPE_PointerTo_ns1__GetResourceDataResponse
-#define SOAP_TYPE_PointerTo_ns1__GetResourceDataResponse (51)
+#define SOAP_TYPE_PointerTo_ns1__GetResourceDataResponse (58)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__GetResourceDataResponse(struct soap*, _ns1__GetResourceDataResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__GetResourceDataResponse(struct soap*, _ns1__GetResourceDataResponse *const*, const char*, const char*);
@@ -628,7 +890,7 @@ SOAP_FMAC3 _ns1__GetResourceDataResponse ** SOAP_FMAC4 soap_get_PointerTo_ns1__G
 SOAP_FMAC3 _ns1__GetResourceDataResponse ** SOAP_FMAC4 soap_in_PointerTo_ns1__GetResourceDataResponse(struct soap*, const char*, _ns1__GetResourceDataResponse **, const char*);
 
 #ifndef SOAP_TYPE_PointerTo_ns1__GetResourceData
-#define SOAP_TYPE_PointerTo_ns1__GetResourceData (50)
+#define SOAP_TYPE_PointerTo_ns1__GetResourceData (57)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__GetResourceData(struct soap*, _ns1__GetResourceData *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__GetResourceData(struct soap*, _ns1__GetResourceData *const*, const char*, const char*);
@@ -637,7 +899,7 @@ SOAP_FMAC3 _ns1__GetResourceData ** SOAP_FMAC4 soap_get_PointerTo_ns1__GetResour
 SOAP_FMAC3 _ns1__GetResourceData ** SOAP_FMAC4 soap_in_PointerTo_ns1__GetResourceData(struct soap*, const char*, _ns1__GetResourceData **, const char*);
 
 #ifndef SOAP_TYPE_PointerTo_ns1__DownloadFileResponse
-#define SOAP_TYPE_PointerTo_ns1__DownloadFileResponse (47)
+#define SOAP_TYPE_PointerTo_ns1__DownloadFileResponse (54)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__DownloadFileResponse(struct soap*, _ns1__DownloadFileResponse *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__DownloadFileResponse(struct soap*, _ns1__DownloadFileResponse *const*, const char*, const char*);
@@ -646,7 +908,7 @@ SOAP_FMAC3 _ns1__DownloadFileResponse ** SOAP_FMAC4 soap_get_PointerTo_ns1__Down
 SOAP_FMAC3 _ns1__DownloadFileResponse ** SOAP_FMAC4 soap_in_PointerTo_ns1__DownloadFileResponse(struct soap*, const char*, _ns1__DownloadFileResponse **, const char*);
 
 #ifndef SOAP_TYPE_PointerTo_ns1__DownloadFile
-#define SOAP_TYPE_PointerTo_ns1__DownloadFile (46)
+#define SOAP_TYPE_PointerTo_ns1__DownloadFile (53)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__DownloadFile(struct soap*, _ns1__DownloadFile *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__DownloadFile(struct soap*, _ns1__DownloadFile *const*, const char*, const char*);
@@ -654,26 +916,17 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__DownloadFile(struct soap*, con
 SOAP_FMAC3 _ns1__DownloadFile ** SOAP_FMAC4 soap_get_PointerTo_ns1__DownloadFile(struct soap*, _ns1__DownloadFile **, const char*, const char*);
 SOAP_FMAC3 _ns1__DownloadFile ** SOAP_FMAC4 soap_in_PointerTo_ns1__DownloadFile(struct soap*, const char*, _ns1__DownloadFile **, const char*);
 
-#ifndef SOAP_TYPE_PointerTo_ns1__DeleteResourceResponse
-#define SOAP_TYPE_PointerTo_ns1__DeleteResourceResponse (43)
+#ifndef SOAP_TYPE_PointerTons1__ScriptMissionData
+#define SOAP_TYPE_PointerTons1__ScriptMissionData (52)
 #endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__DeleteResourceResponse(struct soap*, _ns1__DeleteResourceResponse *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__DeleteResourceResponse(struct soap*, _ns1__DeleteResourceResponse *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__DeleteResourceResponse(struct soap*, const char *, int, _ns1__DeleteResourceResponse *const*, const char *);
-SOAP_FMAC3 _ns1__DeleteResourceResponse ** SOAP_FMAC4 soap_get_PointerTo_ns1__DeleteResourceResponse(struct soap*, _ns1__DeleteResourceResponse **, const char*, const char*);
-SOAP_FMAC3 _ns1__DeleteResourceResponse ** SOAP_FMAC4 soap_in_PointerTo_ns1__DeleteResourceResponse(struct soap*, const char*, _ns1__DeleteResourceResponse **, const char*);
-
-#ifndef SOAP_TYPE_PointerTo_ns1__DeleteResource
-#define SOAP_TYPE_PointerTo_ns1__DeleteResource (42)
-#endif
-SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTo_ns1__DeleteResource(struct soap*, _ns1__DeleteResource *const*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTo_ns1__DeleteResource(struct soap*, _ns1__DeleteResource *const*, const char*, const char*);
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_ns1__DeleteResource(struct soap*, const char *, int, _ns1__DeleteResource *const*, const char *);
-SOAP_FMAC3 _ns1__DeleteResource ** SOAP_FMAC4 soap_get_PointerTo_ns1__DeleteResource(struct soap*, _ns1__DeleteResource **, const char*, const char*);
-SOAP_FMAC3 _ns1__DeleteResource ** SOAP_FMAC4 soap_in_PointerTo_ns1__DeleteResource(struct soap*, const char*, _ns1__DeleteResource **, const char*);
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTons1__ScriptMissionData(struct soap*, ns1__ScriptMissionData *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTons1__ScriptMissionData(struct soap*, ns1__ScriptMissionData *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTons1__ScriptMissionData(struct soap*, const char *, int, ns1__ScriptMissionData *const*, const char *);
+SOAP_FMAC3 ns1__ScriptMissionData ** SOAP_FMAC4 soap_get_PointerTons1__ScriptMissionData(struct soap*, ns1__ScriptMissionData **, const char*, const char*);
+SOAP_FMAC3 ns1__ScriptMissionData ** SOAP_FMAC4 soap_in_PointerTons1__ScriptMissionData(struct soap*, const char*, ns1__ScriptMissionData **, const char*);
 
 #ifndef SOAP_TYPE_PointerTons1__ArrayOfResourceData
-#define SOAP_TYPE_PointerTons1__ArrayOfResourceData (41)
+#define SOAP_TYPE_PointerTons1__ArrayOfResourceData (51)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTons1__ArrayOfResourceData(struct soap*, ns1__ArrayOfResourceData *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTons1__ArrayOfResourceData(struct soap*, ns1__ArrayOfResourceData *const*, const char*, const char*);
@@ -681,8 +934,17 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTons1__ArrayOfResourceData(struct soap
 SOAP_FMAC3 ns1__ArrayOfResourceData ** SOAP_FMAC4 soap_get_PointerTons1__ArrayOfResourceData(struct soap*, ns1__ArrayOfResourceData **, const char*, const char*);
 SOAP_FMAC3 ns1__ArrayOfResourceData ** SOAP_FMAC4 soap_in_PointerTons1__ArrayOfResourceData(struct soap*, const char*, ns1__ArrayOfResourceData **, const char*);
 
+#ifndef SOAP_TYPE_PointerTotime
+#define SOAP_TYPE_PointerTotime (50)
+#endif
+SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTotime(struct soap*, time_t *const*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTotime(struct soap*, time_t *const*, const char*, const char*);
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTotime(struct soap*, const char *, int, time_t *const*, const char *);
+SOAP_FMAC3 time_t ** SOAP_FMAC4 soap_get_PointerTotime(struct soap*, time_t **, const char*, const char*);
+SOAP_FMAC3 time_t ** SOAP_FMAC4 soap_in_PointerTotime(struct soap*, const char*, time_t **, const char*);
+
 #ifndef SOAP_TYPE_PointerToxsd__base64Binary
-#define SOAP_TYPE_PointerToxsd__base64Binary (40)
+#define SOAP_TYPE_PointerToxsd__base64Binary (48)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerToxsd__base64Binary(struct soap*, xsd__base64Binary *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerToxsd__base64Binary(struct soap*, xsd__base64Binary *const*, const char*, const char*);
@@ -691,7 +953,7 @@ SOAP_FMAC3 xsd__base64Binary ** SOAP_FMAC4 soap_get_PointerToxsd__base64Binary(s
 SOAP_FMAC3 xsd__base64Binary ** SOAP_FMAC4 soap_in_PointerToxsd__base64Binary(struct soap*, const char*, xsd__base64Binary **, const char*);
 
 #ifndef SOAP_TYPE_PointerTons1__ResourceData
-#define SOAP_TYPE_PointerTons1__ResourceData (37)
+#define SOAP_TYPE_PointerTons1__ResourceData (45)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTons1__ResourceData(struct soap*, ns1__ResourceData *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTons1__ResourceData(struct soap*, ns1__ResourceData *const*, const char*, const char*);
@@ -700,7 +962,7 @@ SOAP_FMAC3 ns1__ResourceData ** SOAP_FMAC4 soap_get_PointerTons1__ResourceData(s
 SOAP_FMAC3 ns1__ResourceData ** SOAP_FMAC4 soap_in_PointerTons1__ResourceData(struct soap*, const char*, ns1__ResourceData **, const char*);
 
 #ifndef SOAP_TYPE_PointerTons1__SpringHashEntry
-#define SOAP_TYPE_PointerTons1__SpringHashEntry (35)
+#define SOAP_TYPE_PointerTons1__SpringHashEntry (43)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTons1__SpringHashEntry(struct soap*, ns1__SpringHashEntry *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTons1__SpringHashEntry(struct soap*, ns1__SpringHashEntry *const*, const char*, const char*);
@@ -709,7 +971,7 @@ SOAP_FMAC3 ns1__SpringHashEntry ** SOAP_FMAC4 soap_get_PointerTons1__SpringHashE
 SOAP_FMAC3 ns1__SpringHashEntry ** SOAP_FMAC4 soap_in_PointerTons1__SpringHashEntry(struct soap*, const char*, ns1__SpringHashEntry **, const char*);
 
 #ifndef SOAP_TYPE_PointerTons1__ArrayOfSpringHashEntry
-#define SOAP_TYPE_PointerTons1__ArrayOfSpringHashEntry (34)
+#define SOAP_TYPE_PointerTons1__ArrayOfSpringHashEntry (42)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTons1__ArrayOfSpringHashEntry(struct soap*, ns1__ArrayOfSpringHashEntry *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTons1__ArrayOfSpringHashEntry(struct soap*, ns1__ArrayOfSpringHashEntry *const*, const char*, const char*);
@@ -718,7 +980,7 @@ SOAP_FMAC3 ns1__ArrayOfSpringHashEntry ** SOAP_FMAC4 soap_get_PointerTons1__Arra
 SOAP_FMAC3 ns1__ArrayOfSpringHashEntry ** SOAP_FMAC4 soap_in_PointerTons1__ArrayOfSpringHashEntry(struct soap*, const char*, ns1__ArrayOfSpringHashEntry **, const char*);
 
 #ifndef SOAP_TYPE_PointerTostd__string
-#define SOAP_TYPE_PointerTostd__string (33)
+#define SOAP_TYPE_PointerTostd__string (41)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTostd__string(struct soap*, std::string *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTostd__string(struct soap*, std::string *const*, const char*, const char*);
@@ -727,7 +989,7 @@ SOAP_FMAC3 std::string ** SOAP_FMAC4 soap_get_PointerTostd__string(struct soap*,
 SOAP_FMAC3 std::string ** SOAP_FMAC4 soap_in_PointerTostd__string(struct soap*, const char*, std::string **, const char*);
 
 #ifndef SOAP_TYPE_PointerTons1__ArrayOfString
-#define SOAP_TYPE_PointerTons1__ArrayOfString (32)
+#define SOAP_TYPE_PointerTons1__ArrayOfString (40)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_PointerTons1__ArrayOfString(struct soap*, ns1__ArrayOfString *const*);
 SOAP_FMAC3 int SOAP_FMAC4 soap_put_PointerTons1__ArrayOfString(struct soap*, ns1__ArrayOfString *const*, const char*, const char*);
@@ -765,7 +1027,7 @@ SOAP_FMAC3 char ** SOAP_FMAC4 soap_get_string(struct soap*, char **, const char*
 SOAP_FMAC3 char * * SOAP_FMAC4 soap_in_string(struct soap*, const char*, char **, const char*);
 
 #ifndef SOAP_TYPE_std__vectorTemplateOfPointerTons1__ResourceData
-#define SOAP_TYPE_std__vectorTemplateOfPointerTons1__ResourceData (38)
+#define SOAP_TYPE_std__vectorTemplateOfPointerTons1__ResourceData (46)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOfPointerTons1__ResourceData(struct soap*, std::vector<ns1__ResourceData * >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOfPointerTons1__ResourceData(struct soap*, const std::vector<ns1__ResourceData * >*);
@@ -777,7 +1039,7 @@ SOAP_FMAC3 std::vector<ns1__ResourceData * > * SOAP_FMAC4 soap_instantiate_std__
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOfPointerTons1__ResourceData(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_std__vectorTemplateOfPointerTons1__SpringHashEntry
-#define SOAP_TYPE_std__vectorTemplateOfPointerTons1__SpringHashEntry (36)
+#define SOAP_TYPE_std__vectorTemplateOfPointerTons1__SpringHashEntry (44)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOfPointerTons1__SpringHashEntry(struct soap*, std::vector<ns1__SpringHashEntry * >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOfPointerTons1__SpringHashEntry(struct soap*, const std::vector<ns1__SpringHashEntry * >*);
@@ -789,7 +1051,7 @@ SOAP_FMAC3 std::vector<ns1__SpringHashEntry * > * SOAP_FMAC4 soap_instantiate_st
 SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOfPointerTons1__SpringHashEntry(struct soap*, int, int, void*, size_t, const void*, size_t);
 
 #ifndef SOAP_TYPE_std__vectorTemplateOfstd__string
-#define SOAP_TYPE_std__vectorTemplateOfstd__string (31)
+#define SOAP_TYPE_std__vectorTemplateOfstd__string (39)
 #endif
 SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOfstd__string(struct soap*, std::vector<std::string >*);
 SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOfstd__string(struct soap*, const std::vector<std::string >*);

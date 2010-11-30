@@ -1,5 +1,5 @@
-#include "soap/soapPlasmaServiceSoap12Proxy.h"
-#include "soap/PlasmaServiceSoap.nsmap"
+#include "soap/soapContentServiceSoap12Proxy.h"
+#include "soap/ContentServiceSoap.nsmap"
 #include "PlasmaDownloader.h"
 #include "../../FileSystem.h"
 #include "../../Util.h"
@@ -13,7 +13,7 @@ CPlasmaDownloader::CPlasmaDownloader(){
 
 std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownload::category category){
 	DEBUG_LINE("");
-	PlasmaServiceSoap12Proxy service;
+	ContentServiceSoap12Proxy service;
 	_ns1__DownloadFile file;
 	_ns1__DownloadFileResponse result;
 	std::string tmpname=name;
