@@ -107,6 +107,7 @@ std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDown
 		std::string filename;
 		filename=fileSystem->getSpringDir();
 		filename+=PATH_DELIMITER;
+		
 		switch (cat){
 			case IDownload::CAT_MODS:
 				url="http://www.springfiles.com/checkmirror.php?c=mods&q=";
@@ -119,7 +120,10 @@ std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDown
 		}
 		filename+=PATH_DELIMITER;
 		filename+=name;
-		url+=name;
+		// url-escape filename
+		char* buf=curl_easy_escape(curl_handle,name.c_str(),name.length());
+		url.append(buf);
+		curl_free(buf);
 
 		curl_easy_setopt(curl_handle, CURLOPT_URL,url.c_str());
 		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_mem);
