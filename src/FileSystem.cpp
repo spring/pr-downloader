@@ -240,7 +240,9 @@ int CFileSystem::validatePool(const std::string& path){
 	closedir(d);
 	return res;
 }
-
+/**
+	returns true if file is older then secs
+*/
 bool CFileSystem::isOlder(const std::string& filename, int secs){
 	struct stat sb;
 	if (stat(filename.c_str(),&sb)<0){
@@ -248,11 +250,19 @@ bool CFileSystem::isOlder(const std::string& filename, int secs){
 	}
 	time_t t;
 #ifdef WIN32
+	LARGE_INTEGER date;
+	
 	SYSTEMTIME pTime;
 	FILETIME pFTime;
 	GetSystemTime(&pTime);
 	SystemTimeToFileTime(&pTime, &pFTime);
-	t = ((unsigned long long)(&pFTime) -	(unsigned long long)(116444736000000000))/ 10000000;
+	
+	date.HighPart = pFTime.dwHighDateTime;
+	date.LowPart = pFTime.dwLowDateTime;
+
+	date.QuadPart -= 11644473600000 * 10000;
+
+	t = date.QuadPart / 10000000;
 #else
 	time(&t);
 #endif
