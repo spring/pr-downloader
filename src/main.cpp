@@ -30,7 +30,7 @@ enum{
 	WIDGET_SEARCH,
 	FILESYSTEM_WRITEPATH,
 	DOWNLOAD_MAP,
-	DOWNLOAD_MOD,
+	DOWNLOAD_GAME,
 	HELP
 };
 
@@ -44,7 +44,7 @@ static struct option long_options[] = {
 	{"http-search"             , 1, 0, HTTP_SEARCH},
 	{"torrent-download"        , 1, 0, TORRENT_DOWNLOAD},
 	{"download-map"            , 1, 0, DOWNLOAD_MAP},
-	{"download-mod"            , 1, 0, DOWNLOAD_MOD},
+	{"download-game"           , 1, 0, DOWNLOAD_GAME},
 	{"widget-search"           , 1, 0, WIDGET_SEARCH},
 	{"filesystem-writepath"    , 0, 0, FILESYSTEM_WRITEPATH},
 	{"help"                    , 0, 0, HELP},
@@ -160,7 +160,7 @@ int main(int argc, char **argv){
 				download(optarg, IDownload::CAT_MAPS);
 				break;
 			}
-			case DOWNLOAD_MOD:{
+			case DOWNLOAD_GAME:{
 				download(optarg, IDownload::CAT_MODS);
 				break;
 			}
