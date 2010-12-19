@@ -20,7 +20,10 @@ if   (MINGW)
 
         set(CMAKE_CXX_FLAGS "-Wall -O2 -g -D_WIN32_WINNT=0x0501")
 else ()
-        set(CMAKE_CXX_FLAGS "-Wall -O0 -g -fPIC")
+	set(CMAKE_CXX_FLAGS "-Wall -O0 -g -fPIC")
+	set(CMAKE_SKIP_BUILD_RPATH  FALSE)
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif ()
 
 find_package(CURL)
