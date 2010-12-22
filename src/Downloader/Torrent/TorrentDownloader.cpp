@@ -47,12 +47,12 @@ bool CTorrentDownloader::download(IDownload& download){
 	}
 	libtorrent::torrent_info torrentInfo = torrentHandle.get_torrent_info();
 
-	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
+//	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
 		it=download.mirror.begin();
 		IDownload dl(*it,download.name + addTorrentParams.ti->file_at(0).path.filename());
 		return httpDownload->download(dl);
-	}
-
+//	}
+/* //FIXME: make torrent work (+ quick shutdown)
 	while( (!torrentHandle.is_finished()) && (!torrentHandle.is_seed()) && (torrentHandle.is_valid())){
 //		const libtorrent::session_status& sessionStatus=torrentSession.status();
 		printf("\r%d/%ld",getProcess(torrentHandle), torrentInfo.total_size());
@@ -75,7 +75,7 @@ bool CTorrentDownloader::download(IDownload& download){
 	printf("download finished, shuting down torrent...\n");
 	torrentSession.pause();
 	printf("shut down!\n");
-	return true;
+	return true;*/
 }
 
 std::list<IDownload>* CTorrentDownloader::search(const std::string& name, IDownload::category cat){
