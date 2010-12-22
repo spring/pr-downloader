@@ -19,11 +19,11 @@ bool CTorrentDownloader::download(IDownload& download){
 	DEBUG_LINE("");
 	libtorrent::session torrentSession;
 
-    libtorrent::session_settings setting;
-    setting.tracker_completion_timeout=1;
-    setting.stop_tracker_timeout=1;
-    setting.peer_timeout=1;
-    setting.urlseed_timeout=1;
+	libtorrent::session_settings setting;
+	setting.tracker_completion_timeout=1;
+	setting.stop_tracker_timeout=1;
+	setting.peer_timeout=1;
+	setting.urlseed_timeout=1;
 
 	torrentSession.set_settings(setting);
 
@@ -31,15 +31,15 @@ bool CTorrentDownloader::download(IDownload& download){
 
 	libtorrent::add_torrent_params addTorrentParams;
 	addTorrentParams.save_path = download.name; //name contains the path, because torrents already include the filenames
-    addTorrentParams.ti = new libtorrent::torrent_info(download.url.c_str());
+	addTorrentParams.ti = new libtorrent::torrent_info(download.url.c_str());
 	for (int i=0; i<addTorrentParams.ti->num_files(); i++){
 		printf("File %d in torrent: %s\n",i, addTorrentParams.ti->file_at(i).path.filename().c_str());
 	}
 
-    printf("Downloading torrent to %s\n", download.name.c_str());
-    libtorrent::torrent_handle torrentHandle=torrentSession.add_torrent(addTorrentParams);
+	printf("Downloading torrent to %s\n", download.name.c_str());
+	libtorrent::torrent_handle torrentHandle=torrentSession.add_torrent(addTorrentParams);
 
-    std::list<std::string>::iterator it;
+	std::list<std::string>::iterator it;
 	for(it=download.mirror.begin(); it!=download.mirror.end(); ++it){
 		printf("Adding webseed to torrent %s\n",(*it).c_str());
 		urlEncode(*it);
@@ -53,7 +53,7 @@ bool CTorrentDownloader::download(IDownload& download){
 		return httpDownload->download(dl);
 	}
 
-    while( (!torrentHandle.is_finished()) && (!torrentHandle.is_seed()) && (torrentHandle.is_valid())){
+	while( (!torrentHandle.is_finished()) && (!torrentHandle.is_seed()) && (torrentHandle.is_valid())){
 //		const libtorrent::session_status& sessionStatus=torrentSession.status();
 		printf("\r%d/%ld",getProcess(torrentHandle), torrentInfo.total_size());
 		fflush(stdout);
@@ -72,8 +72,8 @@ bool CTorrentDownloader::download(IDownload& download){
 		}
     }
 
-    printf("download finished, shuting down torrent...\n");
-    torrentSession.pause();
+	printf("download finished, shuting down torrent...\n");
+	torrentSession.pause();
 	printf("shut down!\n");
 	return true;
 }
