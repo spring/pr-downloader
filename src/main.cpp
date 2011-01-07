@@ -101,7 +101,11 @@ int main(int argc, char **argv){
 		switch(c){
 			case RAPID_DOWNLOAD:{
 				list=rapidDownload->search(optarg);
-				rapidDownload->download(*list);
+				if (list->size()==0){
+					printf("Coulnd't find %s\n",optarg);
+				}else if (!rapidDownload->download(*list)){
+					printf("Error downloading %s\n",optarg);
+				}
 				break;
 			}
 			case RAPID_VALIDATE:{
