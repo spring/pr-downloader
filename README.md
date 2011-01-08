@@ -1,4 +1,4 @@
-#pr-downloader - tool to download maps and mods for the Spring engine
+#pr-downloader - tool to download maps and games for the Spring engine
 
 ##compile
 to compile, you need libtorrent-rasterbar and boost

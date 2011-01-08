@@ -2,20 +2,20 @@ what it wants to do:
 
 ./run-test
 fetch + compile latest git
-fetch latest test-mod
-runs spring + testmod
+fetch latest test-game
+runs spring + testgame
 
 
 run-test.exe
 fetch + compile latest git
-fetch latest test-mod
-run spring + testmod
+fetch latest test-game
+run spring + testgame
 
 
 what is needed:
 
 environement to compile spring (bad!)
-downloader for mod with tests included
+downloader for game with tests included
 
 
 =general=
@@ -28,12 +28,12 @@ downloader for mod with tests included
  * add version-check (for current stable / getting download-link / ...)
 
 =unitsync=
- * allow removal/cleanup of mod/map
+ * allow removal/cleanup of game/map
  * allow getting data directory from unitsync without scanning everything
  * allow it to be quiet on stdout/stderr
 
 =http=
- * if filename != modname, file can't be found through current sf interface
+ * if filename != gamename, file can't be found through current sf interface
 
 =plasma=
 
@@ -42,7 +42,7 @@ downloader for mod with tests included
  * dont download directly to pool or packages dir but to a temp dir
  * use c++ streams
  * (clean?) duplicate search results (with same md5)
- * delete old mods?
+ * delete old games?
 
 =torrent=
  * auto ban corrupted mirrors (temp-ban?)
