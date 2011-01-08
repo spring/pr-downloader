@@ -51,7 +51,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 		cat=IDownload::CAT_MAPS;
 	}else{
 		saveto += PATH_DELIMITER;
-		saveto += "mods";
+		saveto += "games";
 		saveto += PATH_DELIMITER;
 		cat=IDownload::CAT_MODS;
 	}

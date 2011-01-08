@@ -111,7 +111,7 @@ std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDown
 		switch (cat){
 			case IDownload::CAT_MODS:
 				url="http://www.springfiles.com/checkmirror.php?c=mods&q=";
-				filename+="mods";
+				filename+="games";
 			break;
 			default:
 				url="http://www.springfiles.com/checkmirror.php?c=maps&q=";
