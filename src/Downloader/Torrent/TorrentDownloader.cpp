@@ -27,7 +27,6 @@ bool CTorrentDownloader::download(IDownload& download){
 
 	torrentSession.set_settings(setting);
 
-	torrentSession.listen_on(std::make_pair(6881, 6889));
 
 	libtorrent::add_torrent_params addTorrentParams;
 	addTorrentParams.save_path = download.name; //name contains the path, because torrents already include the filenames
@@ -53,6 +52,7 @@ bool CTorrentDownloader::download(IDownload& download){
 		return httpDownload->download(dl);
 //	}
 /* //FIXME: make torrent work (+ quick shutdown)
+	torrentSession.listen_on(std::make_pair(6881, 6889));
 	while( (!torrentHandle.is_finished()) && (!torrentHandle.is_seed()) && (torrentHandle.is_valid())){
 //		const libtorrent::session_status& sessionStatus=torrentSession.status();
 		printf("\r%d/%ld",getProcess(torrentHandle), torrentInfo.total_size());
