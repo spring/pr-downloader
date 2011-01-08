@@ -19,18 +19,14 @@ downloader for game with tests included
 
 
 =general=
- * make unit-sync compatible
+ * make lib + header
+ * add init function to set data-dir
  * add an --force switch to force redownloading/updating (override cache)
  * make some things configureable
  * fix build system (code-plugable)
  * make logging configurable, cron/script-compatible, quiet mode, remove printf?
  * keep somewhere a log what happened
  * add version-check (for current stable / getting download-link / ...)
-
-=unitsync=
- * allow removal/cleanup of game/map
- * allow getting data directory from unitsync without scanning everything
- * allow it to be quiet on stdout/stderr
 
 =http=
  * if filename != gamename, file can't be found through current sf interface
