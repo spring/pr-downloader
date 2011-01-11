@@ -6,6 +6,29 @@
 
 bool CTorrentDownloader::download(IDownload& download){
 	DEBUG_LINE("");
+
+	libtorrent::add_torrent_params addTorrentParams;
+	addTorrentParams.save_path = download.name; //name contains the path, because torrents already include the filenames
+	addTorrentParams.ti = new libtorrent::torrent_info(download.url.c_str());
+	for (int i=0; i<addTorrentParams.ti->num_files(); i++){
+		printf("File %d in torrent: %s\n",i, addTorrentParams.ti->file_at(i).path.filename().c_str());
+	}
+
+	bool res=true;
+	std::list<std::string>::iterator it;
+	it=download.mirror.begin();
+
+	srand ( time(NULL) );
+	int pos=rand() % download.mirror.size();
+	for (int i=0; i<pos; i++) //use random mirror
+		it++;
+	IDownload dl(*it,download.name + addTorrentParams.ti->file_at(0).path.filename());
+	printf("%d\n",pos);
+	return httpDownload->download(dl);
+
+/*
+//FIXME: make torrent work (+ quick shutdown)
+
 	libtorrent::session* torrentSession;
 
 	libtorrent::session_settings setting;
@@ -18,34 +41,15 @@ bool CTorrentDownloader::download(IDownload& download){
 	torrentSession = new libtorrent::session();
 	torrentSession->set_settings(setting);
 
-
-	libtorrent::add_torrent_params addTorrentParams;
-	addTorrentParams.save_path = download.name; //name contains the path, because torrents already include the filenames
-	addTorrentParams.ti = new libtorrent::torrent_info(download.url.c_str());
-	for (int i=0; i<addTorrentParams.ti->num_files(); i++){
-		printf("File %d in torrent: %s\n",i, addTorrentParams.ti->file_at(i).path.filename().c_str());
-	}
-
 	printf("Downloading torrent to %s\n", download.name.c_str());
 	libtorrent::torrent_handle torrentHandle=torrentSession->add_torrent(addTorrentParams);
 
-	std::list<std::string>::iterator it;
 	for(it=download.mirror.begin(); it!=download.mirror.end(); ++it){
 		printf("Adding webseed to torrent %s\n",(*it).c_str());
 		urlEncode(*it);
 		torrentHandle.add_url_seed(*it);
 	}
-	libtorrent::torrent_info torrentInfo = torrentHandle.get_torrent_info();
 
-	bool res=true;
-//	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
-		delete torrentSession; //shutdown torrent, as it could write to the output file
-		it=download.mirror.begin();
-		IDownload dl(*it,download.name + addTorrentParams.ti->file_at(0).path.filename());
-		res=httpDownload->download(dl);
-//	}
- //FIXME: make torrent work (+ quick shutdown)
-/*
 	torrentSession->listen_on(std::make_pair(6881, 6889));
 	while( (!torrentHandle.is_finished()) && (!torrentHandle.is_seed()) && (torrentHandle.is_valid())){
 		libtorrent::session_status sessionStatus = torrentSession->status();
