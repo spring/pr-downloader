@@ -4,17 +4,6 @@
 #include "../../FileSystem.h"
 #include "../../Util.h"
 
-int CTorrentDownloader::getProcess(const libtorrent::torrent_handle& torrentHandle){
-	std::vector<libtorrent::size_type> progress;
-	torrentHandle.file_progress(progress);
-	int size=progress.size();
-	int sum=0;
-	for (int i=0; i<size;i++){
-		sum=sum+progress.at(i);
-	}
-	return sum;
-}
-
 bool CTorrentDownloader::download(IDownload& download){
 	DEBUG_LINE("");
 	libtorrent::session* torrentSession;
@@ -24,7 +13,8 @@ bool CTorrentDownloader::download(IDownload& download){
 	setting.stop_tracker_timeout=1;
 	setting.peer_timeout=1;
 	setting.urlseed_timeout=1;
-	
+	setting.user_agent="pr-downloader";
+
 	torrentSession = new libtorrent::session();
 	torrentSession->set_settings(setting);
 
@@ -47,37 +37,59 @@ bool CTorrentDownloader::download(IDownload& download){
 	}
 	libtorrent::torrent_info torrentInfo = torrentHandle.get_torrent_info();
 
-//	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
+	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
 		delete torrentSession;
 		it=download.mirror.begin();
 		IDownload dl(*it,download.name + addTorrentParams.ti->file_at(0).path.filename());
 		return httpDownload->download(dl);
-//	}
-/* //FIXME: make torrent work (+ quick shutdown)
-	torrentSession.listen_on(std::make_pair(6881, 6889));
+	}
+ //FIXME: make torrent work (+ quick shutdown)
+//	torrentSession.listen_on(std::make_pair(6881, 6889));
 	while( (!torrentHandle.is_finished()) && (!torrentHandle.is_seed()) && (torrentHandle.is_valid())){
-		printf("\r%d/%ld               ",getProcess(torrentHandle), torrentInfo.total_size());
+		libtorrent::session_status sessionStatus = torrentSession->status();
+		printf("\r%ld/%ld               ",sessionStatus.total_download, torrentHandle.get_torrent_info().total_size());
 		fflush(stdout);
-		libtorrent::time_duration time(2000000); //2 sec
-		const libtorrent::alert* a = torrentSession.wait_for_alert(time);
+		libtorrent::time_duration time(1000000); // 1 sec
+		const libtorrent::alert* a = torrentSession->wait_for_alert(time);
 		if (a!=NULL){
-			printf("peer error: %d %d\n",a->category(),libtorrent::alert::peer_notification | libtorrent::alert::error_notification );
-
+			if (a->category() & libtorrent::alert::error_notification)
+				printf(" error");
+			if (a->category() & libtorrent::alert::peer_notification)
+				printf(" peer");
+			if (a->category() &  libtorrent::alert::port_mapping_notification)
+				printf(" port_mapping");
+			if (a->category() &  libtorrent::alert::storage_notification)
+				printf(" storage");
+			if (a->category() &  libtorrent::alert::tracker_notification)
+				printf(" tracker");
+			if (a->category() &  libtorrent::alert::debug_notification)
+				printf(" debug");
+			if (a->category() &  libtorrent::alert::status_notification)
+				printf(" status");
+				if (a->category() &  libtorrent::alert::progress_notification)
+				printf(" progress");
+			if (a->category() &  libtorrent::alert::ip_block_notification)
+				printf(" ip_block");
+			if (a->category() &  libtorrent::alert::performance_warning)
+				printf(" performance");
+			if (a->category() &  libtorrent::alert::all_categories)
+				printf(" all");
 			if (( a->category() &  libtorrent::alert::peer_notification) &&
 				(  a->category() & libtorrent::alert::error_notification)){
-				printf("wrong peer found!\n");
+				printf("error downloading torrent(%d): %s\n",a->category(),a->message().c_str());
 				break; //better fail than hang
 			}
-			printf("%s\n",a->message().c_str());
-			torrentSession.pop_alert();
+			printf(" : %s\n",a->message().c_str());
+			torrentSession->pop_alert();
 		}
 	}
 
 	printf("download finished, shuting down torrent...\n");
-	torrentSession.pause();
+	torrentSession->pause();
+	delete torrentSession;
 	printf("shut down!\n");
 	return true;
-*/
+
 }
 
 std::list<IDownload>* CTorrentDownloader::search(const std::string& name, IDownload::category cat){

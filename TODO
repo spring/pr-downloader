@@ -20,6 +20,7 @@ downloader for game with tests included
 
 =general=
  * make lib + header
+ * extra namespace
  * add init function to set data-dir
  * add an --force switch to force redownloading/updating (override cache)
  * make some things configureable
