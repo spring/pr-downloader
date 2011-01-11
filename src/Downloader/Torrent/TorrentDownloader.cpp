@@ -37,14 +37,16 @@ bool CTorrentDownloader::download(IDownload& download){
 	}
 	libtorrent::torrent_info torrentInfo = torrentHandle.get_torrent_info();
 
-	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
-		delete torrentSession;
+	bool res=true;
+//	if (addTorrentParams.ti->num_files()==1){ //try http-download because only 1 mirror exists
+		delete torrentSession; //shutdown torrent, as it could write to the output file
 		it=download.mirror.begin();
 		IDownload dl(*it,download.name + addTorrentParams.ti->file_at(0).path.filename());
-		return httpDownload->download(dl);
-	}
+		res=httpDownload->download(dl);
+//	}
  //FIXME: make torrent work (+ quick shutdown)
-//	torrentSession.listen_on(std::make_pair(6881, 6889));
+/*
+	torrentSession->listen_on(std::make_pair(6881, 6889));
 	while( (!torrentHandle.is_finished()) && (!torrentHandle.is_seed()) && (torrentHandle.is_valid())){
 		libtorrent::session_status sessionStatus = torrentSession->status();
 		printf("\r%ld/%ld               ",sessionStatus.total_download, torrentHandle.get_torrent_info().total_size());
@@ -66,7 +68,7 @@ bool CTorrentDownloader::download(IDownload& download){
 				printf(" debug");
 			if (a->category() &  libtorrent::alert::status_notification)
 				printf(" status");
-				if (a->category() &  libtorrent::alert::progress_notification)
+			if (a->category() &  libtorrent::alert::progress_notification)
 				printf(" progress");
 			if (a->category() &  libtorrent::alert::ip_block_notification)
 				printf(" ip_block");
@@ -76,9 +78,12 @@ bool CTorrentDownloader::download(IDownload& download){
 				printf(" all");
 			if (( a->category() &  libtorrent::alert::peer_notification) &&
 				(  a->category() & libtorrent::alert::error_notification)){
-				printf("error downloading torrent(%d): %s\n",a->category(),a->message().c_str());
-				break; //better fail than hang
+				printf(" error downloading torrent(%d): %s\n",a->category(),a->message().c_str());
+				res=false;
+				break; 
+				
 			}
+
 			printf(" : %s\n",a->message().c_str());
 			torrentSession->pop_alert();
 		}
@@ -88,8 +93,8 @@ bool CTorrentDownloader::download(IDownload& download){
 	torrentSession->pause();
 	delete torrentSession;
 	printf("shut down!\n");
-	return true;
-
+*/
+	return res;
 }
 
 std::list<IDownload>* CTorrentDownloader::search(const std::string& name, IDownload::category cat){
