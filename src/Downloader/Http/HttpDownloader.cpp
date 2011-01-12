@@ -167,7 +167,12 @@ bool CHttpDownloader::download(IDownload& download){
 	DEBUG_LINE("");
 
 	CURLcode res=CURLE_OK;
-    printf("CHttpDownloader::download %s to %s\n",download.url.c_str(), download.name.c_str());
+	printf("CHttpDownloader::download %s to %s\n",download.url.c_str(), download.name.c_str());
+	if (fileSystem->fileExists(download.name)){
+		//TODO: validate file
+		printf("file already downloaded: \"%s\"\n",download.name.c_str());
+		return true;
+	}
 
 	if(!curl) {
 		printf("Error initializing curl");

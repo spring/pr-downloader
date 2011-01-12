@@ -64,6 +64,10 @@ public:
 		check if file is older then secs, returns true if file is older or something goes wrong
 	*/
 	bool isOlder(const std::string& filename, int secs);
+	/**
+		check if a file is readable
+	*/
+	bool fileExists(const std::string& filename);
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;

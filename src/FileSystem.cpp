@@ -268,3 +268,13 @@ bool CFileSystem::isOlder(const std::string& filename, int secs){
 #endif
 	return (t<sb.st_ctime+secs);
 }
+
+bool CFileSystem::fileExists(const std::string& filename){
+	FILE* fp = NULL;
+	fp = fopen(filename.c_str(), "r");
+	if(fp == NULL){
+		return false;
+	}
+	fclose(fp);
+	return true;
+}
