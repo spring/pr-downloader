@@ -168,11 +168,14 @@ bool CHttpDownloader::download(IDownload& download){
 
 	CURLcode res=CURLE_OK;
 	printf("CHttpDownloader::download %s to %s\n",download.url.c_str(), download.name.c_str());
+	//FIXME: use etag/timestamp as remote file could be modified
+/*
 	if (fileSystem->fileExists(download.name)){
 		//TODO: validate file
 		printf("file already downloaded: \"%s\"\n",download.name.c_str());
 		return true;
 	}
+*/
 
 	if(!curl) {
 		printf("Error initializing curl");
