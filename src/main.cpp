@@ -128,7 +128,8 @@ int main(int argc, char **argv){
 			}
 			case PLASMA_DOWNLOAD: {
 				list=plasmaDownload->search(optarg);
-				plasmaDownload->download(*list);
+				if (list!=NULL)
+					plasmaDownload->download(*list);
 				break;
 			}
 			case TORRENT_DOWNLOAD: {
