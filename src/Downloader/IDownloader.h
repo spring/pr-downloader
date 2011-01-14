@@ -73,7 +73,8 @@ public:
 		std::list<IDownload>::iterator it;
 		bool res=true;
 		for(it=download.begin();it!=download.end();++it){
-			(*it).downloaded=this->download(*it);
+			if (!(*it).downloaded) //don't download twice
+				(*it).downloaded=this->download(*it);
 			if(!(*it).downloaded){
 				res=false;
 			}

@@ -22,6 +22,11 @@ bool CTorrentDownloader::download(IDownload& download){
 	for (int i=0; i<pos; i++) //use random mirror
 		it++;
 	IDownload dl(*it,download.name + addTorrentParams.ti->file_at(0).path.filename());
+
+	if (fileSystem->fileExists(dl.name)){
+		printf("file already downloaded: %s\n",download.name.c_str());
+		return true;
+	}
 	printf("%d\n",pos);
 	return httpDownload->download(dl);
 
