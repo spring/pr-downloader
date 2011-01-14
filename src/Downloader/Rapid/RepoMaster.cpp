@@ -12,7 +12,7 @@ void CRepoMaster::download(const std::string& name){
 	urlToPath(name,tmp);
 	this->path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
 	fileSystem->createSubdirs(path);
-	DEBUG_LINE(name.c_str());
+	DEBUG_LINE("%s",name.c_str());
 	if (fileSystem->isOlder(path,REPO_MASTER_RECHECK_TIME)) //first try already downloaded file, as repo master file rarely changes
 		if (parse()) return;
 	IDownload dl(name,path);
@@ -52,7 +52,7 @@ bool CRepoMaster::parse(){
 }
 
 void CRepoMaster::updateRepos(){
-	DEBUG_LINE("");
+	DEBUG_LINE("%s","Updating repos...");
 	std::list<CRepo*>::iterator it;
 	for (it = repos.begin();it != repos.end(); ++it) {
 		(*it)->download();

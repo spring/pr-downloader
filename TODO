@@ -37,9 +37,10 @@ downloader for game with tests included
 =rapid=
  * use /packages/selected.list for pinned tags / downloaded files
  * dont download directly to pool or packages dir but to a temp dir
- * use c++ streams
+ * use c++ streams http://stackoverflow.com/questions/3023988/can-one-read-a-remote-file-as-an-istream-with-libcurl ?
  * (clean?) duplicate search results (with same md5)
  * delete old games?
+ * check for errors
 
 =torrent=
  * auto ban corrupted mirrors (temp-ban?)

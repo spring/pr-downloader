@@ -9,10 +9,10 @@
 #include <curl/curl.h>
 
 bool CSdp::download(){
-	DEBUG_LINE("");
 	if(downloaded) //allow download only once of the same sdp
 		return true;
 	filename=fileSystem->getSpringDir() + PATH_DELIMITER+"packages"+PATH_DELIMITER;
+	DEBUG_LINE("%s\n",filename.c_str());
 	if (!fileSystem->directoryExists(filename)){
 		fileSystem->createSubdirs(filename);
 	}
@@ -139,7 +139,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 						return -1;
 					}
 				}else if (towrite<0){
-					DEBUG_LINE("Fatal, something went wrong here!\n");
+					DEBUG_LINE("%s","Fatal, something went wrong here!");
 					return -1;
 				}
 

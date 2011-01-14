@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 2.6)
 project(pr-downloader)
 
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Release CACHE STRING
+      "Choose the type of build, options are: None DEBUG RELEASE."
+      FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
+set (CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
+set (CMAKE_CXX_FLAGS_RELEASE "")
+
+
 if   (MINGW)
         set(MINGWLIBS "${CMAKE_SOURCE_DIR}/mingwlibs" CACHE PATH "Location of the mingwlibs package")
         if(NOT EXISTS "${MINGWLIBS}" OR NOT IS_DIRECTORY "${MINGWLIBS}")

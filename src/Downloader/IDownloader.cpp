@@ -6,6 +6,7 @@
 #include "Plasma/PlasmaDownloader.h"
 #include "Torrent/TorrentDownloader.h"
 #include "Widget/WidgetDownloader.h"
+#include "Util.h"
 
 class IDownloader;
 
@@ -24,6 +25,7 @@ IDownload::IDownload(const std::string& url, const std::string& name, category c
 
 
 bool IDownload::addMirror(const std::string& url){
+	DEBUG_LINE("%s",url.c_str());
 	this->mirror.push_back(url);
 	return true;
 }

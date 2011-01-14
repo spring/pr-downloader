@@ -12,7 +12,7 @@ CPlasmaDownloader::CPlasmaDownloader(){
 }
 
 std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownload::category category){
-	DEBUG_LINE("");
+	DEBUG_LINE("%s",name.c_str());
 	ContentServiceSoap12Proxy service;
 	_ns1__DownloadFile file;
 	_ns1__DownloadFileResponse result;
@@ -33,7 +33,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 	fileName.append(*result.torrentFileName);
 
 
-	printf("Saving torrent to %s\n",fileName.c_str());
+	DEBUG_LINE("Saving torrent to %s",fileName.c_str());
 	xsd__base64Binary *torrent_buf=result.torrent;
 	FILE* f=fopen(fileName.c_str(),"wb");
 	fwrite(torrent_buf->__ptr, torrent_buf->__size, 1, f);
@@ -55,7 +55,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 		saveto += PATH_DELIMITER;
 		cat=IDownload::CAT_MODS;
 	}
-	printf("Saving file to %s\n",saveto.c_str());
+	DEBUG_LINE("Saving file to %s",saveto.c_str());
 	IDownload* dl=new IDownload(fileName,saveto,cat);
 	for(it=result.links->string.begin();it!=result.links->string.end(); ++it){
 		dl->addMirror((*it).c_str());
@@ -68,6 +68,6 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 }
 
 bool CPlasmaDownloader::download(IDownload& download){
-	DEBUG_LINE("");
+	DEBUG_LINE("%s",download.name.c_str());
 	return torrentDownload->download(download);
 }

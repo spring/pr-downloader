@@ -5,19 +5,18 @@
 #include "../../Util.h"
 
 bool CTorrentDownloader::download(IDownload& download){
-	DEBUG_LINE("");
+	DEBUG_LINE("%s",download.name.c_str());
 
 	libtorrent::add_torrent_params addTorrentParams;
 	addTorrentParams.save_path = download.name; //name contains the path, because torrents already include the filenames
 	addTorrentParams.ti = new libtorrent::torrent_info(download.url.c_str());
 	for (int i=0; i<addTorrentParams.ti->num_files(); i++){
-		printf("File %d in torrent: %s\n",i, addTorrentParams.ti->file_at(i).path.filename().c_str());
+		DEBUG_LINE("File %d in torrent: %s",i, addTorrentParams.ti->file_at(i).path.filename().c_str());
 	}
 
 	bool res=true;
 	std::list<std::string>::iterator it;
 	it=download.mirror.begin();
-
 	srand ( time(NULL) );
 	int pos=rand() % download.mirror.size();
 	for (int i=0; i<pos; i++) //use random mirror
@@ -102,6 +101,6 @@ bool CTorrentDownloader::download(IDownload& download){
 }
 
 std::list<IDownload>* CTorrentDownloader::search(const std::string& name, IDownload::category cat){
-	DEBUG_LINE("");
+	DEBUG_LINE("%s",name.c_str());
 	return NULL;
 }

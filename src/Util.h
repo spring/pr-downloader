@@ -58,7 +58,16 @@ void urlEncode(std::string& url);
 */
 bool urlToPath(const std::string& url, std::string& path);
 
-#define DEBUG_LINE(string) \
-	printf("%s:%d %s() %s\n", __FILE__, __LINE__, __FUNCTION__, string)
+#ifdef DEBUG
+
+#define DEBUG_LINE(fmt, ...) \
+	printf( "%s:%d:%s(): " fmt "\n", __FILE__, \
+                                __LINE__, __FUNCTION__, __VA_ARGS__); 
+#else
+
+#define	DEBUG_LINE(fmt, ...)
 
 #endif
+
+#endif
+

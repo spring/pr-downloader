@@ -10,9 +10,9 @@
 
 
 void CRepo::download(){
-	DEBUG_LINE("");
 	std::string tmp;
 	urlToPath(repourl,tmp);
+	DEBUG_LINE("%s",tmp.c_str());
 	this->tmpFile = fileSystem->getSpringDir() + PATH_DELIMITER + "rapid" + PATH_DELIMITER +tmp + PATH_DELIMITER +"versions.gz";
 	fileSystem->createSubdirs(tmpFile);
 	if (fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME))
@@ -25,7 +25,7 @@ void CRepo::download(){
 }
 
 bool CRepo::parse(){
-	DEBUG_LINE(tmpFile.c_str());
+	DEBUG_LINE("%s",tmpFile.c_str());
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
 	if (fp==Z_NULL){
         printf("Could not open %s\n",tmpFile.c_str());

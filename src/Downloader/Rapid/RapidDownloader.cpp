@@ -63,7 +63,7 @@ bool CRapidDownloader::reloadRepos(){
 	download by name, for example "Complete Annihilation revision 1234"
 */
 bool CRapidDownloader::download_name(const std::string& longname, int reccounter){
-	DEBUG_LINE(longname.c_str());
+	DEBUG_LINE("%s",longname.c_str());
 	std::list<CSdp*>::iterator it;
 	if (reccounter>10)
 		return false;
@@ -87,7 +87,7 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 	search for a mod, searches for the short + long name
 */
 std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownload::category cat){
-	DEBUG_LINE(name.c_str() );
+	DEBUG_LINE("%s",name.c_str());
 	reloadRepos();
 	std::list<IDownload>*tmp;
 	tmp=new std::list<IDownload>;
@@ -107,7 +107,7 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownloa
 	start a download
 */
 bool CRapidDownloader::download(IDownload& download){
-	DEBUG_LINE(download.name.c_str());
+	DEBUG_LINE("%s",download.name.c_str());
 	reloadRepos();
 	return download_name(download.name,0);
 }

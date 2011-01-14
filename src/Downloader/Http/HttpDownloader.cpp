@@ -97,7 +97,7 @@ static size_t write_mem(void *ptr, size_t size, size_t nmemb, void *data){
 
 
 std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDownload::category cat){
-	DEBUG_LINE(name.c_str());
+	DEBUG_LINE("%s",name.c_str());
 	pos=0;
 	memset(buf,0,sizeof(buf));
 	CURL *curl_handle;
@@ -154,7 +154,7 @@ std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDown
 }
 
 std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload::category cat){
-	DEBUG_LINE("");
+	DEBUG_LINE("%s", name.c_str()  );
 	std::list<IDownload>* res;
 	res=realSearch(name+".sd7", cat);
 	if (!res->empty()) return res;
@@ -164,7 +164,7 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 }
 
 bool CHttpDownloader::download(IDownload& download){
-	DEBUG_LINE("");
+	DEBUG_LINE("%s",download.name.c_str());
 
 	CURLcode res=CURLE_OK;
 	printf("CHttpDownloader::download %s to %s\n",download.url.c_str(), download.name.c_str());
