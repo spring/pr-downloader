@@ -56,6 +56,10 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 		cat=IDownload::CAT_MODS;
 	}
 	DEBUG_LINE("Saving file to %s",saveto.c_str());
+	if (result.links->string.size()==0){
+		printf("got no mirror in plasmaresoult\n");
+		return false;
+	}
 	IDownload* dl=new IDownload(fileName,saveto,cat);
 	for (it=result.links->string.begin();it!=result.links->string.end(); ++it){
 		dl->addMirror((*it).c_str());
