@@ -39,7 +39,7 @@ static bool list_compare(CSdp* first ,CSdp*  second){
 	len=name1.size();
 	if (len<name2.size())
 		len=name2.size();
-	for(unsigned int i=0;i<len;i++){
+	for (unsigned int i=0;i<len;i++){
 		if (tolower(name1[i])<tolower(name2[i])){
 			return true;
 		}
@@ -67,7 +67,7 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 	std::list<CSdp*>::iterator it;
 	if (reccounter>10)
 		return false;
-	for(it=sdps.begin();it!=sdps.end();++it){
+	for (it=sdps.begin();it!=sdps.end();++it){
 		if (match_download_name((*it)->getName(),longname)){
 			printf("Found Depends, downloading %s\n", (*it)->getName().c_str());
 			if (!(*it)->download())
@@ -94,9 +94,9 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownloa
 
 	sdps.sort(list_compare);
 	std::list<CSdp*>::iterator it;
-	for(it=this->sdps.begin();it!=this->sdps.end();++it){
+	for (it=this->sdps.begin();it!=this->sdps.end();++it){
 		if (match_download_name((*it)->getShortName().c_str(),name)
-			|| (match_download_name((*it)->getName().c_str(),name))){
+				|| (match_download_name((*it)->getName().c_str(),name))){
 			IDownload* dl=new IDownload((*it)->getShortName().c_str(),(*it)->getName().c_str());
 			tmp->push_back(*dl);
 		}

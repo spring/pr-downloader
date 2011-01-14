@@ -9,7 +9,7 @@
 #include <curl/curl.h>
 
 bool CSdp::download(){
-	if(downloaded) //allow download only once of the same sdp
+	if (downloaded) //allow download only once of the same sdp
 		return true;
 	filename=fileSystem->getSpringDir() + PATH_DELIMITER+"packages"+PATH_DELIMITER;
 	DEBUG_LINE("%s\n",filename.c_str());
@@ -29,12 +29,12 @@ bool CSdp::download(){
 	}
 
 	std::list<CFileSystem::FileData*>::iterator it;
-/*	CHttpDownload* tmp=httpDownload; //FIXME: extend interface?
-	tmp->setCount(files.size());
-*/
+	/*	CHttpDownload* tmp=httpDownload; //FIXME: extend interface?
+		tmp->setCount(files.size());
+	*/
 	int i=0;
 	it=files.begin();
-	while(it!=files.end()){
+	while (it!=files.end()){
 		i++;
 		std::string tmpmd5="";
 		md5ItoA((*it)->md5, tmpmd5);
@@ -50,7 +50,7 @@ bool CSdp::download(){
 		if (!fileSystem->directoryExists(fileSystem->getSpringDir()+path)){
 			fileSystem->createSubdirs(fileSystem->getSpringDir()+path);
 		}
-		if(!fileSystem->fileIsValid(*it,file)){ //add invalid files to download list
+		if (!fileSystem->fileIsValid(*it,file)){ //add invalid files to download list
 			count++;
 			(*it)->download=true;
 		}else{
@@ -82,7 +82,7 @@ bool CSdp::download(){
 static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSdp *sdp) {
 	char buf[CURL_MAX_WRITE_SIZE];
 	memcpy(&buf,tmp,CURL_MAX_WRITE_SIZE);
-	if(!sdp->downlooadInitialized){
+	if (!sdp->downlooadInitialized){
 		sdp->list_it=sdp->globalFiles->begin();
 		sdp->downlooadInitialized=true;
 		sdp->file_handle=NULL;
@@ -93,9 +93,9 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 	const char* buf_end=buf_start + size*nmemb;
 	char* buf_pos=buf_start;
 
-	while(buf_pos<buf_end){ //all bytes written?
+	while (buf_pos<buf_end){ //all bytes written?
 		if (sdp->file_handle==NULL){ //no open file, create one
-			while( (!(*sdp->list_it)->download==true) && (sdp->list_it!=sdp->globalFiles->end())){ //get file
+			while ( (!(*sdp->list_it)->download==true) && (sdp->list_it!=sdp->globalFiles->end())){ //get file
 				sdp->list_it++;
 			}
 			sdp->file_name=fileSystem->getPoolFileName(*sdp->list_it);
@@ -109,12 +109,12 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			sdp->file_pos=0;
 		}
 		if (sdp->file_handle!=NULL){
-			if((sdp->skipped>0)&&(sdp->skipped<4)){
+			if ((sdp->skipped>0)&&(sdp->skipped<4)){
 //				printf("difficulty %d\n",skipped);
 			}
 			if (sdp->skipped<4){ // check if we skipped all 4 bytes, if not so, skip them
 				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
-				for(int i=0;i<toskip;i++) //copy bufs avaiable
+				for (int i=0;i<toskip;i++) //copy bufs avaiable
 					sdp->cursize_buf[i]=buf_pos[i];
 //				printf("toskip: %d skipped: %d\n",toskip,skipped);
 				sdp->skipped=toskip+sdp->skipped;
@@ -125,7 +125,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			}
 			if (sdp->skipped==LENGTH_SIZE){
 				int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
-					buf_end-buf_pos);
+									buf_end-buf_pos);
 //				printf("%s %d %ld %ld %ld %d %d %d %d %d\n",file_name.c_str(), (*list_it)->compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , skipped, file_pos);
 				int res=0;
 				if (towrite>0){
@@ -134,7 +134,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 						printf("fwrite error\n");
 						return -1;
 					}
-					if(res<=0){
+					if (res<=0){
 						printf("\nwrote error: %d\n", res);
 						return -1;
 					}
@@ -167,41 +167,43 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 	draw a nice download status-bar
 */
 int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloaded,
-                    double TotalToUpload, double NowUploaded){
+				  double TotalToUpload, double NowUploaded){
 
-	(void)csdp;(void)TotalToUpload;(void)NowUploaded; //remove unused warning
-    // how wide you want the progress meter to be
-    int totaldotz=40;
-    double fractiondownloaded;
-    if (TotalToDownload>0)
-    	fractiondownloaded = NowDownloaded / TotalToDownload;
+	(void)csdp;
+	(void)TotalToUpload;
+	(void)NowUploaded; //remove unused warning
+	// how wide you want the progress meter to be
+	int totaldotz=40;
+	double fractiondownloaded;
+	if (TotalToDownload>0)
+		fractiondownloaded = NowDownloaded / TotalToDownload;
 	else
 		fractiondownloaded=0;
-        // part of the progressmeter that's already "full"
-    int dotz = fractiondownloaded * totaldotz;
+	// part of the progressmeter that's already "full"
+	int dotz = fractiondownloaded * totaldotz;
 
-    // create the "meter"
+	// create the "meter"
 //    printf("%5d/%5d ", ptr->getStatsPos(),ptr->getCount());
-    printf("%3.0f%% [",fractiondownloaded*100);
-    int ii=0;
-    // part  that's full already
-    for ( ; ii < dotz;ii++) {
-        printf("=");
-    }
-    // remaining part (spaces)
-    for ( ; ii < totaldotz;ii++) {
-        printf(" ");
-    }
-    // and back to line begin - do not forget the fflush to avoid output buffering problems!
-    printf("] %d/%d\r",(int)NowDownloaded,(int)TotalToDownload );
-    fflush(stdout);
+	printf("%3.0f%% [",fractiondownloaded*100);
+	int ii=0;
+	// part  that's full already
+	for ( ; ii < dotz;ii++) {
+		printf("=");
+	}
+	// remaining part (spaces)
+	for ( ; ii < totaldotz;ii++) {
+		printf(" ");
+	}
+	// and back to line begin - do not forget the fflush to avoid output buffering problems!
+	printf("] %d/%d\r",(int)NowDownloaded,(int)TotalToDownload );
+	fflush(stdout);
 	return 0;
 }
 
 bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData*>& files){
 	CURL* curl;
 	curl = curl_easy_init();
-	if(curl) {
+	if (curl) {
 		CURLcode res;
 		printf("Downloading stream: %s\n",url.c_str());
 
@@ -216,7 +218,7 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData*>& fil
 		int destlen=files.size()*2;
 		printf("%d %d %d\n",(int)files.size(),buflen,destlen);
 		int i=0;
-		for(it=files.begin();it!=files.end();++it){
+		for (it=files.begin();it!=files.end();++it){
 			if ((*it)->download==true)
 				buf[i/8] = buf[i/8] + (1<<(i%8));
 			i++;

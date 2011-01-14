@@ -17,7 +17,7 @@ void CRepo::download(){
 	fileSystem->createSubdirs(tmpFile);
 	if (fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME))
 		if (parse()) //first try already downloaded file, as repo master file rarely changes
-		return;
+			return;
 	fileSystem->createSubdirs(tmpFile);
 	IDownload dl(repourl + "/versions.gz", tmpFile);
 	httpDownload->download(dl);
@@ -28,20 +28,20 @@ bool CRepo::parse(){
 	DEBUG_LINE("%s",tmpFile.c_str());
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
 	if (fp==Z_NULL){
-        printf("Could not open %s\n",tmpFile.c_str());
+		printf("Could not open %s\n",tmpFile.c_str());
 		return false;
 	}
-   	char buf[1024];
+	char buf[1024];
 	sdps.empty();
-    while((gzgets(fp, buf, sizeof(buf)))!=Z_NULL){
-    	for(unsigned int i=0;i<sizeof(buf);i++){
-    		if(buf[i]=='\n'){
-    			buf[i]=0;
-    			break;
-    		}
-    	}
+	while ((gzgets(fp, buf, sizeof(buf)))!=Z_NULL){
+		for (unsigned int i=0;i<sizeof(buf);i++){
+			if (buf[i]=='\n'){
+				buf[i]=0;
+				break;
+			}
+		}
 
-    	std::string tmp=buf;
+		std::string tmp=buf;
 		std::string shortname=getStrByIdx(tmp,',',0);
 		std::string md5=getStrByIdx(tmp,',',1);
 		std::string depends=getStrByIdx(tmp,',',2);
@@ -50,7 +50,7 @@ bool CRepo::parse(){
 			CSdp* sdptmp=new CSdp(shortname, md5, name, depends, repourl);
 			rapid->addRemoteDsp(sdptmp);
 		}
-    }
-    gzclose(fp);
-    return true;
+	}
+	gzclose(fp);
+	return true;
 }

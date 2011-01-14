@@ -1,4 +1,3 @@
-
 #include "IDownloader.h"
 
 #include "Http/HttpDownloader.h"

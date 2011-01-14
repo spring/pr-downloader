@@ -28,14 +28,14 @@ CRepoMaster::CRepoMaster(std::string& url, CRapidDownloader* rapid){
 bool CRepoMaster::parse(){
 	gzFile fp=gzopen(path.c_str(), "r");
 	if (fp==Z_NULL){
-        printf("Could not open %s\n",path.c_str());
+		printf("Could not open %s\n",path.c_str());
 		return false;
 	}
 	char buf[4096];
-    repos.empty();
-    int i=0;
-    while(gzgets(fp, buf, sizeof(buf))!=Z_NULL){
-    	std::string tmp=buf;
+	repos.empty();
+	int i=0;
+	while (gzgets(fp, buf, sizeof(buf))!=Z_NULL){
+		std::string tmp=buf;
 		std::string url=getStrByIdx(tmp,',',1);
 		i++;
 		if (url.size()>0){ //create new repo from url
@@ -45,8 +45,8 @@ bool CRepoMaster::parse(){
 			printf("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
 			return false;
 		}
-    }
-    gzclose(fp);
+	}
+	gzclose(fp);
 	printf("Found %d repos in %s\n",repos.size(),path.c_str());
 	return true;
 }

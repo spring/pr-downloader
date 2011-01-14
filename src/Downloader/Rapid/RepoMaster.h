@@ -17,9 +17,9 @@ public:
 	CRepoMaster(std::string& masterurl, CRapidDownloader* rapid);
 	~CRepoMaster();
 	void download(const std::string& name);
-/**
-	parses a rep master-file
-*/
+	/**
+		parses a rep master-file
+	*/
 	bool parse();
 	void updateRepos();
 private:

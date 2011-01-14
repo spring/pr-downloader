@@ -13,12 +13,12 @@
 #include <time.h>
 
 #ifdef WIN32
-	#include <windows.h>
-	#include <shlobj.h>
-	#include <math.h>
-	#ifndef SHGFP_TYPE_CURRENT
-		#define SHGFP_TYPE_CURRENT 0
-	#endif
+#include <windows.h>
+#include <shlobj.h>
+#include <math.h>
+#ifndef SHGFP_TYPE_CURRENT
+#define SHGFP_TYPE_CURRENT 0
+#endif
 #endif
 
 CFileSystem* CFileSystem::singleton = NULL;
@@ -49,13 +49,13 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 	}
 	MD5Final (&mdContext);
 	gzclose (inFile);
-/*	if (filesize!=mod->size){
-		printf("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),filesize, mod->size);
-		return false;
-	}*/
+	/*	if (filesize!=mod->size){
+			printf("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),filesize, mod->size);
+			return false;
+		}*/
 
 	int i;
-	for(i=0; i<16;i++){
+	for (i=0; i<16;i++){
 		if (mdContext.digest[i]!=mod->md5[i]){ //file is invalid
 //			printf("Damaged file found: %s\n",filename.c_str());
 //			unlink(filename.c_str());
@@ -76,12 +76,12 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 
 	gzFile in=gzopen(filename.c_str(), "r");
 	if (in==Z_NULL){
-        printf("Could not open %s\n",filename.c_str());
+		printf("Could not open %s\n",filename.c_str());
 		return NULL;
 	}
 	files.clear();
 	FileData tmpfile;
-	while(!gzeof(in)){
+	while (!gzeof(in)){
 		int length = gzgetc(in);
 		if (length == -1) break;
 		if (!gzread(in, &c_name, length)) return false;
@@ -202,13 +202,13 @@ int CFileSystem::validatePool(const std::string& path){
 	int res=0;
 	if (d!=NULL){
 		struct dirent* dentry;
-		while( (dentry=readdir(d))!=NULL){
+		while ( (dentry=readdir(d))!=NULL){
 			struct stat sb;
 			std::string tmp;
 			if (dentry->d_name[0]!='.'){
 				tmp=path+PATH_DELIMITER+dentry->d_name;
 				stat(tmp.c_str(),&sb);
-				if((sb.st_mode&S_IFDIR)!=0){
+				if ((sb.st_mode&S_IFDIR)!=0){
 					res=res+validatePool(tmp);
 					if (res%13==0){
 						printf("Valid files: %d\r",res);
@@ -251,12 +251,12 @@ bool CFileSystem::isOlder(const std::string& filename, int secs){
 	time_t t;
 #ifdef WIN32
 	LARGE_INTEGER date;
-	
+
 	SYSTEMTIME pTime;
 	FILETIME pFTime;
 	GetSystemTime(&pTime);
 	SystemTimeToFileTime(&pTime, &pFTime);
-	
+
 	date.HighPart = pFTime.dwHighDateTime;
 	date.LowPart = pFTime.dwLowDateTime;
 
@@ -272,7 +272,7 @@ bool CFileSystem::isOlder(const std::string& filename, int secs){
 bool CFileSystem::fileExists(const std::string& filename){
 	FILE* fp = NULL;
 	fp = fopen(filename.c_str(), "r");
-	if(fp == NULL){
+	if (fp == NULL){
 		return false;
 	}
 	fclose(fp);

@@ -55,7 +55,7 @@ void show_help(const char* cmd){
 	int i=0;
 	printf("Usage: %s ", cmd);
 	bool append=false;
-	while(long_options[i].name!=0){
+	while (long_options[i].name!=0){
 		if (append){
 			printf("\n");
 		}
@@ -92,94 +92,94 @@ int main(int argc, char **argv){
 	CFileSystem::Initialize();
 	IDownloader::Initialize();
 
-	while(true){
+	while (true){
 		int option_index = 0;
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
 		if (c == -1)
 			break;
 		std::list<IDownload>* list;
-		switch(c){
-			case RAPID_DOWNLOAD:{
-				list=rapidDownload->search(optarg);
-				if (list->size()==0){
-					printf("Coulnd't find %s\n",optarg);
-				}else if (!rapidDownload->download(*list)){
-					printf("Error downloading %s\n",optarg);
-				}
+		switch (c){
+		case RAPID_DOWNLOAD:{
+			list=rapidDownload->search(optarg);
+			if (list->size()==0){
+				printf("Coulnd't find %s\n",optarg);
+			}else if (!rapidDownload->download(*list)){
+				printf("Error downloading %s\n",optarg);
+			}
+			break;
+		}
+		case RAPID_VALIDATE:{
+			int res=fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
+			printf("Validated %d files",res);
+			break;
+		}
+		case RAPID_LIST:{
+			std::list<IDownload>* list=rapidDownload->search("");
+			std::list<IDownload>::iterator it;
+			for (it=list->begin();it!=list->end();++it){
+				printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
+			}
+			delete(list);
+			break;
+		}
+		case PLASMA_SEARCH:{
+			std::string tmp=optarg;
+			plasmaDownload->search(tmp);
+		}
+		case PLASMA_DOWNLOAD: {
+			list=plasmaDownload->search(optarg);
+			if (list!=NULL)
+				plasmaDownload->download(*list);
+			break;
+		}
+		case TORRENT_DOWNLOAD: {
+			list=torrentDownload->search(optarg);
+			torrentDownload->download(*list);
+			break;
+		}
+		case WIDGET_SEARCH: {
+			std::string tmp=optarg;
+			widgetDownload->search(tmp);
+			break;
+		}
+		case FILESYSTEM_WRITEPATH: {
+			printf("%s\n",fileSystem->getSpringDir().c_str());
+			break;
+		}
+		case HTTP_SEARCH:{
+			std::list<IDownload>* list=httpDownload->search(optarg);
+			if (list==NULL)
 				break;
+			std::list<IDownload>::iterator it;
+			for (it=list->begin();it!=list->end();++it){
+				printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
 			}
-			case RAPID_VALIDATE:{
-				int res=fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
-				printf("Validated %d files",res);
-				break;
-			}
-			case RAPID_LIST:{
-				std::list<IDownload>* list=rapidDownload->search("");
-				std::list<IDownload>::iterator it;
-				for(it=list->begin();it!=list->end();++it){
-					printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
-				}
-				delete(list);
-				break;
-			}
-			case PLASMA_SEARCH:{
-				std::string tmp=optarg;
-				plasmaDownload->search(tmp);
-			}
-			case PLASMA_DOWNLOAD: {
-				list=plasmaDownload->search(optarg);
-				if (list!=NULL)
-					plasmaDownload->download(*list);
-				break;
-			}
-			case TORRENT_DOWNLOAD: {
-				list=torrentDownload->search(optarg);
-				torrentDownload->download(*list);
-				break;
-			}
-			case WIDGET_SEARCH: {
-				std::string tmp=optarg;
-				widgetDownload->search(tmp);
-				break;
-			}
-			case FILESYSTEM_WRITEPATH: {
-				printf("%s\n",fileSystem->getSpringDir().c_str());
-				break;
-			}
-			case HTTP_SEARCH:{
-				std::list<IDownload>* list=httpDownload->search(optarg);
-				if (list==NULL)
-					break;
-				std::list<IDownload>::iterator it;
-				for(it=list->begin();it!=list->end();++it){
-					printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
-				}
-				break;
-			}
-			case HTTP_DOWNLOAD: {
-				list=httpDownload->search(optarg);
-				httpDownload->download(*list);
-				break;
-			}
-			case DOWNLOAD_MAP:{
-				download(optarg, IDownload::CAT_MAPS);
-				break;
-			}
-			case DOWNLOAD_GAME:{
-				download(optarg, IDownload::CAT_MODS);
-				break;
-			}
-			case HELP:
-			default: {
-				show_help(argv[0]);
-				break;
-			}
+			break;
+		}
+		case HTTP_DOWNLOAD: {
+			list=httpDownload->search(optarg);
+			httpDownload->download(*list);
+			break;
+		}
+		case DOWNLOAD_MAP:{
+			download(optarg, IDownload::CAT_MAPS);
+			break;
+		}
+		case DOWNLOAD_GAME:{
+			download(optarg, IDownload::CAT_MODS);
+			break;
+		}
+		case HELP:
+		default: {
+			show_help(argv[0]);
+			break;
+		}
 		}
 	}
 	IDownloader::Shutdown();
 	CFileSystem::Shutdown();
 
-    return 0;
+	return 0;
 }
 
 

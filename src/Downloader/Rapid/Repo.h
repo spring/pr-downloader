@@ -8,7 +8,7 @@ class CRapidDownloader;
 
 class CRepo{
 	std::string repourl;
-	 CRapidDownloader* rapid;
+	CRapidDownloader* rapid;
 public:
 	CRepo(const std::string& repourl, CRapidDownloader* rapid){
 		this->repourl=repourl;
