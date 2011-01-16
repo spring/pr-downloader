@@ -8,3 +8,7 @@ to compile, you need libtorrent-rasterbar,xmlrpc-c and boost
 
 That's it!
 
+##usage
+
+pr-downloader --download-game "Balanced Annihilation v7.20" --download-map "DeltaSiegeDry.sd7"
+

@@ -7,8 +7,8 @@
 #include <zlib.h>
 #include <xmlrpc-c/girerr.hpp>
 #include <xmlrpc-c/base.hpp>
-#include <xmlrpc-c/client.hpp> 
-#include <xmlrpc-c/client_transport.hpp> 
+#include <xmlrpc-c/client.hpp>
+#include <xmlrpc-c/client_transport.hpp>
 
 #include "../../Util.h"
 
