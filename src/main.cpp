@@ -162,11 +162,15 @@ int main(int argc, char **argv){
 			break;
 		}
 		case DOWNLOAD_MAP:{
-			download(optarg, IDownload::CAT_MAPS);
+			if (!download(optarg, IDownload::CAT_MAPS)){
+				printf("couldn't find %s\n",optarg);
+			}
 			break;
 		}
 		case DOWNLOAD_GAME:{
-			download(optarg, IDownload::CAT_MODS);
+			if (!download(optarg, IDownload::CAT_MODS)){
+				printf("couldn't find %s\n",optarg);
+			}
 			break;
 		}
 		case HELP:

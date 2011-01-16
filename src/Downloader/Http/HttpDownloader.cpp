@@ -89,15 +89,32 @@ void CHttpDownloader::setStatsPos(unsigned int pos) {
 std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload::category cat) {
 	DEBUG_LINE("%s", name.c_str()  );
 	std::list<IDownload>* res;
+	res=new std::list<IDownload>();
 
 	const std::string serverUrl("http://new.springfiles.com/xmlrpc.php");
 	const std::string method("springfiles.search");
-	const std::string category("map");
-	
+	std::string category;
+	std::string filename=fileSystem->getSpringDir();
+	filename+=PATH_DELIMITER;
+	switch(cat){
+		case IDownload::CAT_MAPS:
+			category="map";
+			filename+="maps";
+			break;
+		case IDownload::CAT_MODS:
+			category="game";
+			filename+="games";
+			break;
+		default:{
+			category="%";
+		}
+	}
+	filename+=PATH_DELIMITER;
+
 	std::map<std::string, xmlrpc_c::value> array;
 	std::pair<std::string, xmlrpc_c::value> member("filename",xmlrpc_c::value_string(name));
 	std::pair<std::string, xmlrpc_c::value> member2("category",xmlrpc_c::value_string(category));
-	
+
 	array.insert(member2);
 	array.insert(member);
 
@@ -112,11 +129,14 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 	xmlrpc_c::clientXmlTransportPtr transportP(xmlrpc_c::clientXmlTransport_http::create());
         xmlrpc_c::carriageParm_http0 carriageParm0(serverUrl);
         xmlrpc_c::client_xml client0(transportP);
-	
+
 	client0.call(&carriageParm0, method, params, &result);
 	if(!result.succeeded()){
 		printf("result: %d", result.getFault().getCode());
-		return NULL;
+		return res;
+	}
+	if (result.getResult().type()!=xmlrpc_c::value::TYPE_STRUCT){
+		return res;
 	}
 	const xmlrpc_c::value_struct value(result.getResult());
 	std::map<std::string, xmlrpc_c::value> resultMap(static_cast<std::map<std::string, xmlrpc_c::value> >(value));
@@ -124,18 +144,33 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 	std::string resMd5=xmlrpc_c::value_string(static_cast<xmlrpc_c::value>(resultMap["md5"]));
 	std::string resFilename=xmlrpc_c::value_string(static_cast<xmlrpc_c::value>(resultMap["filename"]));
 
-	printf("md5 %s\n", resMd5.c_str());
-	printf("filename %s\n", resFilename.c_str());
 
+	xmlrpc_c::value_array mirrorValues=xmlrpc_c::value_array(static_cast<xmlrpc_c::value>(resultMap["mirrors"]));
 
-	return NULL;
+	std::vector<xmlrpc_c::value> mirrorMap=mirrorValues.vectorValueValue();
+	filename+=resFilename;
+	if (mirrorMap.empty()){
+		return res;
+	}
+	std::string mirror = xmlrpc_c::value_string(*mirrorMap.begin());
+	IDownload dl(mirror,filename,cat);
+	std::vector<xmlrpc_c::value>::iterator it;
+	for(it=mirrorMap.begin(); it!=mirrorMap.end(); ++it){
+		mirror = xmlrpc_c::value_string((*it));
+		printf("mirror: %s\n",mirror.c_str());
+		dl.addMirror(mirror);
+	}
+	res->push_back((IDownload&)dl);
+	DEBUG_LINE("md5 %s\n", resMd5.c_str());
+	DEBUG_LINE("filename %s\n", resFilename.c_str());
+	return res;
 }
 
 bool CHttpDownloader::download(IDownload& download) {
 	DEBUG_LINE("%s",download.name.c_str());
 
 	CURLcode res=CURLE_OK;
-	printf("CHttpDownloader::download %s to %s\n",download.url.c_str(), download.name.c_str());
+	printf("Downloading %s to %s\n",download.url.c_str(), download.name.c_str());
 	//FIXME: use etag/timestamp as remote file could be modified
 	/*
 		if (fileSystem->fileExists(download.name)){
