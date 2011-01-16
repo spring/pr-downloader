@@ -135,7 +135,7 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 			return res;
 		}
 		if (dl==NULL){
-			dl=new IDownload(result["filename"],mirrors[j]);
+			dl=new IDownload(mirrors[j],result["filename"]);
 		}
 		dl->addMirror(mirrors[j]);
 	}
