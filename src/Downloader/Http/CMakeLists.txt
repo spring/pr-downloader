@@ -9,7 +9,6 @@ xmlrpc++/src/XmlRpcSource.h
 xmlrpc++/src/XmlRpcUtil.cpp
 xmlrpc++/src/XmlRpcServer.cpp
 xmlrpc++/src/XmlRpcSocket.cpp
-xmlrpc++/src/Doxyfile
 xmlrpc++/src/XmlRpcServer.h
 xmlrpc++/src/XmlRpcUtil.h
 xmlrpc++/src/XmlRpcServerConnection.cpp

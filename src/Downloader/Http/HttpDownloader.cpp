@@ -122,17 +122,21 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 		return res;
 	}
 
-	if (result["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeStruct){
+	if ((result["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
+		(result["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)){
+		printf("Invalid type in result\n");
 		return res;
 	}
 	IDownload* dl=NULL;
 	XmlRpc::XmlRpcValue mirrors = result["mirrors"];
 	for(int j=0; j<mirrors.size(); j++){
-		if (result[j].getType()!=XmlRpc::XmlRpcValue::TypeString){
+		if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString){
+			printf("Invalid type in result\n");
 			return res;
 		}
-		if (dl==NULL)
+		if (dl==NULL){
 			dl=new IDownload(result["filename"],mirrors[j]);
+		}
 		dl->addMirror(mirrors[j]);
 	}
 
