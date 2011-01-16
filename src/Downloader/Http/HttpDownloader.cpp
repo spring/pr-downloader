@@ -5,6 +5,11 @@
 #include <string>
 #include <string.h>
 #include <zlib.h>
+#include <xmlrpc-c/girerr.hpp>
+#include <xmlrpc-c/base.hpp>
+#include <xmlrpc-c/client.hpp> 
+#include <xmlrpc-c/client_transport.hpp> 
+
 #include "../../Util.h"
 
 
@@ -81,84 +86,48 @@ void CHttpDownloader::setStatsPos(unsigned int pos) {
 	this->stats_filepos=pos;
 }
 
-char buf[4096];
-int pos;
-
-static size_t write_mem(void *ptr, size_t size, size_t nmemb, void *data) {
-	size_t realsize = size * nmemb;
-	if (pos+realsize>sizeof(buf))
-		return 0;
-	memcpy(&buf[pos],ptr,realsize);
-	pos=pos+realsize;
-	return realsize;
-}
-
-
-
-std::list<IDownload>* CHttpDownloader::realSearch(const std::string& name, IDownload::category cat) {
-	DEBUG_LINE("%s",name.c_str());
-	pos=0;
-	memset(buf,0,sizeof(buf));
-	CURL *curl_handle;
-	curl_handle=curl_easy_init();
-	if (curl_handle) {
-		std::string url;
-		std::string filename;
-		filename=fileSystem->getSpringDir();
-		filename+=PATH_DELIMITER;
-
-		switch (cat) {
-		case IDownload::CAT_MODS:
-			url="http://www.springfiles.com/checkmirror.php?c=mods&q=";
-			filename+="games";
-			break;
-		default:
-			url="http://www.springfiles.com/checkmirror.php?c=maps&q=";
-			filename+="maps";
-			break;
-		}
-		filename+=PATH_DELIMITER;
-		filename+=name;
-		// url-escape filename
-		char* buf=curl_easy_escape(curl_handle,name.c_str(),name.length());
-		url.append(buf);
-		curl_free(buf);
-
-		curl_easy_setopt(curl_handle, CURLOPT_URL,url.c_str());
-		curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_mem);
-		curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, true);
-		curl_easy_perform(curl_handle);
-
-		std::list<IDownload>* res;
-		res=new std::list<IDownload>;
-		int start=-1;
-		for (unsigned int i=0;i<sizeof(buf);i++) { //extract urls of result in buf
-			if (buf[i]=='\'' ) {
-				if (start==-1) {
-					start=i;
-				} else {
-					buf[i]=0;
-					std::string url;
-					url.assign(&buf[start+1]);
-					IDownload tmp(url,filename, cat);
-					res->push_back(tmp);
-					start=-1;
-				}
-			}
-		}
-		return res;
-	}
-	return NULL;
-
-}
-
 std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload::category cat) {
 	DEBUG_LINE("%s", name.c_str()  );
 	std::list<IDownload>* res;
-	res=realSearch(name+".sd7", cat);
-	if (!res->empty()) return res;
-	res=realSearch(name+".sdz", cat);
-	if (!res->empty()) return res;
+
+	const std::string serverUrl("http://new.springfiles.com/xmlrpc.php");
+	const std::string method("springfiles.search");
+	const std::string category("map");
+	
+	std::map<std::string, xmlrpc_c::value> array;
+	std::pair<std::string, xmlrpc_c::value> member("filename",xmlrpc_c::value_string(name));
+	std::pair<std::string, xmlrpc_c::value> member2("category",xmlrpc_c::value_string(category));
+	
+	array.insert(member2);
+	array.insert(member);
+
+	xmlrpc_c::paramList params;
+	params.add(xmlrpc_c::value_struct(array));
+
+	xmlrpc_c::rpcOutcome result;
+
+	xmlrpc_c::rpc rpcClient(method, params);
+	xmlrpc_c::carriageParm_http0 myParm(serverUrl);
+
+	xmlrpc_c::clientXmlTransportPtr transportP(xmlrpc_c::clientXmlTransport_http::create());
+        xmlrpc_c::carriageParm_http0 carriageParm0(serverUrl);
+        xmlrpc_c::client_xml client0(transportP);
+	
+	client0.call(&carriageParm0, method, params, &result);
+	if(!result.succeeded()){
+		printf("result: %d", result.getFault().getCode());
+		return NULL;
+	}
+	const xmlrpc_c::value_struct value(result.getResult());
+	std::map<std::string, xmlrpc_c::value> resultMap(static_cast<std::map<std::string, xmlrpc_c::value> >(value));
+
+	std::string resMd5=xmlrpc_c::value_string(static_cast<xmlrpc_c::value>(resultMap["md5"]));
+	std::string resFilename=xmlrpc_c::value_string(static_cast<xmlrpc_c::value>(resultMap["filename"]));
+
+	printf("md5 %s\n", resMd5.c_str());
+	printf("filename %s\n", resFilename.c_str());
+
+
 	return NULL;
 }
 

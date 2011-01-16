@@ -30,6 +30,9 @@ target_link_libraries(${RAPID_LIB}
 	${Boost_LIBRARIES}
 	${TORRENT_LIBRARY}
 	${CURL_LIBRARY}
+	${XMLRPC_LIBRARIES}
+	xmlrpc++
+	xmlrpc_client++
 	${ADDITIONAL_LIBS}
 )
 

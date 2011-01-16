@@ -46,6 +46,14 @@ ELSE()
 	find_package(Boost 1.34 COMPONENTS system thread)
 ENDIF()
 
+include(FindXMLRPC)
+find_package(XMLRPC REQUIRED "c++")
+
+if (XMLRPC_FOUND)
+	Message("Found xmlrpc-c: ${XMLRPC_LIBRARIES}")	
+ENDIF()
+
+
 include_directories(${CURL_INCLUDE_DIR})
 include_directories(${ZLIB_INCLUDE_DIR})
 include_directories("src")
