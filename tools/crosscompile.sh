@@ -12,6 +12,17 @@ export PARALLEL="8"
 
 cd ..
 
+if [ ! -s win32.cmake ]; then
+	cat > win32.cmake <<EOF
+SET(CMAKE_SYSTEM_NAME Windows)
+SET(CMAKE_C_COMPILER i586-mingw32msvc-gcc)
+SET(CMAKE_CXX_COMPILER i586-mingw32msvc-g++)
+SET(CMAKE_FIND_ROOT_PATH /usr/i586-mingw32msvc)
+SET(MINGWLIBS ./mingwlibs)
+SET(CMAKE_INSTALL_PREFIX  ./dist)
+EOF
+fi
+
 if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	${DOWNLOAD} "http://prdownloads.sourceforge.net/libpng/zlib-1.2.5.tar.gz?download" -O zlib-1.2.5.tar.gz
 	tar xifz zlib-1.2.5.tar.gz
@@ -75,18 +86,10 @@ if [ ! -s ${PREFIX}/lib/libtorrent-rasterbar.a ]; then
 fi
 
 
-if [ ! -s win32.cmake ]; then
-
-	cat > win32.cmake <<EOF
-SET(CMAKE_SYSTEM_NAME Windows)
-SET(CMAKE_C_COMPILER i586-mingw32msvc-gcc)
-SET(CMAKE_CXX_COMPILER i586-mingw32msvc-g++)
-SET(CMAKE_FIND_ROOT_PATH /usr/i586-mingw32msvc)
-SET(MINGWLIBS ./mingwlibs)
-SET(CMAKE_INSTALL_PREFIX  ./dist)
-EOF
 
 fi
+
+cd ..
 
 rm -f CMakeCache.txt
 cmake . "-DCMAKE_TOOLCHAIN_FILE=./win32.cmake"

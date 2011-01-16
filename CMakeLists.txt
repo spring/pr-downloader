@@ -28,11 +28,11 @@ if   (MINGW)
         set(CMAKE_SHARED_LIBRARY_PREFIX "")
         set(CMAKE_SHARED_MODULE_PREFIX "")
 
-        set(CMAKE_CXX_FLAGS "-Wall -O2 -g -D_WIN32_WINNT=0x0501")
+        set(CMAKE_CXX_FLAGS "-Wall -O2 -g -D_WIN32_WINNT=0x0501 -DWIN32 -D_WINDOWS")
 else ()
 	set(CMAKE_CXX_FLAGS "-Wall -O0 -g -fPIC")
 	set(CMAKE_SKIP_BUILD_RPATH  FALSE)
-	set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif ()
 
@@ -44,13 +44,6 @@ IF (WIN32)
 	find_package(Boost 1.34 COMPONENTS system filesystem thread_win32-mt)
 ELSE()
 	find_package(Boost 1.34 COMPONENTS system thread)
-ENDIF()
-
-include(FindXMLRPC)
-find_package(XMLRPC REQUIRED "c++")
-
-if (XMLRPC_FOUND)
-	Message("Found xmlrpc-c: ${XMLRPC_LIBRARIES}")	
 ENDIF()
 
 

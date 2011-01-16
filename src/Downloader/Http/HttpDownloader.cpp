@@ -5,10 +5,10 @@
 #include <string>
 #include <string.h>
 #include <zlib.h>
-#include <xmlrpc-c/girerr.hpp>
-#include <xmlrpc-c/base.hpp>
-#include <xmlrpc-c/client.hpp>
-#include <xmlrpc-c/client_transport.hpp>
+
+
+#include "xmlrpc++/src/XmlRpc.h"
+
 
 #include "../../Util.h"
 
@@ -106,63 +106,37 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 			filename+="games";
 			break;
 		default:{
-			category="%";
+			category="map";
 		}
 	}
 	filename+=PATH_DELIMITER;
 
-	std::map<std::string, xmlrpc_c::value> array;
-	std::pair<std::string, xmlrpc_c::value> member("filename",xmlrpc_c::value_string(name));
-	std::pair<std::string, xmlrpc_c::value> member2("category",xmlrpc_c::value_string(category));
+ 	XmlRpc::XmlRpcClient client("new.springfiles.com", 80, "http://new.springfiles.com/xmlrpc.php");
+	XmlRpc::XmlRpcValue arg;
+	arg["filename"]=name;
+	arg["category"]=category;
+	XmlRpc::XmlRpcValue result;
+	client.execute(method.c_str(),arg, result);
 
-	array.insert(member2);
-	array.insert(member);
-
-	xmlrpc_c::paramList params;
-	params.add(xmlrpc_c::value_struct(array));
-
-	xmlrpc_c::rpcOutcome result;
-
-	xmlrpc_c::rpc rpcClient(method, params);
-	xmlrpc_c::carriageParm_http0 myParm(serverUrl);
-
-	xmlrpc_c::clientXmlTransportPtr transportP(xmlrpc_c::clientXmlTransport_http::create());
-        xmlrpc_c::carriageParm_http0 carriageParm0(serverUrl);
-        xmlrpc_c::client_xml client0(transportP);
-
-	client0.call(&carriageParm0, method, params, &result);
-	if(!result.succeeded()){
-		printf("result: %d", result.getFault().getCode());
+	if (result.getType()!=XmlRpc::XmlRpcValue::TypeStruct){
 		return res;
 	}
-	if (result.getResult().type()!=xmlrpc_c::value::TYPE_STRUCT){
+
+	if (result["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeStruct){
 		return res;
 	}
-	const xmlrpc_c::value_struct value(result.getResult());
-	std::map<std::string, xmlrpc_c::value> resultMap(static_cast<std::map<std::string, xmlrpc_c::value> >(value));
-
-	std::string resMd5=xmlrpc_c::value_string(static_cast<xmlrpc_c::value>(resultMap["md5"]));
-	std::string resFilename=xmlrpc_c::value_string(static_cast<xmlrpc_c::value>(resultMap["filename"]));
-
-
-	xmlrpc_c::value_array mirrorValues=xmlrpc_c::value_array(static_cast<xmlrpc_c::value>(resultMap["mirrors"]));
-
-	std::vector<xmlrpc_c::value> mirrorMap=mirrorValues.vectorValueValue();
-	filename+=resFilename;
-	if (mirrorMap.empty()){
-		return res;
+	IDownload* dl=NULL;
+	XmlRpc::XmlRpcValue mirrors = result["mirrors"];
+	for(int j=0; j<mirrors.size(); j++){
+		if (result[j].getType()!=XmlRpc::XmlRpcValue::TypeString){
+			return res;
+		}
+		if (dl==NULL)
+			dl=new IDownload(result["filename"],mirrors[j]);
+		dl->addMirror(mirrors[j]);
 	}
-	std::string mirror = xmlrpc_c::value_string(*mirrorMap.begin());
-	IDownload dl(mirror,filename,cat);
-	std::vector<xmlrpc_c::value>::iterator it;
-	for(it=mirrorMap.begin(); it!=mirrorMap.end(); ++it){
-		mirror = xmlrpc_c::value_string((*it));
-		printf("mirror: %s\n",mirror.c_str());
-		dl.addMirror(mirror);
-	}
-	res->push_back((IDownload&)dl);
-	DEBUG_LINE("md5 %s\n", resMd5.c_str());
-	DEBUG_LINE("filename %s\n", resFilename.c_str());
+
+	res->push_back(*dl);
 	return res;
 }
 
