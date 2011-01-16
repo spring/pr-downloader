@@ -1,4 +1,4 @@
-
+#!/bin/sh
 
 export PREFIX=/home/abma/Projects/downloader/mingwlibs
 export MINGW32CXX=i586-mingw32msvc-g++
@@ -85,11 +85,6 @@ if [ ! -s ${PREFIX}/lib/libtorrent-rasterbar.a ]; then
 	cd ..
 fi
 
-
-
-fi
-
-cd ..
-
 rm -f CMakeCache.txt
 cmake . "-DCMAKE_TOOLCHAIN_FILE=./win32.cmake"
+
