@@ -1,10 +1,12 @@
 #pr-downloader - tool to download maps and games for the Spring engine
 
 ##compile
-to compile, you need libtorrent-rasterbar,xmlrpc-c and boost
+to compile, you need libcurl and libz
 	cmake .
 	make
 	make install
+
+for cross-compilation run tools/crosscompile.sh (tested on Ubuntu 10.4 / 64 bit with i586-mingw32msvc-g++ (GCC) 4.4.2)
 
 That's it!
 

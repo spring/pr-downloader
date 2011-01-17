@@ -29,39 +29,45 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 		printf("No file found for criteria %s\n",name.c_str());
 		return NULL;
 	}
-	std::string fileName=this->torrentPath;
-	fileName.append(*result.torrentFileName);
-
-
-	DEBUG_LINE("Saving torrent to %s",fileName.c_str());
-	xsd__base64Binary *torrent_buf=result.torrent;
-	FILE* f=fopen(fileName.c_str(),"wb");
-	fwrite(torrent_buf->__ptr, torrent_buf->__size, 1, f);
-	fclose(f);
 
 	std::vector<std::string>::iterator it;
 	dlres=new std::list<IDownload>();
 
-	std::string saveto=fileSystem->getSpringDir();
 	IDownload::category cat;
-	if (result.resourceType==ns1__ResourceType__Map){
-		saveto += PATH_DELIMITER;
-		saveto += "maps";
-		saveto += PATH_DELIMITER;
-		cat=IDownload::CAT_MAPS;
-	}else{
-		saveto += PATH_DELIMITER;
-		saveto += "games";
-		saveto += PATH_DELIMITER;
-		cat=IDownload::CAT_MODS;
+	switch (result.resourceType){
+		case ns1__ResourceType__Map:
+			cat=IDownload::CAT_MAPS;
+			break;
+		case ns1__ResourceType__Mod:
+			cat=IDownload::CAT_MODS;
+			break;
+		default:
+			DEBUG_LINE("Unknown category in result\n");
+			cat=IDownload::CAT_NONE;
+			break;
 	}
-	DEBUG_LINE("Saving file to %s",saveto.c_str());
 	if (result.links->string.size()==0){
 		printf("got no mirror in plasmaresoult\n");
 		return false;
 	}
-	IDownload* dl=new IDownload(fileName,saveto,cat);
+
+	std::string torrent;
+	torrent.copy((char*)result.torrent->__ptr,result.torrent->__size);
+//	simple .torrent parser to get filename: need to parse for example
+// :name27:Tech Annihilation v1.08.sd7:
+// -> search :name, search next ":" convert to int, read name
+
+	int pos=torrent.find(":name");
+	int end=torrent.find(":",pos);
+	int len=atoi(torrent.substr(pos,end).c_str());
+	std::string fileName=torrent.substr(end,len);
+
+	DEBUG_LINE("Got filename "%s" from torrent\n",fileName);
+
+	IDownload* dl=NULL;
 	for (it=result.links->string.begin();it!=result.links->string.end(); ++it){
+		if(dl==NULL)
+				dl=new IDownload((*it).c_str(),fileName,cat);
 		dl->addMirror((*it).c_str());
 	}
 	for (it=result.dependencies->string.begin();it!=result.dependencies->string.end(); ++it){
@@ -73,5 +79,5 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 
 bool CPlasmaDownloader::download(IDownload& download){
 	DEBUG_LINE("%s",download.name.c_str());
-	return torrentDownload->download(download);
+	return httpDownload->download(download);
 }

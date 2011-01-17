@@ -22,14 +22,9 @@ target_link_libraries(${RAPID_LIB}
 	Rapid
 	Http
 	Plasma
-	Torrent
 	Widget
 	${CURL_LIBRARIES}
-	${LIBTORRENT_LIBRARY}
 	${ZLIB_LIBRARIES}
-	${Boost_LIBRARIES}
-	${TORRENT_LIBRARY}
-	${CURL_LIBRARY}
 	${XMLRPC_LIBRARIES}
 	${ADDITIONAL_LIBS}
 )
@@ -44,9 +39,6 @@ target_link_libraries(${RAPID}
 IF(WIN32)
 	INSTALL(TARGETS ${RAPID} ${RAPID_LIB} DESTINATION  ${CMAKE_SOURCE_DIR}/dist)
 	INSTALL(FILES
-		${MINGWLIBS}/lib/libboost_system-mt.dll
-		${MINGWLIBS}/lib/libboost_thread_win32-mt.dll
-		${MINGWLIBS}/lib/libboost_filesystem-mt.dll
 		${MINGWLIBS}/bin/libcurl-4.dll
 		${CMAKE_SOURCE_DIR}/data/mingwm10.dll
 	DESTINATION ${CMAKE_SOURCE_DIR}/dist)

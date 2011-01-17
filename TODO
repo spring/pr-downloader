@@ -19,15 +19,18 @@ downloader for game with tests included
 
 
 =general=
- * make lib + header
  * extra namespace
- * add init function to set data-dir
  * add an --force switch to force redownloading/updating (override cache)
  * make some things configureable
  * fix build system (code-plugable)
+ * add version-check (for current stable / getting download-link / ...)
+
+=library=
+ * make lib + header
+ * add init function to set data-dir
+ * disable logging
  * make logging configurable, cron/script-compatible, quiet mode, remove printf?
  * keep somewhere a log what happened
- * add version-check (for current stable / getting download-link / ...)
 
 =http=
  * if filename != gamename, file can't be found through current sf interface
@@ -41,10 +44,6 @@ downloader for game with tests included
  * (clean?) duplicate search results (with same md5)
  * delete old games?
  * check for errors
-
-=torrent=
- * auto ban corrupted mirrors (temp-ban?)
- * quicker shutdown
 
 =widget=
  * remove it or finish it? it does't fit to the other downloaders (widgets are not needed to play the game...)

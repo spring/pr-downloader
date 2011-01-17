@@ -38,14 +38,7 @@ endif ()
 
 find_package(CURL REQUIRED)
 find_package(ZLIB REQUIRED)
-include(FindBoost REQUIRED)
 include(FindPkgConfig)
-IF (WIN32)
-	find_package(Boost 1.34 COMPONENTS system filesystem thread_win32-mt)
-ELSE()
-	find_package(Boost 1.34 COMPONENTS system thread)
-ENDIF()
-
 
 include_directories(${CURL_INCLUDE_DIR})
 include_directories(${ZLIB_INCLUDE_DIR})
@@ -56,20 +49,7 @@ include_directories(".")
 # libtorrent-rasterbar dependency check
 #----------------------------------------------------------------------------------------------------
 
-IF (NOT WIN32)
-        SET ( LIBTORRENT_MIN_VERSION 0.13 )
-        pkg_check_modules( LIBTORRENT libtorrent-rasterbar>=${LIBTORRENT_MIN_VERSION} )
-        IF( LIBTORRENT_FOUND )
-                INCLUDE_DIRECTORIES( ${LIBTORRENT_INCLUDE_DIRS} )
-                LINK_LIBRARIES( ${LIBTORRENT_LIBRARIES} )
-        ELSE()
-                MESSAGE( FATAL_ERROR "libtorrent-rasterbar library not found! Please install the package or toggle OPTION_TORRENT_SYSTEM to OFF")
-        ENDIF()
-ELSE()
-        FIND_LIBRARY("LIBTORRENT_LIBRARY" NAMES "libtorrent-rasterbar" PATH "${MINGWLIBS}/lib")
-        IF (LIBTORRENT_FOUND)
-                MESSAGE("Found libtorrent ${LIBTORRENT_LIBRARY}")
-        ENDIF()
+IF (WIN32)
         SET(ADDITIONAL_LIBS -mthreads ws2_32 mswsock)
 ENDIF ()
 

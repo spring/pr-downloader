@@ -93,7 +93,6 @@ private:
 	static IDownloader* httpdl;
 	static IDownloader* plasmadl;
 	static IDownloader* rapiddl;
-	static IDownloader* torrentdl;
 	static IDownloader* widgetdl;
 
 };

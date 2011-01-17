@@ -26,7 +26,6 @@ enum{
 	HTTP_DOWNLOAD,
 	PLASMA_DOWNLOAD,
 	PLASMA_SEARCH,
-	TORRENT_DOWNLOAD,
 	WIDGET_SEARCH,
 	FILESYSTEM_WRITEPATH,
 	DOWNLOAD_MAP,
@@ -42,7 +41,6 @@ static struct option long_options[] = {
 	{"plasma-search"           , 1, 0, PLASMA_SEARCH},
 	{"http-download"           , 1, 0, HTTP_DOWNLOAD},
 	{"http-search"             , 1, 0, HTTP_SEARCH},
-	{"torrent-download"        , 1, 0, TORRENT_DOWNLOAD},
 	{"download-map"            , 1, 0, DOWNLOAD_MAP},
 	{"download-game"           , 1, 0, DOWNLOAD_GAME},
 	{"widget-search"           , 1, 0, WIDGET_SEARCH},
@@ -130,11 +128,6 @@ int main(int argc, char **argv){
 			list=plasmaDownload->search(optarg);
 			if (list!=NULL)
 				plasmaDownload->download(*list);
-			break;
-		}
-		case TORRENT_DOWNLOAD: {
-			list=torrentDownload->search(optarg);
-			torrentDownload->download(*list);
 			break;
 		}
 		case WIDGET_SEARCH: {
