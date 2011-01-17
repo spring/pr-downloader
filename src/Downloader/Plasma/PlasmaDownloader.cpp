@@ -34,33 +34,37 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 	dlres=new std::list<IDownload>();
 
 	IDownload::category cat;
+	std::string fileName=fileSystem->getSpringDir() + PATH_DELIMITER;
 	switch (result.resourceType){
 		case ns1__ResourceType__Map:
 			cat=IDownload::CAT_MAPS;
+			fileName.append("maps");
 			break;
 		case ns1__ResourceType__Mod:
 			cat=IDownload::CAT_MODS;
+			fileName.append("games");
 			break;
 		default:
 			DEBUG_LINE("Unknown category in result\n");
 			cat=IDownload::CAT_NONE;
 			break;
 	}
+	fileName+=PATH_DELIMITER;
 	if (result.links->string.size()==0){
 		printf("got no mirror in plasmaresoult\n");
 		return false;
 	}
 
 	std::string torrent;
-	torrent.copy((char*)result.torrent->__ptr,result.torrent->__size);
+	torrent.assign((char*)result.torrent->__ptr,result.torrent->__size);
 //	simple .torrent parser to get filename: need to parse for example
 // :name27:Tech Annihilation v1.08.sd7:
 // -> search :name, search next ":" convert to int, read name
 
-	int pos=torrent.find(":name");
-	int end=torrent.find(":",pos);
-	int len=atoi(torrent.substr(pos,end).c_str());
-	std::string fileName=torrent.substr(end,len);
+	int pos=torrent.find(":name"); //TODO: this is ugly + to hardcoded...
+	int end=torrent.find(":",pos+1);
+	int len=atoi(torrent.substr(pos+5,end-pos-5).c_str());
+	fileName.append(torrent.substr(end+1,len));
 
 	DEBUG_LINE("Got filename "%s" from torrent\n",fileName);
 
