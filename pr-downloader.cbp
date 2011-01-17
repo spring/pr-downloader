@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="pr-downloader" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\src\;CMake Files\src\Downloader\;CMake Files\src\Downloader\Http\;CMake Files\src\Downloader\Plasma\;CMake Files\src\Downloader\Widget\;CMake Files\src\Downloader\Rapid\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/abma/Projects/downloader" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="install">
+         <Option working_dir="/home/abma/Projects/downloader" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; install" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="install/local">
+         <Option working_dir="/home/abma/Projects/downloader" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; install/local" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="install/strip">
+         <Option working_dir="/home/abma/Projects/downloader" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; install/strip" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="list_install_components">
+         <Option working_dir="/home/abma/Projects/downloader" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; list_install_components" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="rebuild_cache">
+         <Option working_dir="/home/abma/Projects/downloader" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; rebuild_cache" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="pr-downloader">
+         <Option output="/home/abma/Projects/downloader/src/pr-downloader" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; pr-downloader" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="pr-downloader/fast">
+         <Option output="/home/abma/Projects/downloader/src/pr-downloader" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; pr-downloader/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="unitsync-ext">
+         <Option output="/home/abma/Projects/downloader/src/libunitsync-ext.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; unitsync-ext" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="unitsync-ext/fast">
+         <Option output="/home/abma/Projects/downloader/src/libunitsync-ext.so" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src" />
+         <Option object_output="./" />
+         <Option type="3" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; unitsync-ext/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Http">
+         <Option output="/home/abma/Projects/downloader/src/Downloader/Http/libHttp.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src/Downloader/Http" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Http/Makefile&quot; Http" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Http/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Http/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Http/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Http/fast">
+         <Option output="/home/abma/Projects/downloader/src/Downloader/Http/libHttp.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src/Downloader/Http" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Http/Makefile&quot; Http/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Http/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Http/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Http/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Plasma">
+         <Option output="/home/abma/Projects/downloader/src/Downloader/Plasma/libPlasma.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src/Downloader/Plasma" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Plasma/Makefile&quot; Plasma" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Plasma/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Plasma/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Plasma/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Plasma/fast">
+         <Option output="/home/abma/Projects/downloader/src/Downloader/Plasma/libPlasma.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src/Downloader/Plasma" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Plasma/Makefile&quot; Plasma/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Plasma/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Plasma/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Plasma/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Widget">
+         <Option output="/home/abma/Projects/downloader/src/Downloader/Widget/libWidget.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src/Downloader/Widget" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Widget/Makefile&quot; Widget" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Widget/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Widget/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Widget/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Widget/fast">
+         <Option output="/home/abma/Projects/downloader/src/Downloader/Widget/libWidget.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src/Downloader/Widget" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Widget/Makefile&quot; Widget/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Widget/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Widget/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Widget/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Rapid">
+         <Option output="/home/abma/Projects/downloader/src/Downloader/Rapid/libRapid.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src/Downloader/Rapid" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Rapid/Makefile&quot; Rapid" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Rapid/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Rapid/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Rapid/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Rapid/fast">
+         <Option output="/home/abma/Projects/downloader/src/Downloader/Rapid/libRapid.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/abma/Projects/downloader/src/Downloader/Rapid" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add directory="/usr/include" />
+            <Add directory="/home/abma/Projects/downloader/src" />
+            <Add directory="/home/abma/Projects/downloader/." />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Rapid/Makefile&quot; Rapid/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Rapid/Makefile&quot; &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Rapid/Makefile&quot; clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/abma/Projects/downloader/src/Downloader/Rapid/Makefile&quot; clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/HttpDownloader.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcClient.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcDispatch.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcSocket.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcSource.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcUtil.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcValue.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/IDownloader.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/PlasmaDownloader.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/soap/soapC.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/soap/soapContentServiceSoap12Proxy.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/soap/soapContentServiceSoapProxy.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/soap/stdsoap2.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Rapid/RapidDownloader.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Rapid/Repo.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Rapid/RepoMaster.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Rapid/Sdp.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Widget/Widget.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Widget/WidgetDownloader.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Widget/pugixml/pugixml.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Widget/pugixml/pugixpath.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/FileSystem.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Util.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/main.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/md5.cpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/HttpDownloader.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpc.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcClient.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcDispatch.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcException.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcSocket.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcSource.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcUtil.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/XmlRpcValue.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/xmlrpc++/src/base64.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/IDownloader.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/PlasmaDownloader.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/soap/soapContentServiceSoap12Proxy.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/soap/soapContentServiceSoapProxy.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/soap/stdsoap2.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Rapid/RapidDownloader.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Rapid/Repo.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Rapid/RepoMaster.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Rapid/Sdp.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Widget/Widget.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Widget/WidgetDownloader.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Widget/pugixml/pugixml.hpp">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/FileSystem.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Util.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/md5.h">
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\" />
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\Downloader\" />
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Http/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\Downloader\Http\" />
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Plasma/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\Downloader\Plasma\" />
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Widget/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\Downloader\Widget\" />
+      </Unit>
+      <Unit filename="/home/abma/Projects/downloader/src/Downloader/Rapid/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\src\Downloader\Rapid\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>
