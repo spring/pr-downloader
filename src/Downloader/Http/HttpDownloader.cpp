@@ -94,39 +94,33 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 	const std::string serverUrl("http://new.springfiles.com/xmlrpc.php");
 	const std::string method("springfiles.search");
 	std::string category;
-	std::string filename=fileSystem->getSpringDir();
-	filename+=PATH_DELIMITER;
-	switch(cat){
-		case IDownload::CAT_MAPS:
-			category="map";
-			filename+="maps";
-			break;
-		case IDownload::CAT_MODS:
-			category="game";
-			filename+="games";
-			break;
-		default:{
-			category="map";
-		}
-	}
-	filename+=PATH_DELIMITER;
 
  	XmlRpc::XmlRpcClient client("new.springfiles.com", 80, "http://new.springfiles.com/xmlrpc.php");
 	XmlRpc::XmlRpcValue arg;
-	arg["filename"]=name;
-	arg["category"]=category;
+	arg["springname"]=name;
 	XmlRpc::XmlRpcValue result;
 	client.execute(method.c_str(),arg, result);
 
 	if (result.getType()!=XmlRpc::XmlRpcValue::TypeStruct){
 		return res;
 	}
-
+	if (result["category"].getType()!=XmlRpc::XmlRpcValue::TypeString){
+		printf("No category in result\n");
+		return res;
+	}
+	std::string filename=fileSystem->getSpringDir();
+	filename+=PATH_DELIMITER;
+	if (result["category"]=="Spring Maps")
+		filename+="maps";
+	else if (result["category"]=="Spring Game")
+		filename+="games";
+	filename+=PATH_DELIMITER;
 	if ((result["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
 		(result["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)){
 		printf("Invalid type in result\n");
 		return res;
 	}
+	filename.append(result["filename"]);
 	IDownload* dl=NULL;
 	XmlRpc::XmlRpcValue mirrors = result["mirrors"];
 	for(int j=0; j<mirrors.size(); j++){
@@ -135,7 +129,7 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 			return res;
 		}
 		if (dl==NULL){
-			dl=new IDownload(mirrors[j],result["filename"]);
+			dl=new IDownload(mirrors[j],filename);
 		}
 		dl->addMirror(mirrors[j]);
 	}
