@@ -74,12 +74,12 @@ bool download(const std::string& name, IDownload::category cat){
 		if ((res!=NULL) && (!res->empty()) && (rapidDownload->download(*res)))
 			return true;
 	}
-	res=plasmaDownload->search(optarg, cat);
-	if ((res!=NULL) && (!res->empty()) && plasmaDownload->download(*res))
-		return true;
 	res=httpDownload->search(optarg, cat);
 	if ((res!=NULL) && (!res->empty()))
 		return httpDownload->download(*res);
+	res=plasmaDownload->search(optarg, cat);
+	if ((res!=NULL) && (!res->empty()))
+		return plasmaDownload->download(*res);
 	return false;
 }
 
@@ -123,6 +123,7 @@ int main(int argc, char **argv){
 		case PLASMA_SEARCH:{
 			std::string tmp=optarg;
 			plasmaDownload->search(tmp);
+			break;
 		}
 		case PLASMA_DOWNLOAD: {
 			list=plasmaDownload->search(optarg);

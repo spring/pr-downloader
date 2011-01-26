@@ -91,11 +91,10 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 	std::list<IDownload>* res;
 	res=new std::list<IDownload>();
 
-	const std::string serverUrl("http://new.springfiles.com/xmlrpc.php");
 	const std::string method("springfiles.search");
 	std::string category;
 
- 	XmlRpc::XmlRpcClient client("new.springfiles.com", 80, "http://new.springfiles.com/xmlrpc.php");
+ 	XmlRpc::XmlRpcClient client("springfiles.com", 80, "http://springfiles.com/xmlrpc.php");
 	XmlRpc::XmlRpcValue arg;
 	arg["springname"]=name;
 	XmlRpc::XmlRpcValue result;
