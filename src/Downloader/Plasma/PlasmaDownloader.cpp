@@ -45,7 +45,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 			fileName.append("games");
 			break;
 		default:
-			DEBUG_LINE("Unknown category in result\n");
+			DEBUG_LINE("Unknown category in result: %d\n", cat);
 			cat=IDownload::CAT_NONE;
 			break;
 	}
@@ -66,7 +66,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 	int len=atoi(torrent.substr(pos+5,end-pos-5).c_str());
 	fileName.append(torrent.substr(end+1,len));
 
-	DEBUG_LINE("Got filename "%s" from torrent\n",fileName);
+	DEBUG_LINE("Got filename \"%s\" from torrent\n",fileName.c_str());
 
 	IDownload* dl=NULL;
 	for (it=result.links->string.begin();it!=result.links->string.end(); ++it){
