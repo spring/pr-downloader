@@ -1,0 +1,22 @@
+Source: libspringdownloader
+Priority: extra
+Maintainer: Rene Milk <koshi@springlobby.info>
+Build-Depends: debhelper (>= 7.0.50~), cmake
+Standards-Version: 3.9.1
+Section: libs
+Homepage: https://github.com/abma/pr-downloader
+Vcs-Git: git://github.com/abma/pr-downloader.git
+
+Package: libspringdownloader-dev
+Section: libdevel
+Architecture: any
+Depends: libspringdownloader (= ${binary:Version})
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
+
+Package: libspringdownloader
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>
