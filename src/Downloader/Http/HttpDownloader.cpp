@@ -146,6 +146,21 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 	return res;
 }
 
+std::string& CHttpDownloader::escapeUrl(const std::string& url){
+	int len=url.size();
+	int pos=0;
+	std::string res;
+
+	for(int i=0; i<url.size(); i++){
+		if (url[i]==' ')
+			res.append("%20");
+		else
+			res.append(1,url[i]);
+	}
+	return res;
+}
+
+
 bool CHttpDownloader::download(IDownload& download) {
 	DEBUG_LINE("%s",download.name.c_str());
 
@@ -171,7 +186,7 @@ bool CHttpDownloader::download(IDownload& download) {
 	}
 	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-	curl_easy_setopt(curl, CURLOPT_URL, download.url.c_str());
+	curl_easy_setopt(curl, CURLOPT_URL, escapeUrl(download.url).c_str());
 	res = curl_easy_perform(curl);
 	fclose(fp);
 	printf("\n"); //new line because of downloadbar
