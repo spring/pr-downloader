@@ -146,12 +146,10 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 	return res;
 }
 
-std::string& CHttpDownloader::escapeUrl(const std::string& url){
-	int len=url.size();
-	int pos=0;
+std::string CHttpDownloader::escapeUrl(const std::string& url){
 	std::string res;
 
-	for(int i=0; i<url.size(); i++){
+	for(unsigned int i=0; i<url.size(); i++){
 		if (url[i]==' ')
 			res.append("%20");
 		else
