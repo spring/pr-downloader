@@ -5,19 +5,25 @@
 #include <string>
 #include <string.h>
 #include <zlib.h>
-
+#include <time.h>
 
 #include "xmlrpc++/src/XmlRpc.h"
 
 
 #include "../../Util.h"
 
+time_t last_print;
 
 /** *
 	draw a nice download status-bar
 */
 int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownloaded,
 				  double TotalToUpload, double NowUploaded) {
+	time_t now=time(NULL);
+	fflush(stdout);
+	if ((now-last_print)<=0)
+		return 0;
+	last_print=now;
 	// how wide you want the progress meter to be
 	int totaldotz=40;
 	double fractiondownloaded;
@@ -161,7 +167,7 @@ std::string CHttpDownloader::escapeUrl(const std::string& url){
 
 bool CHttpDownloader::download(IDownload& download) {
 	DEBUG_LINE("%s",download.name.c_str());
-
+	last_print = 0;
 	CURLcode res=CURLE_OK;
 	printf("Downloading %s to %s\n",download.url.c_str(), download.name.c_str());
 	//FIXME: use etag/timestamp as remote file could be modified
