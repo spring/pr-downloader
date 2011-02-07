@@ -20,10 +20,11 @@ time_t last_print;
 int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownloaded,
 				  double TotalToUpload, double NowUploaded) {
 	time_t now=time(NULL);
-	fflush(stdout);
-	if ((now-last_print)<=0)
+	if (now!=last_print){ //check if 1 second is gone afters last update
+		last_print=now;
+	}else{
 		return 0;
-	last_print=now;
+	}
 	// how wide you want the progress meter to be
 	int totaldotz=40;
 	double fractiondownloaded;
