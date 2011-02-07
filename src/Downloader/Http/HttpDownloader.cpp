@@ -13,6 +13,7 @@
 #include "../../Util.h"
 
 time_t last_print;
+time_t start_time;
 
 /** *
 	draw a nice download status-bar
@@ -20,6 +21,8 @@ time_t last_print;
 int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownloaded,
 				  double TotalToUpload, double NowUploaded) {
 	time_t now=time(NULL);
+	if (start_time==0)
+		start_time=now;
 	if (now!=last_print){ //check if 1 second is gone afters last update
 		last_print=now;
 	}else{
@@ -48,7 +51,15 @@ int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownlo
 		printf(" ");
 	}
 	// and back to line begin - do not forget the fflush to avoid output buffering problems!
-	printf("] %d/%d\r",(int)NowDownloaded,(int)TotalToDownload );
+	printf("] %d/%d ",(int)NowDownloaded,(int)TotalToDownload );
+
+	long int diff=now-start_time;
+	if (diff>0){
+		printf("%d KB/sec",(int)((NowDownloaded/diff)/1000));
+	}else{
+		printf("0");
+	}
+	printf("\r");
 	fflush(stdout);
 	return 0;
 }
@@ -169,6 +180,7 @@ std::string CHttpDownloader::escapeUrl(const std::string& url){
 bool CHttpDownloader::download(IDownload& download) {
 	DEBUG_LINE("%s",download.name.c_str());
 	last_print = 0;
+	start_time = 0;
 	CURLcode res=CURLE_OK;
 	printf("Downloading %s to %s\n",download.url.c_str(), download.name.c_str());
 	//FIXME: use etag/timestamp as remote file could be modified
