@@ -29,7 +29,7 @@ int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownlo
 		return 0;
 	}
 	// how wide you want the progress meter to be
-	int totaldotz=40;
+	int totaldotz=30;
 	double fractiondownloaded;
 	if (TotalToDownload>0)
 		fractiondownloaded = NowDownloaded / TotalToDownload;
