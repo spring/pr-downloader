@@ -26,7 +26,8 @@ int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownlo
 	if (now!=last_print){ //check if 1 second is gone afters last update
 		last_print=now;
 	}else{
-		return 0;
+		if(TotalToDownload!=NowDownloaded) //print 100%
+			return 0;
 	}
 	// how wide you want the progress meter to be
 	int totaldotz=30;
