@@ -1,5 +1,16 @@
+
+#ifdef DEBUG //disable writing to *.log in debug mode
+#undef DEBUG
+#define DEBUG_HACK
 #include "soap/soapContentServiceSoap12Proxy.h"
 #include "soap/ContentServiceSoap.nsmap"
+#endif
+
+#ifdef DEBUG_HACK
+#define DEBUG
+#undef DEBUG_HACK
+#endif
+
 #include "PlasmaDownloader.h"
 #include "../../FileSystem.h"
 #include "../../Util.h"
@@ -33,7 +44,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 	std::vector<std::string>::iterator it;
 	dlres=new std::list<IDownload>();
 
-	IDownload::category cat;
+	IDownload::category cat=category;
 	std::string fileName=fileSystem->getSpringDir() + PATH_DELIMITER;
 	switch (result.resourceType){
 		case ns1__ResourceType__Map:
