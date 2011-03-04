@@ -135,11 +135,14 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 			return res;
 		}
 		std::string filename=fileSystem->getSpringDir();
+		std::string category=resfile["category"];
 		filename+=PATH_DELIMITER;
-		if (resfile["category"]=="Spring Maps")
+		if (category=="Spring Maps")
 			filename+="maps";
-		else if (resfile["category"]=="Spring Game")
+		else if (category=="Games")
 			filename+="games";
+		else
+			DEBUG_LINE("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
 			(resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)){
