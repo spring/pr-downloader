@@ -3,3 +3,4 @@
 .pc*
 .*swp
 obj-*
+debian/*.log
