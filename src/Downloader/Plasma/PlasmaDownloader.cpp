@@ -15,7 +15,7 @@
 #include "PlasmaDownloader.h"
 #include "../../FileSystem.h"
 #include "../../Util.h"
-#include "soap/soapContentServiceSoap12Proxy.h"
+
 
 
 CPlasmaDownloader::CPlasmaDownloader(){
