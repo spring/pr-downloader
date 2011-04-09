@@ -1,16 +1,6 @@
 
-#ifdef DEBUG //disable writing to *.log in debug mode
-#undef DEBUG
-#define DEBUG_HACK
-#endif
-
 #include "soap/soapContentServiceSoap12Proxy.h"
 #include "soap/ContentServiceSoap.nsmap"
-
-#ifdef DEBUG_HACK
-#define DEBUG
-#undef DEBUG_HACK
-#endif
 
 #include "PlasmaDownloader.h"
 #include "../../FileSystem.h"

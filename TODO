@@ -36,6 +36,7 @@ downloader for game with tests included
  * if filename != gamename, file can't be found through current sf interface
 
 =plasma=
+ * search for posibility to disable writing RECV.log/SEND.log in debug builds
 
 =rapid=
  * use /packages/selected.list for pinned tags / downloaded files
