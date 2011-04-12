@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@/@BINDIR@
+libdir=@CMAKE_INSTALL_PREFIX@/@LIBDIR@
+includedir=@CMAKE_INSTALL_PREFIX@/@INCLUDE_DIR@
+
+Name: libspringdownloader
+Description: Development files and library for downlaoding content for the spring engine
+Version: @VERSION@
+Libs: -L${libdir} -lunitsync-ext@LIBRARY_OUTPUT_SUFFIX@
+Cflags: -I${includedir}
+Requires: 
+

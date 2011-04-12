@@ -4,3 +4,5 @@ add_library(Widget
 	"pugixml/pugixml.cpp"
 	"pugixml/pugixpath.cpp"
 )
+FILE( GLOB_RECURSE header "*.h" )
+INSTALL (FILES ${header} DESTINATION ${INCLUDE_DIR}/Downloader/Widget )

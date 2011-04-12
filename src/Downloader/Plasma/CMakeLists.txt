@@ -6,3 +6,5 @@ add_library(Plasma
 	soap/stdsoap2.cpp
 	bencode/bencode.c
 )
+FILE( GLOB_RECURSE header "*.h" )
+INSTALL (FILES ${header} DESTINATION ${INCLUDE_DIR}/Downloader/Plasma )

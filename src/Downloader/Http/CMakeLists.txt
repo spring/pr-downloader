@@ -22,3 +22,5 @@ xmlrpc++/src/XmlRpcDispatch.cpp
 )
 endif()
 
+FILE( GLOB_RECURSE header "*.h" )
+INSTALL (FILES ${header} DESTINATION ${INCLUDE_DIR}/Downloader/Http )

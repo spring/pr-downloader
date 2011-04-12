@@ -46,11 +46,16 @@ IF(WIN32)
 		${MINGWLIBS}/bin/libcurl-4.dll
 		${CMAKE_SOURCE_DIR}/data/mingwm10.dll
 	DESTINATION ${CMAKE_SOURCE_DIR}/dist)
-ELSE()
+ELSE(WIN32)
 	INSTALL (FILES Util.h md5.h FileSystem.h DESTINATION ${INCLUDE_DIR} )
 	INSTALL (TARGETS ${RAPID} ${RAPID_LIB}
 		RUNTIME DESTINATION ${BINDIR}
 		LIBRARY DESTINATION ${LIBDIR}
 		ARCHIVE DESTINATION ${LIBDIR} )
-ENDIF()
+ENDIF(WIN32)
+
+SET( VERSION "0.1.1" )
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
+               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${LIBDIR}/pkgconfig")
 
