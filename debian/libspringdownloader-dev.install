@@ -1,4 +1,4 @@
-usr/include/*
-usr/lib/spring/lib*.so
+usr/include
+usr/lib
 #usr/lib/pkgconfig/*
 #usr/share/pkgconfig/*

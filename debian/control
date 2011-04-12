@@ -11,12 +11,12 @@ Package: libspringdownloader-dev
 Section: libdevel
 Architecture: any
 Depends: libspringdownloader0 (= ${binary:Version})
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: development headers for libspringdownloader
+ development headers for libspringdownloader
 
 Package: libspringdownloader0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: library and example binary libspringdownloader
+ library and example binary libspringdownloader
