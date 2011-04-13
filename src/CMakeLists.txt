@@ -6,6 +6,7 @@ set(myRapidFiles
 	FileSystem.cpp
 	Util.cpp
 	md5.cpp
+	sha1.cpp
 	main.cpp
 	Downloader/IDownloader.cpp
 )
