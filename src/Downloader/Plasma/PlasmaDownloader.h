@@ -12,6 +12,8 @@ public:
 
 private:
 	std::string torrentPath;
+	void parseTorrent(char*data, int size);
+
 };
 
 #endif

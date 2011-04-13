@@ -5,6 +5,20 @@
 #include "PlasmaDownloader.h"
 #include "../../FileSystem.h"
 #include "../../Util.h"
+#include "bencode/bencode.h"
+
+
+void CPlasmaDownloader::parseTorrent(char*data, int size){
+/*
+extern be_node *be_decode(const char *bencode);
+extern be_node *be_decoden(const char *bencode, long long bencode_len);
+extern void be_free(be_node *node);
+extern void be_dump(be_node *node);
+*/
+
+	struct be_node* node=be_decoden(data, size);
+	be_dump(node);
+}
 
 
 
@@ -59,6 +73,7 @@ std::list<IDownload>* CPlasmaDownloader::search(const std::string& name, IDownlo
 
 	std::string torrent;
 	torrent.assign((char*)result.torrent->__ptr,result.torrent->__size);
+	parseTorrent((char*)result.torrent->__ptr, result.torrent->__size);
 //	simple .torrent parser to get filename: need to parse for example
 // :name27:Tech Annihilation v1.08.sd7:
 // -> search :name, search next ":" convert to int, read name
