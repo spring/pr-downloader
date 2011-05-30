@@ -137,9 +137,9 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 		std::string filename=fileSystem->getSpringDir();
 		std::string category=resfile["category"];
 		filename+=PATH_DELIMITER;
-		if (category=="Spring Maps")
+		if (category=="maps")
 			filename+="maps";
-		else if (category=="Games")
+		else if (category=="games")
 			filename+="games";
 		else
 			DEBUG_LINE("Unknown Category %s", category.c_str());
