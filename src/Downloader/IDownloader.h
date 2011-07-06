@@ -5,6 +5,7 @@
 #include <string>
 
 #include <stdio.h>
+#define PR_DOWNLOADER_AGENT "pr-downloader/0.1"
 
 class IDownload{
 public:

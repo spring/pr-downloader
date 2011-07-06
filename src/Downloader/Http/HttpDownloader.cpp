@@ -75,6 +75,7 @@ CHttpDownloader::CHttpDownloader() {
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl = curl_easy_init();
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
 	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
@@ -137,10 +138,10 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 		std::string filename=fileSystem->getSpringDir();
 		std::string category=resfile["category"];
 		filename+=PATH_DELIMITER;
-		if (category=="maps")
-			filename+="maps";
-		else if (category=="games")
-			filename+="games";
+		if (category=="map")
+			filename+="map";
+		else if (category=="game")
+			filename+="game";
 		else
 			DEBUG_LINE("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
