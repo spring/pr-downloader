@@ -139,9 +139,9 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 		std::string category=resfile["category"];
 		filename+=PATH_DELIMITER;
 		if (category=="map")
-			filename+="map";
+			filename+="maps";
 		else if (category=="game")
-			filename+="game";
+			filename+="games";
 		else
 			DEBUG_LINE("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
