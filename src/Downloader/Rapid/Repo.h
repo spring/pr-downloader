@@ -10,10 +10,8 @@ class CRepo{
 	std::string repourl;
 	CRapidDownloader* rapid;
 public:
-	CRepo(const std::string& repourl, CRapidDownloader* rapid){
-		this->repourl=repourl;
-		this->rapid=rapid;
-	}
+	CRepo(const std::string& repourl, CRapidDownloader* rapid);
+	~CRepo();
 
 	/**
 		downloads a repo

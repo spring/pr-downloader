@@ -17,7 +17,14 @@ CRapidDownloader::CRapidDownloader(){
 }
 
 CRapidDownloader::~CRapidDownloader(){
+	sdps.clear();
 	delete(repoMaster);
+	while(!sdps.empty()){
+		CSdp* tmp=sdps.front();
+		delete tmp;
+		sdps.pop_front();
+	}
+
 }
 
 
@@ -36,9 +43,7 @@ static bool list_compare(CSdp* first ,CSdp*  second){
 	name1=(first->getShortName());
 	name2=(second->getShortName());
 	unsigned int len;
-	len=name1.size();
-	if (len<name2.size())
-		len=name2.size();
+	len=std::min(name1.size(), name2.size());
 	for (unsigned int i=0;i<len;i++){
 		if (tolower(name1[i])<tolower(name2[i])){
 			return true;

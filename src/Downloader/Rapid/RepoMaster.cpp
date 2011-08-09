@@ -60,4 +60,9 @@ void CRepoMaster::updateRepos(){
 }
 
 CRepoMaster::~CRepoMaster(){
+	while(!repos.empty()){
+		CRepo* tmp=repos.front();
+		delete tmp;
+		repos.pop_front();
+	}
 }

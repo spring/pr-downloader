@@ -9,6 +9,15 @@
 #include <stdio.h>
 
 
+CRepo::CRepo(const std::string& repourl, CRapidDownloader* rapid){
+	this->repourl=repourl;
+	this->rapid=rapid;
+}
+
+CRepo::~CRepo(){
+
+}
+
 void CRepo::download(){
 	std::string tmp;
 	urlToPath(repourl,tmp);
