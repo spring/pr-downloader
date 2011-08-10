@@ -23,7 +23,7 @@
 
 CFileSystem* CFileSystem::singleton = NULL;
 
-bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) const{
+bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) const{
 	MD5_CTX mdContext;
 	int bytes;
 	unsigned char data[1024];
@@ -56,7 +56,7 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 
 	int i;
 	for (i=0; i<16;i++){
-		if (mdContext.digest[i]!=mod->md5[i]){ //file is invalid
+		if (mdContext.digest[i]!=mod.md5[i]){ //file is invalid
 //			printf("Damaged file found: %s\n",filename.c_str());
 //			unlink(filename.c_str());
 			return false;
@@ -68,7 +68,7 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 /*
 	parses the file for a mod and creates
 */
-bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::FileData*>& files){
+bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::FileData>& files){
 	char c_name[255];
 	unsigned char c_md5[16];
 	unsigned char c_crc32[4];
@@ -89,12 +89,12 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 		if (!gzread(in, &c_crc32, 4)) return false;
 		if (!gzread(in, &c_size, 4)) return false;
 
-		FileData *f = new FileData;
-		f->name = std::string(c_name, length);
-		std::memcpy(&f->md5, &c_md5, 16);
-		f->crc32 = parse_int32(c_crc32);
-		f->size = parse_int32(c_size);
-		f->compsize = 0;
+		FileData f;
+		f.name = std::string(c_name, length);
+		std::memcpy(&f.md5, &c_md5, 16);
+		f.crc32 = parse_int32(c_crc32);
+		f.size = parse_int32(c_size);
+		f.compsize = 0;
 		files.push_back(f);
 	}
 	return true;
@@ -174,11 +174,11 @@ void CFileSystem::createSubdirs (const std::string& path) const {
 }
 
 
-const std::string CFileSystem::getPoolFileName(CFileSystem::FileData* fdata) const{
+const std::string CFileSystem::getPoolFileName(const CFileSystem::FileData& fdata) const{
 	std::string name;
 	std::string md5;
 
-	md5ItoA(fdata->md5, md5);
+	md5ItoA(fdata.md5, md5);
 	name=getSpringDir();
 	name += PATH_DELIMITER;
 	name += "pool";
@@ -226,7 +226,7 @@ int CFileSystem::validatePool(const std::string& path){
 						md5.push_back(tmp.at(len-35));
 						md5.append(tmp.substr(len-33, 30));
 						md5AtoI(md5,filedata.md5);
-						if (!fileIsValid(&filedata,tmp)){
+						if (!fileIsValid(filedata,tmp)){
 							printf("Invalid File in pool: %s\n",tmp.c_str());
 						}else{
 							res++;

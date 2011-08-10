@@ -19,29 +19,23 @@ CRapidDownloader::CRapidDownloader(){
 CRapidDownloader::~CRapidDownloader(){
 	sdps.clear();
 	delete(repoMaster);
-	while(!sdps.empty()){
-		CSdp* tmp=sdps.front();
-		delete tmp;
-		sdps.pop_front();
-	}
-
 }
 
 
-void CRapidDownloader::addRemoteDsp(CSdp* sdp){
+void CRapidDownloader::addRemoteDsp(CSdp& sdp){
 	sdps.push_back(sdp);
 }
 
 /**
 	helper function for sort
 */
-static bool list_compare(CSdp* first ,CSdp*  second){
+static bool list_compare(CSdp& first ,CSdp& second){
 	std::string name1;
 	std::string name2;
 	name1.clear();
 	name2.clear();
-	name1=(first->getShortName());
-	name2=(second->getShortName());
+	name1=(first.getShortName());
+	name2=(second.getShortName());
 	unsigned int len;
 	len=std::min(name1.size(), name2.size());
 	for (unsigned int i=0;i<len;i++){
@@ -69,16 +63,16 @@ bool CRapidDownloader::reloadRepos(){
 */
 bool CRapidDownloader::download_name(const std::string& longname, int reccounter){
 	DEBUG_LINE("%s",longname.c_str());
-	std::list<CSdp*>::iterator it;
+	std::list<CSdp>::iterator it;
 	if (reccounter>10)
 		return false;
 	for (it=sdps.begin();it!=sdps.end();++it){
-		if (match_download_name((*it)->getName(),longname)){
-			printf("Found Depends, downloading %s\n", (*it)->getName().c_str());
-			if (!(*it)->download())
+		if (match_download_name((*it).getName(),longname)){
+			printf("Found Depends, downloading %s\n", (*it).getName().c_str());
+			if (!(*it).download())
 				return false;
-			if ((*it)->getDepends().length()>0){
-				if (!download_name((*it)->getDepends(),reccounter+1))
+			if ((*it).getDepends().length()>0){
+				if (!download_name((*it).getDepends(),reccounter+1))
 					return false;
 			}
 			return true;
@@ -96,12 +90,12 @@ bool CRapidDownloader::search(std::list<IDownload>& result, const std::string& n
 	reloadRepos();
 
 	sdps.sort(list_compare);
-	std::list<CSdp*>::iterator it;
-	for (it=this->sdps.begin();it!=this->sdps.end();++it){
-		if (match_download_name((*it)->getShortName().c_str(),name)
-				|| (match_download_name((*it)->getName().c_str(),name))){
-			IDownload* dl=new IDownload((*it)->getShortName().c_str(),(*it)->getName().c_str());
-			result.push_back(*dl);
+	std::list<CSdp>::iterator it;
+	for (it=sdps.begin();it!=sdps.end();++it){
+		if (match_download_name((*it).getShortName().c_str(),name)
+				|| (match_download_name((*it).getName().c_str(),name))){
+			IDownload dl=IDownload((*it).getShortName().c_str(),(*it).getName().c_str());
+			result.push_back(dl);
 		}
 	}
 	return true;

@@ -56,7 +56,7 @@ bool CRepo::parse(){
 		std::string depends=getStrByIdx(tmp,',',2);
 		std::string name=getStrByIdx(tmp,',',3);
 		if (shortname.size()>0){ //create new repo from url
-			CSdp* sdptmp=new CSdp(shortname, md5, name, depends, repourl);
+			CSdp sdptmp=CSdp(shortname, md5, name, depends, repourl);
 			rapid->addRemoteDsp(sdptmp);
 		}
 	}
