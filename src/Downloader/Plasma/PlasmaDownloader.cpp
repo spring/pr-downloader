@@ -34,7 +34,6 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 	_ns1__DownloadFileResponse fileResponse;
 	std::string tmpname=name;
 	file.internalName=&tmpname;
-	std::list<IDownload>* dlres;
 	int res;
 	res=service.DownloadFile(&file, &fileResponse);
 	if (res != SOAP_OK){
@@ -47,8 +46,6 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 	}
 
 	std::vector<std::string>::iterator it;
-	dlres=new std::list<IDownload>();
-
 	IDownload::category cat=category;
 	std::string fileName=fileSystem->getSpringDir() + PATH_DELIMITER;
 	switch (fileResponse.resourceType){
@@ -85,17 +82,16 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 
 	DEBUG_LINE("Got filename \"%s\" from torrent\n",fileName.c_str());
 
-	IDownload* dl=NULL;
+	IDownload dl;
 	for (it=fileResponse.links->string.begin();it!=fileResponse.links->string.end(); ++it){
-		if(dl==NULL)
-				dl=new IDownload((*it).c_str(),fileName,cat);
-		dl->addMirror((*it).c_str());
+		dl=IDownload((*it).c_str(),fileName,cat);
+		dl.addMirror((*it).c_str());
 	}
 	for (it=fileResponse.dependencies->string.begin();it!=fileResponse.dependencies->string.end(); ++it){
-		dl->addDepend((*it).c_str());
+		dl.addDepend((*it).c_str());
 	}
-	dlres->push_back(*dl);
-	return dlres;
+	result.push_back(dl);
+	return true;
 }
 
 bool CPlasmaDownloader::download(IDownload& download){

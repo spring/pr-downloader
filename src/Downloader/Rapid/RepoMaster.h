@@ -10,20 +10,20 @@ class CRepo;
 class CRapidDownloader;
 
 class CRepoMaster{
-	std::string path;
-	std::string url;
 	CRapidDownloader* rapid;
 public:
-	CRepoMaster(std::string& masterurl, CRapidDownloader* rapid);
+	CRepoMaster(const std::string& masterurl, CRapidDownloader* rapid);
 	~CRepoMaster();
-	void download(const std::string& name);
 	/**
 		parses a rep master-file
 	*/
-	bool parse();
 	void updateRepos();
 private:
-	std::list<CRepo*> repos;
+	bool parse();
+	void download(const std::string& name);
+	std::string path;
+	std::string url;
+	std::list<CRepo> repos;
 
 };
 

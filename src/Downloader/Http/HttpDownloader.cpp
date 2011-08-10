@@ -149,20 +149,19 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			return false;
 		}
 		filename.append(resfile["filename"]);
-		IDownload* dl=NULL;
+		IDownload dl;
 		XmlRpc::XmlRpcValue mirrors = resfile["mirrors"];
 		for(int j=0; j<mirrors.size(); j++){
 			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString){
 				printf("Invalid type in result\n");
 				return false;
 			}
-			if (dl==NULL){
-				dl=new IDownload(mirrors[j],filename);
-			}
-			dl->addMirror(mirrors[j]);
+			if (dl.url.size()<=0)
+				dl=IDownload(mirrors[j],filename);
+			dl.addMirror(mirrors[j]);
 		}
 
-		res.push_back(*dl);
+		res.push_back(dl);
 	}
 	return true;
 }

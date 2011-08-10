@@ -11,15 +11,15 @@
 #define REPO_RECHECK_TIME 600
 
 #include "../IDownloader.h"
+#include "RepoMaster.h"
 
 class CSdp;
 class CHttpDownload;
-class CRepoMaster;
 class CFileSystem;
 
 class CRapidDownloader: public IDownloader{
 public:
-	CRapidDownloader();
+	CRapidDownloader(const std::string& masterurl=REPO_MASTER);
 	~CRapidDownloader();
 
 	//lists a tag, for exampe ba:stable

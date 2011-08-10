@@ -9,16 +9,15 @@
 #include "RepoMaster.h"
 
 
-CRapidDownloader::CRapidDownloader(){
-	std::string url(REPO_MASTER);
-	this->repoMaster=new CRepoMaster(url, this);
+CRapidDownloader::CRapidDownloader(const std::string& url){
+	repoMaster=new CRepoMaster(url, this);
 	reposLoaded = false;
 	sdps.clear();
 }
 
 CRapidDownloader::~CRapidDownloader(){
 	sdps.clear();
-	delete(repoMaster);
+	delete repoMaster;
 }
 
 
@@ -51,8 +50,6 @@ static bool list_compare(CSdp& first ,CSdp& second){
 bool CRapidDownloader::reloadRepos(){
 	if (reposLoaded)
 		return true;
-	std::string url(REPO_MASTER);
-	this->repoMaster->download(url);
 	repoMaster->updateRepos();
 	reposLoaded=true;
 	return true;
@@ -88,7 +85,6 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 bool CRapidDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category cat){
 	DEBUG_LINE("%s",name.c_str());
 	reloadRepos();
-
 	sdps.sort(list_compare);
 	std::list<CSdp>::iterator it;
 	for (it=sdps.begin();it!=sdps.end();++it){

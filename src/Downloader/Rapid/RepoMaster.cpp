@@ -20,7 +20,8 @@ void CRepoMaster::download(const std::string& name){
 	parse();
 }
 
-CRepoMaster::CRepoMaster(std::string& url, CRapidDownloader* rapid){
+CRepoMaster::CRepoMaster(const std::string& url, CRapidDownloader* rapid){
+	DEBUG_LINE("Added master repo %s", url.c_str());
 	this->url=url;
 	this->rapid=rapid;
 }
@@ -39,7 +40,7 @@ bool CRepoMaster::parse(){
 		std::string url=getStrByIdx(tmp,',',1);
 		i++;
 		if (url.size()>0){ //create new repo from url
-			CRepo* repotmp=new CRepo(url, rapid);
+			CRepo repotmp=CRepo(url, rapid);
 			repos.push_back(repotmp);
 		}else{
 			printf("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
@@ -53,16 +54,13 @@ bool CRepoMaster::parse(){
 
 void CRepoMaster::updateRepos(){
 	DEBUG_LINE("%s","Updating repos...");
-	std::list<CRepo*>::iterator it;
+	download(url);
+	std::list<CRepo>::iterator it;
 	for (it = repos.begin();it != repos.end(); ++it) {
-		(*it)->download();
+		(*it).download();
 	}
 }
 
 CRepoMaster::~CRepoMaster(){
-	while(!repos.empty()){
-		CRepo* tmp=repos.front();
-		delete tmp;
-		repos.pop_front();
-	}
+
 }

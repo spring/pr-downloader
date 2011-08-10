@@ -22,7 +22,7 @@ public:
 		CAT_SPRINGINSTALLERS,
 		CAT_TOOLS
 	}cat;
-	IDownload(const std::string& url, const std::string& filename, category cat=CAT_NONE);
+	IDownload(const std::string& url="", const std::string& filename="", category cat=CAT_NONE);
 	/**
 		add a mirror to the download specified
 	*/
