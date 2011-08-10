@@ -22,19 +22,41 @@ public:
 	CRapidDownloader(const std::string& masterurl=REPO_MASTER);
 	~CRapidDownloader();
 
-	//lists a tag, for exampe ba:stable
+	/**
+		download a tag, for exampe ba:stable
+	*/
 	bool download_tag(const std::string& modname);
-	//lists all tags on all servers
+	/**
+		lists all tags on all servers
+	*/
 	void list_tag();
-	//remove a dsp from the list of remote dsps
+	/**
+		remove a dsp from the list of remote dsps
+	*/
 	void addRemoteDsp(CSdp& dsp);
+	/**
+		search for a mod, searches for the short + long name
+	*/
 	virtual bool search(std::list<IDownload>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
+	/**
+		start a download
+	*/
 	virtual bool download(IDownload& download);
 
 private:
+	/**
+		download by name, for example "Complete Annihilation revision 1234"
+	*/
 	bool download_name(const std::string& longname, int reccounter=0);
+	/**
+		update all repos from the web
+	*/
 	bool reloadRepos();
 	bool reposLoaded;
+	/**
+		helper function for sort
+	*/
+	static bool list_compare(CSdp& first ,CSdp& second);
 	CRepoMaster* repoMaster;
 	std::list<CSdp> sdps;
 };

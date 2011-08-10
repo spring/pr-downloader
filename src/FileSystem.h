@@ -33,7 +33,9 @@ public:
 	};
 	CFileSystem();
 	~CFileSystem();
-	//parses a sdp
+	/**
+		parses the file for a mod and creates
+	*/
 	bool parseSdp(const std::string& filename, std::list<CFileSystem::FileData>& files);	//Validates a File, (checks the md5)
 	bool fileIsValid(const FileData& mod, const std::string& filename) const;
 	/**
@@ -58,6 +60,10 @@ public:
 	void createSubdirs(const std::string& path) const;
 
 	const std::string getPoolFileName(const CFileSystem::FileData& fdata) const;
+	/**
+		Validate all files in /pool/ (check md5)
+		@return count of valid files found
+	*/
 	int validatePool(const std::string& path);
 
 	/**

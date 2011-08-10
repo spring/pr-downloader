@@ -25,10 +25,8 @@ void CRapidDownloader::addRemoteDsp(CSdp& sdp){
 	sdps.push_back(sdp);
 }
 
-/**
-	helper function for sort
-*/
-static bool list_compare(CSdp& first ,CSdp& second){
+
+bool CRapidDownloader::list_compare(CSdp& first ,CSdp& second){
 	std::string name1;
 	std::string name2;
 	name1.clear();
@@ -44,9 +42,7 @@ static bool list_compare(CSdp& first ,CSdp& second){
 	}
 	return false;
 }
-/**
-	update all repos from the web
-*/
+
 bool CRapidDownloader::reloadRepos(){
 	if (reposLoaded)
 		return true;
@@ -55,9 +51,7 @@ bool CRapidDownloader::reloadRepos(){
 	return true;
 }
 
-/**
-	download by name, for example "Complete Annihilation revision 1234"
-*/
+
 bool CRapidDownloader::download_name(const std::string& longname, int reccounter){
 	DEBUG_LINE("%s",longname.c_str());
 	std::list<CSdp>::iterator it;
@@ -79,9 +73,7 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 }
 
 
-/**
-	search for a mod, searches for the short + long name
-*/
+
 bool CRapidDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category cat){
 	DEBUG_LINE("%s",name.c_str());
 	reloadRepos();
@@ -96,9 +88,7 @@ bool CRapidDownloader::search(std::list<IDownload>& result, const std::string& n
 	}
 	return true;
 }
-/**
-	start a download
-*/
+
 bool CRapidDownloader::download(IDownload& download){
 	DEBUG_LINE("%s",download.name.c_str());
 	reloadRepos();

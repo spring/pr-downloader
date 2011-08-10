@@ -166,7 +166,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 /** *
 	draw a nice download status-bar
 */
-int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloaded,
+static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloaded,
 				  double TotalToUpload, double NowUploaded){
 
 	(void)csdp;

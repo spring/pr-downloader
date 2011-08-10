@@ -65,9 +65,6 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	return true;
 }
 
-/*
-	parses the file for a mod and creates
-*/
 bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::FileData>& files){
 	char c_name[255];
 	unsigned char c_md5[16];
@@ -195,10 +192,6 @@ const std::string CFileSystem::getPoolFileName(const CFileSystem::FileData& fdat
 	return name;
 }
 
-/**
-	Validate all files in /pool/ (check md5)
-	@return count of valid files found
-*/
 int CFileSystem::validatePool(const std::string& path){
 	DIR* d;
 	d=opendir(path.c_str());
@@ -243,9 +236,7 @@ int CFileSystem::validatePool(const std::string& path){
 	closedir(d);
 	return res;
 }
-/**
-	returns true if file is older then secs
-*/
+
 bool CFileSystem::isOlder(const std::string& filename, int secs){
 	struct stat sb;
 	if (stat(filename.c_str(),&sb)<0){
