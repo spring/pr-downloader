@@ -84,10 +84,12 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 	while (!gzeof(in)){
 		int length = gzgetc(in);
 		if (length == -1) break;
-		if (!gzread(in, &c_name, length)) return false;
-		if (!gzread(in, &c_md5, 16)) return false;
-		if (!gzread(in, &c_crc32, 4)) return false;
-		if (!gzread(in, &c_size, 4)) return false;
+		if (!((gzread(in, &c_name, length)) &&
+			 (gzread(in, &c_md5, 16)) &&
+			 (gzread(in, &c_crc32, 4)) &&
+			 (gzread(in, &c_size, 4)))){
+			gzclose(in);
+		}
 
 		FileData f;
 		f.name = std::string(c_name, length);
@@ -97,6 +99,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 		f.compsize = 0;
 		files.push_back(f);
 	}
+	gzclose(in);
 	return true;
 }
 
