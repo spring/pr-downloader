@@ -6,6 +6,6 @@ public:
 	CWidgetDownloader(){};
 	~CWidgetDownloader(){};
 	bool download(IDownload& download);
-	std::list<IDownload>* search(const std::string& name, IDownload::category=IDownload::CAT_NONE);
+	bool search(std::list<IDownload>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
 
 };

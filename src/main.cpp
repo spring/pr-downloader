@@ -68,18 +68,18 @@ void show_help(const char* cmd){
 }
 
 bool download(const std::string& name, IDownload::category cat){
-	std::list<IDownload>* res;
+	std::list<IDownload> res;
 	if (cat==IDownload::CAT_MODS){
-		res=rapidDownload->search(optarg, cat);
-		if ((res!=NULL) && (!res->empty()) && (rapidDownload->download(*res)))
+		rapidDownload->search(res, optarg, cat);
+		if ((!res.empty()) && (rapidDownload->download(res)))
 			return true;
 	}
-	res=httpDownload->search(optarg, cat);
-	if ((res!=NULL) && (!res->empty()))
-		return httpDownload->download(*res);
-	res=plasmaDownload->search(optarg, cat);
-	if ((res!=NULL) && (!res->empty()))
-		return plasmaDownload->download(*res);
+	httpDownload->search(res, optarg, cat);
+	if ((!res.empty()))
+		return httpDownload->download(res);
+	plasmaDownload->search(res, optarg, cat);
+	if ((!res.empty()))
+		return plasmaDownload->download(res);
 	return false;
 }
 
@@ -95,13 +95,13 @@ int main(int argc, char **argv){
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
 		if (c == -1)
 			break;
-		std::list<IDownload>* list;
+		std::list<IDownload> list;
 		switch (c){
 		case RAPID_DOWNLOAD:{
-			list=rapidDownload->search(optarg);
-			if (list->size()==0){
+			rapidDownload->search(list, optarg);
+			if (list.empty()){
 				printf("Coulnd't find %s\n",optarg);
-			}else if (!rapidDownload->download(*list)){
+			}else if (!rapidDownload->download(list)){
 				printf("Error downloading %s\n",optarg);
 			}
 			break;
@@ -112,28 +112,27 @@ int main(int argc, char **argv){
 			break;
 		}
 		case RAPID_LIST:{
-			std::list<IDownload>* list=rapidDownload->search("");
+			rapidDownload->search(list);
 			std::list<IDownload>::iterator it;
-			for (it=list->begin();it!=list->end();++it){
+			for (it=list.begin();it!=list.end();++it){
 				printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
 			}
-			delete(list);
 			break;
 		}
 		case PLASMA_SEARCH:{
 			std::string tmp=optarg;
-			plasmaDownload->search(tmp);
+			plasmaDownload->search(list, tmp);
 			break;
 		}
 		case PLASMA_DOWNLOAD: {
-			list=plasmaDownload->search(optarg);
-			if (list!=NULL)
-				plasmaDownload->download(*list);
+			plasmaDownload->search(list, optarg);
+			if (!list.empty())
+				plasmaDownload->download(list);
 			break;
 		}
 		case WIDGET_SEARCH: {
 			std::string tmp=optarg;
-			widgetDownload->search(tmp);
+			widgetDownload->search(list, tmp);
 			break;
 		}
 		case FILESYSTEM_WRITEPATH: {
@@ -141,18 +140,18 @@ int main(int argc, char **argv){
 			break;
 		}
 		case HTTP_SEARCH:{
-			std::list<IDownload>* list=httpDownload->search(optarg);
-			if (list==NULL)
+			httpDownload->search(list, optarg);
+			if (list.empty())
 				break;
 			std::list<IDownload>::iterator it;
-			for (it=list->begin();it!=list->end();++it){
+			for (it=list.begin();it!=list.end();++it){
 				printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
 			}
 			break;
 		}
 		case HTTP_DOWNLOAD: {
-			list=httpDownload->search(optarg);
-			httpDownload->download(*list);
+			httpDownload->search(list, optarg);
+			httpDownload->download(list);
 			break;
 		}
 		case DOWNLOAD_MAP:{

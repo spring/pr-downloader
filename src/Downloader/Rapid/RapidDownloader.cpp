@@ -91,11 +91,9 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 /**
 	search for a mod, searches for the short + long name
 */
-std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownload::category cat){
+bool CRapidDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category cat){
 	DEBUG_LINE("%s",name.c_str());
 	reloadRepos();
-	std::list<IDownload>*tmp;
-	tmp=new std::list<IDownload>;
 
 	sdps.sort(list_compare);
 	std::list<CSdp*>::iterator it;
@@ -103,10 +101,10 @@ std::list<IDownload>* CRapidDownloader::search(const std::string& name, IDownloa
 		if (match_download_name((*it)->getShortName().c_str(),name)
 				|| (match_download_name((*it)->getName().c_str(),name))){
 			IDownload* dl=new IDownload((*it)->getShortName().c_str(),(*it)->getName().c_str());
-			tmp->push_back(*dl);
+			result.push_back(*dl);
 		}
 	}
-	return tmp;
+	return true;
 }
 /**
 	start a download

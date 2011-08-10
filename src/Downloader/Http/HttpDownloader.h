@@ -24,7 +24,7 @@ public:
 	unsigned int getCount();
 	const std::string& getCacheFile(const std::string &url);
 	void downloadStream(const std::string& url,std::list<CFileSystem::FileData*>& files);
-	virtual std::list<IDownload>* search(const std::string& name, IDownload::category=IDownload::CAT_NONE);
+	virtual bool search(std::list<IDownload>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
 	virtual bool download(IDownload& download);
 private:
 	CURL *curl;

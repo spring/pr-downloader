@@ -28,7 +28,7 @@ public:
 	void list_tag();
 	//remove a dsp from the list of remote dsps
 	void addRemoteDsp(CSdp* dsp);
-	virtual std::list<IDownload>* search(const std::string& name, IDownload::category=IDownload::CAT_NONE);
+	virtual bool search(std::list<IDownload>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
 	virtual bool download(IDownload& download);
 
 private:

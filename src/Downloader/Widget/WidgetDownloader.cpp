@@ -39,22 +39,21 @@ bool CWidgetDownloader::download(IDownload& download){
 
 */
 
-std::list<IDownload>* CWidgetDownloader::search(const std::string& name, IDownload::category cat){
+bool CWidgetDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category cat){
 	std::string path=fileSystem->getSpringDir();
 	path=path+PATH_DELIMITER + "rapid" + PATH_DELIMITER + "Widgets.xml";
 
 	if (!fileSystem->isOlder(path,WIDGET_RECHECK_TIME)){
-		std::list<IDownload> dllist;
-		dllist.clear();
+		result.clear();
 		IDownload dl("http://spring.vsync.de/luaManager/lua_manager.php?m=0", path);
-		dllist.push_back(dl);
-		httpDownload->download(dllist);
+		result.push_back(dl);
+		httpDownload->download(result);
 	}
 	CWidget* widget=new CWidget(path);
 //	std::list<IDownload>* widgets = new std::list<IDownload>* widgets;
 
 	delete(widget);
-	return NULL;
+	return true;
 }
 
 #endif

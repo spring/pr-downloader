@@ -106,10 +106,8 @@ void CHttpDownloader::setStatsPos(unsigned int pos) {
 	this->stats_filepos=pos;
 }
 
-std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload::category cat) {
+bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name, IDownload::category cat) {
 	DEBUG_LINE("%s", name.c_str()  );
-	std::list<IDownload>* res;
-	res=new std::list<IDownload>();
 
 	const std::string method("springfiles.search");
 	std::string category;
@@ -122,18 +120,18 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 
 
 	if (result.getType()!=XmlRpc::XmlRpcValue::TypeArray){
-		return res;
+		return false;
 	}
 
 	for(int i=0; i<result.size(); i++){
 		XmlRpc::XmlRpcValue resfile = result[i];
 
 		if (resfile.getType()!=XmlRpc::XmlRpcValue::TypeStruct){
-			return res;
+			return false;
 		}
 		if (resfile["category"].getType()!=XmlRpc::XmlRpcValue::TypeString){
 			printf("No category in result\n");
-			return res;
+			return false;
 		}
 		std::string filename=fileSystem->getSpringDir();
 		std::string category=resfile["category"];
@@ -148,7 +146,7 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
 			(resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)){
 			printf("Invalid type in result\n");
-			return res;
+			return false;
 		}
 		filename.append(resfile["filename"]);
 		IDownload* dl=NULL;
@@ -156,7 +154,7 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 		for(int j=0; j<mirrors.size(); j++){
 			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString){
 				printf("Invalid type in result\n");
-				return res;
+				return false;
 			}
 			if (dl==NULL){
 				dl=new IDownload(mirrors[j],filename);
@@ -164,9 +162,9 @@ std::list<IDownload>* CHttpDownloader::search(const std::string& name, IDownload
 			dl->addMirror(mirrors[j]);
 		}
 
-		res->push_back(*dl);
+		res.push_back(*dl);
 	}
-	return res;
+	return true;
 }
 
 std::string CHttpDownloader::escapeUrl(const std::string& url){

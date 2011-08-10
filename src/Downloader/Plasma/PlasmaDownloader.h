@@ -7,7 +7,7 @@
 class CPlasmaDownloader: public IDownloader {
 public:
 	CPlasmaDownloader();
-	virtual std::list<IDownload>* search(const std::string& name, IDownload::category cat=IDownload::CAT_NONE);
+	virtual bool search(std::list<IDownload>& result, const std::string& name, IDownload::category cat=IDownload::CAT_NONE);
 	virtual bool download(IDownload& download);
 
 private:
