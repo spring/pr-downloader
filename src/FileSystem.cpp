@@ -85,7 +85,9 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 			 (gzread(in, &c_md5, 16)) &&
 			 (gzread(in, &c_crc32, 4)) &&
 			 (gzread(in, &c_size, 4)))){
+			printf("Error reading %s\n", filename.c_str());
 			gzclose(in);
+			return false;
 		}
 
 		FileData f;
