@@ -1,5 +1,3 @@
-#include "md5.h"
-#include "FileSystem.h"
 #include <zlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -7,10 +5,10 @@
 #include <cstring>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include "Util.h"
 #include <dirent.h>
 #include <limits.h>
 #include <time.h>
+
 
 #ifdef WIN32
 #include <windows.h>
@@ -20,6 +18,11 @@
 #define SHGFP_TYPE_CURRENT 0
 #endif
 #endif
+
+#include "md5.h"
+#include "FileSystem.h"
+#include "Util.h"
+
 
 CFileSystem* CFileSystem::singleton = NULL;
 

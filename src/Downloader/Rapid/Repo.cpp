@@ -28,7 +28,8 @@ void CRepo::download(){
 		if (parse()) //first try already downloaded file, as repo master file rarely changes
 			return;
 	fileSystem->createSubdirs(tmpFile);
-	IDownload dl(repourl + "/versions.gz", tmpFile);
+	IDownload dl(tmpFile);
+	dl.addMirror(repourl + "/versions.gz");
 	httpDownload->download(dl);
 	parse();
 }

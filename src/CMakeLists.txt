@@ -8,6 +8,7 @@ set(myRapidFiles
 	md5.cpp
 	sha1.cpp
 	main.cpp
+	Download.cpp
 	Downloader/IDownloader.cpp
 )
 

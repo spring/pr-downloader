@@ -6,7 +6,7 @@
 #include "../../FileSystem.h"
 #include "../../Util.h"
 #include "bencode/bencode.h"
-
+#include "pr-downloader/Download.h"
 
 void CPlasmaDownloader::parseTorrent(char*data, int size){
 /*
@@ -84,7 +84,7 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 
 	IDownload dl;
 	for (it=fileResponse.links->string.begin();it!=fileResponse.links->string.end(); ++it){
-		dl=IDownload((*it).c_str(),fileName,cat);
+		dl=IDownload(fileName,cat);
 		dl.addMirror((*it).c_str());
 	}
 	for (it=fileResponse.dependencies->string.begin();it!=fileResponse.dependencies->string.end(); ++it){

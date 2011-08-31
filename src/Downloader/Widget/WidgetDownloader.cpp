@@ -45,7 +45,8 @@ bool CWidgetDownloader::search(std::list<IDownload>& result, const std::string& 
 
 	if (!fileSystem->isOlder(path,WIDGET_RECHECK_TIME)){
 		result.clear();
-		IDownload dl("http://spring.vsync.de/luaManager/lua_manager.php?m=0", path);
+		IDownload dl(path);
+		dl.addMirror("http://spring.vsync.de/luaManager/lua_manager.php?m=0");
 		result.push_back(dl);
 		httpDownload->download(result);
 	}

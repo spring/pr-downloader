@@ -23,7 +23,8 @@ bool CSdp::download(){
 	std::list<CFileSystem::FileData> files;
 
 	if (!fileSystem->parseSdp(filename,files)){ //file isn't avaiable, download it
-		IDownload dl(url + "/packages/" + md5 + ".sdp", filename);
+		IDownload dl(filename);
+		dl.addMirror(url + "/packages/" + md5 + ".sdp");
 		httpDownload->download(dl);
 		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}

@@ -13,8 +13,7 @@ IDownloader* IDownloader::plasmadl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
 IDownloader* IDownloader::widgetdl=NULL;
 
-IDownload::IDownload(const std::string& url, const std::string& name, category cat){
-	this->url=url;
+IDownload::IDownload(const std::string& name, category cat){
 	this->name=name;
 	this->cat=cat;
 	this->downloaded=false;

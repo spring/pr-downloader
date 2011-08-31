@@ -156,8 +156,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 				printf("Invalid type in result\n");
 				return false;
 			}
-			if (dl.url.size()<=0)
-				dl=IDownload(mirrors[j],filename);
+			dl=IDownload(filename);
 			dl.addMirror(mirrors[j]);
 		}
 
@@ -184,7 +183,7 @@ bool CHttpDownloader::download(IDownload& download) {
 	last_print = 0;
 	start_time = 0;
 	CURLcode res=CURLE_OK;
-	printf("Downloading %s to %s\n",download.url.c_str(), download.name.c_str());
+	printf("Downloading %s to %s\n",download.getUrl().c_str(), download.name.c_str());
 	//FIXME: use etag/timestamp as remote file could be modified
 	/*
 		if (fileSystem->fileExists(download.name)){
@@ -205,12 +204,12 @@ bool CHttpDownloader::download(IDownload& download) {
 	}
 	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-	curl_easy_setopt(curl, CURLOPT_URL, escapeUrl(download.url).c_str());
+	curl_easy_setopt(curl, CURLOPT_URL, escapeUrl(download.getUrl()).c_str());
 	res = curl_easy_perform(curl);
 	fclose(fp);
 	printf("\n"); //new line because of downloadbar
 	if (res!=0) {
-		printf("error downloading %s\n",download.url.c_str());
+		printf("error downloading %s\n",download.getUrl().c_str());
 		unlink(download.name.c_str());
 		return false;
 	}

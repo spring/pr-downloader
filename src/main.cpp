@@ -14,7 +14,7 @@
 #include "FileSystem.h"
 #include <unistd.h>
 #include <getopt.h>
-#include <Downloader/IDownloader.h>
+#include "Downloader/IDownloader.h"
 #include <stdio.h>
 #include <list>
 
@@ -115,7 +115,7 @@ int main(int argc, char **argv){
 			rapidDownload->search(list);
 			std::list<IDownload>::iterator it;
 			for (it=list.begin();it!=list.end();++it){
-				printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
+				printf("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
 			}
 			break;
 		}
@@ -145,7 +145,7 @@ int main(int argc, char **argv){
 				break;
 			std::list<IDownload>::iterator it;
 			for (it=list.begin();it!=list.end();++it){
-				printf("%s %s\n",(*it).url.c_str(), (*it).name.c_str());
+				printf("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
 			}
 			break;
 		}

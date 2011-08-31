@@ -41,10 +41,12 @@ find_package(CURL REQUIRED)
 find_package(ZLIB REQUIRED)
 include(FindPkgConfig)
 
-include_directories(${CURL_INCLUDE_DIR})
-include_directories(${ZLIB_INCLUDE_DIR})
-include_directories("src")
-include_directories(".")
+include_directories(SYSTEM ${CURL_INCLUDE_DIR})
+include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
+
+
+include_directories("${CMAKE_SOURCE_DIR}/include")
+include_directories("${CMAKE_SOURCE_DIR}/src")
 
 #----------------------------------------------------------------------------------------------------
 # libtorrent-rasterbar dependency check
