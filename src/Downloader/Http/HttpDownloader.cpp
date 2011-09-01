@@ -198,6 +198,11 @@ std::string CHttpDownloader::escapeUrl(const std::string& url)
 
 bool CHttpDownloader::download(IDownload& download)
 {
+//FIXME: enable that
+/*
+	if (download.mirror.size()>1)
+		parallelDownload(download);
+*/
 	DEBUG_LINE("%s",download.name.c_str());
 	last_print = 0;
 	start_time = 0;
@@ -232,5 +237,34 @@ bool CHttpDownloader::download(IDownload& download)
 		unlink(download.name.c_str());
 		return false;
 	}
+	return true;
+}
+
+bool CHttpDownloader::parallelDownload(IDownload& download){
+	CURLM* curlm=curl_multi_init();
+	const int count=download.mirror.size();
+	for(int i=0; i<count; i++){
+		CURL* curle = curl_easy_init();
+		curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, write_data);
+		curl_easy_setopt(curle, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
+		curl_easy_setopt(curle, CURLOPT_FAILONERROR, true);
+		curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 0L);
+		curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
+		curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
+		curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
+
+		curl_easy_setopt(curle, CURLOPT_RANGE, "0-999");
+//		curl_easy_setopt(curle, CURLOPT_RETURNTRANSFER, true);
+		curl_multi_add_handle(curlm, curle);
+	}
+	int running;
+	do{
+		/*TODO:
+			add new download when piece is finished
+			verify piece, when broken remove mirror from list
+			(remove mirror when it is slow and count of mirros > 1)
+		*/
+		curl_multi_perform(curlm, &running);
+	}while(running>0);
 	return true;
 }

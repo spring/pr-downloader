@@ -28,7 +28,8 @@ public:
 	virtual bool search(std::list<IDownload>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
 	virtual bool download(IDownload& download);
 private:
-	CURL *curl;
+	CURL* curl;
+	bool parallelDownload(IDownload& download);
 	unsigned int stats_count;
 	unsigned int stats_filepos;
 	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);

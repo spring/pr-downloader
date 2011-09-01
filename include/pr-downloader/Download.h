@@ -44,13 +44,20 @@ public:
 	*	size of pieces, last piece size can be different
 	*/
 	int piecesize;
-	struct sha1 {
+	enum PIECE_STATE{
+		STATE_NONE,
+		STATE_DOWNLOADING,
+		STATE_ERROR,
+		STATE_FINISHED
+	};
+	struct piece {
 		unsigned sha[5];
+		PIECE_STATE state;
 	};
 	/**
 	 *	sha1 sum of pieces
 	 */
-	std::list<struct sha1> pieces;
+	std::list<struct piece> pieces;
 	/**
 	 *	file size
 	 */
