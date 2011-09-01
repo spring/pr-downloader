@@ -35,8 +35,25 @@ public:
 	 *	returns the string name of a category
 	 */
 	const std::string& getCat(category cat);
+	/**
+	 *	returns first url
+	 */
 	const std::string& getUrl();
-
+	/**
+	*	size of pieces, last piece size can be different
+	*/
+	int piecesize;
+	struct sha1{
+		unsigned sha[5];
+	};
+	/**
+	 *	sha1 sum of pieces
+	 */
+	std::list<struct sha1> pieces;
+	/**
+	 *	file size
+	 */
+	int size;
 };
 
 #endif

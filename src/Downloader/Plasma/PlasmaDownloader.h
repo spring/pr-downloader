@@ -12,7 +12,20 @@ public:
 
 private:
 	std::string torrentPath;
-	void parseTorrent(char*data, int size);
+/**
+*
+*	parses the bencoded torrent data, strucutre is like this:
+*	dict {
+*		info => dict {
+*			length => int = 21713638
+*			name => str = ba750.sdz (len = 9)
+*			piece length => int = 262144
+*			pieces => str = <sha1 checksums>
+*		}
+*	}
+*
+*/
+	bool parseTorrent(char*data, int size, IDownload& dl);
 
 };
 
