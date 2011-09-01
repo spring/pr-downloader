@@ -5,65 +5,9 @@
 #include "PlasmaDownloader.h"
 #include "../../FileSystem.h"
 #include "../../Util.h"
-#include "bencode/bencode.h"
 #include "pr-downloader/Download.h"
 
-bool CPlasmaDownloader::parseTorrent(char*data, int size, IDownload& dl)
-{
-	struct be_node* node=be_decoden(data, size);
-#ifdef DEBUG
-	be_dump(node);
-#endif
-	if (node->type!=BE_DICT) {
-		printf("Error in torrent data\n");
-		return false;
-	}
-	int i;
-	struct be_node* infonode=NULL;
-	for (i = 0; node->val.d[i].val; ++i) { //search for a dict with name info
-		if ((node->type==BE_DICT) && (strcmp(node->val.d[i].key,"info")==0)) {
-			infonode=node->val.d[i].val;
-			break;
-		}
-	}
-	if (infonode==NULL) {
-		printf("couldn't find info node in be dict\n");
-		return false;
-	}
-	for (i = 0; infonode->val.d[i].val; ++i) { //fetch needed data from dict and fill into dl
-		struct be_node*datanode;
-		datanode=infonode->val.d[i].val;
-		switch(datanode->type) {
-		case BE_STR: //current value is a string
-			if (strcmp("name",infonode->val.d[i].key)==0) { //filename
-				dl.name=datanode->val.s;
-			} else if (!strcmp("pieces", infonode->val.d[i].key)) { //hash sum of a piece
-				const int count = strlen(datanode->val.s)/6;
-				for (int i=0; i<count; i++) {
-					struct IDownload::sha1 sha;
-					sha.sha[0]=datanode->val.s[i*5];
-					sha.sha[1]=datanode->val.s[i*5+1];
-					sha.sha[2]=datanode->val.s[i*5+2];
-					sha.sha[3]=datanode->val.s[i*5+3];
-					sha.sha[4]=datanode->val.s[i*5+4];
-					dl.pieces.push_back(sha);
-				}
-			}
-			break;
-		case BE_INT: //current value is a int
-			if (strcmp("length",infonode->val.d[i].key)==0) { //filesize
-				dl.size=datanode->val.i;
-			} else if (!strcmp("piece length",infonode->val.d[i].key)) { //length of a piece
-				dl.piecesize=datanode->val.i;
-			}
-			break;
-		default:
-			break;
-		}
-	}
-	DEBUG_LINE("Parsed torrent data: %s %d\n", dl.name.c_str(), dl.piecesize);
-	return true;
-}
+
 
 CPlasmaDownloader::CPlasmaDownloader()
 {
@@ -117,7 +61,7 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 	torrent.assign((char*)fileResponse.torrent->__ptr,fileResponse.torrent->__size);
 	IDownload dl;
 	//parse torrent data and fill set values inside dl
-	parseTorrent((char*)fileResponse.torrent->__ptr, fileResponse.torrent->__size, dl);
+	fileSystem->parseTorrent((char*)fileResponse.torrent->__ptr, fileResponse.torrent->__size, dl);
 
 	//set full path name
 	fileName.append(dl.name);

@@ -12,6 +12,7 @@
 
 class SRepository;
 class CRepo;
+struct IDownload;
 
 
 class CFileSystem
@@ -75,6 +76,20 @@ public:
 		check if a file is readable
 	*/
 	bool fileExists(const std::string& filename);
+	/**
+	*
+	*	parses the bencoded torrent data, strucutre is like this:
+	*	dict {
+	*		info => dict {
+	*			length => int = 21713638
+	*			name => str = ba750.sdz (len = 9)
+	*			piece length => int = 262144
+	*			pieces => str = <sha1 checksums>
+	*		}
+	*	}
+	*
+	*/
+	bool parseTorrent(const char* data, int size, IDownload& dl);
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;

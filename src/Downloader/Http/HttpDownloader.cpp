@@ -6,6 +6,7 @@
 #include <string.h>
 #include <zlib.h>
 #include <time.h>
+#include <iostream>
 
 #include "xmlrpc++/src/XmlRpc.h"
 
@@ -124,6 +125,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 	XmlRpc::XmlRpcClient client("springfiles.com", 80, "http://springfiles.com/xmlrpc.php");
 	XmlRpc::XmlRpcValue arg;
 	arg["springname"]=name;
+	arg["torrent"]=true;
 	XmlRpc::XmlRpcValue result;
 	client.execute(method.c_str(),arg, result);
 
@@ -158,17 +160,23 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			return false;
 		}
 		filename.append(resfile["filename"]);
-		IDownload dl;
+		IDownload dl=IDownload(filename);
 		XmlRpc::XmlRpcValue mirrors = resfile["mirrors"];
 		for(int j=0; j<mirrors.size(); j++) {
 			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString) {
 				printf("Invalid type in result\n");
 				return false;
 			}
-			dl=IDownload(filename);
+
 			dl.addMirror(mirrors[j]);
 		}
-
+		//torrent data avaiable
+		if (resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeString){
+			std::string base64=resfile["torrent"];
+			std::string binary;
+			base64_decode(base64, binary); //FIXME: this is a bug int the xml-rpc interface, it should return <base64> but returns <string>
+			fileSystem->parseTorrent(binary.c_str(),binary.size(),  dl);
+		}
 		res.push_back(dl);
 	}
 	return true;

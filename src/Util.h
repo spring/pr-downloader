@@ -71,3 +71,7 @@ bool urlToPath(const std::string& url, std::string& path);
 
 #endif
 
+/**
+ * base64 decode a string
+ */
+void base64_decode(const std::string& encoded_string, std::string& ret);

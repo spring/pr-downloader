@@ -8,6 +8,7 @@
 #include <dirent.h>
 #include <limits.h>
 #include <time.h>
+#include "Downloader/Plasma/bencode/bencode.h"
 
 
 #ifdef WIN32
@@ -22,6 +23,7 @@
 #include "md5.h"
 #include "FileSystem.h"
 #include "Util.h"
+#include "Downloader/IDownloader.h"
 
 
 CFileSystem* CFileSystem::singleton = NULL;
@@ -289,5 +291,63 @@ bool CFileSystem::fileExists(const std::string& filename)
 		return false;
 	}
 	fclose(fp);
+	return true;
+}
+
+bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
+{
+	struct be_node* node=be_decoden(data, size);
+#ifdef DEBUG
+	be_dump(node);
+#endif
+	if (node->type!=BE_DICT) {
+		printf("Error in torrent data\n");
+		be_free(node);
+		return false;
+	}
+	int i;
+	struct be_node* infonode=NULL;
+	for (i = 0; node->val.d[i].val; ++i) { //search for a dict with name info
+		if ((node->type==BE_DICT) && (strcmp(node->val.d[i].key,"info")==0)) {
+			infonode=node->val.d[i].val;
+			break;
+		}
+	}
+	if (infonode==NULL) {
+		printf("couldn't find info node in be dict\n");
+		be_free(node);
+		return false;
+	}
+	for (i = 0; infonode->val.d[i].val; ++i) { //fetch needed data from dict and fill into dl
+		struct be_node*datanode;
+		datanode=infonode->val.d[i].val;
+		switch(datanode->type) {
+		case BE_STR: //current value is a string
+			if (strcmp("name",infonode->val.d[i].key)==0) { //filename
+				dl.name=datanode->val.s;
+			} else if (!strcmp("pieces", infonode->val.d[i].key)) { //hash sum of a piece
+				const int count = strlen(datanode->val.s)/6;
+				for (int i=0; i<count; i++) {
+					struct IDownload::sha1 sha;
+					for(int j=0; j<5; j++){
+						sha.sha[j]=datanode->val.s[i*5+j];
+					}
+					dl.pieces.push_back(sha);
+				}
+			}
+			break;
+		case BE_INT: //current value is a int
+			if (strcmp("length",infonode->val.d[i].key)==0) { //filesize
+				dl.size=datanode->val.i;
+			} else if (!strcmp("piece length",infonode->val.d[i].key)) { //length of a piece
+				dl.piecesize=datanode->val.i;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	DEBUG_LINE("Parsed torrent data: %s %d\n", dl.name.c_str(), dl.piecesize);
+	be_free(node);
 	return true;
 }
