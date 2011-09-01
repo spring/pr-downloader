@@ -67,6 +67,11 @@ public:
 	 *	file size
 	 */
 	int size;
+	/**
+	 *	get next available range from a piece
+	 *	@return returns for example "1234-123456" and true, or false
+	*/
+	bool getRange(std::string& range);
 };
 
 #endif

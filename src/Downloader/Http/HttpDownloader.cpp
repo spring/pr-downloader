@@ -200,7 +200,7 @@ bool CHttpDownloader::download(IDownload& download)
 {
 //FIXME: enable that
 /*
-	if (download.mirror.size()>1)
+	if (download.getMirrorCount()>1)
 		parallelDownload(download);
 */
 	DEBUG_LINE("%s",download.name.c_str());
@@ -253,8 +253,12 @@ bool CHttpDownloader::parallelDownload(IDownload& download){
 		curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
 		curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
 		curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download.getMirror(i)).c_str());
-
-		curl_easy_setopt(curle, CURLOPT_RANGE, "0-999");
+		std::string range;
+		if (!download.getRange(range)){
+			printf("Error getting range for download");
+			return false;
+		}
+		curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
 //		curl_easy_setopt(curle, CURLOPT_RETURNTRANSFER, true);
 		curl_multi_add_handle(curlm, curle);
 	}
