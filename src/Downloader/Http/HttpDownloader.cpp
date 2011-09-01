@@ -252,6 +252,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download){
 		curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
 		curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
 		curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
+		curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download.getMirror(i)).c_str());
 
 		curl_easy_setopt(curle, CURLOPT_RANGE, "0-999");
 //		curl_easy_setopt(curle, CURLOPT_RETURNTRANSFER, true);

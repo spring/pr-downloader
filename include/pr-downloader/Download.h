@@ -41,6 +41,11 @@ public:
 	 */
 	const std::string& getUrl();
 	/**
+	 *
+	 */
+	const std::string& getMirror(const int i);
+	int getMirrorCount();
+	/**
 	*	size of pieces, last piece size can be different
 	*/
 	int piecesize;
