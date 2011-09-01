@@ -8,9 +8,10 @@
 
 #define LENGTH_SIZE 4
 
-class CSdp{
+class CSdp
+{
 public:
-	CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url){
+	CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url) {
 		this->shortname=shortname;
 		this->name=name;
 		this->md5=md5;
@@ -32,25 +33,25 @@ public:
 	/**
 		returns md5 of a repo
 	*/
-	const std::string& getMD5(){
+	const std::string& getMD5() {
 		return md5;
 	}
 	/**
 		returns the descriptional name
 	*/
-	const std::string& getName(){
+	const std::string& getName() {
 		return name;
 	}
 	/**
 		returns the shortname, for example ba:stable
 	*/
-	const std::string& getShortName(){
+	const std::string& getShortName() {
 		return shortname;
 	}
 	/**
 		returns the shortname, for example ba:stable
 	*/
-	const std::string& getDepends(){
+	const std::string& getDepends() {
 		return depends;
 	}
 

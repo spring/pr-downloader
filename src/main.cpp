@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <list>
 
-enum{
+enum {
 	RAPID_DOWNLOAD=0,
 	RAPID_VALIDATE,
 	RAPID_LIST,
@@ -49,12 +49,13 @@ static struct option long_options[] = {
 	{0                         , 0, 0, 0}
 };
 
-void show_help(const char* cmd){
+void show_help(const char* cmd)
+{
 	int i=0;
 	printf("Usage: %s ", cmd);
 	bool append=false;
-	while (long_options[i].name!=0){
-		if (append){
+	while (long_options[i].name!=0) {
+		if (append) {
 			printf("\n");
 		}
 		append=true;
@@ -67,9 +68,10 @@ void show_help(const char* cmd){
 	exit(1);
 }
 
-bool download(const std::string& name, IDownload::category cat){
+bool download(const std::string& name, IDownload::category cat)
+{
 	std::list<IDownload> res;
-	if (cat==IDownload::CAT_MODS){
+	if (cat==IDownload::CAT_MODS) {
 		rapidDownload->search(res, optarg, cat);
 		if ((!res.empty()) && (rapidDownload->download(res)))
 			return true;
@@ -83,43 +85,44 @@ bool download(const std::string& name, IDownload::category cat){
 	return false;
 }
 
-int main(int argc, char **argv){
+int main(int argc, char **argv)
+{
 	if (argc<2)
 		show_help(argv[0]);
 
 	CFileSystem::Initialize();
 	IDownloader::Initialize();
 
-	while (true){
+	while (true) {
 		int option_index = 0;
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
 		if (c == -1)
 			break;
 		std::list<IDownload> list;
-		switch (c){
-		case RAPID_DOWNLOAD:{
+		switch (c) {
+		case RAPID_DOWNLOAD: {
 			rapidDownload->search(list, optarg);
-			if (list.empty()){
+			if (list.empty()) {
 				printf("Coulnd't find %s\n",optarg);
-			}else if (!rapidDownload->download(list)){
+			} else if (!rapidDownload->download(list)) {
 				printf("Error downloading %s\n",optarg);
 			}
 			break;
 		}
-		case RAPID_VALIDATE:{
+		case RAPID_VALIDATE: {
 			int res=fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
 			printf("Validated %d files",res);
 			break;
 		}
-		case RAPID_LIST:{
+		case RAPID_LIST: {
 			rapidDownload->search(list);
 			std::list<IDownload>::iterator it;
-			for (it=list.begin();it!=list.end();++it){
+			for (it=list.begin(); it!=list.end(); ++it) {
 				printf("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
 			}
 			break;
 		}
-		case PLASMA_SEARCH:{
+		case PLASMA_SEARCH: {
 			std::string tmp=optarg;
 			plasmaDownload->search(list, tmp);
 			break;
@@ -139,12 +142,12 @@ int main(int argc, char **argv){
 			printf("%s\n",fileSystem->getSpringDir().c_str());
 			break;
 		}
-		case HTTP_SEARCH:{
+		case HTTP_SEARCH: {
 			httpDownload->search(list, optarg);
 			if (list.empty())
 				break;
 			std::list<IDownload>::iterator it;
-			for (it=list.begin();it!=list.end();++it){
+			for (it=list.begin(); it!=list.end(); ++it) {
 				printf("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
 			}
 			break;
@@ -154,14 +157,14 @@ int main(int argc, char **argv){
 			httpDownload->download(list);
 			break;
 		}
-		case DOWNLOAD_MAP:{
-			if (!download(optarg, IDownload::CAT_MAPS)){
+		case DOWNLOAD_MAP: {
+			if (!download(optarg, IDownload::CAT_MAPS)) {
 				printf("couldn't find %s\n",optarg);
 			}
 			break;
 		}
-		case DOWNLOAD_GAME:{
-			if (!download(optarg, IDownload::CAT_MODS)){
+		case DOWNLOAD_GAME: {
+			if (!download(optarg, IDownload::CAT_MODS)) {
 				printf("couldn't find %s\n",optarg);
 			}
 			break;

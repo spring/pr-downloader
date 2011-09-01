@@ -5,7 +5,8 @@
 #include "Widget.h"
 #include "../../FileSystem.h"
 
-bool CWidgetDownloader::download(IDownload& download){
+bool CWidgetDownloader::download(IDownload& download)
+{
 	return true;
 }
 
@@ -39,11 +40,12 @@ bool CWidgetDownloader::download(IDownload& download){
 
 */
 
-bool CWidgetDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category cat){
+bool CWidgetDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category cat)
+{
 	std::string path=fileSystem->getSpringDir();
 	path=path+PATH_DELIMITER + "rapid" + PATH_DELIMITER + "Widgets.xml";
 
-	if (!fileSystem->isOlder(path,WIDGET_RECHECK_TIME)){
+	if (!fileSystem->isOlder(path,WIDGET_RECHECK_TIME)) {
 		result.clear();
 		IDownload dl(path);
 		dl.addMirror("http://spring.vsync.de/luaManager/lua_manager.php?m=0");

@@ -9,7 +9,8 @@
 #define PR_DOWNLOADER_AGENT "pr-downloader/0.1"
 
 
-class IDownloader{
+class IDownloader
+{
 public:
 	static IDownloader* GetHttpInstance();
 	static IDownloader* GetRapidInstance();
@@ -26,7 +27,7 @@ public:
 		Shutdown all Downloaders
 	*/
 	static void Shutdown();
-	virtual ~IDownloader(){};
+	virtual ~IDownloader() {};
 
 	/**
 		download specificed download
@@ -37,13 +38,13 @@ public:
 		download all downloads in list
 		@return returns true, when all downloads were successfull
 	*/
-	bool download(std::list<IDownload>& download){
+	bool download(std::list<IDownload>& download) {
 		std::list<IDownload>::iterator it;
 		bool res=true;
-		for (it=download.begin();it!=download.end();++it){
+		for (it=download.begin(); it!=download.end(); ++it) {
 			if (!(*it).downloaded) //don't download twice
 				(*it).downloaded=this->download(*it);
-			if (!(*it).downloaded){
+			if (!(*it).downloaded) {
 				res=false;
 			}
 		}

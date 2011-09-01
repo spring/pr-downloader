@@ -14,7 +14,8 @@ class SRepository;
 class CRepo;
 
 
-class CFileSystem{
+class CFileSystem
+{
 	static CFileSystem* singleton;
 
 public:
@@ -23,7 +24,7 @@ public:
 	static void Shutdown();
 
 	//FIXME: maybe not portable?
-	struct FileData{
+	struct FileData {
 		std::string name;
 		unsigned char md5[16];
 		unsigned int crc32;

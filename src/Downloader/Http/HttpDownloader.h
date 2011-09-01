@@ -8,7 +8,8 @@
 #include "../IDownloader.h"
 
 
-class CHttpDownloader: public IDownloader{
+class CHttpDownloader: public IDownloader
+{
 
 public:
 	CHttpDownloader();

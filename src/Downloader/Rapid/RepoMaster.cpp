@@ -7,7 +7,8 @@
 #include <zlib.h>
 #include "../../Util.h"
 
-void CRepoMaster::download(const std::string& name){
+void CRepoMaster::download(const std::string& name)
+{
 	std::string tmp;
 	urlToPath(name,tmp);
 	this->path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
@@ -21,29 +22,31 @@ void CRepoMaster::download(const std::string& name){
 	parse();
 }
 
-CRepoMaster::CRepoMaster(const std::string& url, CRapidDownloader* rapid){
+CRepoMaster::CRepoMaster(const std::string& url, CRapidDownloader* rapid)
+{
 	DEBUG_LINE("Added master repo %s", url.c_str());
 	this->url=url;
 	this->rapid=rapid;
 }
 
-bool CRepoMaster::parse(){
+bool CRepoMaster::parse()
+{
 	gzFile fp=gzopen(path.c_str(), "r");
-	if (fp==Z_NULL){
+	if (fp==Z_NULL) {
 		printf("Could not open %s\n",path.c_str());
 		return false;
 	}
 	char buf[4096];
 	repos.empty();
 	int i=0;
-	while (gzgets(fp, buf, sizeof(buf))!=Z_NULL){
+	while (gzgets(fp, buf, sizeof(buf))!=Z_NULL) {
 		std::string tmp=buf;
 		std::string url=getStrByIdx(tmp,',',1);
 		i++;
-		if (url.size()>0){ //create new repo from url
+		if (url.size()>0) { //create new repo from url
 			CRepo repotmp=CRepo(url, rapid);
 			repos.push_back(repotmp);
-		}else{
+		} else {
 			printf("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
 			return false;
 		}
@@ -53,15 +56,17 @@ bool CRepoMaster::parse(){
 	return true;
 }
 
-void CRepoMaster::updateRepos(){
+void CRepoMaster::updateRepos()
+{
 	DEBUG_LINE("%s","Updating repos...");
 	download(url);
 	std::list<CRepo>::iterator it;
-	for (it = repos.begin();it != repos.end(); ++it) {
+	for (it = repos.begin(); it != repos.end(); ++it) {
 		(*it).download();
 	}
 }
 
-CRepoMaster::~CRepoMaster(){
+CRepoMaster::~CRepoMaster()
+{
 
 }

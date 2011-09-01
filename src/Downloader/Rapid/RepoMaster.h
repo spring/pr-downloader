@@ -9,7 +9,8 @@
 class CRepo;
 class CRapidDownloader;
 
-class CRepoMaster{
+class CRepoMaster
+{
 	CRapidDownloader* rapid;
 public:
 	CRepoMaster(const std::string& masterurl, CRapidDownloader* rapid);

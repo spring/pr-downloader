@@ -8,12 +8,13 @@
 #include <stdio.h>
 #include <curl/curl.h>
 
-bool CSdp::download(){
+bool CSdp::download()
+{
 	if (downloaded) //allow download only once of the same sdp
 		return true;
 	filename=fileSystem->getSpringDir() + PATH_DELIMITER+"packages"+PATH_DELIMITER;
 	DEBUG_LINE("%s\n",filename.c_str());
-	if (!fileSystem->directoryExists(filename)){
+	if (!fileSystem->directoryExists(filename)) {
 		fileSystem->createSubdirs(filename);
 	}
 	int count=0;
@@ -22,7 +23,7 @@ bool CSdp::download(){
 	md5AtoI(md5,tmp.md5);
 	std::list<CFileSystem::FileData> files;
 
-	if (!fileSystem->parseSdp(filename,files)){ //file isn't avaiable, download it
+	if (!fileSystem->parseSdp(filename,files)) { //file isn't avaiable, download it
 		IDownload dl(filename);
 		dl.addMirror(url + "/packages/" + md5 + ".sdp");
 		httpDownload->download(dl);
@@ -35,7 +36,7 @@ bool CSdp::download(){
 	*/
 	int i=0;
 	it=files.begin();
-	while (it!=files.end()){
+	while (it!=files.end()) {
 		i++;
 		std::string tmpmd5="";
 		md5ItoA((*it).md5, tmpmd5);
@@ -48,13 +49,13 @@ bool CSdp::download(){
 
 		std::string file=fileSystem->getSpringDir() + path + filename; //absolute filename
 
-		if (!fileSystem->directoryExists(fileSystem->getSpringDir()+path)){
+		if (!fileSystem->directoryExists(fileSystem->getSpringDir()+path)) {
 			fileSystem->createSubdirs(fileSystem->getSpringDir()+path);
 		}
-		if (!fileSystem->fileIsValid(*it,file)){ //add invalid files to download list
+		if (!fileSystem->fileIsValid(*it,file)) { //add invalid files to download list
 			count++;
 			(*it).download=true;
-		}else{
+		} else {
 			(*it).download=false;
 		}
 		if (i%10==0)
@@ -62,12 +63,12 @@ bool CSdp::download(){
 		it++;
 	}
 	printf("\r%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
-	if (count>0){
+	if (count>0) {
 //FIXME	httpDownload->setCount(count);
 		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		files.clear();
 		printf("Sucessfully downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
-	}else{
+	} else {
 		printf("Already downloaded: %s\n", shortname.c_str());
 		downloaded=true;
 	}
@@ -80,10 +81,11 @@ bool CSdp::download(){
 	the filename is read from the sdp-list (created at request start)
 	filesize is read from the http-data received (could overlap!)
 */
-static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSdp *sdp) {
+static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSdp *sdp)
+{
 	char buf[CURL_MAX_WRITE_SIZE];
 	memcpy(&buf,tmp,CURL_MAX_WRITE_SIZE);
-	if (!sdp->downlooadInitialized){
+	if (!sdp->downlooadInitialized) {
 		sdp->list_it=sdp->globalFiles->begin();
 		sdp->downlooadInitialized=true;
 		sdp->file_handle=NULL;
@@ -94,61 +96,61 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 	const char* buf_end=buf_start + size*nmemb;
 	char* buf_pos=buf_start;
 
-	while (buf_pos<buf_end){ //all bytes written?
-		if (sdp->file_handle==NULL){ //no open file, create one
-			while ( (!(*sdp->list_it).download==true) && (sdp->list_it!=sdp->globalFiles->end())){ //get file
+	while (buf_pos<buf_end) { //all bytes written?
+		if (sdp->file_handle==NULL) { //no open file, create one
+			while ( (!(*sdp->list_it).download==true) && (sdp->list_it!=sdp->globalFiles->end())) { //get file
 				sdp->list_it++;
 			}
 			sdp->file_name=fileSystem->getPoolFileName(*sdp->list_it);
 			sdp->file_handle=fopen(sdp->file_name.c_str(),"wb");
 //FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);
-			if (sdp->file_handle==NULL){
+			if (sdp->file_handle==NULL) {
 				printf("couldn't open %s\n",(*sdp->list_it).name.c_str());
 				return -1;
 			}
 			//here comes the init new file stuff
 			sdp->file_pos=0;
 		}
-		if (sdp->file_handle!=NULL){
-			if ((sdp->skipped>0)&&(sdp->skipped<4)){
+		if (sdp->file_handle!=NULL) {
+			if ((sdp->skipped>0)&&(sdp->skipped<4)) {
 //				printf("difficulty %d\n",skipped);
 			}
-			if (sdp->skipped<4){ // check if we skipped all 4 bytes, if not so, skip them
+			if (sdp->skipped<4) { // check if we skipped all 4 bytes, if not so, skip them
 				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
-				for (int i=0;i<toskip;i++) //copy bufs avaiable
+				for (int i=0; i<toskip; i++) //copy bufs avaiable
 					sdp->cursize_buf[i]=buf_pos[i];
 //				printf("toskip: %d skipped: %d\n",toskip,skipped);
 				sdp->skipped=toskip+sdp->skipped;
 				buf_pos=buf_pos+sdp->skipped;
-				if (sdp->skipped==LENGTH_SIZE){
+				if (sdp->skipped==LENGTH_SIZE) {
 					(*sdp->list_it).compsize=parse_int32(sdp->cursize_buf);
 				}
 			}
-			if (sdp->skipped==LENGTH_SIZE){
+			if (sdp->skipped==LENGTH_SIZE) {
 				int towrite=intmin ((*sdp->list_it).compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
-									buf_end-buf_pos);
+						    buf_end-buf_pos);
 //				printf("%s %d %ld %ld %ld %d %d %d %d %d\n",file_name.c_str(), (*list_it)->compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , skipped, file_pos);
 				int res=0;
-				if (towrite>0){
+				if (towrite>0) {
 					res=fwrite(buf_pos,1,towrite,sdp->file_handle);
-					if (res!=towrite){
+					if (res!=towrite) {
 						printf("fwrite error\n");
 						return -1;
 					}
-					if (res<=0){
+					if (res<=0) {
 						printf("\nwrote error: %d\n", res);
 						return -1;
 					}
-				}else if (towrite<0){
+				} else if (towrite<0) {
 					DEBUG_LINE("%s","Fatal, something went wrong here!");
 					return -1;
 				}
 
 				buf_pos=buf_pos+res;
 				sdp->file_pos+=res;
-				if (sdp->file_pos>=(*sdp->list_it).compsize){ //file finished -> next file
+				if (sdp->file_pos>=(*sdp->list_it).compsize) { //file finished -> next file
 					fclose(sdp->file_handle);
-					if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())){
+					if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())) {
 						printf("File is broken?!: %s\n",sdp->file_name.c_str());
 						return -1;
 					}
@@ -168,7 +170,8 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 	draw a nice download status-bar
 */
 static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloaded,
-				  double TotalToUpload, double NowUploaded){
+			 double TotalToUpload, double NowUploaded)
+{
 
 	(void)csdp;
 	(void)TotalToUpload;
@@ -188,11 +191,11 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	printf("%3.0f%% [",fractiondownloaded*100);
 	int ii=0;
 	// part  that's full already
-	for ( ; ii < dotz;ii++) {
+	for ( ; ii < dotz; ii++) {
 		printf("=");
 	}
 	// remaining part (spaces)
-	for ( ; ii < totaldotz;ii++) {
+	for ( ; ii < totaldotz; ii++) {
 		printf(" ");
 	}
 	// and back to line begin - do not forget the fflush to avoid output buffering problems!
@@ -201,7 +204,8 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	return 0;
 }
 
-bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& files){
+bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& files)
+{
 	CURL* curl;
 	curl = curl_easy_init();
 	if (curl) {
@@ -219,7 +223,7 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 		int destlen=files.size()*2;
 		printf("%d %d %d\n",(int)files.size(),buflen,destlen);
 		int i=0;
-		for (it=files.begin();it!=files.end();++it){
+		for (it=files.begin(); it!=files.end(); ++it) {
 			if ((*it).download==true)
 				buf[i/8] = buf[i/8] + (1<<(i%8));
 			i++;
@@ -230,7 +234,7 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_streamed_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
-	        curl_easy_setopt(curl, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
+		curl_easy_setopt(curl, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
 
 		globalFiles=&files;
 		curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
@@ -244,7 +248,7 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 		free(dest);
 		/* always cleanup */
 		curl_easy_cleanup(curl);
-		if (res!=CURLE_OK){
+		if (res!=CURLE_OK) {
 			printf("%s\n",curl_easy_strerror(res));
 			return false;
 		}

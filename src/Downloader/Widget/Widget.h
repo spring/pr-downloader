@@ -1,6 +1,7 @@
 #include <string>
 
-class CWidget{
+class CWidget
+{
 public:
 	CWidget(const std::string& filename);
 private:

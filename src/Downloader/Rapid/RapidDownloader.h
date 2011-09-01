@@ -17,7 +17,8 @@ class CSdp;
 class CHttpDownload;
 class CFileSystem;
 
-class CRapidDownloader: public IDownloader{
+class CRapidDownloader: public IDownloader
+{
 public:
 	CRapidDownloader(const std::string& masterurl=REPO_MASTER);
 	~CRapidDownloader();

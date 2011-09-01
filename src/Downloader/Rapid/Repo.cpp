@@ -9,16 +9,19 @@
 #include <stdio.h>
 
 
-CRepo::CRepo(const std::string& repourl, CRapidDownloader* rapid){
+CRepo::CRepo(const std::string& repourl, CRapidDownloader* rapid)
+{
 	this->repourl=repourl;
 	this->rapid=rapid;
 }
 
-CRepo::~CRepo(){
+CRepo::~CRepo()
+{
 
 }
 
-void CRepo::download(){
+void CRepo::download()
+{
 	std::string tmp;
 	urlToPath(repourl,tmp);
 	DEBUG_LINE("%s",tmp.c_str());
@@ -34,18 +37,19 @@ void CRepo::download(){
 	parse();
 }
 
-bool CRepo::parse(){
+bool CRepo::parse()
+{
 	DEBUG_LINE("%s",tmpFile.c_str());
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
-	if (fp==Z_NULL){
+	if (fp==Z_NULL) {
 		printf("Could not open %s\n",tmpFile.c_str());
 		return false;
 	}
 	char buf[1024];
 	sdps.empty();
-	while ((gzgets(fp, buf, sizeof(buf)))!=Z_NULL){
-		for (unsigned int i=0;i<sizeof(buf);i++){
-			if (buf[i]=='\n'){
+	while ((gzgets(fp, buf, sizeof(buf)))!=Z_NULL) {
+		for (unsigned int i=0; i<sizeof(buf); i++) {
+			if (buf[i]=='\n') {
 				buf[i]=0;
 				break;
 			}
@@ -56,7 +60,7 @@ bool CRepo::parse(){
 		std::string md5=getStrByIdx(tmp,',',1);
 		std::string depends=getStrByIdx(tmp,',',2);
 		std::string name=getStrByIdx(tmp,',',3);
-		if (shortname.size()>0){ //create new repo from url
+		if (shortname.size()>0) { //create new repo from url
 			CSdp sdptmp=CSdp(shortname, md5, name, depends, repourl);
 			rapid->addRemoteDsp(sdptmp);
 		}

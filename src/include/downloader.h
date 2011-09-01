@@ -1,8 +1,8 @@
 /*
-	header for pr-downloader	
+	header for pr-downloader
 */
 
-enum category{
+enum category {
 	CAT_NONE=0,
 	CAT_MAP,
 	CAT_GAME,

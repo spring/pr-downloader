@@ -12,10 +12,11 @@ http://mirror/pool/<first 2 hex of md5>/<rest of md5>.gz
 /home/path/.spring/pool/...
 */
 
-std::string getUrl(const CFileSystem::FileData* info, const std::string& path){
+std::string getUrl(const CFileSystem::FileData* info, const std::string& path)
+{
 	int i;
 	char md5[32];
-	for (i = 0; i < 16; i++){
+	for (i = 0; i < 16; i++) {
 		sprintf(md5+i*2, "%02x", info->md5[i]);
 	}
 	std::string tmp=path;
@@ -28,7 +29,8 @@ std::string getUrl(const CFileSystem::FileData* info, const std::string& path){
 	return tmp;
 }
 
-int hex_digit(int c){
+int hex_digit(int c)
+{
 	if (c >= '0' && c <= '9')
 		return c - '0';
 	if (c >= 'a' && c <= 'f')
@@ -37,7 +39,8 @@ int hex_digit(int c){
 }
 
 
-bool md5AtoI(const std::string& md5, unsigned char* dest){
+bool md5AtoI(const std::string& md5, unsigned char* dest)
+{
 	const char* p=md5.data();
 	int i;
 	int d1;
@@ -52,10 +55,11 @@ bool md5AtoI(const std::string& md5, unsigned char* dest){
 	return true;
 }
 
-bool md5ItoA(const unsigned char* source, std::string& md5){
+bool md5ItoA(const unsigned char* source, std::string& md5)
+{
 	int i;
 	char buf[33];
-	for (i = 0; i < 16; i++){
+	for (i = 0; i < 16; i++) {
 		sprintf(buf+i*2, "%02x", source[i]);
 	}
 	md5.assign(buf);
@@ -63,11 +67,12 @@ bool md5ItoA(const unsigned char* source, std::string& md5){
 }
 
 
-std::string getStrByIdx(std::string& str, char c, int idx){
+std::string getStrByIdx(std::string& str, char c, int idx)
+{
 	unsigned int i=0;
 	std::string tmp;
-	if (idx==0){
-		for (i=0;i<str.size();i++){
+	if (idx==0) {
+		for (i=0; i<str.size(); i++) {
 			if (str[i]==c)
 				break;
 		}
@@ -77,13 +82,13 @@ std::string getStrByIdx(std::string& str, char c, int idx){
 	int start=0;
 	int end=0;
 	int count=0;
-	for (i=0;i<str.length();i++){
-		if (str[i]==c){
+	for (i=0; i<str.length(); i++) {
+		if (str[i]==c) {
 			count++;
-			if (count>=idx){
+			if (count>=idx) {
 				if (start==0)
 					start=i+1;
-				else{
+				else {
 					end=i;
 					break;
 				}
@@ -94,7 +99,8 @@ std::string getStrByIdx(std::string& str, char c, int idx){
 	return tmp;
 }
 
-void gzip_str(const char* in, const int inlen,  char* out, int *outlen){
+void gzip_str(const char* in, const int inlen,  char* out, int *outlen)
+{
 	z_stream zlibStreamStruct;
 	zlibStreamStruct.zalloc    = Z_NULL; // Set zalloc, zfree, and opaque to Z_NULL so
 	zlibStreamStruct.zfree     = Z_NULL; // that when we call deflateInit2 they will be
@@ -114,7 +120,8 @@ void gzip_str(const char* in, const int inlen,  char* out, int *outlen){
 	*outlen=zlibStreamStruct.total_out;
 }
 
-unsigned int parse_int32(unsigned char c[4]){
+unsigned int parse_int32(unsigned char c[4])
+{
 	unsigned int i = 0;
 	i = c[0] << 24 | i;
 	i = c[1] << 16 | i;
@@ -123,36 +130,40 @@ unsigned int parse_int32(unsigned char c[4]){
 	return i;
 }
 
-unsigned int intmin(int x, int y){
+unsigned int intmin(int x, int y)
+{
 	if (x<y)
 		return x;
 	return y;
 }
 
-bool match_download_name(const std::string &str1,const std::string& str2){
+bool match_download_name(const std::string &str1,const std::string& str2)
+{
 	if (str2=="") return true;
 	if (str2=="*") return true;
 	if (str1==str2) return true;
 	return false;
 }
 
-void urlEncode(std::string& url){
-	for (int i=url.length()-1;i>=0;i--){
-		if (url.at(i)==' '){
+void urlEncode(std::string& url)
+{
+	for (int i=url.length()-1; i>=0; i--) {
+		if (url.at(i)==' ') {
 			url.replace(i,1,"%20");
 		}
 	}
 }
 
-bool urlToPath(const std::string& url, std::string& path){
+bool urlToPath(const std::string& url, std::string& path)
+{
 	size_t pos=url.find("//");
-	if (pos==std::string::npos){ //not found
+	if (pos==std::string::npos) { //not found
 		printf("urlToPath failed: %s\n",path.c_str());
 		return false;
 	}
 	path=url.substr(pos+2);
 	pos=path.find("/",pos+1);
-	while (pos!=std::string::npos){ //replace / with "\\"
+	while (pos!=std::string::npos) { //replace / with "\\"
 		path.replace(pos,1,1, PATH_DELIMITER);
 		pos=path.find("/",pos+1);
 	}

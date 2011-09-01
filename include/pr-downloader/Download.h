@@ -4,9 +4,10 @@
 #include <string>
 #include <list>
 
-class IDownload{
+class IDownload
+{
 public:
-	enum category{
+	enum category {
 		CAT_NONE=0,
 		CAT_MAPS,
 		CAT_MODS,
@@ -18,7 +19,7 @@ public:
 		CAT_REPLAYS,
 		CAT_SPRINGINSTALLERS,
 		CAT_TOOLS
-	}cat;
+	} cat;
 
 	IDownload(const std::string& filename="", category cat=CAT_NONE);
 	/**
@@ -43,7 +44,7 @@ public:
 	*	size of pieces, last piece size can be different
 	*/
 	int piecesize;
-	struct sha1{
+	struct sha1 {
 		unsigned sha[5];
 	};
 	/**

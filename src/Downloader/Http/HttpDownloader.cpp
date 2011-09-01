@@ -19,13 +19,14 @@ time_t start_time;
 	draw a nice download status-bar
 */
 int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownloaded,
-				  double TotalToUpload, double NowUploaded) {
+		  double TotalToUpload, double NowUploaded)
+{
 	time_t now=time(NULL);
 	if (start_time==0)
 		start_time=now;
-	if (now!=last_print){ //check if 1 second is gone afters last update
+	if (now!=last_print) { //check if 1 second is gone afters last update
 		last_print=now;
-	}else{
+	} else {
 		if(TotalToDownload!=NowDownloaded) //print 100%
 			return 0;
 	}
@@ -44,20 +45,20 @@ int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownlo
 	printf("%3.0f%% [",fractiondownloaded*100);
 	int ii=0;
 	// part  that's full already
-	for ( ; ii < dotz;ii++) {
+	for ( ; ii < dotz; ii++) {
 		printf("=");
 	}
 	// remaining part (spaces)
-	for ( ; ii < totaldotz;ii++) {
+	for ( ; ii < totaldotz; ii++) {
 		printf(" ");
 	}
 	// and back to line begin - do not forget the fflush to avoid output buffering problems!
 	printf("] %d/%d ",(int)NowDownloaded,(int)TotalToDownload );
 
 	long int diff=now-start_time;
-	if (diff>0){
+	if (diff>0) {
 		printf("%d KB/sec",(int)((NowDownloaded/diff)/1000));
-	}else{
+	} else {
 		printf("0");
 	}
 	printf("\r");
@@ -66,12 +67,14 @@ int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownlo
 }
 
 
-size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
+size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
+{
 	int written = fwrite(ptr, size, nmemb, stream);
 	return written;
 }
 
-CHttpDownloader::CHttpDownloader() {
+CHttpDownloader::CHttpDownloader()
+{
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl = curl_easy_init();
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
@@ -85,51 +88,57 @@ CHttpDownloader::CHttpDownloader() {
 	stats_count=1;
 }
 
-CHttpDownloader::~CHttpDownloader() {
+CHttpDownloader::~CHttpDownloader()
+{
 	curl_easy_cleanup(curl);
 	curl=NULL;
 }
 
-void CHttpDownloader::setCount(unsigned int count) {
+void CHttpDownloader::setCount(unsigned int count)
+{
 	this->stats_count=count;
 }
 
-unsigned int CHttpDownloader::getCount() {
+unsigned int CHttpDownloader::getCount()
+{
 	return this->stats_count;
 }
 
-unsigned int CHttpDownloader::getStatsPos() {
+unsigned int CHttpDownloader::getStatsPos()
+{
 	return this->stats_filepos;
 }
 
-void CHttpDownloader::setStatsPos(unsigned int pos) {
+void CHttpDownloader::setStatsPos(unsigned int pos)
+{
 	this->stats_filepos=pos;
 }
 
-bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name, IDownload::category cat) {
+bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name, IDownload::category cat)
+{
 	DEBUG_LINE("%s", name.c_str()  );
 
 	const std::string method("springfiles.search");
 	std::string category;
 
- 	XmlRpc::XmlRpcClient client("springfiles.com", 80, "http://springfiles.com/xmlrpc.php");
+	XmlRpc::XmlRpcClient client("springfiles.com", 80, "http://springfiles.com/xmlrpc.php");
 	XmlRpc::XmlRpcValue arg;
 	arg["springname"]=name;
 	XmlRpc::XmlRpcValue result;
 	client.execute(method.c_str(),arg, result);
 
 
-	if (result.getType()!=XmlRpc::XmlRpcValue::TypeArray){
+	if (result.getType()!=XmlRpc::XmlRpcValue::TypeArray) {
 		return false;
 	}
 
-	for(int i=0; i<result.size(); i++){
+	for(int i=0; i<result.size(); i++) {
 		XmlRpc::XmlRpcValue resfile = result[i];
 
-		if (resfile.getType()!=XmlRpc::XmlRpcValue::TypeStruct){
+		if (resfile.getType()!=XmlRpc::XmlRpcValue::TypeStruct) {
 			return false;
 		}
-		if (resfile["category"].getType()!=XmlRpc::XmlRpcValue::TypeString){
+		if (resfile["category"].getType()!=XmlRpc::XmlRpcValue::TypeString) {
 			printf("No category in result\n");
 			return false;
 		}
@@ -144,15 +153,15 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			DEBUG_LINE("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
-			(resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)){
+		    (resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
 			printf("Invalid type in result\n");
 			return false;
 		}
 		filename.append(resfile["filename"]);
 		IDownload dl;
 		XmlRpc::XmlRpcValue mirrors = resfile["mirrors"];
-		for(int j=0; j<mirrors.size(); j++){
-			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString){
+		for(int j=0; j<mirrors.size(); j++) {
+			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString) {
 				printf("Invalid type in result\n");
 				return false;
 			}
@@ -165,10 +174,11 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 	return true;
 }
 
-std::string CHttpDownloader::escapeUrl(const std::string& url){
+std::string CHttpDownloader::escapeUrl(const std::string& url)
+{
 	std::string res;
 
-	for(unsigned int i=0; i<url.size(); i++){
+	for(unsigned int i=0; i<url.size(); i++) {
 		if (url[i]==' ')
 			res.append("%20");
 		else
@@ -178,7 +188,8 @@ std::string CHttpDownloader::escapeUrl(const std::string& url){
 }
 
 
-bool CHttpDownloader::download(IDownload& download) {
+bool CHttpDownloader::download(IDownload& download)
+{
 	DEBUG_LINE("%s",download.name.c_str());
 	last_print = 0;
 	start_time = 0;

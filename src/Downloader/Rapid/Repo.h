@@ -6,7 +6,8 @@
 class CSdp;
 class CRapidDownloader;
 
-class CRepo{
+class CRepo
+{
 	std::string repourl;
 	CRapidDownloader* rapid;
 public:
