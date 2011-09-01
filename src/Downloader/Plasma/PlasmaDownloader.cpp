@@ -19,7 +19,7 @@ bool CPlasmaDownloader::parseTorrent(char*data, int size, IDownload& dl){
 	}
 	int i;
 	struct be_node* infonode=NULL;
-	for (i = 0; node->val.d[i].val; ++i) {
+	for (i = 0; node->val.d[i].val; ++i) { //search for a dict with name info
 		if ((node->type==BE_DICT) && (strcmp(node->val.d[i].key,"info")==0)){
 			infonode=node->val.d[i].val;
 			break;
@@ -29,11 +29,11 @@ bool CPlasmaDownloader::parseTorrent(char*data, int size, IDownload& dl){
 		printf("couldn't find info node in be dict\n");
 		return false;
 	}
-	for (i = 0; infonode->val.d[i].val; ++i) {
+	for (i = 0; infonode->val.d[i].val; ++i) { //fetch needed data from dict and fill into dl
 		struct be_node*datanode;
 		datanode=infonode->val.d[i].val;
 		switch(datanode->type){
-			case BE_STR:
+			case BE_STR: //current value is a string
 				if (strcmp("name",infonode->val.d[i].key)==0){ //filename
 					dl.name=datanode->val.s;
 				}else if (!strcmp("pieces", infonode->val.d[i].key)){ //hash sum of a piece
@@ -49,7 +49,7 @@ bool CPlasmaDownloader::parseTorrent(char*data, int size, IDownload& dl){
 					}
 				}
 				break;
-			case BE_INT:
+			case BE_INT: //current value is a int
 				if (strcmp("length",infonode->val.d[i].key)==0){ //filesize
 					dl.size=datanode->val.i;
 				}else if (!strcmp("piece length",infonode->val.d[i].key)){ //length of a piece
@@ -113,13 +113,16 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 	std::string torrent;
 	torrent.assign((char*)fileResponse.torrent->__ptr,fileResponse.torrent->__size);
 	IDownload dl;
+	//parse torrent data and fill set values inside dl
 	parseTorrent((char*)fileResponse.torrent->__ptr, fileResponse.torrent->__size, dl);
+
+	//set full path name
 	fileName.append(dl.name);
 	dl.name=fileName;
+	dl.cat=cat;
 	DEBUG_LINE("Got filename \"%s\" from torrent\n",fileName.c_str());
 
 	for (it=fileResponse.links->string.begin();it!=fileResponse.links->string.end(); ++it){
-		dl=IDownload(fileName,cat);
 		dl.addMirror((*it).c_str());
 	}
 	for (it=fileResponse.dependencies->string.begin();it!=fileResponse.dependencies->string.end(); ++it){

@@ -13,13 +13,6 @@ IDownloader* IDownloader::plasmadl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
 IDownloader* IDownloader::widgetdl=NULL;
 
-IDownload::IDownload(const std::string& name, category cat){
-	this->name=name;
-	this->cat=cat;
-	this->downloaded=false;
-}
-
-
 bool IDownload::addMirror(const std::string& url){
 	DEBUG_LINE("%s",url.c_str());
 	this->mirror.push_back(url);
