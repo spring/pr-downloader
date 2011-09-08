@@ -63,6 +63,8 @@ public:
 	 *	sha1 sum of pieces
 	 */
 	std::list<struct piece> pieces;
+	unsigned char md5[16];
+
 	/**
 	 *	file size
 	 */

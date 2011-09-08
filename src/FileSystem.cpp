@@ -70,6 +70,39 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	}
 	return true;
 }
+bool CFileSystem::validateFile(IDownload& dl){
+	if (dl.name.empty())
+		return false;
+	struct stat sb;
+	if (stat(dl.name.c_str(),&sb)<0) {
+		return false;
+	}
+
+
+	FILE* inFile = fopen(dl.name.c_str(), "rb");
+	if (inFile == NULL) { //file can't be opened
+		return false;
+	}
+	MD5_CTX mdContext;
+	MD5Init (&mdContext);
+	unsigned long filesize=0;
+	int bytes;
+	unsigned char data[1024];
+	while ((bytes = fread (data, sizeof(data), 1,inFile)) > 0) {
+		MD5Update (&mdContext, data, bytes);
+		filesize=filesize+bytes;
+	}
+	MD5Final (&mdContext);
+	fclose (inFile);
+	for (int i=0; i<16; i++) {
+		if (mdContext.digest[i]!=dl.md5[i]) { //file is invalid
+			printf("md5 invalid!\n");
+			return false;
+		}
+	}
+	//TODO check sha1 sums
+	return true;
+}
 
 bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::FileData>& files)
 {

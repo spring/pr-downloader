@@ -9,6 +9,8 @@ IDownload::IDownload(const std::string& name, category cat)
 	this->name=name;
 	this->cat=cat;
 	this->downloaded=false;
+	for(int i=0; i<sizeof(md5);i++)
+		md5[i]=0;
 }
 
 const std::string& IDownload::getCat(category cat)
