@@ -356,9 +356,10 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 		datanode=infonode->val.d[i].val;
 		switch(datanode->type) {
 		case BE_STR: //current value is a string
-			if (strcmp("name",infonode->val.d[i].key)==0) { //filename
-				dl.name=datanode->val.s;
-			} else if (!strcmp("pieces", infonode->val.d[i].key)) { //hash sum of a piece
+//			if ((strcmp("name",infonode->val.d[i].key)==0) && (dl.name.empty())) { //set filename if not already set
+//					dl.name=datanode->val.s;
+//			} else
+			if (!strcmp("pieces", infonode->val.d[i].key)) { //hash sum of a piece
 				const int count = strlen(datanode->val.s)/6;
 				for (int i=0; i<count; i++) {
 					struct IDownload::piece piece;
