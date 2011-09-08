@@ -8,7 +8,7 @@
 #include <dirent.h>
 #include <limits.h>
 #include <time.h>
-#include "Downloader/Plasma/bencode/bencode.h"
+#include "bencode/bencode.h"
 
 
 #ifdef WIN32

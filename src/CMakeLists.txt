@@ -10,10 +10,16 @@ set(myRapidFiles
 	main.cpp
 	Download.cpp
 	Downloader/IDownloader.cpp
+	bencode/bencode.c
 )
 
 set (RAPID "pr-downloader")
 set (RAPID_LIB "unitsync-ext")
+IF (WIN32)
+	SET(WIN32LIBS ws2_32)
+	LIST(APPEND WIN32LIBS  mswsock)
+ENDIF ()
+
 
 
 add_library(${RAPID_LIB} SHARED
@@ -34,8 +40,14 @@ target_link_libraries(${RAPID_LIB}
 add_executable(${RAPID} ${myRapidFiles})
 
 target_link_libraries(${RAPID}
-	${RAPID_LIB}
-	${ADDITIONAL_LIBS}
+	${WIN32LIBS}
+	${ZLIB_LIBRARIES}
+	${XMLRPC_LIBRARIES}
+	${CURL_LIBRARIES}
+	Rapid
+	Http
+	Plasma
+	Widget
 )
 
 IF(WIN32)

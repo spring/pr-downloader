@@ -38,7 +38,10 @@ public:
 	/**
 		parses the file for a mod and creates
 	*/
-	bool parseSdp(const std::string& filename, std::list<CFileSystem::FileData>& files);	//Validates a File, (checks the md5)
+	bool parseSdp(const std::string& filename, std::list<CFileSystem::FileData>& files);
+	/**
+	 *	Validates a pool-file, (checks the md5)
+	 */
 	bool fileIsValid(const FileData& mod, const std::string& filename) const;
 	/**
 		returns a temporary file name, file is deleted in destructor if not moved away

@@ -39,7 +39,6 @@ set(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
 
 find_package(CURL REQUIRED)
 find_package(ZLIB REQUIRED)
-include(FindPkgConfig)
 
 include_directories(SYSTEM ${CURL_INCLUDE_DIR})
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
@@ -47,14 +46,6 @@ include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
 
 include_directories("${CMAKE_SOURCE_DIR}/include")
 include_directories("${CMAKE_SOURCE_DIR}/src")
-
-#----------------------------------------------------------------------------------------------------
-# libtorrent-rasterbar dependency check
-#----------------------------------------------------------------------------------------------------
-
-IF (WIN32)
-        SET(ADDITIONAL_LIBS -mthreads ws2_32 mswsock)
-ENDIF ()
 
 subdirs(src)
 
