@@ -4,7 +4,6 @@ add_library(Plasma
 	soap/soapContentServiceSoap12Proxy.cpp
 	soap/soapContentServiceSoapProxy.cpp
 	soap/stdsoap2.cpp
-	bencode/bencode.c
 )
 
 target_link_libraries(Plasma
