@@ -6,7 +6,7 @@ to compile, you need libcurl and libz
 	make
 	make install
 
-for cross-compilation run tools/crosscompile.sh (tested on Ubuntu 10.4 / 64 bit with i586-mingw32msvc-g++ (GCC) 4.4.2)
+for cross-compilation run scripts/crosscompile.sh (tested on Ubuntu 11.04 / 64 bit with i586-mingw32msvc-g++ (GCC) 4.4.4)
 
 That's it!
 
