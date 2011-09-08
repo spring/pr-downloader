@@ -52,7 +52,8 @@ bool CSdp::download()
 		if (!fileSystem->directoryExists(fileSystem->getSpringDir()+path)) {
 			fileSystem->createSubdirs(fileSystem->getSpringDir()+path);
 		}
-		if (!fileSystem->fileIsValid(*it,file)) { //add invalid files to download list
+
+		if (!fileSystem->fileExists(file)) { //add non-existing files to download list
 			count++;
 			(*it).download=true;
 		} else {
