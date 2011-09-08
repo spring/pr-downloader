@@ -58,7 +58,7 @@ if [ ! -s ${PREFIX}/lib/libcurl.dll.a ]; then
 	./configure --host=${MINGWHOST} --prefix=${PREFIX} \
 		--disable-ftp --disable-dict --disable-imap --disable-pop3 \
 		--disable-smtp --disable-telnet --disable-tftp --disable-ldap \
-		--disable-rtsp --disable-manual --enable-static=yes
+		--disable-rtsp --disable-manual --disable-shared
 	make install -j ${PARALLEL}
 	cd ..
 fi

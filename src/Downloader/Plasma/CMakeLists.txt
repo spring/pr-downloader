@@ -6,3 +6,8 @@ add_library(Plasma
 	soap/stdsoap2.cpp
 	bencode/bencode.c
 )
+
+target_link_libraries(Plasma
+	${WIN32LIBS}
+)
+
