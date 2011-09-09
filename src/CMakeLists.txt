@@ -59,10 +59,11 @@ ELSE()
 		RUNTIME DESTINATION ${BINDIR}
 		LIBRARY DESTINATION ${LIBDIR}
 		ARCHIVE DESTINATION ${LIBDIR} )
-ENDIF(WIN32)
 
-SET( VERSION "0.1.1" )
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
-               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${LIBDIR}/pkgconfig")
+	SET( VERSION "0.1.1" )
+	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
+	               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
+	install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${LIBDIR}/pkgconfig")
+
+ENDIF(WIN32)
 

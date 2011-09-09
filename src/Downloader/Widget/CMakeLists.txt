@@ -6,3 +6,4 @@ add_library(Widget
 )
 FILE( GLOB_RECURSE header "*.h" )
 INSTALL (FILES ${header} DESTINATION ${INCLUDE_DIR}/Downloader/Widget )
+

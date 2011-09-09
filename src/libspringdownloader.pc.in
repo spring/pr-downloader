@@ -4,9 +4,9 @@ libdir=@LIBDIR@
 includedir=@INCLUDE_DIR@
 
 Name: libspringdownloader
-Description: Development files and library for downlaoding content for the spring engine
+Description: Development files and library for downloading content for the spring engine
 Version: @VERSION@
 Libs: -L${libdir} -lunitsync-ext@LIBRARY_OUTPUT_SUFFIX@
 Cflags: -I${includedir}
-Requires: 
+Requires:
 

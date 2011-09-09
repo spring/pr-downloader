@@ -6,3 +6,4 @@ add_library(Rapid
 )
 FILE( GLOB_RECURSE header "*.h" )
 INSTALL (FILES ${header} DESTINATION ${INCLUDE_DIR}/Downloader/Rapid )
+
