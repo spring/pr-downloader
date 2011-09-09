@@ -4,3 +4,5 @@ add_library(Rapid
 	RepoMaster.cpp
 	Sdp.cpp
 )
+FILE( GLOB_RECURSE header "*.h" )
+INSTALL (FILES ${header} DESTINATION ${INCLUDE_DIR}/Downloader/Rapid )

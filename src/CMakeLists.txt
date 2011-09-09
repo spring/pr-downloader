@@ -50,11 +50,19 @@ target_link_libraries(${RAPID}
 	Widget
 )
 
+FILE( GLOB_RECURSE header "*.h" )
+
 IF(WIN32)
 	INSTALL(TARGETS ${RAPID} ${RAPID_LIB} DESTINATION  ${CMAKE_SOURCE_DIR}/dist)
 ELSE()
 	INSTALL (TARGETS ${RAPID} ${RAPID_LIB}
-		RUNTIME DESTINATION bin
-		LIBRARY DESTINATION lib)
-ENDIF()
+		RUNTIME DESTINATION ${BINDIR}
+		LIBRARY DESTINATION ${LIBDIR}
+		ARCHIVE DESTINATION ${LIBDIR} )
+ENDIF(WIN32)
+
+SET( VERSION "0.1.1" )
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
+               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${LIBDIR}/pkgconfig")
 
