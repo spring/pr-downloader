@@ -35,11 +35,11 @@ public:
 	/**
 	 *	returns the string name of a category
 	 */
-	const std::string& getCat(category cat);
+	const std::string getCat(category cat);
 	/**
 	 *	returns first url
 	 */
-	const std::string& getUrl();
+	const std::string getUrl();
 	/**
 	 *
 	 */
