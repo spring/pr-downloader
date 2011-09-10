@@ -3,13 +3,14 @@
 #include <list>
 #include <stdio.h>
 #include <sstream>
+#include "Logger.h"
 
 IDownload::IDownload(const std::string& name, category cat)
 {
 	this->name=name;
 	this->cat=cat;
 	this->downloaded=false;
-	for(int i=0; i<sizeof(md5);i++)
+	for(int i=0; i<sizeof(md5); i++)
 		md5[i]=0;
 }
 
@@ -31,12 +32,12 @@ const std::string& IDownload::getMirror(const int i)
 {
 	int pos=0;
 	std::list<std::string>::iterator it;
-	for(it=mirror.begin();it!=mirror.end(); it++){
+	for(it=mirror.begin(); it!=mirror.end(); it++) {
 		if(pos==i)
 			return *it;
 		pos++;
 	}
-	printf("invalid index in getMirror: %d\n", i);
+	ERROR("Invalid index in getMirror: %d\n", i);
 	return mirror.front();
 }
 
@@ -49,8 +50,8 @@ bool IDownload::getRange(std::string& range)
 {
 	std::list<struct piece>::iterator it;
 	int i=0;
-	for(it=pieces.begin();it!=pieces.end(); it++){
-		if ((*it).state==STATE_NONE){
+	for(it=pieces.begin(); it!=pieces.end(); it++) {
+		if ((*it).state==STATE_NONE) {
 			std::ostringstream s;
 			s << (int)(this->piecesize*i) <<"-"<<std::min(this->piecesize*i+1, this->size);
 			range=s.str();

@@ -5,6 +5,7 @@ subdirs(Downloader)
 set(myRapidFiles
 	FileSystem.cpp
 	Util.cpp
+	Logger.cpp
 	md5.cpp
 	sha1.cpp
 	main.cpp

@@ -60,17 +60,17 @@ bool CSdp::download()
 			(*it).download=false;
 		}
 		if (i%10==0)
-			printf("\r%d/%d checked",i,(int)files.size());
+			DEBUG_LINE("\r%d/%d checked",i,(int)files.size());
 		it++;
 	}
-	printf("\r%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
+	DEBUG_LINE("\r%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
 	if (count>0) {
 //FIXME	httpDownload->setCount(count);
 		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		files.clear();
-		printf("Sucessfully downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
+		DEBUG_LINE("Sucessfully downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
 	} else {
-		printf("Already downloaded: %s\n", shortname.c_str());
+		DEBUG_LINE("Already downloaded: %s\n", shortname.c_str());
 		downloaded=true;
 	}
 	return downloaded;
@@ -106,7 +106,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			sdp->file_handle=fopen(sdp->file_name.c_str(),"wb");
 //FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);
 			if (sdp->file_handle==NULL) {
-				printf("couldn't open %s\n",(*sdp->list_it).name.c_str());
+				ERROR("couldn't open %s\n",(*sdp->list_it).name.c_str());
 				return -1;
 			}
 			//here comes the init new file stuff
@@ -114,13 +114,13 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 		}
 		if (sdp->file_handle!=NULL) {
 			if ((sdp->skipped>0)&&(sdp->skipped<4)) {
-//				printf("difficulty %d\n",skipped);
+				DEBUG_LINE("difficulty %d\n",skipped);
 			}
 			if (sdp->skipped<4) { // check if we skipped all 4 bytes, if not so, skip them
 				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
 				for (int i=0; i<toskip; i++) //copy bufs avaiable
 					sdp->cursize_buf[i]=buf_pos[i];
-//				printf("toskip: %d skipped: %d\n",toskip,skipped);
+				DEBUG_LINE("toskip: %d skipped: %d\n",toskip,skipped);
 				sdp->skipped=toskip+sdp->skipped;
 				buf_pos=buf_pos+sdp->skipped;
 				if (sdp->skipped==LENGTH_SIZE) {
@@ -130,16 +130,16 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			if (sdp->skipped==LENGTH_SIZE) {
 				int towrite=intmin ((*sdp->list_it).compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
 						    buf_end-buf_pos);
-//				printf("%s %d %ld %ld %ld %d %d %d %d %d\n",file_name.c_str(), (*list_it)->compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , skipped, file_pos);
+				DEBUG_LINE("%s %d %ld %ld %ld %d %d %d %d %d\n",file_name.c_str(), (*list_it)->compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , skipped, file_pos);
 				int res=0;
 				if (towrite>0) {
 					res=fwrite(buf_pos,1,towrite,sdp->file_handle);
 					if (res!=towrite) {
-						printf("fwrite error\n");
+						ERROR("fwrite error\n");
 						return -1;
 					}
 					if (res<=0) {
-						printf("\nwrote error: %d\n", res);
+						ERROR("\nwrote error: %d\n", res);
 						return -1;
 					}
 				} else if (towrite<0) {
@@ -152,7 +152,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 				if (sdp->file_pos>=(*sdp->list_it).compsize) { //file finished -> next file
 					fclose(sdp->file_handle);
 					if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())) {
-						printf("File is broken?!: %s\n",sdp->file_name.c_str());
+						ERROR("File is broken?!: %s\n",sdp->file_name.c_str());
 						return -1;
 					}
 					sdp->file_handle=NULL;
@@ -177,31 +177,8 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	(void)csdp;
 	(void)TotalToUpload;
 	(void)NowUploaded; //remove unused warning
-	// how wide you want the progress meter to be
-	int totaldotz=40;
-	double fractiondownloaded;
-	if (TotalToDownload>0)
-		fractiondownloaded = NowDownloaded / TotalToDownload;
-	else
-		fractiondownloaded=0;
-	// part of the progressmeter that's already "full"
-	int dotz = fractiondownloaded * totaldotz;
-
-	// create the "meter"
-//    printf("%5d/%5d ", ptr->getStatsPos(),ptr->getCount());
-	printf("%3.0f%% [",fractiondownloaded*100);
-	int ii=0;
-	// part  that's full already
-	for ( ; ii < dotz; ii++) {
-		printf("=");
-	}
-	// remaining part (spaces)
-	for ( ; ii < totaldotz; ii++) {
-		printf(" ");
-	}
-	// and back to line begin - do not forget the fflush to avoid output buffering problems!
-	printf("] %d/%d\r",(int)NowDownloaded,(int)TotalToDownload );
-	fflush(stdout);
+	
+	PROGRESS(NowDownloaded,TotalToDownload);
 	return 0;
 }
 
@@ -211,7 +188,8 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 	curl = curl_easy_init();
 	if (curl) {
 		CURLcode res;
-		printf("Downloading stream: %s\n",url.c_str());
+    INFO("Using rapid");
+    DOWNLOAD(url.c_str());
 
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
@@ -222,7 +200,7 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 		char* buf=(char*)malloc(buflen); //FIXME: compress blockwise and not all at once
 		memset(buf,0,buflen);
 		int destlen=files.size()*2;
-		printf("%d %d %d\n",(int)files.size(),buflen,destlen);
+		DEBUG_LINE("%d %d %d\n",(int)files.size(),buflen,destlen);
 		int i=0;
 		for (it=files.begin(); it!=files.end(); ++it) {
 			if ((*it).download==true)
@@ -245,12 +223,11 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 		curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
 
 		res = curl_easy_perform(curl);
-		printf("\n"); //new line because of progressbar
 		free(dest);
 		/* always cleanup */
 		curl_easy_cleanup(curl);
 		if (res!=CURLE_OK) {
-			printf("%s\n",curl_easy_strerror(res));
+			ERROR("%s\n",curl_easy_strerror(res));
 			return false;
 		}
 	}

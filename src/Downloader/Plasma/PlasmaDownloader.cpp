@@ -26,11 +26,11 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 	int res;
 	res=service.DownloadFile(&file, &fileResponse);
 	if (res != SOAP_OK) {
-		printf("Soap error: %d: %s\n",res, service.soap_fault_string());
+		ERROR("Soap error: %d: %s\n",res, service.soap_fault_string());
 		return NULL;
 	}
 	if (!fileResponse.DownloadFileResult) {
-		printf("No file found for criteria %s\n",name.c_str());
+		ERROR("No file found for criteria %s\n",name.c_str());
 		return NULL;
 	}
 
@@ -53,7 +53,7 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 	}
 	fileName+=PATH_DELIMITER;
 	if (fileResponse.links->string.size()==0) {
-		printf("got no mirror in plasmaresoult\n");
+		ERROR("No mirror in plasma result.\n");
 		return false;
 	}
 

@@ -2,7 +2,7 @@
 #define UTIL_H
 
 #include "FileSystem.h"
-
+#include "Logger.h"
 /**
 	creates a url from fileinfo, for example
 	<path>/<first2chars of md5>/<last 30 chars of md5>.gz

@@ -31,39 +31,9 @@ int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownlo
 		if(TotalToDownload!=NowDownloaded) //print 100%
 			return 0;
 	}
-	// how wide you want the progress meter to be
-	int totaldotz=30;
-	double fractiondownloaded;
-	if (TotalToDownload>0)
-		fractiondownloaded = NowDownloaded / TotalToDownload;
-	else
-		fractiondownloaded=0;
-	// part of the progressmeter that's already "full"
-	int dotz = fractiondownloaded * totaldotz;
+	
+  PROGRESS(NowDownloaded,TotalToDownload);
 
-	// create the "meter"
-	printf("%5d/%5d ", ptr->getStatsPos(),ptr->getCount());
-	printf("%3.0f%% [",fractiondownloaded*100);
-	int ii=0;
-	// part  that's full already
-	for ( ; ii < dotz; ii++) {
-		printf("=");
-	}
-	// remaining part (spaces)
-	for ( ; ii < totaldotz; ii++) {
-		printf(" ");
-	}
-	// and back to line begin - do not forget the fflush to avoid output buffering problems!
-	printf("] %d/%d ",(int)NowDownloaded,(int)TotalToDownload );
-
-	long int diff=now-start_time;
-	if (diff>0) {
-		printf("%d KB/sec",(int)((NowDownloaded/diff)/1000));
-	} else {
-		printf("0");
-	}
-	printf("\r");
-	fflush(stdout);
 	return 0;
 }
 
@@ -141,7 +111,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			return false;
 		}
 		if (resfile["category"].getType()!=XmlRpc::XmlRpcValue::TypeString) {
-			printf("No category in result\n");
+			ERROR("No category in result\n");
 			return false;
 		}
 		std::string filename=fileSystem->getSpringDir();
@@ -156,7 +126,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 		filename+=PATH_DELIMITER;
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
 		    (resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
-			printf("Invalid type in result\n");
+			ERROR("Invalid type in result\n");
 			return false;
 		}
 		filename.append(resfile["filename"]);
@@ -164,7 +134,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 		XmlRpc::XmlRpcValue mirrors = resfile["mirrors"];
 		for(int j=0; j<mirrors.size(); j++) {
 			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString) {
-				printf("Invalid type in result\n");
+				ERROR("Invalid type in result\n");
 				return false;
 			}
 
@@ -207,23 +177,30 @@ bool CHttpDownloader::download(IDownload& download)
 	last_print = 0;
 	start_time = 0;
 	CURLcode res=CURLE_OK;
-	printf("Downloading %s to %s\n",download.getUrl().c_str(), download.name.c_str());
+	
+  INFO("Using http\n");
+	DOWNLOAD(download.getUrl().c_str());  //destination is download.name.c_str()
+	
 	//FIXME: use etag/timestamp as remote file could be modified
 	/*
 		if (fileSystem->fileExists(download.name)){
 			//TODO: validate file
-			printf("file already downloaded: \"%s\"\n",download.name.c_str());
+			INFO("file already downloaded: \"%s\"\n",download.name.c_str());
 			return true;
 		}
 	*/
-
+  
+  if (!fileSystem->directoryExists(download.name)){
+  	fileSystem->createSubdirs(download.name);
+  }
+    
 	if (!curl) {
-		printf("Error initializing curl");
+		ERROR("Error initializing curl");
 		return false;
 	}
 	FILE* fp = fopen(download.name.c_str() ,"wb+");
 	if (fp==NULL) {
-		printf("CHttpDownloader:: Could not open %s\n",download.name.c_str());
+		ERROR("Could not open %s\n",download.name.c_str());
 		return false;
 	}
 	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
@@ -231,9 +208,9 @@ bool CHttpDownloader::download(IDownload& download)
 	curl_easy_setopt(curl, CURLOPT_URL, escapeUrl(download.getUrl()).c_str());
 	res = curl_easy_perform(curl);
 	fclose(fp);
-	printf("\n"); //new line because of downloadbar
+	INFO("\n"); //new line because of downloadbar
 	if (res!=0) {
-		printf("error downloading %s\n",download.getUrl().c_str());
+		ERROR("Failed to download %s\n",download.getUrl().c_str());
 		unlink(download.name.c_str());
 		return false;
 	}
@@ -255,7 +232,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download){
 		curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download.getMirror(i)).c_str());
 		std::string range;
 		if (!download.getRange(range)){
-			printf("Error getting range for download");
+			ERROR("Error getting range for download");
 			return false;
 		}
 		curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());

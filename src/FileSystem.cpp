@@ -39,7 +39,7 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	}
 
 	if (!sb.st_mode&S_IFREG) {
-		printf("File is no file %s\n", filename.c_str());
+		ERROR("File is no file %s\n", filename.c_str());
 		return false;
 	}
 
@@ -56,21 +56,22 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	MD5Final (&mdContext);
 	gzclose (inFile);
 	/*	if (filesize!=mod->size){
-			printf("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),filesize, mod->size);
+			ERROR("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),filesize, mod->size);
 			return false;
 		}*/
 
 	int i;
 	for (i=0; i<16; i++) {
 		if (mdContext.digest[i]!=mod.md5[i]) { //file is invalid
-//			printf("Damaged file found: %s\n",filename.c_str());
+//			ERROR("Damaged file found: %s\n",filename.c_str());
 //			unlink(filename.c_str());
 			return false;
 		}
 	}
 	return true;
 }
-bool CFileSystem::validateFile(IDownload& dl){
+bool CFileSystem::validateFile(IDownload& dl)
+{
 	if (dl.name.empty())
 		return false;
 	struct stat sb;
@@ -96,7 +97,7 @@ bool CFileSystem::validateFile(IDownload& dl){
 	fclose (inFile);
 	for (int i=0; i<16; i++) {
 		if (mdContext.digest[i]!=dl.md5[i]) { //file is invalid
-			printf("md5 invalid!\n");
+			ERROR("md5 invalid!\n");
 			return false;
 		}
 	}
@@ -113,7 +114,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 
 	gzFile in=gzopen(filename.c_str(), "r");
 	if (in==Z_NULL) {
-		printf("Could not open %s\n",filename.c_str());
+		ERROR("Could not open %s\n",filename.c_str());
 		return NULL;
 	}
 	files.clear();
@@ -122,10 +123,10 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 		int length = gzgetc(in);
 		if (length == -1) break;
 		if (!((gzread(in, &c_name, length)) &&
-		      (gzread(in, &c_md5, 16)) &&
-		      (gzread(in, &c_crc32, 4)) &&
-		      (gzread(in, &c_size, 4)))) {
-			printf("Error reading %s\n", filename.c_str());
+			  (gzread(in, &c_md5, 16)) &&
+			  (gzread(in, &c_crc32, 4)) &&
+			  (gzread(in, &c_size, 4)))) {
+			ERROR("Error reading %s\n", filename.c_str());
 			gzclose(in);
 			return false;
 		}
@@ -259,7 +260,7 @@ int CFileSystem::validatePool(const std::string& path)
 				if ((sb.st_mode&S_IFDIR)!=0) {
 					res=res+validatePool(tmp);
 					if (res%13==0) {
-						printf("Valid files: %d\r",res);
+						INFO("Valid files: %d\r",res);
 						fflush(stdout);
 					}
 				} else {
@@ -267,7 +268,7 @@ int CFileSystem::validatePool(const std::string& path)
 					std::string md5;
 					int len=tmp.length();
 					if (len<36) { //file length has at least to be <md5[0]><md5[1]>/<md5[2-30]>.gz
-						printf("Invalid file: %s\n", tmp.c_str());
+						ERROR("Invalid file: %s\n", tmp.c_str());
 					} else {
 						md5="";
 						md5.push_back(tmp.at(len-36));
@@ -275,7 +276,7 @@ int CFileSystem::validatePool(const std::string& path)
 						md5.append(tmp.substr(len-33, 30));
 						md5AtoI(md5,filedata.md5);
 						if (!fileIsValid(filedata,tmp)) {
-							printf("Invalid File in pool: %s\n",tmp.c_str());
+							ERROR("Invalid File in pool: %s\n",tmp.c_str());
 						} else {
 							res++;
 						}
@@ -334,7 +335,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 	be_dump(node);
 #endif
 	if (node->type!=BE_DICT) {
-		printf("Error in torrent data\n");
+		ERROR("Error in torrent data\n");
 		be_free(node);
 		return false;
 	}
@@ -347,7 +348,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 		}
 	}
 	if (infonode==NULL) {
-		printf("couldn't find info node in be dict\n");
+		ERROR("couldn't find info node in be dict\n");
 		be_free(node);
 		return false;
 	}
@@ -363,7 +364,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 				const int count = strlen(datanode->val.s)/6;
 				for (int i=0; i<count; i++) {
 					struct IDownload::piece piece;
-					for(int j=0; j<5; j++){
+					for(int j=0; j<5; j++) {
 						piece.sha[j]=datanode->val.s[i*5+j];
 						piece.state=IDownload::STATE_NONE;
 					}
