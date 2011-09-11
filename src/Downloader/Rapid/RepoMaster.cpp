@@ -52,8 +52,7 @@ bool CRepoMaster::parse()
 		}
 	}
 	gzclose(fp);
-	//(koshi) both %d and %u throw a type mismatch warning here for me
-	printf("Found %d repos in %s\n",repos.size(),path.c_str());
+	printf("Found %d repos in %s\n",(int)repos.size(),path.c_str());
 	return true;
 }
 

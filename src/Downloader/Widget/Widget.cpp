@@ -8,7 +8,7 @@
 CWidget::CWidget(const std::string& filename)
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file(filename.c_str());
+//	pugi::xml_parse_result result = doc.load_file(filename.c_str());
 	printf("Parsing %s\n", filename.c_str());
 	pugi::xml_node widget=doc.child("root");
 
