@@ -1,4 +1,4 @@
-#define VERSION 0.1
+#define VERSION "0.1.1"
 #define USER_AGENT "unitsync-dev" + VERSION
 #define SPRING_DIR "/home/matze/.spring"
 #define TMP_FILE "/tmp/repos.gz"
@@ -90,6 +90,8 @@ int main(int argc, char **argv)
 	if (argc<2)
 		show_help(argv[0]);
 
+	printf("[pr-downloader] " VERSION " \n");
+
 	CFileSystem::Initialize();
 	IDownloader::Initialize();
 
@@ -103,22 +105,22 @@ int main(int argc, char **argv)
 		case RAPID_DOWNLOAD: {
 			rapidDownload->search(list, optarg);
 			if (list.empty()) {
-				printf("Coulnd't find %s\n",optarg);
+				ERROR("Coulnd't find %s\n",optarg);
 			} else if (!rapidDownload->download(list)) {
-				printf("Error downloading %s\n",optarg);
+				ERROR("Error downloading %s\n",optarg);
 			}
 			break;
 		}
 		case RAPID_VALIDATE: {
 			int res=fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
-			printf("Validated %d files",res);
+			INFO("Validated %d files",res);
 			break;
 		}
 		case RAPID_LIST: {
 			rapidDownload->search(list);
 			std::list<IDownload>::iterator it;
 			for (it=list.begin(); it!=list.end(); ++it) {
-				printf("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
+				INFO("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
 			}
 			break;
 		}
@@ -139,7 +141,7 @@ int main(int argc, char **argv)
 			break;
 		}
 		case FILESYSTEM_WRITEPATH: {
-			printf("%s\n",fileSystem->getSpringDir().c_str());
+			INFO("%s\n",fileSystem->getSpringDir().c_str());
 			break;
 		}
 		case HTTP_SEARCH: {
@@ -148,7 +150,7 @@ int main(int argc, char **argv)
 				break;
 			std::list<IDownload>::iterator it;
 			for (it=list.begin(); it!=list.end(); ++it) {
-				printf("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
+				INFO("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
 			}
 			break;
 		}
@@ -159,13 +161,13 @@ int main(int argc, char **argv)
 		}
 		case DOWNLOAD_MAP: {
 			if (!download(optarg, IDownload::CAT_MAPS)) {
-				printf("couldn't find %s\n",optarg);
+				ERROR("No map found for %s\n",optarg);
 			}
 			break;
 		}
 		case DOWNLOAD_GAME: {
 			if (!download(optarg, IDownload::CAT_MODS)) {
-				printf("couldn't find %s\n",optarg);
+				ERROR("No game fond for %s\n",optarg);
 			}
 			break;
 		}
@@ -178,6 +180,8 @@ int main(int argc, char **argv)
 	}
 	IDownloader::Shutdown();
 	CFileSystem::Shutdown();
+
+	printf("[Finished]\n");
 
 	return 0;
 }

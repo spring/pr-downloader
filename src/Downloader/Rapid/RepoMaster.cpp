@@ -33,7 +33,7 @@ bool CRepoMaster::parse()
 {
 	gzFile fp=gzopen(path.c_str(), "r");
 	if (fp==Z_NULL) {
-		printf("Could not open %s\n",path.c_str());
+		ERROR("Could not open %s\n",path.c_str());
 		return false;
 	}
 	char buf[4096];
@@ -47,7 +47,7 @@ bool CRepoMaster::parse()
 			CRepo repotmp=CRepo(url, rapid);
 			repos.push_back(repotmp);
 		} else {
-			printf("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
+			ERROR("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
 			return false;
 		}
 	}
