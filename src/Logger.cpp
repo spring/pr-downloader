@@ -3,25 +3,24 @@
 #include <string.h>
 #include <cstdarg>
 
-void INFO(std::string message, ...)
+void INFO(const std::string& message, ...)
 {
-	message = "[Message]   " + message;
 	va_list args;
-	va_start(args,message);
-	vprintf(message.c_str(),args);
+	va_start(args, message);
+	printf("[Info] ");
+	vprintf(message.c_str(), args);
 	va_end(args);
 }
 
-void DOWNLOAD(std::string filename)
+void DOWNLOAD(const std::string& filename)
 {
-	std::string message = "[Download]  " + filename + "\n";
-	printf(message.c_str());
+	printf("[Download] %s\n",filename.c_str());
 }
 
 void PROGRESS(float done, float total)
 {
 	float percentage = done / total;
-	printf("[Progress]  %3.0f%% [",percentage * 100.0f);
+	printf("[Progress] %3.0f%% [",percentage * 100.0f);
 	int totaldotz = 30;                           // how wide you want the progress meter to be
 	int dotz = percentage * totaldotz;
 	int ii=0;
@@ -38,11 +37,11 @@ void PROGRESS(float done, float total)
 	fflush(stdout);
 }
 
-void ERROR(std::string message, ...)
+void ERROR(const std::string& message, ...)
 {
-	message = "[Error]     " + message;
 	va_list args;
 	va_start(args,message);
+	printf("[Error] ");
 	vprintf(message.c_str(),args);
 	va_end(args);
 }
