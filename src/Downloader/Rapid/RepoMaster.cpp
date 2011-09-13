@@ -33,7 +33,7 @@ bool CRepoMaster::parse()
 {
 	gzFile fp=gzopen(path.c_str(), "r");
 	if (fp==Z_NULL) {
-		ERROR("Could not open %s\n",path.c_str());
+		LOG_ERROR("Could not open %s\n",path.c_str());
 		return false;
 	}
 	char buf[4096];
@@ -47,12 +47,12 @@ bool CRepoMaster::parse()
 			CRepo repotmp=CRepo(url, rapid);
 			repos.push_back(repotmp);
 		} else {
-			ERROR("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
+			LOG_ERROR("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
 			return false;
 		}
 	}
 	gzclose(fp);
-	INFO("Found %d repos in %s\n",repos.size(),path.c_str());
+	LOG_INFO("Found %d repos in %s\n",repos.size(),path.c_str());
 	return true;
 }
 

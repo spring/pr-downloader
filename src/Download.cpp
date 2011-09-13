@@ -37,7 +37,7 @@ const std::string& IDownload::getMirror(const int i)
 			return *it;
 		pos++;
 	}
-	ERROR("Invalid index in getMirror: %d\n", i);
+	LOG_ERROR("Invalid index in getMirror: %d\n", i);
 	return mirror.front();
 }
 

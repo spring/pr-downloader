@@ -63,4 +63,9 @@ bool urlToPath(const std::string& url, std::string& path);
  */
 void base64_decode(const std::string& encoded_string, std::string& ret);
 
+/**
+ *	returns the time
+ */
+unsigned long getTime();
+
 #endif

@@ -9,7 +9,7 @@ CWidget::CWidget(const std::string& filename)
 {
 	pugi::xml_document doc;
 //	pugi::xml_parse_result result = doc.load_file(filename.c_str());
-	INFO("Parsing %s\n", filename.c_str());
+	LOG_INFO("Parsing %s\n", filename.c_str());
 	pugi::xml_node widget=doc.child("root");
 
 	std::list<CWidget> widgets;
@@ -31,6 +31,6 @@ CWidget::CWidget(const std::string& filename)
 				std::cout << std::endl; */
 		count++;
 	}
-	INFO("Parsed %d widgets.\n",count);
+	LOG_INFO("Parsed %d widgets.\n",count);
 
 }

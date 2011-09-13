@@ -10,18 +10,18 @@ void LOG(const std::string& format, ...);
 /**
 *	output log level info
 */
-void INFO(const std::string& format, ...);
+void LOG_INFO(const std::string& format, ...);
 /**
 *	output log level error
 */
-void ERROR(const std::string& format, ...);
+void LOG_ERROR(const std::string& format, ...);
 
 /**
 *	output progress bar
 */
-void DOWNLOAD(const std::string& filename);
+void LOG_DOWNLOAD(const std::string& filename);
 
-void PROGRESS(float done, float total);
+void LOG_PROGRESS(float done, float total);
 
 #ifdef DEBUG
 	#define DEBUG_LINE(fmt, ...) \

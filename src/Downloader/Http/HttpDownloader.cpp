@@ -32,7 +32,7 @@ int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownlo
 			return 0;
 	}
 
-	PROGRESS(NowDownloaded,TotalToDownload);
+	LOG_PROGRESS(NowDownloaded,TotalToDownload);
 
 	return 0;
 }
@@ -111,7 +111,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			return false;
 		}
 		if (resfile["category"].getType()!=XmlRpc::XmlRpcValue::TypeString) {
-			ERROR("No category in result\n");
+			LOG_ERROR("No category in result\n");
 			return false;
 		}
 		std::string filename=fileSystem->getSpringDir();
@@ -126,7 +126,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 		filename+=PATH_DELIMITER;
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
 		    (resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
-			ERROR("Invalid type in result\n");
+			LOG_ERROR("Invalid type in result\n");
 			return false;
 		}
 		filename.append(resfile["filename"]);
@@ -134,7 +134,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 		XmlRpc::XmlRpcValue mirrors = resfile["mirrors"];
 		for(int j=0; j<mirrors.size(); j++) {
 			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString) {
-				ERROR("Invalid type in result\n");
+				LOG_ERROR("Invalid type in result\n");
 				return false;
 			}
 
@@ -178,8 +178,8 @@ bool CHttpDownloader::download(IDownload& download)
 	start_time = 0;
 	CURLcode res=CURLE_OK;
 
-	INFO("Using http\n");
-	DOWNLOAD(download.getUrl().c_str());  //destination is download.name.c_str()
+	LOG_INFO("Using http\n");
+	LOG_DOWNLOAD(download.getUrl().c_str());  //destination is download.name.c_str()
 
 	//FIXME: use etag/timestamp as remote file could be modified
 	/*
@@ -195,12 +195,12 @@ bool CHttpDownloader::download(IDownload& download)
   }
 
 	if (!curl) {
-		ERROR("Error initializing curl");
+		LOG_ERROR("Error initializing curl");
 		return false;
 	}
 	FILE* fp = fopen(download.name.c_str() ,"wb+");
 	if (fp==NULL) {
-		ERROR("Could not open %s\n",download.name.c_str());
+		LOG_ERROR("Could not open %s\n",download.name.c_str());
 		return false;
 	}
 	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
@@ -210,7 +210,7 @@ bool CHttpDownloader::download(IDownload& download)
 	fclose(fp);
 	LOG("\n"); //new line because of downloadbar
 	if (res!=0) {
-		ERROR("Failed to download %s\n",download.getUrl().c_str());
+		LOG_ERROR("Failed to download %s\n",download.getUrl().c_str());
 		unlink(download.name.c_str());
 		return false;
 	}
@@ -232,7 +232,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download){
 		curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download.getMirror(i)).c_str());
 		std::string range;
 		if (!download.getRange(range)){
-			ERROR("Error getting range for download");
+			LOG_ERROR("Error getting range for download");
 			return false;
 		}
 		curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());

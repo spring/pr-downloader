@@ -1,8 +1,10 @@
 #include "FileSystem.h"
-#include <stdio.h>
 #include "Util.h"
+
+#include <stdio.h>
 #include <string.h>
 #include <zlib.h>
+#include <time.h>
 
 
 /*
@@ -158,7 +160,7 @@ bool urlToPath(const std::string& url, std::string& path)
 {
 	size_t pos=url.find("//");
 	if (pos==std::string::npos) { //not found
-		ERROR("urlToPath failed: %s\n",path.c_str());
+		LOG_ERROR("urlToPath failed: %s\n",path.c_str());
 		return false;
 	}
 	path=url.substr(pos+2);
@@ -168,6 +170,11 @@ bool urlToPath(const std::string& url, std::string& path)
 		pos=path.find("/",pos+1);
 	}
 	return true;
+}
+
+unsigned long getTime()
+{
+	return time(NULL);
 }
 
 

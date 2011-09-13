@@ -12,7 +12,7 @@ void LOG(const std::string& format, ...)
 	va_end(args);
 }
 
-void INFO(const std::string& format, ...)
+void LOG_INFO(const std::string& format, ...)
 {
 	va_list args;
 	va_start(args, format);
@@ -21,12 +21,12 @@ void INFO(const std::string& format, ...)
 	va_end(args);
 }
 
-void DOWNLOAD(const std::string& filename)
+void LOG_DOWNLOAD(const std::string& filename)
 {
 	printf("[Download] %s\n",filename.c_str());
 }
 
-void PROGRESS(float done, float total)
+void LOG_PROGRESS(float done, float total)
 {
 	float percentage = done / total;
 	printf("[Progress] %3.0f%% [",percentage * 100.0f);
@@ -46,7 +46,7 @@ void PROGRESS(float done, float total)
 	fflush(stdout);
 }
 
-void ERROR(const std::string& format, ...)
+void LOG_ERROR(const std::string& format, ...)
 {
 	va_list args;
 	va_start(args,format);

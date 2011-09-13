@@ -39,7 +39,7 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	}
 
 	if (!sb.st_mode&S_IFREG) {
-		ERROR("File is no file %s\n", filename.c_str());
+		LOG_ERROR("File is no file %s\n", filename.c_str());
 		return false;
 	}
 
@@ -97,7 +97,7 @@ bool CFileSystem::validateFile(IDownload& dl)
 	fclose (inFile);
 	for (int i=0; i<16; i++) {
 		if (mdContext.digest[i]!=dl.md5[i]) { //file is invalid
-			ERROR("md5 invalid!\n");
+			LOG_ERROR("md5 invalid!\n");
 			return false;
 		}
 	}
@@ -114,7 +114,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 
 	gzFile in=gzopen(filename.c_str(), "r");
 	if (in==Z_NULL) {
-		ERROR("Could not open %s\n",filename.c_str());
+		LOG_ERROR("Could not open %s\n",filename.c_str());
 		return NULL;
 	}
 	files.clear();
@@ -126,7 +126,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 			  (gzread(in, &c_md5, 16)) &&
 			  (gzread(in, &c_crc32, 4)) &&
 			  (gzread(in, &c_size, 4)))) {
-			ERROR("Error reading %s\n", filename.c_str());
+			LOG_ERROR("Error reading %s\n", filename.c_str());
 			gzclose(in);
 			return false;
 		}
@@ -248,6 +248,7 @@ int CFileSystem::validatePool(const std::string& path)
 {
 	DIR* d;
 	d=opendir(path.c_str());
+	unsigned long time=getTime();
 	int res=0;
 	if (d!=NULL) {
 		struct dirent* dentry;
@@ -259,16 +260,18 @@ int CFileSystem::validatePool(const std::string& path)
 				stat(tmp.c_str(),&sb);
 				if ((sb.st_mode&S_IFDIR)!=0) {
 					res=res+validatePool(tmp);
-					if (res%13==0) {
-						INFO("Valid files: %d\r",res);
+					unsigned long now=getTime();
+					if (time<now) {
+						LOG_INFO("Valid files: %d\r",res);
 						fflush(stdout);
+						time=now;
 					}
 				} else {
 					FileData filedata;
 					std::string md5;
 					int len=tmp.length();
 					if (len<36) { //file length has at least to be <md5[0]><md5[1]>/<md5[2-30]>.gz
-						ERROR("Invalid file: %s\n", tmp.c_str());
+						LOG_ERROR("Invalid file: %s\n", tmp.c_str());
 					} else {
 						md5="";
 						md5.push_back(tmp.at(len-36));
@@ -276,7 +279,7 @@ int CFileSystem::validatePool(const std::string& path)
 						md5.append(tmp.substr(len-33, 30));
 						md5AtoI(md5,filedata.md5);
 						if (!fileIsValid(filedata,tmp)) {
-							ERROR("Invalid File in pool: %s\n",tmp.c_str());
+							LOG_ERROR("Invalid File in pool: %s\n",tmp.c_str());
 						} else {
 							res++;
 						}
@@ -335,7 +338,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 	be_dump(node);
 #endif
 	if (node->type!=BE_DICT) {
-		ERROR("Error in torrent data\n");
+		LOG_ERROR("Error in torrent data\n");
 		be_free(node);
 		return false;
 	}
@@ -348,7 +351,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 		}
 	}
 	if (infonode==NULL) {
-		ERROR("couldn't find info node in be dict\n");
+		LOG_ERROR("couldn't find info node in be dict\n");
 		be_free(node);
 		return false;
 	}

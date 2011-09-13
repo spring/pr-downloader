@@ -106,7 +106,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			sdp->file_handle=fopen(sdp->file_name.c_str(),"wb");
 //FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);
 			if (sdp->file_handle==NULL) {
-				ERROR("couldn't open %s\n",(*sdp->list_it).name.c_str());
+				LOG_ERROR("couldn't open %s\n",(*sdp->list_it).name.c_str());
 				return -1;
 			}
 			//here comes the init new file stuff
@@ -135,11 +135,11 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 				if (towrite>0) {
 					res=fwrite(buf_pos,1,towrite,sdp->file_handle);
 					if (res!=towrite) {
-						ERROR("fwrite error\n");
+						LOG_ERROR("fwrite error\n");
 						return -1;
 					}
 					if (res<=0) {
-						ERROR("\nwrote error: %d\n", res);
+						LOG_ERROR("\nwrote error: %d\n", res);
 						return -1;
 					}
 				} else if (towrite<0) {
@@ -152,7 +152,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 				if (sdp->file_pos>=(*sdp->list_it).compsize) { //file finished -> next file
 					fclose(sdp->file_handle);
 					if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())) {
-						ERROR("File is broken?!: %s\n",sdp->file_name.c_str());
+						LOG_ERROR("File is broken?!: %s\n",sdp->file_name.c_str());
 						return -1;
 					}
 					sdp->file_handle=NULL;
@@ -177,8 +177,8 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	(void)csdp;
 	(void)TotalToUpload;
 	(void)NowUploaded; //remove unused warning
-	
-	PROGRESS(NowDownloaded,TotalToDownload);
+
+	LOG_PROGRESS(NowDownloaded,TotalToDownload);
 	return 0;
 }
 
@@ -188,8 +188,8 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 	curl = curl_easy_init();
 	if (curl) {
 		CURLcode res;
-    INFO("Using rapid");
-    DOWNLOAD(url.c_str());
+		LOG_INFO("Using rapid");
+		LOG_DOWNLOAD(url.c_str());
 
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
@@ -227,7 +227,7 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 		/* always cleanup */
 		curl_easy_cleanup(curl);
 		if (res!=CURLE_OK) {
-			ERROR("%s\n",curl_easy_strerror(res));
+			LOG_ERROR("%s\n",curl_easy_strerror(res));
 			return false;
 		}
 	}
