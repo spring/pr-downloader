@@ -1,14 +1,23 @@
-#include <stdio.h>
 #include "Logger.h"
+#include <stdio.h>
 #include <string.h>
 #include <cstdarg>
 
-void INFO(const std::string& message, ...)
+
+void LOG(const std::string& format, ...)
 {
 	va_list args;
-	va_start(args, message);
+	va_start(args, format);
+	vprintf(format.c_str(), args);
+	va_end(args);
+}
+
+void INFO(const std::string& format, ...)
+{
+	va_list args;
+	va_start(args, format);
 	printf("[Info] ");
-	vprintf(message.c_str(), args);
+	vprintf(format.c_str(), args);
 	va_end(args);
 }
 
@@ -37,11 +46,11 @@ void PROGRESS(float done, float total)
 	fflush(stdout);
 }
 
-void ERROR(const std::string& message, ...)
+void ERROR(const std::string& format, ...)
 {
 	va_list args;
-	va_start(args,message);
+	va_start(args,format);
 	printf("[Error] ");
-	vprintf(message.c_str(),args);
+	vprintf(format.c_str(),args);
 	va_end(args);
 }

@@ -31,8 +31,8 @@ int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownlo
 		if(TotalToDownload!=NowDownloaded) //print 100%
 			return 0;
 	}
-	
-  PROGRESS(NowDownloaded,TotalToDownload);
+
+	PROGRESS(NowDownloaded,TotalToDownload);
 
 	return 0;
 }
@@ -177,10 +177,10 @@ bool CHttpDownloader::download(IDownload& download)
 	last_print = 0;
 	start_time = 0;
 	CURLcode res=CURLE_OK;
-	
-  INFO("Using http\n");
+
+	INFO("Using http\n");
 	DOWNLOAD(download.getUrl().c_str());  //destination is download.name.c_str()
-	
+
 	//FIXME: use etag/timestamp as remote file could be modified
 	/*
 		if (fileSystem->fileExists(download.name)){
@@ -189,11 +189,11 @@ bool CHttpDownloader::download(IDownload& download)
 			return true;
 		}
 	*/
-  
+
   if (!fileSystem->directoryExists(download.name)){
   	fileSystem->createSubdirs(download.name);
   }
-    
+
 	if (!curl) {
 		ERROR("Error initializing curl");
 		return false;
@@ -208,7 +208,7 @@ bool CHttpDownloader::download(IDownload& download)
 	curl_easy_setopt(curl, CURLOPT_URL, escapeUrl(download.getUrl()).c_str());
 	res = curl_easy_perform(curl);
 	fclose(fp);
-	INFO("\n"); //new line because of downloadbar
+	LOG("\n"); //new line because of downloadbar
 	if (res!=0) {
 		ERROR("Failed to download %s\n",download.getUrl().c_str());
 		unlink(download.name.c_str());

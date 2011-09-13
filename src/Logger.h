@@ -3,9 +3,23 @@
 
 #include "FileSystem.h"
 
-void INFO(const std::string& message, ...);
+/**
+*	plain log output
+*/
+void LOG(const std::string& format, ...);
+/**
+*	output log level info
+*/
+void INFO(const std::string& format, ...);
+/**
+*	output log level error
+*/
+void ERROR(const std::string& format, ...);
+
+/**
+*	output progress bar
+*/
 void DOWNLOAD(const std::string& filename);
-void ERROR(const std::string& message, ...);
 
 void PROGRESS(float done, float total);
 
