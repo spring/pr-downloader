@@ -219,7 +219,7 @@ bool CHttpDownloader::download(IDownload& download)
 	}
 	
 	if(rename(temp.c_str(),download.name.c_str())) {
-    ERROR("Could not write to %s\n",download.name.c_str());
+    LOG_ERROR("Could not write to %s\n",download.name.c_str());
     return false;
 	}
     
