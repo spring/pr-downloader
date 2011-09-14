@@ -198,9 +198,12 @@ bool CHttpDownloader::download(IDownload& download)
 		ERROR("Error initializing curl");
 		return false;
 	}
-	FILE* fp = fopen(download.name.c_str() ,"wb+");
+	
+  std::string temp = fileSystem->createTempFile();
+	
+	FILE* fp = fopen(temp.c_str() ,"wb+");
 	if (fp==NULL) {
-		ERROR("Could not open %s\n",download.name.c_str());
+		ERROR("Could not open %s\n",temp.c_str());
 		return false;
 	}
 	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
@@ -208,12 +211,17 @@ bool CHttpDownloader::download(IDownload& download)
 	curl_easy_setopt(curl, CURLOPT_URL, escapeUrl(download.getUrl()).c_str());
 	res = curl_easy_perform(curl);
 	fclose(fp);
-	INFO("\n"); //new line because of downloadbar
 	if (res!=0) {
 		ERROR("Failed to download %s\n",download.getUrl().c_str());
 		unlink(download.name.c_str());
 		return false;
 	}
+	
+	if(rename(temp.c_str(),download.name.c_str())) {
+    ERROR("Could not write to %s\n",download.name.c_str());
+    return false;
+	}
+    
 	return true;
 }
 
