@@ -1,6 +1,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#define VERSION "0.1.1"
+#define USER_AGENT "unitsync-dev" + VERSION
+
 #include "FileSystem.h"
 #include "Logger.h"
 /**
@@ -58,20 +61,14 @@ void urlEncode(std::string& url);
 */
 bool urlToPath(const std::string& url, std::string& path);
 
-#ifdef DEBUG
-
-#define DEBUG_LINE(fmt, ...) \
-	printf( "%s:%d:%s(): " fmt "\n", __FILE__, \
-                                __LINE__, __FUNCTION__, __VA_ARGS__);
-#else
-
-#define	DEBUG_LINE(fmt, ...)
-
-#endif
-
-#endif
-
 /**
  * base64 decode a string
  */
 void base64_decode(const std::string& encoded_string, std::string& ret);
+
+/**
+ *	returns the time
+ */
+unsigned long getTime();
+
+#endif

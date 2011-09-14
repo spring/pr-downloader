@@ -42,7 +42,7 @@ bool CRepo::parse()
 	DEBUG_LINE("%s",tmpFile.c_str());
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
 	if (fp==Z_NULL) {
-		ERROR("Could not open %s\n",tmpFile.c_str());
+		LOG_ERROR("Could not open %s\n",tmpFile.c_str());
 		return false;
 	}
 	char buf[1024];

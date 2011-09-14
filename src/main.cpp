@@ -1,22 +1,18 @@
-#define VERSION "0.1.1"
-#define USER_AGENT "unitsync-dev" + VERSION
-#define SPRING_DIR "/home/matze/.spring"
-#define TMP_FILE "/tmp/repos.gz"
-#define TMP_FILE2 "/tmp/version.gz"
+#include "Downloader/IDownloader.h"
+#include "FileSystem.h"
+#include "md5.h"
+#include "Util.h"
 
 
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "md5.h"
-#include "Util.h"
 #include <string>
-#include "FileSystem.h"
 #include <unistd.h>
 #include <getopt.h>
-#include "Downloader/IDownloader.h"
 #include <stdio.h>
 #include <list>
+
 
 enum {
 	RAPID_DOWNLOAD=0,
@@ -28,6 +24,7 @@ enum {
 	PLASMA_SEARCH,
 	WIDGET_SEARCH,
 	FILESYSTEM_WRITEPATH,
+	FILESYSTEM_DUMPSDP,
 	DOWNLOAD_MAP,
 	DOWNLOAD_GAME,
 	HELP
@@ -45,6 +42,7 @@ static struct option long_options[] = {
 	{"download-game"           , 1, 0, DOWNLOAD_GAME},
 	{"widget-search"           , 1, 0, WIDGET_SEARCH},
 	{"filesystem-writepath"    , 0, 0, FILESYSTEM_WRITEPATH},
+	{"filesystem-dumpsdp"      , 1, 0, FILESYSTEM_DUMPSDP},
 	{"help"                    , 0, 0, HELP},
 	{0                         , 0, 0, 0}
 };
@@ -105,22 +103,22 @@ int main(int argc, char **argv)
 		case RAPID_DOWNLOAD: {
 			rapidDownload->search(list, optarg);
 			if (list.empty()) {
-				ERROR("Coulnd't find %s\n",optarg);
+				LOG_ERROR("Coulnd't find %s\n",optarg);
 			} else if (!rapidDownload->download(list)) {
-				ERROR("Error downloading %s\n",optarg);
+				LOG_ERROR("Error downloading %s\n",optarg);
 			}
 			break;
 		}
 		case RAPID_VALIDATE: {
 			int res=fileSystem->validatePool(fileSystem->getSpringDir()+"/pool/");
-			INFO("Validated %d files",res);
+			LOG_INFO("Validated %d files",res);
 			break;
 		}
 		case RAPID_LIST: {
 			rapidDownload->search(list);
 			std::list<IDownload>::iterator it;
 			for (it=list.begin(); it!=list.end(); ++it) {
-				INFO("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
+				LOG_INFO("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
 			}
 			break;
 		}
@@ -141,7 +139,11 @@ int main(int argc, char **argv)
 			break;
 		}
 		case FILESYSTEM_WRITEPATH: {
-			INFO("%s\n",fileSystem->getSpringDir().c_str());
+			LOG_INFO("%s\n",fileSystem->getSpringDir().c_str());
+			break;
+		}
+		case FILESYSTEM_DUMPSDP: {
+			fileSystem->dumpSDP(optarg);
 			break;
 		}
 		case HTTP_SEARCH: {
@@ -150,7 +152,7 @@ int main(int argc, char **argv)
 				break;
 			std::list<IDownload>::iterator it;
 			for (it=list.begin(); it!=list.end(); ++it) {
-				INFO("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
+				LOG_INFO("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
 			}
 			break;
 		}
@@ -161,13 +163,13 @@ int main(int argc, char **argv)
 		}
 		case DOWNLOAD_MAP: {
 			if (!download(optarg, IDownload::CAT_MAPS)) {
-				ERROR("No map found for %s\n",optarg);
+				LOG_ERROR("No map found for %s\n",optarg);
 			}
 			break;
 		}
 		case DOWNLOAD_GAME: {
 			if (!download(optarg, IDownload::CAT_MODS)) {
-				ERROR("No game fond for %s\n",optarg);
+				LOG_ERROR("No game fond for %s\n",optarg);
 			}
 			break;
 		}

@@ -99,6 +99,10 @@ public:
 	*
 	*/
 	bool parseTorrent(const char* data, int size, IDownload& dl);
+	/**
+	*	dumps info about the given .sdp
+	*/
+	bool dumpSDP(const std::string& filename);
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;

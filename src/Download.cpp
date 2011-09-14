@@ -10,17 +10,17 @@ IDownload::IDownload(const std::string& name, category cat)
 	this->name=name;
 	this->cat=cat;
 	this->downloaded=false;
-	for(int i=0; i<sizeof(md5); i++)
+	for(unsigned int i=0; i<sizeof(md5); i++)
 		md5[i]=0;
 }
 
-const std::string& IDownload::getCat(category cat)
+const std::string IDownload::getCat(category cat)
 {
 	const char* cats[]= {"none","maps","mods","luawidgets","aibots","lobbyclients","media","other","replays","springinstallers","tools"};
 	return cats[cat];
 }
 
-const std::string& IDownload::getUrl()
+const std::string IDownload::getUrl()
 {
 	const std::string empty="";
 	if (!mirror.empty())
@@ -37,7 +37,7 @@ const std::string& IDownload::getMirror(const int i)
 			return *it;
 		pos++;
 	}
-	ERROR("Invalid index in getMirror: %d\n", i);
+	LOG_ERROR("Invalid index in getMirror: %d\n", i);
 	return mirror.front();
 }
 

@@ -16,8 +16,9 @@ pr-downloader --download-game "Balanced Annihilation v7.20" --download-map "Delt
 
 ##coding style
 
-astyle --style=linux --indent=force-tab
+please use the git-pre-commit hook:
 
+	ln -sfv ../../git-hooks/pre-commit .git/hooks/pre-commit
 
 ##License
 

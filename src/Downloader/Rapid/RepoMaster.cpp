@@ -1,11 +1,12 @@
 #include "RepoMaster.h"
 #include "RapidDownloader.h"
-#include "../../FileSystem.h"
+#include "FileSystem.h"
+#include "Util.h"
 #include "Repo.h"
+
 #include <string>
 #include <stdio.h>
 #include <zlib.h>
-#include "../../Util.h"
 
 void CRepoMaster::download(const std::string& name)
 {
@@ -33,11 +34,11 @@ bool CRepoMaster::parse()
 {
 	gzFile fp=gzopen(path.c_str(), "r");
 	if (fp==Z_NULL) {
-		ERROR("Could not open %s\n",path.c_str());
+		LOG_ERROR("Could not open %s\n",path.c_str());
 		return false;
 	}
 	char buf[4096];
-	repos.empty();
+	repos.clear();
 	int i=0;
 	while (gzgets(fp, buf, sizeof(buf))!=Z_NULL) {
 		std::string tmp=buf;
@@ -47,12 +48,12 @@ bool CRepoMaster::parse()
 			CRepo repotmp=CRepo(url, rapid);
 			repos.push_back(repotmp);
 		} else {
-			ERROR("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
+			LOG_ERROR("Parse Error %s, Line %d: %s\n",path.c_str(),i,buf);
 			return false;
 		}
 	}
 	gzclose(fp);
-	DEBUG_LINE("Found %d repos in %s\n",repos.size(),path.c_str());
+	LOG_INFO("Found %d repos in %s\n",repos.size(),path.c_str());
 	return true;
 }
 
