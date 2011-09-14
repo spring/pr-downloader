@@ -1,22 +1,18 @@
-#define VERSION "0.1.1"
-#define USER_AGENT "unitsync-dev" + VERSION
-#define SPRING_DIR "/home/matze/.spring"
-#define TMP_FILE "/tmp/repos.gz"
-#define TMP_FILE2 "/tmp/version.gz"
+#include "Downloader/IDownloader.h"
+#include "FileSystem.h"
+#include "md5.h"
+#include "Util.h"
 
 
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "md5.h"
-#include "Util.h"
 #include <string>
-#include "FileSystem.h"
 #include <unistd.h>
 #include <getopt.h>
-#include "Downloader/IDownloader.h"
 #include <stdio.h>
 #include <list>
+
 
 enum {
 	RAPID_DOWNLOAD=0,
@@ -28,6 +24,7 @@ enum {
 	PLASMA_SEARCH,
 	WIDGET_SEARCH,
 	FILESYSTEM_WRITEPATH,
+	FILESYSTEM_DUMPSDP,
 	DOWNLOAD_MAP,
 	DOWNLOAD_GAME,
 	HELP
@@ -45,6 +42,7 @@ static struct option long_options[] = {
 	{"download-game"           , 1, 0, DOWNLOAD_GAME},
 	{"widget-search"           , 1, 0, WIDGET_SEARCH},
 	{"filesystem-writepath"    , 0, 0, FILESYSTEM_WRITEPATH},
+	{"filesystem-dumpsdp"      , 1, 0, FILESYSTEM_DUMPSDP},
 	{"help"                    , 0, 0, HELP},
 	{0                         , 0, 0, 0}
 };
@@ -142,6 +140,10 @@ int main(int argc, char **argv)
 		}
 		case FILESYSTEM_WRITEPATH: {
 			LOG_INFO("%s\n",fileSystem->getSpringDir().c_str());
+			break;
+		}
+		case FILESYSTEM_DUMPSDP: {
+			fileSystem->dumpSDP(optarg);
 			break;
 		}
 		case HTTP_SEARCH: {

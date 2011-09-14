@@ -1,6 +1,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#define VERSION "0.1.1"
+#define USER_AGENT "unitsync-dev" + VERSION
+
 #include "FileSystem.h"
 #include "Logger.h"
 /**

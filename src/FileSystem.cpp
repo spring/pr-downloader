@@ -123,9 +123,9 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 		int length = gzgetc(in);
 		if (length == -1) break;
 		if (!((gzread(in, &c_name, length)) &&
-			  (gzread(in, &c_md5, 16)) &&
-			  (gzread(in, &c_crc32, 4)) &&
-			  (gzread(in, &c_size, 4)))) {
+		      (gzread(in, &c_md5, 16)) &&
+		      (gzread(in, &c_crc32, 4)) &&
+		      (gzread(in, &c_size, 4)))) {
 			LOG_ERROR("Error reading %s\n", filename.c_str());
 			gzclose(in);
 			return false;
@@ -390,3 +390,18 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 	be_free(node);
 	return true;
 }
+
+bool CFileSystem::dumpSDP(const std::string& filename)
+{
+	std::list<CFileSystem::FileData> files;
+	files.clear();
+	if (!parseSdp(filename, files))
+		return false;
+	std::list<CFileSystem::FileData>::iterator it;
+	LOG_INFO("filename	size	virtualname	crc32\n");
+	for(it=files.begin(); it!=files.end(); ++it) {
+		LOG_INFO("%s %8d %s %X\n",getPoolFileName(*it).c_str(), (*it).size, (*it).name.c_str(), (*it).crc32);
+	}
+	return true;
+}
+
