@@ -83,6 +83,18 @@ bool download(const std::string& name, IDownload::category cat)
 	return false;
 }
 
+void show_results(std::list<IDownload>& list)
+{
+	std::list<IDownload>::iterator it;
+	for (it=list.begin(); it!=list.end(); ++it) {
+		LOG_INFO("Output filename %s\n",(*it).name.c_str());
+		int count=(*it).getMirrorCount();
+		for(int i=0; i<count; i++) {
+			LOG_INFO("Download url: %s\n",(*it).getMirror(i).c_str());
+		}
+	}
+}
+
 int main(int argc, char **argv)
 {
 	if (argc<2)
@@ -99,6 +111,7 @@ int main(int argc, char **argv)
 		if (c == -1)
 			break;
 		std::list<IDownload> list;
+		list.clear();
 		switch (c) {
 		case RAPID_DOWNLOAD: {
 			rapidDownload->search(list, optarg);
@@ -116,15 +129,13 @@ int main(int argc, char **argv)
 		}
 		case RAPID_LIST: {
 			rapidDownload->search(list);
-			std::list<IDownload>::iterator it;
-			for (it=list.begin(); it!=list.end(); ++it) {
-				LOG_INFO("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
-			}
+			show_results(list);
 			break;
 		}
 		case PLASMA_SEARCH: {
 			std::string tmp=optarg;
 			plasmaDownload->search(list, tmp);
+			show_results(list);
 			break;
 		}
 		case PLASMA_DOWNLOAD: {
@@ -148,12 +159,7 @@ int main(int argc, char **argv)
 		}
 		case HTTP_SEARCH: {
 			httpDownload->search(list, optarg);
-			if (list.empty())
-				break;
-			std::list<IDownload>::iterator it;
-			for (it=list.begin(); it!=list.end(); ++it) {
-				LOG_INFO("%s %s\n",(*it).getUrl().c_str(), (*it).name.c_str());
-			}
+			show_results(list);
 			break;
 		}
 		case HTTP_DOWNLOAD: {
