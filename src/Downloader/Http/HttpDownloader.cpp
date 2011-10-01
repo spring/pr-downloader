@@ -20,7 +20,7 @@ time_t start_time;
 	draw a nice download status-bar
 */
 int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownloaded,
-		  double TotalToUpload, double NowUploaded)
+				  double TotalToUpload, double NowUploaded)
 {
 	time_t now=time(NULL);
 	if (start_time==0)
@@ -125,7 +125,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			DEBUG_LINE("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
-		    (resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
+			(resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
 			LOG_ERROR("Invalid type in result\n");
 			return false;
 		}
@@ -141,7 +141,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			dl.addMirror(mirrors[j]);
 		}
 		//torrent data avaiable
-		if (resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeString){
+		if (resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeString) {
 			std::string base64=resfile["torrent"];
 			std::string binary;
 			base64_decode(base64, binary); //FIXME: this is a bug int the xml-rpc interface, it should return <base64> but returns <string>
@@ -169,10 +169,10 @@ std::string CHttpDownloader::escapeUrl(const std::string& url)
 bool CHttpDownloader::download(IDownload& download)
 {
 //FIXME: enable that
-/*
-	if (download.getMirrorCount()>1)
-		parallelDownload(download);
-*/
+	/*
+		if (download.getMirrorCount()>1)
+			parallelDownload(download);
+	*/
 	DEBUG_LINE("%s",download.name.c_str());
 	last_print = 0;
 	start_time = 0;
@@ -190,20 +190,20 @@ bool CHttpDownloader::download(IDownload& download)
 		}
 	*/
 
-  if (!fileSystem->directoryExists(download.name)){
-  	fileSystem->createSubdirs(download.name);
-  }
+	if (!fileSystem->directoryExists(download.name)) {
+		fileSystem->createSubdirs(download.name);
+	}
 
 	if (!curl) {
 		LOG_ERROR("Error initializing curl");
 		return false;
 	}
-	
-  std::string temp = fileSystem->createTempFile();
-	
+
+	std::string temp = download.name + ".download";
+
 	FILE* fp = fopen(temp.c_str() ,"wb+");
 	if (fp==NULL) {
-		LOG_ERROR("Could not open %s\n",download.name.c_str());
+		LOG_ERROR("Could not open %s\n",temp.c_str());
 		return false;
 	}
 	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
@@ -214,22 +214,23 @@ bool CHttpDownloader::download(IDownload& download)
 	LOG("\n"); //new line because of downloadbar
 	if (res!=0) {
 		LOG_ERROR("Failed to download %s\n",download.getUrl().c_str());
-		unlink(download.name.c_str());
+		unlink(temp.c_str());
 		return false;
 	}
-	
+
 	if(rename(temp.c_str(),download.name.c_str())) {
-    LOG_ERROR("Could not write to %s\n",download.name.c_str());
-    return false;
+		LOG_ERROR("Could not write to %s\n",download.name.c_str());
+		return false;
 	}
-    
+
 	return true;
 }
 
-bool CHttpDownloader::parallelDownload(IDownload& download){
+bool CHttpDownloader::parallelDownload(IDownload& download)
+{
 	CURLM* curlm=curl_multi_init();
 	const int count=download.mirror.size();
-	for(int i=0; i<count; i++){
+	for(int i=0; i<count; i++) {
 		CURL* curle = curl_easy_init();
 		curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, write_data);
 		curl_easy_setopt(curle, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
@@ -240,7 +241,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download){
 		curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
 		curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download.getMirror(i)).c_str());
 		std::string range;
-		if (!download.getRange(range)){
+		if (!download.getRange(range)) {
 			LOG_ERROR("Error getting range for download");
 			return false;
 		}
@@ -249,13 +250,13 @@ bool CHttpDownloader::parallelDownload(IDownload& download){
 		curl_multi_add_handle(curlm, curle);
 	}
 	int running;
-	do{
+	do {
 		/*TODO:
 			add new download when piece is finished
 			verify piece, when broken remove mirror from list
 			(remove mirror when it is slow and count of mirros > 1)
 		*/
 		curl_multi_perform(curlm, &running);
-	}while(running>0);
+	} while(running>0);
 	return true;
 }
