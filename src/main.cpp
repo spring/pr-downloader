@@ -175,7 +175,7 @@ int main(int argc, char **argv)
 		}
 		case DOWNLOAD_GAME: {
 			if (!download(optarg, IDownload::CAT_MODS)) {
-				LOG_ERROR("No game fond for %s\n",optarg);
+				LOG_ERROR("No game found for %s\n",optarg);
 			}
 			break;
 		}
