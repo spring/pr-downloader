@@ -9,6 +9,7 @@
 
 #include <list>
 #include <string>
+#include "FileSystem/CChecksum.h"
 
 class SRepository;
 class CRepo;
@@ -27,6 +28,7 @@ public:
 	//FIXME: maybe not portable?
 	struct FileData {
 		std::string name;
+		CChecksum checksum;
 		unsigned char md5[16];
 		unsigned int crc32;
 		unsigned int size;

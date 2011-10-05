@@ -1,13 +1,12 @@
 
 
 subdirs(Downloader)
+subdirs(FileSystem)
 
 set(myRapidFiles
 	FileSystem.cpp
 	Util.cpp
 	Logger.cpp
-	md5.cpp
-	sha1.cpp
 	main.cpp
 	Download.cpp
 	Downloader/IDownloader.cpp
@@ -32,6 +31,7 @@ target_link_libraries(${RAPID_LIB}
 	Http
 	Plasma
 	Widget
+	FileSystem
 	${CURL_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	${XMLRPC_LIBRARIES}
@@ -49,6 +49,7 @@ target_link_libraries(${RAPID}
 	Http
 	Plasma
 	Widget
+	FileSystem
 )
 
 FILE( GLOB_RECURSE header "*.h" )

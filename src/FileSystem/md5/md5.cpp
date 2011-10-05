@@ -115,9 +115,9 @@ void MD5Update (MD5_CTX *mdContext,unsigned char *inBuf,unsigned int inLen)
 		if (mdi == 0x40) {
 			for (i = 0, ii = 0; i < 16; i++, ii += 4)
 				in[i] = (((UINT4)mdContext->in[ii+3]) << 24) |
-						(((UINT4)mdContext->in[ii+2]) << 16) |
-						(((UINT4)mdContext->in[ii+1]) << 8) |
-						((UINT4)mdContext->in[ii]);
+					(((UINT4)mdContext->in[ii+2]) << 16) |
+					(((UINT4)mdContext->in[ii+1]) << 8) |
+					((UINT4)mdContext->in[ii]);
 			Transform (mdContext->buf, in);
 			mdi = 0;
 		}
@@ -145,9 +145,9 @@ void MD5Final (MD5_CTX *mdContext)
 	/* append length in bits and transform */
 	for (i = 0, ii = 0; i < 14; i++, ii += 4)
 		in[i] = (((UINT4)mdContext->in[ii+3]) << 24) |
-				(((UINT4)mdContext->in[ii+2]) << 16) |
-				(((UINT4)mdContext->in[ii+1]) << 8) |
-				((UINT4)mdContext->in[ii]);
+			(((UINT4)mdContext->in[ii+2]) << 16) |
+			(((UINT4)mdContext->in[ii+1]) << 8) |
+			((UINT4)mdContext->in[ii]);
 	Transform (mdContext->buf, in);
 
 	/* store buffer in digest */

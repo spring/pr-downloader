@@ -20,17 +20,17 @@
 #endif
 #endif
 
-#include "md5.h"
 #include "FileSystem.h"
 #include "Util.h"
 #include "Downloader/IDownloader.h"
+#include "FileSystem/CChecksumMD5.h"
 
 
 CFileSystem* CFileSystem::singleton = NULL;
 
 bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) const
 {
-	MD5_CTX mdContext;
+	CChecksumMD5 checksum;
 	int bytes;
 	unsigned char data[1024];
 	struct stat sb;
@@ -47,26 +47,23 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	if (inFile == NULL) { //file can't be opened
 		return false;
 	}
-	MD5Init (&mdContext);
+	checksum.Init();
 	unsigned long filesize=0;
 	while ((bytes = gzread (inFile, data, 1024)) > 0) {
-		MD5Update (&mdContext, data, bytes);
+		checksum.Update((char*)data, bytes);
 		filesize=filesize+bytes;
 	}
-	MD5Final (&mdContext);
+	checksum.Final();
 	gzclose (inFile);
 	/*	if (filesize!=mod->size){
 			ERROR("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),filesize, mod->size);
 			return false;
 		}*/
 
-	int i;
-	for (i=0; i<16; i++) {
-		if (mdContext.digest[i]!=mod.md5[i]) { //file is invalid
-//			ERROR("Damaged file found: %s\n",filename.c_str());
-//			unlink(filename.c_str());
-			return false;
-		}
+	if (!checksum.compare(mod.checksum)) { //file is invalid
+//		ERROR("Damaged file found: %s\n",filename.c_str());
+//		unlink(filename.c_str());
+		return false;
 	}
 	return true;
 }
@@ -105,7 +102,8 @@ bool CFileSystem::validateFile(IDownload& dl)
 	return true;
 }
 
-std::string CFileSystem::createTempFile(){
+std::string CFileSystem::createTempFile()
+{
 	std::string tmp;
 #ifndef WIN32
 	tmp=tmpnam(NULL);

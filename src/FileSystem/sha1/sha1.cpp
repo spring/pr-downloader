@@ -139,8 +139,8 @@ int SHA1Result(SHA1Context *context)
  *
  */
 void SHA1Input(     SHA1Context         *context,
-					const unsigned char *message_array,
-					unsigned            length)
+		    const unsigned char *message_array,
+		    unsigned            length)
 {
 	if (!length) {
 		return;
@@ -232,7 +232,7 @@ void SHA1ProcessMessageBlock(SHA1Context *context)
 
 	for(t = 0; t < 20; t++) {
 		temp =  SHA1CircularShift(5,A) +
-				((B & C) | ((~B) & D)) + E + W[t] + K[0];
+			((B & C) | ((~B) & D)) + E + W[t] + K[0];
 		temp &= 0xFFFFFFFF;
 		E = D;
 		D = C;
@@ -253,7 +253,7 @@ void SHA1ProcessMessageBlock(SHA1Context *context)
 
 	for(t = 40; t < 60; t++) {
 		temp = SHA1CircularShift(5,A) +
-			   ((B & C) | (B & D) | (C & D)) + E + W[t] + K[2];
+		       ((B & C) | (B & D) | (C & D)) + E + W[t] + K[2];
 		temp &= 0xFFFFFFFF;
 		E = D;
 		D = C;
