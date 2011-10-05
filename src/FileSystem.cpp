@@ -23,7 +23,7 @@
 #include "FileSystem.h"
 #include "Util.h"
 #include "Downloader/IDownloader.h"
-#include "FileSystem/CChecksumMD5.h"
+#include "FileSystem/HashMD5.h"
 
 
 CFileSystem* CFileSystem::singleton = NULL;

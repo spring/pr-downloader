@@ -1,4 +1,4 @@
-#include "CChecksumSHA1.h"
+#include "HashSHA1.h"
 
 #include <assert.h>
 

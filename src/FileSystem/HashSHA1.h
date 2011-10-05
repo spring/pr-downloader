@@ -1,7 +1,7 @@
 #ifndef _CCHECKSUMSHA1_H
 #define _CCHECKSUMSHA1_H
 
-#include "CChecksum.h"
+#include "IHash.h"
 #include "sha1/sha1.h"
 
 class CChecksumSHA1: CChecksum

@@ -9,7 +9,7 @@
 
 #include <list>
 #include <string>
-#include "FileSystem/CChecksum.h"
+#include "FileSystem/IHash.h"
 
 class SRepository;
 class CRepo;

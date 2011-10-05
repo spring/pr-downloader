@@ -1,4 +1,4 @@
-#include "CChecksum.h"
+#include "IHash.h"
 #include "md5/md5.h"
 
 class CChecksumMD5: public CChecksum

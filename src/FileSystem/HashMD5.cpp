@@ -3,7 +3,7 @@
 
 #include <assert.h>
 
-#include "CChecksumMD5.h"
+#include "HashMD5.h"
 
 
 
