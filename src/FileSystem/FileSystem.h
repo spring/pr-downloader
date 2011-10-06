@@ -28,7 +28,7 @@ public:
 	//FIXME: maybe not portable?
 	struct FileData {
 		std::string name;
-		CChecksum checksum;
+		IHash checksum;
 		unsigned char md5[16];
 		unsigned int crc32;
 		unsigned int size;

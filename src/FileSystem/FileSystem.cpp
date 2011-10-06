@@ -30,7 +30,7 @@ CFileSystem* CFileSystem::singleton = NULL;
 
 bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) const
 {
-	CChecksumMD5 checksum;
+	HashMD5 checksum;
 	int bytes;
 	unsigned char data[1024];
 	struct stat sb;

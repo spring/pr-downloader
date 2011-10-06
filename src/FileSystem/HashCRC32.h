@@ -1,18 +1,15 @@
-#ifndef _CCHECKSUMSHA1_H
-#define _CCHECKSUMSHA1_H
-
 #include "IHash.h"
-#include "sha1/sha1.h"
 
-class HashSHA1: IHash
+class HashCRC32: public IHash
 {
+public:
+	HashCRC32() {}
 	void Init();
 	void Final();
 	void Update(const char* data,const int size);
+//		const std::string toString();
 	int getSize();
 	int get(int pos);
 private:
-	SHA1Context sha1Context;
+	unsigned long crc;
 };
-
-#endif

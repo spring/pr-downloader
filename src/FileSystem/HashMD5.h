@@ -1,10 +1,10 @@
 #include "IHash.h"
 #include "md5/md5.h"
 
-class CChecksumMD5: public CChecksum
+class HashMD5: public IHash
 {
 public:
-	CChecksumMD5() {}
+	HashMD5() {}
 	void Init();
 	void Final();
 	void Update(const char* data,const int size);

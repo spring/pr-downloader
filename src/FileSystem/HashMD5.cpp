@@ -7,25 +7,25 @@
 
 
 
-void CChecksumMD5::Init()
+void HashMD5::Init()
 {
 	MD5Init (&mdContext);
 }
-void CChecksumMD5::Update(const char* data, const int size)
+void HashMD5::Update(const char* data, const int size)
 {
 	MD5Update (&mdContext, (unsigned char*)data, size);
 }
-void CChecksumMD5::Final()
+void HashMD5::Final()
 {
 	MD5Final(&mdContext);
 }
 
-int CChecksumMD5::getSize()
+int HashMD5::getSize()
 {
 	return sizeof(mdContext.digest);
 }
 
-int CChecksumMD5::get(int pos)
+int HashMD5::get(int pos)
 {
 	assert( (pos>=0) && (pos<getSize()) );
 	return mdContext.digest[pos];

@@ -4,10 +4,10 @@
 #include <string>
 
 
-class CChecksum
+class IHash
 {
 public:
-	CChecksum() {}
+	IHash() {}
 	virtual void Init() {}
 	virtual void Final() {}
 	virtual void Update(const char* data,const int size) {}
@@ -15,7 +15,7 @@ public:
 		std::string empty;
 		return empty;
 	}
-	virtual bool compare(const CChecksum& checksum) {
+	virtual bool compare(const IHash& checksum) {
 		if (checksum.getSize()!=getSize())
 			return false;
 		for (int i=0; i<getSize(); i++) {
