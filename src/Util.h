@@ -4,7 +4,7 @@
 #define VERSION "0.1.1"
 #define USER_AGENT "unitsync-dev" + VERSION
 
-#include "FileSystem.h"
+#include "FileSystem/FileSystem.h"
 #include "Logger.h"
 /**
 	creates a url from fileinfo, for example

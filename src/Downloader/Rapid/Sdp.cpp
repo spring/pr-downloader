@@ -1,8 +1,8 @@
 #include "RapidDownloader.h"
 #include "RepoMaster.h"
 #include "Sdp.h"
-#include "../../FileSystem.h"
-#include "../../Util.h"
+#include "FileSystem/FileSystem.h"
+#include "Util.h"
 #include <string>
 #include <string.h>
 #include <stdio.h>

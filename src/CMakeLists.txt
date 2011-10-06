@@ -4,13 +4,11 @@ subdirs(Downloader)
 subdirs(FileSystem)
 
 set(myRapidFiles
-	FileSystem.cpp
 	Util.cpp
 	Logger.cpp
 	main.cpp
 	Download.cpp
 	Downloader/IDownloader.cpp
-	bencode/bencode.c
 )
 
 set (RAPID "pr-downloader")

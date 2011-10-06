@@ -3,7 +3,7 @@
 
 #include "WidgetDownloader.h"
 #include "Widget.h"
-#include "../../FileSystem.h"
+#include "FileSystem/FileSystem.h"
 
 bool CWidgetDownloader::download(IDownload& download)
 {

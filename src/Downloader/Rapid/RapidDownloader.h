@@ -10,7 +10,7 @@
 #define REPO_MASTER_RECHECK_TIME 3600 //how long to cache the repo-master file in secs without rechecking
 #define REPO_RECHECK_TIME 600
 
-#include "../IDownloader.h"
+#include "Downloader/IDownloader.h"
 #include "RepoMaster.h"
 
 class CSdp;

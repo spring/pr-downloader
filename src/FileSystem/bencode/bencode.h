@@ -23,41 +23,42 @@
 extern "C" {
 #endif
 
-typedef enum {
-	BE_STR,
-	BE_INT,
-	BE_LIST,
-	BE_DICT,
-} be_type;
+	typedef enum {
+		BE_STR,
+		BE_INT,
+		BE_LIST,
+		BE_DICT,
+	}
+	be_type;
 
-struct be_dict;
-struct be_node;
+	struct be_dict;
+	struct be_node;
 
-/*
- * XXX: the "val" field of be_dict and be_node can be confusing ...
- */
+	/*
+	 * XXX: the "val" field of be_dict and be_node can be confusing ...
+	 */
 
-typedef struct be_dict {
-	char *key;
-	struct be_node *val;
-} be_dict;
+	typedef struct be_dict {
+		char *key;
+		struct be_node *val;
+	} be_dict;
 
-typedef struct be_node {
-	be_type type;
-	union {
-		char *s;
-		long long i;
-		struct be_node **l;
-		struct be_dict *d;
-	} val;
-} be_node;
+	typedef struct be_node {
+		be_type type;
+		union {
+			char *s;
+			long long i;
+			struct be_node **l;
+			struct be_dict *d;
+		} val;
+	} be_node;
 
-extern long long be_str_len(be_node *node);
-extern be_node *be_decode(const char *bencode);
-extern be_node *be_decoden(const char *bencode, long long bencode_len);
-extern void be_free(be_node *node);
+	extern long long be_str_len(be_node *node);
+	extern be_node *be_decode(const char *bencode);
+	extern be_node *be_decoden(const char *bencode, long long bencode_len);
+	extern void be_free(be_node *node);
 #ifdef BE_DEBUG
-extern void be_dump(be_node *node);
+	extern void be_dump(be_node *node);
 #endif
 
 #ifdef __cplusplus

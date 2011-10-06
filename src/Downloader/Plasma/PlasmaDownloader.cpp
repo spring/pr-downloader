@@ -3,8 +3,8 @@
 #include "soap/ContentServiceSoap.nsmap"
 
 #include "PlasmaDownloader.h"
-#include "../../FileSystem.h"
-#include "../../Util.h"
+#include "FileSystem/FileSystem.h"
+#include "Util.h"
 #include "pr-downloader/Download.h"
 
 

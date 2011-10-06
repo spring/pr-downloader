@@ -102,79 +102,79 @@ static be_node *_be_decode(const char **data, long long *data_len)
 
 	switch (**data) {
 		/* lists */
-		case 'l': {
-			unsigned int i = 0;
+	case 'l': {
+		unsigned int i = 0;
 
-			ret = be_alloc(BE_LIST);
+		ret = be_alloc(BE_LIST);
 
-			--(*data_len);
-			++(*data);
-			while (**data != 'e') {
-				ret->val.l = realloc(ret->val.l, (i + 2) * sizeof(*ret->val.l));
-				ret->val.l[i] = _be_decode(data, data_len);
-				if (!ret->val.l[i])
-					break;
-				++i;
-			}
-			--(*data_len);
-			++(*data);
-
-			ret->val.l[i] = NULL;
-
-			return ret;
+		--(*data_len);
+		++(*data);
+		while (**data != 'e') {
+			ret->val.l = realloc(ret->val.l, (i + 2) * sizeof(*ret->val.l));
+			ret->val.l[i] = _be_decode(data, data_len);
+			if (!ret->val.l[i])
+				break;
+			++i;
 		}
+		--(*data_len);
+		++(*data);
 
-		/* dictionaries */
-		case 'd': {
-			unsigned int i = 0;
+		ret->val.l[i] = NULL;
 
-			ret = be_alloc(BE_DICT);
+		return ret;
+	}
 
-			--(*data_len);
-			++(*data);
-			while (**data != 'e') {
-				ret->val.d = realloc(ret->val.d, (i + 2) * sizeof(*ret->val.d));
-				ret->val.d[i].key = _be_decode_str(data, data_len);
-				ret->val.d[i].val = _be_decode(data, data_len);
-				if (!ret->val.l[i])
-					break;
-				++i;
-			}
-			--(*data_len);
-			++(*data);
+	/* dictionaries */
+	case 'd': {
+		unsigned int i = 0;
 
-			ret->val.d[i].val = NULL;
+		ret = be_alloc(BE_DICT);
 
-			return ret;
+		--(*data_len);
+		++(*data);
+		while (**data != 'e') {
+			ret->val.d = realloc(ret->val.d, (i + 2) * sizeof(*ret->val.d));
+			ret->val.d[i].key = _be_decode_str(data, data_len);
+			ret->val.d[i].val = _be_decode(data, data_len);
+			if (!ret->val.l[i])
+				break;
+			++i;
 		}
+		--(*data_len);
+		++(*data);
 
-		/* integers */
-		case 'i': {
-			ret = be_alloc(BE_INT);
+		ret->val.d[i].val = NULL;
 
-			--(*data_len);
-			++(*data);
-			ret->val.i = _be_decode_int(data, data_len);
-			if (**data != 'e')
-				return NULL;
-			--(*data_len);
-			++(*data);
+		return ret;
+	}
 
-			return ret;
-		}
+	/* integers */
+	case 'i': {
+		ret = be_alloc(BE_INT);
 
-		/* byte strings */
-		case '0'...'9': {
-			ret = be_alloc(BE_STR);
+		--(*data_len);
+		++(*data);
+		ret->val.i = _be_decode_int(data, data_len);
+		if (**data != 'e')
+			return NULL;
+		--(*data_len);
+		++(*data);
 
-			ret->val.s = _be_decode_str(data, data_len);
+		return ret;
+	}
 
-			return ret;
-		}
+	/* byte strings */
+	case '0'...'9': {
+		ret = be_alloc(BE_STR);
 
-		/* invalid */
-		default:
-			break;
+		ret->val.s = _be_decode_str(data, data_len);
+
+		return ret;
+	}
+
+	/* invalid */
+	default:
+		break;
 	}
 
 	return ret;
@@ -198,30 +198,30 @@ static inline void _be_free_str(char *str)
 void be_free(be_node *node)
 {
 	switch (node->type) {
-		case BE_STR:
-			_be_free_str(node->val.s);
-			break;
+	case BE_STR:
+		_be_free_str(node->val.s);
+		break;
 
-		case BE_INT:
-			break;
+	case BE_INT:
+		break;
 
-		case BE_LIST: {
-			unsigned int i;
-			for (i = 0; node->val.l[i]; ++i)
-				be_free(node->val.l[i]);
-			free(node->val.l);
-			break;
+	case BE_LIST: {
+		unsigned int i;
+		for (i = 0; node->val.l[i]; ++i)
+			be_free(node->val.l[i]);
+		free(node->val.l);
+		break;
+	}
+
+	case BE_DICT: {
+		unsigned int i;
+		for (i = 0; node->val.d[i].val; ++i) {
+			_be_free_str(node->val.d[i].key);
+			be_free(node->val.d[i].val);
 		}
-
-		case BE_DICT: {
-			unsigned int i;
-			for (i = 0; node->val.d[i].val; ++i) {
-				_be_free_str(node->val.d[i].key);
-				be_free(node->val.d[i].val);
-			}
-			free(node->val.d);
-			break;
-		}
+		free(node->val.d);
+		break;
+	}
 	}
 	free(node);
 }
@@ -243,36 +243,36 @@ static void _be_dump(be_node *node, ssize_t indent)
 	indent = abs(indent);
 
 	switch (node->type) {
-		case BE_STR:
-			printf("str = %s (len = %lli)\n", node->val.s, be_str_len(node));
-			break;
+	case BE_STR:
+		printf("str = %s (len = %lli)\n", node->val.s, be_str_len(node));
+		break;
 
-		case BE_INT:
-			printf("int = %lli\n", node->val.i);
-			break;
+	case BE_INT:
+		printf("int = %lli\n", node->val.i);
+		break;
 
-		case BE_LIST:
-			puts("list [");
+	case BE_LIST:
+		puts("list [");
 
-			for (i = 0; node->val.l[i]; ++i)
-				_be_dump(node->val.l[i], indent + 1);
+		for (i = 0; node->val.l[i]; ++i)
+			_be_dump(node->val.l[i], indent + 1);
 
-			_be_dump_indent(indent);
-			puts("]");
-			break;
+		_be_dump_indent(indent);
+		puts("]");
+		break;
 
-		case BE_DICT:
-			puts("dict {");
+	case BE_DICT:
+		puts("dict {");
 
-			for (i = 0; node->val.d[i].val; ++i) {
-				_be_dump_indent(indent + 1);
-				printf("%s => ", node->val.d[i].key);
-				_be_dump(node->val.d[i].val, -(indent + 1));
-			}
+		for (i = 0; node->val.d[i].val; ++i) {
+			_be_dump_indent(indent + 1);
+			printf("%s => ", node->val.d[i].key);
+			_be_dump(node->val.d[i].val, -(indent + 1));
+		}
 
-			_be_dump_indent(indent);
-			puts("}");
-			break;
+		_be_dump_indent(indent);
+		puts("}");
+		break;
 	}
 }
 void be_dump(be_node *node)

@@ -11,7 +11,7 @@
 #include "xmlrpc++/src/XmlRpc.h"
 
 
-#include "../../Util.h"
+#include "Util.h"
 
 time_t last_print;
 time_t start_time;
@@ -20,7 +20,7 @@ time_t start_time;
 	draw a nice download status-bar
 */
 int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownloaded,
-				  double TotalToUpload, double NowUploaded)
+		  double TotalToUpload, double NowUploaded)
 {
 	time_t now=time(NULL);
 	if (start_time==0)
@@ -125,7 +125,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			DEBUG_LINE("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
-			(resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
+		    (resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
 			LOG_ERROR("Invalid type in result\n");
 			return false;
 		}
