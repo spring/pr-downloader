@@ -20,15 +20,25 @@ void HashMD5::Final()
 	MD5Final(&mdContext);
 }
 
-int HashMD5::getSize()
+int HashMD5::getSize() const
 {
 	return sizeof(mdContext.digest);
 }
 
-int HashMD5::get(int pos)
+unsigned char HashMD5::get(int pos) const
 {
 	assert( (pos>=0) && (pos<getSize()) );
 	return mdContext.digest[pos];
+}
+
+bool HashMD5::Set(const void* data, int len)
+{
+	return true;
+}
+
+bool HashMD5::Set(const std::string& string)
+{
+	return true;
 }
 
 

@@ -28,7 +28,7 @@ public:
 	//FIXME: maybe not portable?
 	struct FileData {
 		std::string name;
-		IHash checksum;
+//		HashMD5 md5; //FIXME: use this
 		unsigned char md5[16];
 		unsigned int crc32;
 		unsigned int size;
@@ -45,16 +45,6 @@ public:
 	 *	Validates a pool-file, (checks the md5)
 	 */
 	bool fileIsValid(const FileData& mod, const std::string& filename) const;
-
-	/**
-	 * Validates a normal file, first by md5 second by torrent data
-	 */
-	bool validateFile(IDownload& dl);
-
-	/**
-		returns a temporary file name, file is deleted in destructor if not moved away
-	*/
-	std::string createTempFile();
 
 	/**
 		returns the spring writeable directory

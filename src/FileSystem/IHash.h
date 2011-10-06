@@ -9,21 +9,19 @@ class IHash
 {
 public:
 //	IHash() {}
-	virtual void Init() {}
-	virtual void Final() {}
-	virtual void Update(const char* data,const int size) {}
+	virtual bool Set(const void* data, int len)=0;
+	virtual bool Set(const std::string& str)=0;
+	virtual void Init()=0;
+	virtual void Final()=0;
+	virtual void Update(const char* data,const int size)=0;
 	virtual const std::string toString() {
 		std::string empty;
 		return empty;
 	}
-	bool compare(const IHash& checksum);
-	virtual int getSize() const {
-		return 0;
-	}
-	virtual int get(int pos) const {
-		return 0;
-	}
-//	virtual const compare
+	virtual bool compare(const IHash& checksum);
+	virtual bool compare(const unsigned char* data, int size);
+	virtual int getSize() const=0;
+	virtual unsigned char get(int pos) const=0;
 };
 
 #endif

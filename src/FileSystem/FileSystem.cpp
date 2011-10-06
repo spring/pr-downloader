@@ -24,13 +24,14 @@
 #include "Util.h"
 #include "Downloader/IDownloader.h"
 #include "FileSystem/HashMD5.h"
+#include "Logger.h"
 
 
 CFileSystem* CFileSystem::singleton = NULL;
 
 bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) const
 {
-	HashMD5 checksum;
+	HashMD5 md5hash;
 	int bytes;
 	unsigned char data[1024];
 	struct stat sb;
@@ -47,75 +48,25 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	if (inFile == NULL) { //file can't be opened
 		return false;
 	}
-	checksum.Init();
+	md5hash.Init();
 	unsigned long filesize=0;
 	while ((bytes = gzread (inFile, data, 1024)) > 0) {
-		checksum.Update((char*)data, bytes);
+		md5hash.Update((char*)data, bytes);
 		filesize=filesize+bytes;
 	}
-	checksum.Final();
+	md5hash.Final();
 	gzclose (inFile);
 	/*	if (filesize!=mod->size){
 			ERROR("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),filesize, mod->size);
 			return false;
 		}*/
 
-	if (!checksum.compare(mod.checksum)) { //file is invalid
+	if (!md5hash.compare(mod.md5, sizeof(mod.md5))) { //file is invalid
 //		ERROR("Damaged file found: %s\n",filename.c_str());
 //		unlink(filename.c_str());
 		return false;
 	}
 	return true;
-}
-bool CFileSystem::validateFile(IDownload& dl)
-{
-	if (dl.name.empty())
-		return false;
-	struct stat sb;
-	if (stat(dl.name.c_str(),&sb)<0) {
-		return false;
-	}
-
-
-	FILE* inFile = fopen(dl.name.c_str(), "rb");
-	if (inFile == NULL) { //file can't be opened
-		return false;
-	}
-	MD5_CTX mdContext;
-	MD5Init (&mdContext);
-	unsigned long filesize=0;
-	int bytes;
-	unsigned char data[1024];
-	while ((bytes = fread (data, sizeof(data), 1,inFile)) > 0) {
-		MD5Update (&mdContext, data, bytes);
-		filesize=filesize+bytes;
-	}
-	MD5Final (&mdContext);
-	fclose (inFile);
-	for (int i=0; i<16; i++) {
-		if (mdContext.digest[i]!=dl.md5[i]) { //file is invalid
-			LOG_ERROR("md5 invalid!\n");
-			return false;
-		}
-	}
-	//TODO check sha1 sums
-	return true;
-}
-
-std::string CFileSystem::createTempFile()
-{
-	std::string tmp;
-#ifndef WIN32
-	tmp=tmpnam(NULL);
-#else
-	char buf[MAX_PATH];
-	char tmppath[MAX_PATH];
-	GetTempPath(sizeof(tmppath),tmppath);
-	GetTempFileName(tmppath,NULL,0,buf);
-	tmp->assign(buf);
-#endif
-	tmpfiles.push_back(tmp);
-	return tmp;
 }
 
 bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::FileData>& files)
