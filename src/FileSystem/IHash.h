@@ -2,12 +2,13 @@
 #define _CCHECKSUM_H
 
 #include <string>
+#include <assert.h>
 
 
 class IHash
 {
 public:
-	IHash() {}
+//	IHash() {}
 	virtual void Init() {}
 	virtual void Final() {}
 	virtual void Update(const char* data,const int size) {}
@@ -15,15 +16,7 @@ public:
 		std::string empty;
 		return empty;
 	}
-	virtual bool compare(const IHash& checksum) {
-		if (checksum.getSize()!=getSize())
-			return false;
-		for (int i=0; i<getSize(); i++) {
-			if (get(i)!=checksum.get(i))
-				return false;
-		}
-		return true;
-	}
+	bool compare(const IHash& checksum);
 	virtual int getSize() const {
 		return 0;
 	}
