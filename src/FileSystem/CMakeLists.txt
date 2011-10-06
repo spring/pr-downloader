@@ -9,3 +9,7 @@ add_library(FileSystem
 		"sha1/sha1.cpp"
 		"bencode/bencode.c"
 )
+target_link_libraries(FileSystem
+	${ZLIB_LIBRARIES}
+)
+
