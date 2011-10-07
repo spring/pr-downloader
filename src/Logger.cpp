@@ -28,7 +28,10 @@ void LOG_DOWNLOAD(const std::string& filename)
 
 void LOG_PROGRESS(float done, float total)
 {
-	float percentage = done / total;
+	float percentage = 0;
+	if (total>0) {
+		percentage = done / total;
+	}
 	printf("[Progress] %3.0f%% [",percentage * 100.0f);
 	int totaldotz = 30;                           // how wide you want the progress meter to be
 	int dotz = percentage * totaldotz;
