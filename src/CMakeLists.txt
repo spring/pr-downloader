@@ -6,7 +6,6 @@ subdirs(FileSystem)
 set(myRapidFiles
 	Util.cpp
 	Logger.cpp
-	main.cpp
 	Download.cpp
 	Downloader/IDownloader.cpp
 )
@@ -36,7 +35,10 @@ target_link_libraries(${RAPID_LIB}
 	${ADDITIONAL_LIBS}
 )
 
-add_executable(${RAPID} ${myRapidFiles})
+add_executable(${RAPID}
+	main.cpp
+	${myRapidFiles}
+)
 
 target_link_libraries(${RAPID}
 	${WIN32LIBS}
