@@ -49,10 +49,10 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 		return false;
 	}
 	md5hash.Init();
-	unsigned long filesize=0;
+//	unsigned long filesize=0;
 	while ((bytes = gzread (inFile, data, 1024)) > 0) {
 		md5hash.Update((char*)data, bytes);
-		filesize=filesize+bytes;
+//		filesize=filesize+bytes;
 	}
 	md5hash.Final();
 	gzclose (inFile);

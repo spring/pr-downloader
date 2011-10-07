@@ -61,7 +61,7 @@ bool CSdp::download()
 		}
 		if (i%10==0)
 			DEBUG_LINE("\r%d/%d checked",i,(int)files.size());
-		it++;
+		++it;
 	}
 	DEBUG_LINE("\r%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
 	if (count>0) {

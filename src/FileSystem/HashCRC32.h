@@ -3,13 +3,15 @@
 class HashCRC32: public IHash
 {
 public:
-	HashCRC32() {}
+	HashCRC32() {
+		crc=0;
+	}
 	void Init();
 	void Final();
 	void Update(const char* data,const int size);
 //		const std::string toString();
 	int getSize();
-	int get(int pos);
+	unsigned char get(int pos) const;
 private:
 	unsigned long crc;
 };

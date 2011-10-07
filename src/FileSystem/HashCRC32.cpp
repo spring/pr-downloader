@@ -20,7 +20,7 @@ int HashCRC32::getSize()
 	return sizeof(crc);
 }
 
-int HashCRC32::get(int pos)
+unsigned char HashCRC32::get(int pos) const
 {
 	return crc;
 }
