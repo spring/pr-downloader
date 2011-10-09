@@ -201,50 +201,57 @@ const std::string CFileSystem::getPoolFileName(const std::string& md5) const
 
 int CFileSystem::validatePool(const std::string& path)
 {
-	DIR* d;
-	d=opendir(path.c_str());
-	unsigned long time=getTime();
+
+	unsigned long time=0;
 	int res=0;
-	if (d!=NULL) {
+	std::list <std::string*>dirs;
+	dirs.push_back(new std::string(path));
+	int maxdirs=256;
+	while(!dirs.empty()) {
 		struct dirent* dentry;
+		DIR* d;
+		std::string* dir=dirs.front();
+		dirs.pop_front();
+		d=opendir(dir->c_str());
 		while ( (dentry=readdir(d))!=NULL) {
-			struct stat sb;
-			std::string tmp;
-			if (dentry->d_name[0]!='.') {
-				tmp=path+PATH_DELIMITER+dentry->d_name;
-				stat(tmp.c_str(),&sb);
-				if ((sb.st_mode&S_IFDIR)!=0) {
-					res=res+validatePool(tmp);
-					unsigned long now=getTime();
-					if (time<now) {
-						LOG_INFO("Valid files: %d\r",res);
-						fflush(stdout);
-						time=now;
-					}
+			unsigned long now=getTime();
+			if (time<now) {
+				LOG_PROGRESS(maxdirs-dirs.size(), maxdirs);
+				fflush(stdout);
+				time=now;
+			}
+			std::string absname=dir->c_str();
+			absname += PATH_DELIMITER;
+			absname += dentry->d_name;
+			if (dentry->d_name[0]!='.') { //don't check hidden files / . / ..
+				if ((dentry->d_type & DT_DIR)!=0) { //directory
+					dirs.push_back(new std::string(absname));
 				} else {
 					FileData filedata;
 					std::string md5;
-					int len=tmp.length();
+					int len=absname.length();
 					if (len<36) { //file length has at least to be <md5[0]><md5[1]>/<md5[2-30]>.gz
-						LOG_ERROR("Invalid file: %s\n", tmp.c_str());
+						LOG_ERROR("Invalid file: %s\n", absname.c_str());
 					} else {
 						md5="";
-						md5.push_back(tmp.at(len-36));
-						md5.push_back(tmp.at(len-35));
-						md5.append(tmp.substr(len-33, 30));
-						md5AtoI(md5,filedata.md5);
-						if (!fileIsValid(filedata,tmp)) {
-							LOG_ERROR("Invalid File in pool: %s\n",tmp.c_str());
+						md5.push_back(absname.at(len-36));
+						md5.push_back(absname.at(len-35));
+						md5.append(absname.substr(len-33, 30));
+						if (!md5AtoI(md5,filedata.md5)) { //set md5 in filedata structure
+							LOG_ERROR("Invalid filename %s\n", absname.c_str());
+						}
+						if (!fileIsValid(filedata, absname)) { //check if md5 in filename is the same as in filename
+							LOG_ERROR("Invalid File in pool: %s\n",absname.c_str());
 						} else {
 							res++;
 						}
 					}
 				}
 			}
-
 		}
+		delete(dir);
+		closedir(d);
 	}
-	closedir(d);
 	return res;
 }
 
