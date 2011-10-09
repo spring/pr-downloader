@@ -33,24 +33,15 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 {
 	HashMD5 md5hash;
 	int bytes;
-	unsigned char data[1024];
-	struct stat sb;
-	if (stat(filename.c_str(),&sb)<0) {
-		return false;
-	}
-
-	if (!sb.st_mode&S_IFREG) {
-		LOG_ERROR("File is no file %s\n", filename.c_str());
-		return false;
-	}
-
+	unsigned char data[4096];
 	gzFile inFile = gzopen (filename.c_str(), "rb");
 	if (inFile == NULL) { //file can't be opened
+		LOG_ERROR("Could not open file %s\n", filename.c_str());
 		return false;
 	}
 	md5hash.Init();
 //	unsigned long filesize=0;
-	while ((bytes = gzread (inFile, data, 1024)) > 0) {
+	while ((bytes = gzread (inFile, data, 4096)) > 0) {
 		md5hash.Update((char*)data, bytes);
 //		filesize=filesize+bytes;
 	}
@@ -189,12 +180,10 @@ void CFileSystem::createSubdirs (const std::string& path) const
 }
 
 
-const std::string CFileSystem::getPoolFileName(const CFileSystem::FileData& fdata) const
+const std::string CFileSystem::getPoolFileName(const std::string& md5) const
 {
 	std::string name;
-	std::string md5;
 
-	md5ItoA(fdata.md5, md5);
 	name=getSpringDir();
 	name += PATH_DELIMITER;
 	name += "pool";
@@ -202,7 +191,9 @@ const std::string CFileSystem::getPoolFileName(const CFileSystem::FileData& fdat
 	name += md5.at(0);
 	name += md5.at(1);
 	name += PATH_DELIMITER;
-	createSubdirs(name);
+	if (!directoryExists(name)) {
+		createSubdirs(name);
+	}
 	name += md5.substr(2);
 	name += ".gz";
 	return name;
@@ -364,7 +355,9 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	std::list<CFileSystem::FileData>::iterator it;
 	LOG_INFO("filename	size	virtualname	crc32\n");
 	for(it=files.begin(); it!=files.end(); ++it) {
-		LOG_INFO("%s %8d %s %X\n",getPoolFileName(*it).c_str(), (*it).size, (*it).name.c_str(), (*it).crc32);
+		std::string md5;
+		md5ItoA((const unsigned char*)(*it).name.c_str() ,md5);
+		LOG_INFO("%s %8d %s %X\n",md5.c_str(), (*it).size, (*it).name.c_str(), (*it).crc32);
 	}
 	return true;
 }

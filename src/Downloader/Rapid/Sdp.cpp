@@ -102,7 +102,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			while ( (!(*sdp->list_it).download==true) && (sdp->list_it!=sdp->globalFiles->end())) { //get file
 				sdp->list_it++;
 			}
-			sdp->file_name=fileSystem->getPoolFileName(*sdp->list_it);
+			sdp->file_name=fileSystem->getPoolFileName((*sdp->list_it).name.c_str());
 			sdp->file_handle=fopen(sdp->file_name.c_str(),"wb");
 //FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);
 			if (sdp->file_handle==NULL) {

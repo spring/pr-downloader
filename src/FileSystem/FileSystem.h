@@ -62,7 +62,7 @@ public:
 	*/
 	void createSubdirs(const std::string& path) const;
 
-	const std::string getPoolFileName(const CFileSystem::FileData& fdata) const;
+	const std::string getPoolFileName(const std::string& md5) const;
 	/**
 		Validate all files in /pool/ (check md5)
 		@return count of valid files found
