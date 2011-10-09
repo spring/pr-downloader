@@ -1,29 +1,36 @@
 #include "Logger.h"
 #include <stdio.h>
-#include <string.h>
-#include <cstdarg>
+#include <stdarg.h>
 
-
-void LOG(const std::string& format, ...)
+void LOG(const char* format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	vprintf(format.c_str(), args);
+	vprintf(format, args);
 	va_end(args);
 }
 
-void LOG_INFO(const std::string& format, ...)
+void LOG_INFO(const char* format, ...)
 {
 	va_list args;
 	va_start(args, format);
 	printf("[Info] ");
-	vprintf(format.c_str(), args);
+	vprintf(format, args);
 	va_end(args);
 }
 
-void LOG_DOWNLOAD(const std::string& filename)
+void LOG_ERROR(const char* format, ...)
 {
-	printf("[Download] %s\n",filename.c_str());
+	va_list args;
+	va_start(args,format);
+	printf("[Error] ");
+	vprintf(format,args);
+	va_end(args);
+}
+
+void LOG_DOWNLOAD(const char* filename)
+{
+	printf("[Download] %s\n",filename);
 }
 
 void LOG_PROGRESS(float done, float total)
@@ -49,11 +56,3 @@ void LOG_PROGRESS(float done, float total)
 	fflush(stdout);
 }
 
-void LOG_ERROR(const std::string& format, ...)
-{
-	va_list args;
-	va_start(args,format);
-	printf("[Error] ");
-	vprintf(format.c_str(),args);
-	va_end(args);
-}

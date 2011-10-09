@@ -6,20 +6,20 @@
 /**
 *	plain log output
 */
-void LOG(const std::string& format, ...);
+void LOG(const char* format, ...);
 /**
 *	output log level info
 */
-void LOG_INFO(const std::string& format, ...);
+void LOG_INFO(const char* format, ...);
 /**
 *	output log level error
 */
-void LOG_ERROR(const std::string& format, ...);
+void LOG_ERROR(const char* format, ...);
 
 /**
 *	output progress bar
 */
-void LOG_DOWNLOAD(const std::string& filename);
+void LOG_DOWNLOAD(const char* filename);
 
 void LOG_PROGRESS(float done, float total);
 
