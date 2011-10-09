@@ -206,7 +206,8 @@ int CFileSystem::validatePool(const std::string& path)
 	int res=0;
 	std::list <std::string*>dirs;
 	dirs.push_back(new std::string(path));
-	int maxdirs=256;
+	int maxdirs=256; //FIXME: unknown dirs in pool will break bar
+	int finished=0;
 	while(!dirs.empty()) {
 		struct dirent* dentry;
 		DIR* d;
@@ -216,7 +217,7 @@ int CFileSystem::validatePool(const std::string& path)
 		while ( (dentry=readdir(d))!=NULL) {
 			unsigned long now=getTime();
 			if (time<now) {
-				LOG_PROGRESS(maxdirs-dirs.size(), maxdirs);
+				LOG_PROGRESS(finished, maxdirs);
 				fflush(stdout);
 				time=now;
 			}
@@ -249,6 +250,7 @@ int CFileSystem::validatePool(const std::string& path)
 				}
 			}
 		}
+		finished++;
 		delete(dir);
 		closedir(d);
 	}
