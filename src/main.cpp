@@ -68,6 +68,7 @@ void show_help(const char* cmd)
 bool download(const std::string& name, IDownload::category cat)
 {
 	std::list<IDownload> res;
+	//only games can be (currently) downloaded by rapid
 	if (cat==IDownload::CAT_MODS) {
 		rapidDownload->search(res, optarg, cat);
 		if ((!res.empty()) && (rapidDownload->download(res)))
@@ -99,7 +100,7 @@ int main(int argc, char **argv)
 	if (argc<2)
 		show_help(argv[0]);
 
-	printf("[pr-downloader] " VERSION " \n");
+	LOG_INFO("[pr-downloader] " VERSION " \n");
 
 	CFileSystem::Initialize();
 	IDownloader::Initialize();
