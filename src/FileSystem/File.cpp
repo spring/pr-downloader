@@ -11,6 +11,7 @@
 
 CFile::CFile(const std::string& filename, int size, int piecesize)
 {
+	handle=0;
 	Open(filename);
 	if (piecesize<=0)
 		this->piecesize=1;
@@ -37,7 +38,7 @@ bool CFile::Open(const std::string& filename)
 {
 //	fileSystem->createSubdirs(filename);
 	if (handle!=0) {
-		LOG_ERROR("file opened before old was closed");
+		LOG_ERROR("file opened before old was closed\n");
 		return false;
 	}
 	handle=open(filename.c_str(), O_CREAT|O_RDWR);
@@ -87,9 +88,11 @@ void CFile::RestorePos(int piece)
 void CFile::IncPos(int piece, int pos)
 {
 	if (piece>=0) {
-		pieces[piece].pos +=pos;
+		assert(pieces[piece].pos<=size+pos);
 		assert(pos<=piecesize);
+		pieces[piece].pos +=pos;
 	} else {
+		assert(curpos<=size);
 		curpos += pos;
 	}
 }
@@ -143,6 +146,8 @@ bool CFile::SetPieceSize(int size)
 int CFile::GetPiceSize(int piece)
 {
 	if (piece>=0) {
+		assert(piece<=pieces.size());
+		LOG("%d %d\n", pieces.size(), piece);
 		if (pieces.size()==piece) //last piece
 			return size%piecesize;
 		return piecesize;

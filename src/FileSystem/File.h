@@ -61,6 +61,10 @@ public:
 	* @return the (relative) position in the piece, -1 means absolute
 	*/
 	int Seek(int pos, int piece=-1);
+	/**
+	*	gets the size of the given pice, returns file size when piece<0. hint: first piece=0
+	*	@return the size of a peace
+	*/
 	int GetPiceSize(int piece=-1);
 private:
 	/**
@@ -68,7 +72,13 @@ private:
 	* @return count of pieces
 	*/
 	bool SetPieceSize(int size);
+	/**
+	* inc position of piece after read/write
+	*/
 	void IncPos(int piece, int pos);
+	/**
+	*	restore position of piece for read/write operations
+	*/
 	void RestorePos(int piece);
 	int handle; //file handle
 	int piecesize; //size of a piece
