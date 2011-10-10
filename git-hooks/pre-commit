@@ -11,7 +11,7 @@ if [ ! -x $(which astyle) ]; then
 fi
 
 ASTYLE_PARAMETERS="--style=linux --indent=force-tab"
-FILE_PATTERN="(c|cpp|h)$"
+FILE_PATTERN="\.(c|cpp|h)$"
 
 echo "--Checking style--"
 for file in `git diff-index --cached --name-only HEAD --diff-filter=ACMR| egrep $FILE_PATTERN` ; do
