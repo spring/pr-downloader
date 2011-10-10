@@ -225,7 +225,13 @@ int CFileSystem::validatePool(const std::string& path)
 			absname += PATH_DELIMITER;
 			absname += dentry->d_name;
 			if (dentry->d_name[0]!='.') { //don't check hidden files / . / ..
+#ifndef WIN32
 				if ((dentry->d_type & DT_DIR)!=0) { //directory
+#else
+				struct stat sb;
+				stat(absname.c_str(), &sb);
+				if((sb.st_mode & S_IFDIR)!=0) {
+#endif
 					dirs.push_back(new std::string(absname));
 				} else {
 					FileData filedata;
