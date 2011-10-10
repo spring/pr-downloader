@@ -15,7 +15,7 @@ IDownloader* IDownloader::widgetdl=NULL;
 
 bool IDownload::addMirror(const std::string& url)
 {
-	DEBUG_LINE("%s",url.c_str());
+	LOG_DEBUG("%s",url.c_str());
 	this->mirror.push_back(url);
 	return true;
 }

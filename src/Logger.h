@@ -24,11 +24,11 @@ void LOG_DOWNLOAD(const char* filename);
 void LOG_PROGRESS(float done, float total);
 
 #ifdef DEBUG
-#define DEBUG_LINE(fmt, ...) \
+#define LOG_DEBUG(fmt, ...) \
 		printf( "%s:%d:%s(): " fmt "\n", __FILE__, \
 									__LINE__, __FUNCTION__, __VA_ARGS__);
 #else
-#define	DEBUG_LINE(fmt, ...)
+#define	LOG_DEBUG(fmt, ...)
 #endif
 
 #endif

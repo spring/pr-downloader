@@ -13,7 +13,7 @@ bool CSdp::download()
 	if (downloaded) //allow download only once of the same sdp
 		return true;
 	filename=fileSystem->getSpringDir() + PATH_DELIMITER+"packages"+PATH_DELIMITER;
-	DEBUG_LINE("%s\n",filename.c_str());
+	LOG_DEBUG("%s\n",filename.c_str());
 	if (!fileSystem->directoryExists(filename)) {
 		fileSystem->createSubdirs(filename);
 	}
@@ -60,17 +60,17 @@ bool CSdp::download()
 			(*it).download=false;
 		}
 		if (i%10==0)
-			DEBUG_LINE("\r%d/%d checked",i,(int)files.size());
+			LOG_DEBUG("\r%d/%d checked",i,(int)files.size());
 		++it;
 	}
-	DEBUG_LINE("\r%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
+	LOG_DEBUG("\r%d/%d need to download %d files\n",i,(unsigned int)files.size(),count);
 	if (count>0) {
 //FIXME	httpDownload->setCount(count);
 		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		files.clear();
-		DEBUG_LINE("Sucessfully downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
+		LOG_DEBUG("Sucessfully downloaded %d files: %s %s\n",count,shortname.c_str(),name.c_str());
 	} else {
-		DEBUG_LINE("Already downloaded: %s\n", shortname.c_str());
+		LOG_DEBUG("Already downloaded: %s\n", shortname.c_str());
 		downloaded=true;
 	}
 	return downloaded;
@@ -114,13 +114,13 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 		}
 		if (sdp->file_handle!=NULL) {
 			if ((sdp->skipped>0)&&(sdp->skipped<4)) {
-				DEBUG_LINE("difficulty %d\n",sdp->skipped);
+				LOG_DEBUG("difficulty %d\n",sdp->skipped);
 			}
 			if (sdp->skipped<4) { // check if we skipped all 4 bytes, if not so, skip them
 				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
 				for (int i=0; i<toskip; i++) //copy bufs avaiable
 					sdp->cursize_buf[i]=buf_pos[i];
-				DEBUG_LINE("toskip: %d skipped: %d\n",toskip,sdp->skipped);
+				LOG_DEBUG("toskip: %d skipped: %d\n",toskip,sdp->skipped);
 				sdp->skipped=toskip+sdp->skipped;
 				buf_pos=buf_pos+sdp->skipped;
 				if (sdp->skipped==LENGTH_SIZE) {
@@ -130,7 +130,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			if (sdp->skipped==LENGTH_SIZE) {
 				int towrite=intmin ((*sdp->list_it).compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
 						    buf_end-buf_pos);
-				DEBUG_LINE("%s %d %ld %ld %ld %d %d %d %d %d\n",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
+				LOG_DEBUG("%s %d %ld %ld %ld %d %d %d %d %d\n",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
 				int res=0;
 				if (towrite>0) {
 					res=fwrite(buf_pos,1,towrite,sdp->file_handle);
@@ -143,7 +143,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 						return -1;
 					}
 				} else if (towrite<0) {
-					DEBUG_LINE("%s","Fatal, something went wrong here!");
+					LOG_DEBUG("%s","Fatal, something went wrong here!");
 					return -1;
 				}
 
@@ -200,7 +200,7 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 		char* buf=(char*)malloc(buflen); //FIXME: compress blockwise and not all at once
 		memset(buf,0,buflen);
 		int destlen=files.size()*2;
-		DEBUG_LINE("%d %d %d\n",(int)files.size(),buflen,destlen);
+		LOG_DEBUG("%d %d %d\n",(int)files.size(),buflen,destlen);
 		int i=0;
 		for (it=files.begin(); it!=files.end(); ++it) {
 			if ((*it).download==true)

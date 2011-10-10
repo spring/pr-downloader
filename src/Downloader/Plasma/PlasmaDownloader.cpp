@@ -17,7 +17,7 @@ CPlasmaDownloader::CPlasmaDownloader()
 
 bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category category)
 {
-	DEBUG_LINE("%s",name.c_str());
+	LOG_DEBUG("%s",name.c_str());
 	ContentServiceSoap12Proxy service;
 	_ns1__DownloadFile file;
 	_ns1__DownloadFileResponse fileResponse;
@@ -47,7 +47,7 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 		fileName.append("games");
 		break;
 	default:
-		DEBUG_LINE("Unknown category in result: %d\n", cat);
+		LOG_DEBUG("Unknown category in result: %d\n", cat);
 		cat=IDownload::CAT_NONE;
 		break;
 	}
@@ -67,7 +67,7 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 	fileName.append(dl.name);
 	dl.name=fileName;
 	dl.cat=cat;
-	DEBUG_LINE("Got filename \"%s\" from torrent\n",fileName.c_str());
+	LOG_DEBUG("Got filename \"%s\" from torrent\n",fileName.c_str());
 
 	for (it=fileResponse.links->string.begin(); it!=fileResponse.links->string.end(); ++it) {
 		dl.addMirror((*it).c_str());
@@ -81,6 +81,6 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 
 bool CPlasmaDownloader::download(IDownload& download)
 {
-	DEBUG_LINE("%s",download.name.c_str());
+	LOG_DEBUG("%s",download.name.c_str());
 	return httpDownload->download(download);
 }

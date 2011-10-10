@@ -87,7 +87,7 @@ void CHttpDownloader::setStatsPos(unsigned int pos)
 
 bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name, IDownload::category cat)
 {
-	DEBUG_LINE("%s", name.c_str()  );
+	LOG_DEBUG("%s", name.c_str()  );
 
 	const std::string method("springfiles.search");
 	std::string category;
@@ -122,7 +122,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 		else if (category=="game")
 			filename+="games";
 		else
-			DEBUG_LINE("Unknown Category %s", category.c_str());
+			LOG_DEBUG("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
 		    (resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
@@ -173,7 +173,7 @@ bool CHttpDownloader::download(IDownload& download)
 		if (download.getMirrorCount()>1)
 			parallelDownload(download);
 	*/
-	DEBUG_LINE("%s",download.name.c_str());
+	LOG_DEBUG("%s",download.name.c_str());
 	last_print = 0;
 	start_time = 0;
 	CURLcode res=CURLE_OK;

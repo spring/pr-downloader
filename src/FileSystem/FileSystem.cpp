@@ -351,7 +351,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 			break;
 		}
 	}
-	DEBUG_LINE("Parsed torrent data: %s %d\n", dl.name.c_str(), dl.piecesize);
+	LOG_DEBUG("Parsed torrent data: %s %d\n", dl.name.c_str(), dl.piecesize);
 	be_free(node);
 	return true;
 }
