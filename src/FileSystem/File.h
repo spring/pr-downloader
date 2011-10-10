@@ -11,7 +11,9 @@ class IHash;
 class CPiece
 {
 public:
-	CPiece();
+	CPiece() {
+		CPiece(0);
+	}
 	CPiece(int size) {
 		this->size=size;
 		this->written=0;
@@ -26,6 +28,7 @@ public:
 
 class CFile
 {
+public:
 	/**
 	* general file abstraction, allows to write to pieces of a file and create hashes
 	* of the complete fiele or pieces of it
@@ -51,7 +54,6 @@ class CFile
 	* @return the (relative) position in the piece, -1 means absolute
 	*/
 	int Seek(int pos, int piece=-1);
-	int getSize();
 
 private:
 	/**

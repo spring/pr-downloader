@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
+#include <string.h>
 
 CFile::CFile(const std::string& filename, int size, int piecesize)
 {
@@ -38,7 +40,9 @@ bool CFile::Open(const std::string& filename)
 		LOG_ERROR("file opened before old was closed");
 		return false;
 	}
-	handle=open(filename.c_str(), O_CREAT);
+	handle=open(filename.c_str(), O_CREAT|O_RDWR);
+	if (handle<0)
+		LOG_ERROR("open(): %s\n",strerror(errno));
 	return true;
 }
 
@@ -74,18 +78,17 @@ int CFile::Read(char*buf, int bufsize, int piece)
 
 void CFile::RestorePos(int piece)
 {
-	if (piece>=0)
+	if (piece>=0) {
+		assert(piece<=(int)pieces.size());
 		Seek(pieces[piece].pos, piece);
+	}
 }
 
 void CFile::IncPos(int piece, int pos)
 {
 	if (piece>=0) {
 		pieces[piece].pos +=pos;
-		if (pos>piecesize) {
-			LOG_ERROR("Overlapping access detected");
-			abort();
-		}
+		assert(pos<=piecesize);
 	} else {
 		curpos += pos;
 	}
@@ -95,6 +98,10 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 {
 	RestorePos(piece);
 	int bytes=write(handle, buf, bufsize);
+	if(bytes<0) {
+		LOG_ERROR("Error in write(): %s\n", strerror(errno));
+		abort();
+	}
 	IncPos(piece, bytes);
 	return bytes;
 }
@@ -131,9 +138,4 @@ bool CFile::SetPieceSize(int size)
 	}
 	piecesize=size;
 	return true;
-}
-
-int CFile::getSize()
-{
-	return size;
 }
