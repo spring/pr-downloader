@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <list>
 
 class IHash;
 
@@ -10,12 +11,17 @@ class IHash;
 class CPiece
 {
 public:
-	std::map <std::string, IHash*> hashs; //checksum for a part of a file
-	bool validate(std::map <std::string, IHash*> hashs);
-	int size;
+	CPiece();
+	CPiece(int size) {
+		this->size=size;
+		this->written=0;
+		this->valid=false;
+		this->pos=0;
+	};
+	int size; //size of the piece, can be smaller than piecesize in the file
 	int written; //bytes written
 	bool valid; //checksum validated
-	int pos; //current read/write pos
+	int pos; //current absolute read/write pos
 };
 
 class CFile
@@ -31,21 +37,28 @@ class CFile
 	*/
 	CFile(const std::string& filename, int size=-1, int piecesize=-1);
 	~CFile();
-	bool Validate(std::map <std::string, IHash> hashs, int piece=-1);
+	/*
+	* hashes a piece with given hashes (or complete file, if piece<=0)
+	*/
+	bool Hash(std::list <IHash*> hashs, int piece=-1);
+
+	bool Open(const std::string& filename);
+	void Close();
 	int Read(char* buf, int bufsize, int piece=-1);
 	int Write(const char* buf, int bufsize, int piece=-1);
-	int Seek(int pos, int piece=-1);
-	bool SetPieceSize(int size);
-	const CPiece& getPiece(int piece);
-	//int Open(const std::string& filename);
-	//int Close();
 	/**
-	*	set the size of a pice
-	* @return count of pieces
+	* seek to the (relative) position in the piece
+	* @return the (relative) position in the piece, -1 means absolute
 	*/
-	int setpiecesieze(int size);
+	int Seek(int pos, int piece=-1);
+	int getSize();
 
 private:
+	/**
+	* set the size of a pice
+	* @return count of pieces
+	*/
+	bool SetPieceSize(int size);
 	int handle; //file handle
 	int piecesize; //size of a piece
 	int size; //file size
