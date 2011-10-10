@@ -54,7 +54,7 @@ bool CFile::Hash(std::list <IHash*> hashs, int piece)
 	for(it=hashs.begin(); it!=hashs.end(); ++it) {
 		(*it)->Init();
 	}
-	int left=pieces[piece].size; //total bytes to hash
+	int left=GetPiceSize(piece); //total bytes to hash
 	while( (read>0) && (left>0) ) {
 		int read=Read(buf, sizeof(buf), piece);
 		left=left-read;
@@ -138,4 +138,14 @@ bool CFile::SetPieceSize(int size)
 	}
 	piecesize=size;
 	return true;
+}
+
+int CFile::GetPiceSize(int piece)
+{
+	if (piece>=0) {
+		if (pieces.size()==piece) //last piece
+			return size%piecesize;
+		return piecesize;
+	}
+	return size;
 }

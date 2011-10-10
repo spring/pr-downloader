@@ -15,13 +15,9 @@ public:
 		CPiece(0);
 	}
 	CPiece(int size) {
-		this->size=size;
-		this->written=0;
 		this->valid=false;
 		this->pos=0;
 	};
-	int size; //size of the piece, can be smaller than piecesize in the file
-	int written; //bytes written
 	bool valid; //checksum validated
 	int pos; //current absolute read/write pos
 };
@@ -65,7 +61,7 @@ public:
 	* @return the (relative) position in the piece, -1 means absolute
 	*/
 	int Seek(int pos, int piece=-1);
-
+	int GetPiceSize(int piece=-1);
 private:
 	/**
 	* set the size of a pice
