@@ -40,14 +40,25 @@ public:
 	*/
 	CFile(const std::string& filename, int size=-1, int piecesize=-1);
 	~CFile();
-	/*
-	* hashes a piece with given hashes (or complete file, if piece<=0)
+	/**
+	*	hashes a piece with given hashes (or complete file, if piece<=0)
 	*/
 	bool Hash(std::list <IHash*> hashs, int piece=-1);
-
+	/**
+	*	open file
+	*/
 	bool Open(const std::string& filename);
+	/**
+	*	close file
+	*/
 	void Close();
+	/**
+	*	read buf from file, starting at restored piece pos, if piece>=0
+	*/
 	int Read(char* buf, int bufsize, int piece=-1);
+	/**
+	*	write buf to file, starting at last pos restored from piece, if piece>=0
+	*/
 	int Write(const char* buf, int bufsize, int piece=-1);
 	/**
 	* seek to the (relative) position in the piece
