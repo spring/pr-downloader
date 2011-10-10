@@ -114,13 +114,13 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 		}
 		if (sdp->file_handle!=NULL) {
 			if ((sdp->skipped>0)&&(sdp->skipped<4)) {
-				DEBUG_LINE("difficulty %d\n",skipped);
+				DEBUG_LINE("difficulty %d\n",sdp->skipped);
 			}
 			if (sdp->skipped<4) { // check if we skipped all 4 bytes, if not so, skip them
 				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
 				for (int i=0; i<toskip; i++) //copy bufs avaiable
 					sdp->cursize_buf[i]=buf_pos[i];
-				DEBUG_LINE("toskip: %d skipped: %d\n",toskip,skipped);
+				DEBUG_LINE("toskip: %d skipped: %d\n",toskip,sdp->skipped);
 				sdp->skipped=toskip+sdp->skipped;
 				buf_pos=buf_pos+sdp->skipped;
 				if (sdp->skipped==LENGTH_SIZE) {
@@ -130,7 +130,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			if (sdp->skipped==LENGTH_SIZE) {
 				int towrite=intmin ((*sdp->list_it).compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
 						    buf_end-buf_pos);
-				DEBUG_LINE("%s %d %ld %ld %ld %d %d %d %d %d\n",file_name.c_str(), (*list_it)->compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , skipped, file_pos);
+				DEBUG_LINE("%s %d %ld %ld %ld %d %d %d %d %d\n",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
 				int res=0;
 				if (towrite>0) {
 					res=fwrite(buf_pos,1,towrite,sdp->file_handle);
