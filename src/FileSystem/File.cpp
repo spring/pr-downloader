@@ -7,7 +7,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-
 CFile::CFile(const std::string& filename, int size, int piecesize)
 {
 	Open(filename);
@@ -67,29 +66,36 @@ bool CFile::Hash(std::list <IHash*> hashs, int piece)
 
 int CFile::Read(char*buf, int bufsize, int piece)
 {
-	CPiece* ppiece;
-	if (piece>=0) {
-		ppiece=&pieces[piece];
-		Seek(ppiece->pos, piece);
-	}
+	RestorePos(piece);
 	int bytes=read(handle, buf, bufsize);
-	if (piece>=0) {
-		ppiece.pos=ppiece.pos+bytes;
-	}
+	IncPos(piece, bytes);
 	return bytes;
+}
+
+void CFile::RestorePos(int piece)
+{
+	if (piece>=0)
+		Seek(pieces[piece].pos, piece);
+}
+
+void CFile::IncPos(int piece, int pos)
+{
+	if (piece>=0) {
+		pieces[piece].pos +=pos;
+		if (pos>piecesize) {
+			LOG_ERROR("Overlapping access detected");
+			abort();
+		}
+	} else {
+		curpos += pos;
+	}
 }
 
 int CFile::Write(const char*buf, int bufsize, int piece)
 {
-	CPiece* ppiece;
-	if (piece>=0) {
-		ppiece=&pieces[piece];
-		Seek(ppiece->pos, piece);
-	}
+	RestorePos(piece);
 	int bytes=write(handle, buf, bufsize);
-	if (piece>=0) {
-		ppiece->pos=ppiece->pos+bytes;
-	}
+	IncPos(piece, bytes);
 	return bytes;
 }
 
@@ -97,11 +103,13 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 int CFile::Seek(int pos, int piece)
 {
 	if(piece>=0) { //adjust position relative to piece pos
-		CPiece& ppiece=pieces[piece];
 		pos=this->piecesize*piece+pos;
-		ppiece.pos=pos;
 	}
-	lseek(handle, pos, SEEK_SET);
+
+	if (curpos!=pos) {
+		lseek(handle, pos, SEEK_SET);
+		curpos=pos;
+	}
 	//TODO: error handling
 	return pos;
 }

@@ -59,9 +59,12 @@ private:
 	* @return count of pieces
 	*/
 	bool SetPieceSize(int size);
+	void IncPos(int piece, int pos);
+	void RestorePos(int piece);
 	int handle; //file handle
 	int piecesize; //size of a piece
 	int size; //file size
+	int curpos; //current file pointer position
 	std::map <int, CPiece> pieces; //pieces of the file
 	std::map <std::string, IHash*> hashs; //checksums for the complete file
 
