@@ -49,7 +49,7 @@ public:
 	*	size of pieces, last piece size can be different
 	*/
 	int piecesize;
-	enum PIECE_STATE{
+	enum PIECE_STATE {
 		STATE_NONE,
 		STATE_DOWNLOADING,
 		STATE_ERROR,

@@ -5,7 +5,7 @@
 #include "PlasmaDownloader.h"
 #include "FileSystem/FileSystem.h"
 #include "Util.h"
-#include "pr-downloader/Download.h"
+#include "Downloader/Download.h"
 
 
 

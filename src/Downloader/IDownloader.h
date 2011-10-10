@@ -5,7 +5,7 @@
 #include <string>
 
 #include <stdio.h>
-#include "pr-downloader/Download.h"
+#include "Download.h"
 #define PR_DOWNLOADER_AGENT "pr-downloader/0.1"
 
 

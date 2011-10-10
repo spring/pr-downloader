@@ -48,7 +48,6 @@ include_directories(SYSTEM ${CURL_INCLUDE_DIR})
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
 
 
-include_directories("${CMAKE_SOURCE_DIR}/include")
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
 subdirs(src)
