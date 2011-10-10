@@ -254,6 +254,7 @@ int CFileSystem::validatePool(const std::string& path)
 		delete(dir);
 		closedir(d);
 	}
+	LOG("\n");
 	return res;
 }
 
