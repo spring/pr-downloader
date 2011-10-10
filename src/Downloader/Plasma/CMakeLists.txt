@@ -9,5 +9,4 @@ add_library(Plasma
 target_link_libraries(Plasma
 	${WIN32LIBS}
 )
-FILE( GLOB_RECURSE header "*.h" )
-INSTALL (FILES ${header} DESTINATION ${INCLUDE_DIR}/Downloader/Plasma )
+

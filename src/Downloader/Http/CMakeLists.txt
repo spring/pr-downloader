@@ -25,5 +25,3 @@ target_link_libraries(Http
 )
 endif()
 
-FILE( GLOB_RECURSE header "*.h" )
-INSTALL (FILES ${header} DESTINATION ${INCLUDE_DIR}/Downloader/Http )

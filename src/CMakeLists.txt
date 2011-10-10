@@ -6,7 +6,7 @@ subdirs(FileSystem)
 set(myRapidFiles
 	Util.cpp
 	Logger.cpp
-	Download.cpp
+	Downloader/Download.cpp
 	Downloader/IDownloader.cpp
 )
 
