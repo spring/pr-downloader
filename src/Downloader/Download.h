@@ -2,6 +2,7 @@
 #define DOWNLOADER_H
 
 #include <string>
+#include <vector>
 #include <list>
 
 class IDownload
@@ -62,7 +63,7 @@ public:
 	/**
 	 *	sha1 sum of pieces
 	 */
-	std::list<struct piece> pieces;
+	std::vector<struct piece> pieces;
 	unsigned char md5[16];
 
 	/**

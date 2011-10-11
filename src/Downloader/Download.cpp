@@ -48,10 +48,8 @@ int IDownload::getMirrorCount()
 
 bool IDownload::getRange(std::string& range)
 {
-	std::list<struct piece>::iterator it;
-	int i=0;
-	for(it=pieces.begin(); it!=pieces.end(); ++it) {
-		if ((*it).state==STATE_NONE) {
+	for(int i=0; i<pieces.size(); i++) {
+		if (pieces[i].state==STATE_NONE) {
 			std::ostringstream s;
 			s << (int)(this->piecesize*i) <<"-"<<std::min(this->piecesize*i+1, this->size);
 			range=s.str();
