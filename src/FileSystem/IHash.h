@@ -9,14 +9,6 @@ class IHash
 {
 public:
 	/**
-	*	Set the hash by binary data
-	*/
-	virtual bool Set(const void* data, int len)=0;
-	/**
-	*	Set the hash by text string
-	*/
-	virtual bool Set(const std::string& str)=0;
-	/**
 	*	Init Hash
 	*/
 	virtual void Init()=0;

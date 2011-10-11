@@ -1,6 +1,3 @@
-#ifndef _CCHECKSUMMD5_H
-#define _CCHECKSUMMD5_H
-
 #include <assert.h>
 
 #include "HashMD5.h"
@@ -30,16 +27,3 @@ unsigned char HashMD5::get(int pos) const
 	assert( (pos>=0) && (pos<getSize()) );
 	return mdContext.digest[pos];
 }
-
-bool HashMD5::Set(const void* data, int len)
-{
-	return true;
-}
-
-bool HashMD5::Set(const std::string& string)
-{
-	return true;
-}
-
-
-#endif

@@ -4,13 +4,16 @@
 #include "IHash.h"
 #include "sha1/sha1.h"
 
-class HashSHA1: IHash
+class HashSHA1: public IHash
 {
+public:
+	HashSHA1() {}
 	void Init();
 	void Final();
 	void Update(const char* data,const int size);
-	int getSize();
-	int get(int pos);
+protected:
+	int getSize() const;
+	unsigned char get(int pos) const;
 private:
 	SHA1Context sha1Context;
 };

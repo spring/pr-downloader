@@ -1,17 +1,21 @@
+#ifndef _HASH_CRC32_H
+#define _HASH_CRC32_H
+
 #include "IHash.h"
+
 
 class HashCRC32: public IHash
 {
 public:
-	HashCRC32() {
-		crc=0;
-	}
+	HashCRC32();
 	void Init();
 	void Final();
 	void Update(const char* data,const int size);
-//		const std::string toString();
-	int getSize();
+protected:
+	int getSize() const;
 	unsigned char get(int pos) const;
 private:
 	unsigned long crc;
 };
+
+#endif

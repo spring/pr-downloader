@@ -1,6 +1,11 @@
 #include "HashCRC32.h"
 #include <zlib.h>
 
+HashCRC32::HashCRC32()
+{
+	crc=0;
+}
+
 void HashCRC32::Init()
 {
 	crc=0;
@@ -15,7 +20,7 @@ void HashCRC32::Final()
 {
 }
 
-int HashCRC32::getSize()
+int HashCRC32::getSize() const
 {
 	return sizeof(crc);
 }

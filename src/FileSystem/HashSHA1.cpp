@@ -18,13 +18,14 @@ void HashSHA1::Final()
 	SHA1Result(&sha1Context);
 }
 
-int HashSHA1::getSize()
-{
-	return sizeof( sha1Context.Message_Digest);
-}
-
-int HashSHA1::get(int pos)
+unsigned char HashSHA1::get(int pos) const
 {
 	assert( (pos>=0) && (pos<getSize()) );
 	return sha1Context.Message_Digest[pos];
+}
+
+
+int HashSHA1::getSize() const
+{
+	return sizeof(sha1Context.Message_Digest);
 }
