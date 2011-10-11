@@ -63,6 +63,10 @@ bool CFile::Hash(std::list <IHash*> hashs, int piece)
 			(*it)->Update(buf, bytes);
 		}
 	}
+	if (left>0) {
+		LOG_ERROR("Couldn't read all bytes for hashing\n");
+		return false;
+	}
 	for(it=hashs.begin(); it!=hashs.end(); ++it) {
 		(*it)->Final();
 	}
