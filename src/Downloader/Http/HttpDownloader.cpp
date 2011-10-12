@@ -342,7 +342,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 					assert(data->piece<download.pieces.size());
 					data->file->Hash(hashes, data->piece); //TODO: create hash + compare with download.piece[i].hashes
 					if (download.pieces[data->piece].sha[0]==0) {
-						LOG_INFO("sha1 checksum seems to be invalid\n");
+						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
 					}
 					if ( (download.pieces[data->piece].sha[0]==0)
 					     || (sha1.compare((unsigned char*)download.pieces[data->piece].sha, 5))) { //piece valid
