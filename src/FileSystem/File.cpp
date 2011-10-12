@@ -2,16 +2,14 @@
 #include "FileSystem.h"
 #include "Logger.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
 
 CFile::CFile(const std::string& filename, int size, int piecesize)
 {
-	handle=0;
+	handle=NULL;
 	Open(filename);
 	if (piecesize<=0)
 		this->piecesize=1;
@@ -31,7 +29,7 @@ CFile::~CFile()
 void CFile::Close()
 {
 	if (handle!=0)
-		close(handle);
+		fclose(handle);
 	handle=0;
 }
 
@@ -42,12 +40,8 @@ bool CFile::Open(const std::string& filename)
 		LOG_ERROR("file opened before old was closed\n");
 		return false;
 	}
-	int mode = S_IRUSR|S_IWUSR;
-#ifndef WIN32
-	mode=mode|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH;
-#endif
-	handle=open(filename.c_str(), O_CREAT|O_RDWR, mode) ;
-	if (handle<0)
+	handle=fopen(filename.c_str(), "wb+");
+	if (handle<=0)
 		LOG_ERROR("open(%s): %s\n",filename.c_str(), strerror(errno));
 	return true;
 }
@@ -91,16 +85,16 @@ int CFile::Read(char*buf, int bufsize, int piece)
 {
 	RestorePos(piece);
 //	LOG("reading %d\n", bufsize);
-	int bytes=read(handle, buf, (size_t)bufsize);
-	if((bytes<=0) && (errno!=0)) {
+	int items=fread(buf, bufsize, 1, handle);
+	if(ferror(handle)!=0) {
 		int piecepos=0;
 		if (piece>0)
 			piecepos=pieces[piece].pos;
-		LOG_ERROR("read error %d, %s bufsize: %d piecepos:%d curpos: %d\n", bytes, strerror(errno), bufsize, piecepos, curpos);
-		return bytes;
+		LOG_ERROR("read error %s bufsize: %d piecepos:%d curpos: %d\n", strerror(errno), bufsize, piecepos, curpos);
+		return items;
 	}
-	IncPos(piece, bytes);
-	return bytes;
+	IncPos(piece, bufsize);
+	return bufsize;
 }
 
 void CFile::RestorePos(int piece)
@@ -126,19 +120,19 @@ void CFile::IncPos(int piece, int pos)
 int CFile::Write(const char*buf, int bufsize, int piece)
 {
 	RestorePos(piece);
-	int bytes=write(handle, buf, bufsize);
+	fwrite(buf, bufsize, 1, handle);
 //	LOG("wrote bufsize %d\n", bufsize);
-	if(bytes<0) {
+	if(ferror(handle)!=0) {
 		LOG_ERROR("Error in write(): %s\n", strerror(errno));
 		abort();
 	}
-	IncPos(piece, bytes);
+	IncPos(piece, bufsize);
 	/*
 		if ((piece>=0) && (pieces[piece].pos==GetPieceSize(piece))) {
 			LOG("piece finished: %d\n", piece);
 		}
 	*/
-	return bytes;
+	return bufsize;
 }
 
 
@@ -149,8 +143,8 @@ int CFile::Seek(int pos, int piece)
 	}
 
 	if (curpos!=pos) { //only seek if needed
-		unsigned long ret=lseek(handle, pos, SEEK_SET);
-		if (pos!=ret) {
+		int ret=fseek(handle, pos, SEEK_SET);
+		if (ret!=0) {
 			LOG_ERROR("seek error %d %d\n", ret, pos);
 		}
 		curpos=pos;
@@ -185,7 +179,7 @@ bool CFile::SetPieceSize(int size)
 int CFile::GetPieceSize(int piece)
 {
 	if (piece>=0) {
-		assert(piece<=pieces.size());
+		assert(piece<=(int)pieces.size());
 		if (pieces.size()-1==piece) //last piece
 			return size%piecesize;
 		return piecesize;

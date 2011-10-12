@@ -79,10 +79,10 @@ private:
 	*	restore position of piece for read/write operations
 	*/
 	void RestorePos(int piece);
-	int handle; //file handle
+	FILE* handle; //file handle
 	int piecesize; //size of a piece
 	int size; //file size
-	int curpos; //current file pointer position
+	unsigned long curpos; //current file pointer position
 	std::vector <CPiece> pieces; //pieces of the file
 	std::map <std::string, IHash*> hashs; //checksums for the complete file
 
