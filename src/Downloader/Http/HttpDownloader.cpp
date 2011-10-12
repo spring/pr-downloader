@@ -250,7 +250,7 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& dow
 {
 	int pieceNum=-1;
 	for(int i=0; i<(int)download.pieces.size(); i++ ) { //find first not downloaded piece
-		assert(i<download.pieces.size());
+		assert(i<(int)download.pieces.size());
 		if ( (download.pieces[i].state==IDownload::STATE_NONE) ) {
 			pieceNum=i;
 			break;
@@ -327,7 +327,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 
 					}
 					download_data* data=NULL;
-					for(int i=0; i<downloads.size(); i++) { //search corresponding data structure
+					for(int i=0; i<(int)downloads.size(); i++) { //search corresponding data structure
 						if (downloads[i]->easy_handle == msg->easy_handle) {
 							data=downloads[i];
 							break;
@@ -339,7 +339,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 						return false;
 					}
 					assert(data->file!=NULL);
-					assert(data->piece<download.pieces.size());
+					assert(data->piece<(int)download.pieces.size());
 					data->file->Hash(hashes, data->piece); //TODO: create hash + compare with download.piece[i].hashes
 					if (download.pieces[data->piece].sha[0]==0) {
 						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);

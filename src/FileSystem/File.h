@@ -58,7 +58,7 @@ public:
 	* seek to the (relative) position in the piece
 	* @return the (relative) position in the piece, -1 means absolute
 	*/
-	int Seek(int pos, int piece=-1);
+	int Seek(unsigned long pos, int piece=-1);
 	/**
 	*	gets the size of the given pice, returns file size when piece<0. hint: first piece=0
 	*	@return the size of a peace
@@ -81,7 +81,7 @@ private:
 	void RestorePos(int piece);
 	FILE* handle; //file handle
 	int piecesize; //size of a piece
-	int size; //file size
+	long size; //file size
 	unsigned long curpos; //current file pointer position
 	std::vector <CPiece> pieces; //pieces of the file
 	std::map <std::string, IHash*> hashs; //checksums for the complete file

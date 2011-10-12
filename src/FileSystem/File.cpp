@@ -112,7 +112,7 @@ void CFile::IncPos(int piece, int pos)
 		assert(pos<=piecesize);
 		pieces[piece].pos +=pos;
 	} else {
-		assert(curpos<=size);
+		assert((long)curpos<=size);
 		curpos += pos;
 	}
 }
@@ -136,7 +136,7 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 }
 
 
-int CFile::Seek(int pos, int piece)
+int CFile::Seek(unsigned long pos, int piece)
 {
 	if(piece>=0) { //adjust position relative to piece pos
 		pos=this->piecesize*piece+pos;
@@ -180,7 +180,7 @@ int CFile::GetPieceSize(int piece)
 {
 	if (piece>=0) {
 		assert(piece<=(int)pieces.size());
-		if (pieces.size()-1==piece) //last piece
+		if ((int)pieces.size()-1==piece) //last piece
 			return size%piecesize;
 		return piecesize;
 	}
