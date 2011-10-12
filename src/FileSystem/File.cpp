@@ -42,7 +42,11 @@ bool CFile::Open(const std::string& filename)
 		LOG_ERROR("file opened before old was closed\n");
 		return false;
 	}
-	handle=open(filename.c_str(), O_CREAT|O_RDWR, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH) ;
+	int mode = S_IRUSR|S_IWUSR;
+#ifndef WIN32
+	mode=mode|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH;
+#endif
+	handle=open(filename.c_str(), O_CREAT|O_RDWR, mode) ;
 	if (handle<0)
 		LOG_ERROR("open(%s): %s\n",filename.c_str(), strerror(errno));
 	return true;
@@ -61,9 +65,10 @@ bool CFile::Hash(std::list <IHash*> hashs, int piece)
 	pieces[piece].pos=0; //reset read/write pos
 	int read=0;
 	while(left>0) {
-		read=Read(buf, std::min(left, sizeof(buf)), piece);
+		int toread=std::min(left, (long unsigned)sizeof(buf));
+		read=Read(buf, toread, piece);
 		if(read<=0) {
-			LOG_ERROR("EOF or read error on piece %d, left: %d size: %d\n", piece, left, GetPieceSize(piece));
+			LOG_ERROR("EOF or read error on piece %d, left: %d toread: %d size: %d\n", piece, left, toread, GetPieceSize(piece));
 			LOG_ERROR("%d\n", GetPieceSize(piece));
 			return false;
 		}
@@ -85,9 +90,13 @@ bool CFile::Hash(std::list <IHash*> hashs, int piece)
 int CFile::Read(char*buf, int bufsize, int piece)
 {
 	RestorePos(piece);
-	int bytes=read(handle, buf, bufsize);
-	if(bytes<=0) {
-		LOG_ERROR("read error %d\n", bytes);
+//	LOG("reading %d\n", bufsize);
+	int bytes=read(handle, buf, (size_t)bufsize);
+	if((bytes<=0) && (errno!=0)) {
+		int piecepos=0;
+		if (piece>0)
+			piecepos=pieces[piece].pos;
+		LOG_ERROR("read error %d, %s bufsize: %d piecepos:%d curpos: %d\n", bytes, strerror(errno), bufsize, piecepos, curpos);
 		return bytes;
 	}
 	IncPos(piece, bytes);
@@ -118,6 +127,7 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 {
 	RestorePos(piece);
 	int bytes=write(handle, buf, bufsize);
+//	LOG("wrote bufsize %d\n", bufsize);
 	if(bytes<0) {
 		LOG_ERROR("Error in write(): %s\n", strerror(errno));
 		abort();
@@ -138,11 +148,13 @@ int CFile::Seek(int pos, int piece)
 		pos=this->piecesize*piece+pos;
 	}
 
-	if (curpos!=pos) {
-		lseek(handle, pos, SEEK_SET);
+	if (curpos!=pos) { //only seek if needed
+		unsigned long ret=lseek(handle, pos, SEEK_SET);
+		if (pos!=ret) {
+			LOG_ERROR("seek error %d %d\n", ret, pos);
+		}
 		curpos=pos;
 	}
-	//TODO: error handling
 	return pos;
 }
 
