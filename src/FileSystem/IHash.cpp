@@ -30,9 +30,9 @@ bool IHash::compare(const unsigned char* data, int size)
 
 const std::string IHash::toString(){
 	std::string str;
-	char buf[2];
+	char buf[3];
 	for(int i=0; i<getSize(); i++){
-		sprintf(buf, "%.2x", get(i));
+		snprintf(buf,sizeof(buf),"%.2x", get(i));
 //		LOG("%d: output: %s\n",i, buf);
 		str.append(buf);
 	}
