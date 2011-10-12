@@ -1,5 +1,5 @@
 #include "Widget.h"
-#include "pugixml/pugixml.hpp"
+#include "lib/pugixml/pugixml.hpp"
 #include <stdio.h>
 #include <list>
 #include <iostream>

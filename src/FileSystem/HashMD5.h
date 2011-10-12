@@ -2,7 +2,7 @@
 #define _HASH_MD5_H
 
 #include "IHash.h"
-#include "md5/md5.h"
+#include "lib/md5/md5.h"
 
 class HashMD5: public IHash
 {

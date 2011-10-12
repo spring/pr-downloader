@@ -2,7 +2,7 @@
 #define _CCHECKSUMSHA1_H
 
 #include "IHash.h"
-#include "sha1/sha1.h"
+#include "lib/sha1/sha1.h"
 
 class HashSHA1: public IHash
 {

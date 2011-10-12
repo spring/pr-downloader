@@ -1,6 +1,6 @@
 
-#include "soap/soapContentServiceSoap12Proxy.h"
-#include "soap/ContentServiceSoap.nsmap"
+#include "lib/soap/soapContentServiceSoap12Proxy.h"
+#include "lib/soap/ContentServiceSoap.nsmap"
 
 #include "PlasmaDownloader.h"
 #include "FileSystem/FileSystem.h"

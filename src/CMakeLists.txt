@@ -1,5 +1,5 @@
 
-
+subdirs(lib)
 subdirs(Downloader)
 subdirs(FileSystem)
 
@@ -29,10 +29,7 @@ target_link_libraries(${RAPID_LIB}
 	Plasma
 	Widget
 	FileSystem
-	${CURL_LIBRARIES}
-	${ZLIB_LIBRARIES}
 	${XMLRPC_LIBRARIES}
-	${ADDITIONAL_LIBS}
 )
 
 add_executable(${RAPID}
@@ -42,9 +39,6 @@ add_executable(${RAPID}
 
 target_link_libraries(${RAPID}
 	${WIN32LIBS}
-	${ZLIB_LIBRARIES}
-	${XMLRPC_LIBRARIES}
-	${CURL_LIBRARIES}
 	Rapid
 	Http
 	Plasma

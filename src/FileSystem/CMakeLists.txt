@@ -5,11 +5,11 @@ add_library(FileSystem
 		"HashSHA1.cpp"
 		"HashCRC32.cpp"
 		"IHash.cpp"
-		"md5/md5.cpp"
-		"sha1/sha1.cpp"
-		"bencode/bencode.c"
 )
 target_link_libraries(FileSystem
 	${ZLIB_LIBRARIES}
+	md5
+	sha1
+	bencode
 )
 

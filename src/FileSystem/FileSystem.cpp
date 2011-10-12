@@ -8,7 +8,7 @@
 #include <dirent.h>
 #include <limits.h>
 #include <time.h>
-#include "bencode/bencode.h"
+#include "lib/bencode/bencode.h"
 
 
 #ifdef WIN32

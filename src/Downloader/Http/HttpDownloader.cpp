@@ -10,7 +10,7 @@
 #include <sstream>
 
 
-#include "xmlrpc++/src/XmlRpc.h"
+#include "lib/xmlrpc++/src/XmlRpc.h"
 #include "FileSystem/File.h"
 #include "FileSystem/IHash.h"
 #include "FileSystem/HashMD5.h"
