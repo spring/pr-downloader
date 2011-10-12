@@ -336,7 +336,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 //					dl.name=datanode->val.s;
 //			} else
 			if (!strcmp("pieces", infonode->val.d[i].key)) { //hash sum of a piece
-				const int count = strlen(datanode->val.s)/6;
+				const int count = be_str_len(datanode)/20; //one sha1 sum is 5 * 4 bytes long
 				for (int i=0; i<count; i++) {
 					struct IDownload::piece piece;
 					for(int j=0; j<5; j++) {

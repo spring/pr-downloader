@@ -345,11 +345,12 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
 					}
 					if ( (download.pieces[data->piece].sha[0]==0)
-					     || (sha1.compare((unsigned char*)download.pieces[data->piece].sha, 5))) { //piece valid
+					     || (sha1.compare((unsigned char*)download.pieces[data->piece].sha, 20))) { //piece valid
 						download.pieces[data->piece].state=IDownload::STATE_FINISHED;
 					} else {
-						download.pieces[data->piece].state=IDownload::STATE_NONE;
+						download.pieces[data->piece].state=IDownload::STATE_FINISHED;
 						LOG_ERROR("Invalid piece retrieved\n %s", sha1.toString().c_str());
+						LOG_ERROR("implement me! (redownload from different mirror)\n");
 						//FIXME: mark mirror as broken (to avoid endless loops!)
 					}
 					//remove easy handle, as its finished

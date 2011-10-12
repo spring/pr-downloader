@@ -1,5 +1,7 @@
 #include "IHash.h"
+#include "Logger.h"
 #include <stdio.h>
+#include <string.h>
 
 bool IHash::compare(const IHash& checksum)
 {
@@ -25,4 +27,18 @@ bool IHash::compare(const unsigned char* data, int size)
 		}
 	}
 	return true;
+
+const std::string IHash::toString(){
+	std::string str;
+	const char* data=(const char*)get();
+	char buf[4];
+	if (getSize()%4!=0){
+		LOG_ERROR("toString failed\n");
+	}
+	for(int i=0; i<getSize()/4; i++){
+		unsigned int bla=data[i*4];
+		sprintf(buf, "%x", bla);
+		str.append(buf);
+	}
+	return str;
 }

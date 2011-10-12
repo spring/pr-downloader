@@ -177,6 +177,7 @@ bool CFile::SetPieceSize(int size)
 		LOG_ERROR("SetPieceSize(): FileSize<0\n");
 		return false;
 	}
+	LOG("SetPieceSize %d %d\n", size, this->size);
 	int count=this->size/size;
 	if(this->size%size>0)
 		count++;
