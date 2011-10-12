@@ -6,16 +6,18 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <sys/stat.h>
+
 
 CFile::CFile(const std::string& filename, int size, int piecesize)
 {
 	handle=NULL;
+	this->size=size;
 	Open(filename);
 	if (piecesize<=0)
 		this->piecesize=1;
 	else
 		this->piecesize=piecesize;
-	this->size=size;
 	if(size>0)
 		SetPieceSize(piecesize);
 	curpos=0;
@@ -40,9 +42,24 @@ bool CFile::Open(const std::string& filename)
 		LOG_ERROR("file opened before old was closed\n");
 		return false;
 	}
-	handle=fopen(filename.c_str(), "wb+");
-	if (handle<=0)
+	struct stat sb;
+	if (stat(filename.c_str(), &sb)==0) { //check if file length is correct, if not set it
+		handle=fopen(filename.c_str(), "rb+");
+	} else {
+		handle=fopen(filename.c_str(), "wb+");
+	}
+	if (handle<=0) {
 		LOG_ERROR("open(%s): %s\n",filename.c_str(), strerror(errno));
+		return false;
+	}
+
+	if(sb.st_size!=size) {
+		int ret=ftruncate(fileno(handle), size);
+		if (ret!=0) {
+			LOG_ERROR("ftruncate failed\n");
+		}
+		LOG_ERROR("File already exists but file-size missmatched\n");
+	}
 	return true;
 }
 
