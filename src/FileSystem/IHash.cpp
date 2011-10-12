@@ -22,22 +22,18 @@ bool IHash::compare(const unsigned char* data, int size)
 		return false;
 	for (int i=0; i<getSize(); i++) {
 		if (get(i)!=data[i]) {
-			printf("%d %d\n", get(i), data[i]);
-			return false;
+			printf("checksum different: pos:%d %d!=%d size:%d\n",i, get(i), data[i], size);
 		}
 	}
 	return true;
+}
 
 const std::string IHash::toString(){
 	std::string str;
-	const char* data=(const char*)get();
-	char buf[4];
-	if (getSize()%4!=0){
-		LOG_ERROR("toString failed\n");
-	}
-	for(int i=0; i<getSize()/4; i++){
-		unsigned int bla=data[i*4];
-		sprintf(buf, "%x", bla);
+	char buf[2];
+	for(int i=0; i<getSize(); i++){
+		sprintf(buf, "%.2x", get(i));
+//		LOG("%d: output: %s\n",i, buf);
 		str.append(buf);
 	}
 	return str;

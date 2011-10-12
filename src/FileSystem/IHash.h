@@ -23,10 +23,7 @@ public:
 	/**
 	*	return human readable hash string
 	*/
-	virtual const std::string toString() {
-		std::string empty;
-		return empty;
-	}
+	virtual const std::string toString();
 	/**
 	*	compare this hash
 	*	@return true, when both hashes are identical

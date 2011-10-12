@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include "Logger.h"
 
 HashSHA1::HashSHA1()
 {
@@ -25,8 +26,9 @@ void HashSHA1::Final()
 
 unsigned char HashSHA1::get(int pos) const
 {
-	assert( (pos>=0) && (pos<getSize()) );
-	return sha1Context.Message_Digest[pos];
+	unsigned char res;
+	res=((unsigned char*)&sha1Context.Message_Digest[pos/4])[3-pos%4];
+	return res;
 }
 
 
