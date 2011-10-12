@@ -15,6 +15,8 @@ class SRepository;
 class CRepo;
 struct IDownload;
 
+#define IO_BUF_SIZE 4096
+
 
 class CFileSystem
 {

@@ -45,7 +45,8 @@ bool CRepo::parse()
 		LOG_ERROR("Could not open %s\n",tmpFile.c_str());
 		return false;
 	}
-	char buf[1024];
+
+	char buf[IO_BUF_SIZE];
 	sdps.empty();
 	while ((gzgets(fp, buf, sizeof(buf)))!=Z_NULL) {
 		for (unsigned int i=0; i<sizeof(buf); i++) {

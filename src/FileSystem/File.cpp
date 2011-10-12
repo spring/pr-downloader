@@ -49,7 +49,7 @@ bool CFile::Open(const std::string& filename)
 bool CFile::Hash(std::list <IHash*> hashs, int piece)
 {
 	std::list <IHash*>::iterator it;
-	char buf[1024];
+	char buf[IO_BUF_SIZE];
 	int bytes=0;
 	for(it=hashs.begin(); it!=hashs.end(); ++it) {
 		(*it)->Init();

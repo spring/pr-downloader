@@ -37,7 +37,7 @@ bool CRepoMaster::parse()
 		LOG_ERROR("Could not open %s\n",path.c_str());
 		return false;
 	}
-	char buf[4096];
+	char buf[IO_BUF_SIZE];
 	repos.clear();
 	int i=0;
 	while (gzgets(fp, buf, sizeof(buf))!=Z_NULL) {

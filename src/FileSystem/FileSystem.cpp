@@ -33,7 +33,7 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 {
 	HashMD5 md5hash;
 	int bytes;
-	unsigned char data[4096];
+	unsigned char data[IO_BUF_SIZE];
 	gzFile inFile = gzopen (filename.c_str(), "rb");
 	if (inFile == NULL) { //file can't be opened
 		LOG_ERROR("Could not open file %s\n", filename.c_str());
@@ -41,7 +41,7 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	}
 	md5hash.Init();
 //	unsigned long filesize=0;
-	while ((bytes = gzread (inFile, data, 4096)) > 0) {
+	while ((bytes = gzread (inFile, data, IO_BUF_SIZE)) > 0) {
 		md5hash.Update((char*)data, bytes);
 //		filesize=filesize+bytes;
 	}
