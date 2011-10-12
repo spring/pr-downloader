@@ -7,9 +7,15 @@
 #include <zlib.h>
 #include <time.h>
 #include <iostream>
+#include <sstream>
+
 
 #include "xmlrpc++/src/XmlRpc.h"
-
+#include "FileSystem/File.h"
+#include "FileSystem/IHash.h"
+#include "FileSystem/HashMD5.h"
+#include "FileSystem/HashCRC32.h"
+#include "FileSystem/HashSHA1.h"
 
 #include "Util.h"
 
@@ -62,7 +68,7 @@ CHttpDownloader::CHttpDownloader()
 CHttpDownloader::~CHttpDownloader()
 {
 	curl_easy_cleanup(curl);
-	curl=NULL;
+	curl = NULL;
 }
 
 void CHttpDownloader::setCount(unsigned int count)
@@ -169,10 +175,9 @@ std::string CHttpDownloader::escapeUrl(const std::string& url)
 bool CHttpDownloader::download(IDownload& download)
 {
 //FIXME: enable that
-	/*
-		if (download.getMirrorCount()>1)
-			parallelDownload(download);
-	*/
+	if (download.getMirrorCount()>1)
+		return parallelDownload(download);
+
 	LOG_DEBUG("%s",download.name.c_str());
 	last_print = 0;
 	start_time = 0;
@@ -226,37 +231,154 @@ bool CHttpDownloader::download(IDownload& download)
 	return true;
 }
 
+size_t multi_write_data(void *ptr, size_t size, size_t nmemb, CHttpDownloader::download_data* data)
+{
+	return data->file->Write((const char*)ptr, size*nmemb, data->piece);
+}
+
+bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize, int filesize)
+{
+	std::ostringstream s;
+	s << (int)(piecesize*piece) <<"-"<< (piecesize*piece) + piecesize-1;
+	range=s.str();
+//	LOG("getRange: %s\n", range.c_str());
+	return true;
+}
+
+
+bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& download, int mirror)
+{
+	int pieceNum=-1;
+	for(int i=0; i<(int)download.pieces.size(); i++ ) { //find first not downloaded piece
+		assert(i<download.pieces.size());
+		if ( (download.pieces[i].state==IDownload::STATE_NONE) ) {
+			pieceNum=i;
+			break;
+		}
+	}
+	if (pieceNum<0) //all pieces downloaded or in state of downloading
+		return false;
+	piece->file=&file;
+	piece->piece=pieceNum;
+	CURL* curle= piece->easy_handle;
+	curl_easy_reset(curle);
+	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
+	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
+	curl_easy_setopt(curle, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
+	curl_easy_setopt(curle, CURLOPT_FAILONERROR, true);
+	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 1L);
+//	curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
+//	curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
+	curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
+	curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download.getMirror(mirror)).c_str());
+	std::string range;
+	if (!getRange(range, pieceNum, download.piecesize, download.size )) {
+		LOG_ERROR("Error getting range for download");
+		return false;
+	}
+	//set range for request, format is <start>-<end>
+	curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
+	download.pieces[pieceNum].state=IDownload::STATE_DOWNLOADING;
+	return true;
+}
+
 bool CHttpDownloader::parallelDownload(IDownload& download)
 {
+	CFile file=CFile(download.name, download.size, download.piecesize);
+	HashMD5 md5=HashMD5();
+	HashSHA1 sha1=HashSHA1();
+	std::list<IHash*> hashes;
+	hashes.clear();
+	hashes.push_back(&md5);
+	hashes.push_back(&sha1);
+	std::vector <download_data*> downloads;
 	CURLM* curlm=curl_multi_init();
-	const int count=download.mirror.size();
+	const int count=std::min((int)download.pieces.size(), download.getMirrorCount()); //count of parallel downloads
+	if(count<=0) {
+		LOG_ERROR("No mirrors found or counts of pieces==0 (count=%d)\n", download.getMirrorCount());
+		return false;
+	}
 	for(int i=0; i<count; i++) {
-		CURL* curle = curl_easy_init();
-		curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, write_data);
-		curl_easy_setopt(curle, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
-		curl_easy_setopt(curle, CURLOPT_FAILONERROR, true);
-		curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 0L);
-		curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
-		curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
-		curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
-		curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download.getMirror(i)).c_str());
-		std::string range;
-		if (!download.getRange(range)) {
-			LOG_ERROR("Error getting range for download");
+		download_data* dlData=new download_data();
+		if (!getPiece(file, dlData, download, i)) {
+			LOG_ERROR("couldn't get piece\n");
 			return false;
 		}
-		curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
-//		curl_easy_setopt(curle, CURLOPT_RETURNTRANSFER, true);
-		curl_multi_add_handle(curlm, curle);
+		downloads.push_back(dlData);
+		curl_multi_add_handle(curlm, downloads[i]->easy_handle);
 	}
-	int running;
+	int running, last=1;
 	do {
 		/*TODO:
 			add new download when piece is finished
-			verify piece, when broken remove mirror from list
-			(remove mirror when it is slow and count of mirros > 1)
+			(remove mirror when a mirror is slow and other mirrors are faster)
 		*/
-		curl_multi_perform(curlm, &running);
+		CURLMcode ret=curl_multi_perform(curlm, &running);
+		if (ret!=CURLM_OK) {
+			LOG_ERROR("curl_multi_perform_error: %d\n", ret);
+		}
+		if ((last!=0) && (last!=running)) { //count of running downloads changed
+			int msgs_left;
+			while(struct CURLMsg* msg=curl_multi_info_read(curlm, &msgs_left)) {
+				switch(msg->msg) {
+				case CURLMSG_DONE: { //a piece has been downloaded, verify it
+					if ( msg->data.result!=CURLE_OK) {
+						LOG_ERROR("CURLcode: %d\n", msg->data.result);
+
+					}
+					download_data* data=NULL;
+					for(int i=0; i<downloads.size(); i++) { //search corresponding data structure
+						if (downloads[i]->easy_handle == msg->easy_handle) {
+							data=downloads[i];
+							break;
+						}
+					}
+
+					if (data==NULL) {
+						LOG_ERROR("Couldn't find download in download list\n");
+						return false;
+					}
+					assert(data->file!=NULL);
+					assert(data->piece<download.pieces.size());
+					data->file->Hash(hashes, data->piece); //TODO: create hash + compare with download.piece[i].hashes
+					if (download.pieces[data->piece].sha[0]==0) {
+						LOG_INFO("sha1 checksum seems to be invalid\n");
+					}
+					if ( (download.pieces[data->piece].sha[0]==0)
+					     || (sha1.compare((unsigned char*)download.pieces[data->piece].sha, 5))) { //piece valid
+						download.pieces[data->piece].state=IDownload::STATE_FINISHED;
+					} else {
+						download.pieces[data->piece].state=IDownload::STATE_NONE;
+						LOG_ERROR("Invalid piece retrieved\n %s", sha1.toString().c_str());
+						//FIXME: mark mirror as broken (to avoid endless loops!)
+					}
+					//remove easy handle, as its finished
+					curl_multi_remove_handle(curlm, data->easy_handle);
+					//piece finished / failed, try a new one
+					//TODO: dynamic use mirrors
+					/*
+										double dlSpeed;
+										curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
+										LOG("speed %.0f KB/s\n", dlSpeed/1024);
+					*/
+					if (!getPiece(file, data, download, 0)) {
+						LOG_INFO("No piece found, all pieces finished / currently downloading\n");
+						break;
+					}
+					ret=curl_multi_add_handle(curlm, data->easy_handle);
+					if (ret!=CURLM_OK) {
+						LOG_ERROR("curl_multi_perform_error: %d %d\n", ret, CURLM_BAD_EASY_HANDLE);
+					}
+					running++;
+					break;
+				}
+				default:
+					LOG_ERROR("Unhandled message %d\n", msg->msg);
+				}
+			}
+		}
 	} while(running>0);
+	curl_multi_cleanup(curlm);
+	file.Close();
 	return true;
 }

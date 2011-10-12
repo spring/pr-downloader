@@ -2,8 +2,9 @@
 #define _FILE_H_
 
 #include <string>
-#include <map>
+#include <vector>
 #include <list>
+#include <map>
 
 class IHash;
 
@@ -12,9 +13,6 @@ class CPiece
 {
 public:
 	CPiece() {
-		CPiece(0);
-	}
-	CPiece(int size) {
 		this->valid=false;
 		this->pos=0;
 	};
@@ -65,7 +63,8 @@ public:
 	*	gets the size of the given pice, returns file size when piece<0. hint: first piece=0
 	*	@return the size of a peace
 	*/
-	int GetPiceSize(int piece=-1);
+	int GetPieceSize(int piece=-1);
+
 private:
 	/**
 	* set the size of a pice
@@ -84,7 +83,7 @@ private:
 	int piecesize; //size of a piece
 	int size; //file size
 	int curpos; //current file pointer position
-	std::map <int, CPiece> pieces; //pieces of the file
+	std::vector <CPiece> pieces; //pieces of the file
 	std::map <std::string, IHash*> hashs; //checksums for the complete file
 
 };

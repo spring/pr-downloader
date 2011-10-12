@@ -2,7 +2,6 @@
 #include <string>
 #include <list>
 #include <stdio.h>
-#include <sstream>
 #include "Logger.h"
 
 IDownload::IDownload(const std::string& name, category cat)
@@ -44,18 +43,4 @@ const std::string& IDownload::getMirror(const int i)
 int IDownload::getMirrorCount()
 {
 	return mirror.size();
-}
-
-bool IDownload::getRange(std::string& range)
-{
-	for(int i=0; i<pieces.size(); i++) {
-		if (pieces[i].state==STATE_NONE) {
-			std::ostringstream s;
-			s << (int)(this->piecesize*i) <<"-"<<std::min(this->piecesize*i+1, this->size);
-			range=s.str();
-			return true;
-		}
-		i++;
-	}
-	return false;
 }

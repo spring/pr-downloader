@@ -1,7 +1,12 @@
 #include "HashSHA1.h"
 
 #include <assert.h>
+#include <string.h>
 
+HashSHA1::HashSHA1()
+{
+	memset(&sha1Context,0,  sizeof(sha1Context));
+}
 
 void HashSHA1::Init()
 {

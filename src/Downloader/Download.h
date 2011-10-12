@@ -29,7 +29,6 @@ public:
 	 */
 	bool addMirror(const std::string& url);
 	bool addDepend(const std::string& depend);
-	std::list<std::string> mirror;
 	std::string name; //name, in most cases the filename to save to
 	std::list<std::string> depend; //list of all depends
 	bool downloaded; //file was downloaded?
@@ -51,10 +50,9 @@ public:
 	*/
 	int piecesize;
 	enum PIECE_STATE {
-		STATE_NONE,
-		STATE_DOWNLOADING,
-		STATE_ERROR,
-		STATE_FINISHED
+		STATE_NONE,        // nothing was done with this piece
+		STATE_DOWNLOADING, // piece is currently downloaded
+		STATE_FINISHED,    // piece downloaded successfully + verified
 	};
 	struct piece {
 		unsigned sha[5];
@@ -63,18 +61,16 @@ public:
 	/**
 	 *	sha1 sum of pieces
 	 */
-	std::vector<struct piece> pieces;
+	std::vector<struct piece> pieces; //FIXME: make private
 	unsigned char md5[16];
 
 	/**
 	 *	file size
 	 */
 	int size;
-	/**
-	 *	get next available range from a piece
-	 *	@return returns for example "1234-123456" and true, or false
-	*/
-	bool getRange(std::string& range);
+private:
+	std::list<std::string> mirror;
+
 };
 
 #endif

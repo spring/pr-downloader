@@ -20,6 +20,7 @@ CFile::CFile(const std::string& filename, int size, int piecesize)
 	this->size=size;
 	if(size>0)
 		SetPieceSize(piecesize);
+	curpos=0;
 }
 
 CFile::~CFile()
@@ -41,9 +42,9 @@ bool CFile::Open(const std::string& filename)
 		LOG_ERROR("file opened before old was closed\n");
 		return false;
 	}
-	handle=open(filename.c_str(), O_CREAT|O_RDWR);
+	handle=open(filename.c_str(), O_CREAT|O_RDWR, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH) ;
 	if (handle<0)
-		LOG_ERROR("open(): %s\n",strerror(errno));
+		LOG_ERROR("open(%s): %s\n",filename.c_str(), strerror(errno));
 	return true;
 }
 
@@ -55,16 +56,24 @@ bool CFile::Hash(std::list <IHash*> hashs, int piece)
 	for(it=hashs.begin(); it!=hashs.end(); ++it) {
 		(*it)->Init();
 	}
-	int left=GetPiceSize(piece); //total bytes to hash
-	while( (read>0) && (left>0) ) {
-		int read=Read(buf, sizeof(buf), piece);
+	long unsigned left=GetPieceSize(piece); //total bytes to hash
+//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
+	pieces[piece].pos=0; //reset read/write pos
+	int read=0;
+	while(left>0) {
+		read=Read(buf, std::min(left, sizeof(buf)), piece);
+		if(read<=0) {
+			LOG_ERROR("EOF or read error on piece %d, left: %d size: %d\n", piece, left, GetPieceSize(piece));
+			LOG_ERROR("%d\n", GetPieceSize(piece));
+			return false;
+		}
 		left=left-read;
 		for(it=hashs.begin(); it!=hashs.end(); ++it) {
 			(*it)->Update(buf, bytes);
 		}
 	}
 	if (left>0) {
-		LOG_ERROR("Couldn't read all bytes for hashing\n");
+		LOG_ERROR("Couldn't read all bytes for hashing, %d\n", left);
 		return false;
 	}
 	for(it=hashs.begin(); it!=hashs.end(); ++it) {
@@ -77,6 +86,10 @@ int CFile::Read(char*buf, int bufsize, int piece)
 {
 	RestorePos(piece);
 	int bytes=read(handle, buf, bufsize);
+	if(bytes<=0) {
+		LOG_ERROR("read error %d\n", bytes);
+		return bytes;
+	}
 	IncPos(piece, bytes);
 	return bytes;
 }
@@ -110,6 +123,11 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 		abort();
 	}
 	IncPos(piece, bytes);
+	/*
+		if ((piece>=0) && (pieces[piece].pos==GetPieceSize(piece))) {
+			LOG("piece finished: %d\n", piece);
+		}
+	*/
 	return bytes;
 }
 
@@ -128,6 +146,7 @@ int CFile::Seek(int pos, int piece)
 	return pos;
 }
 
+
 bool CFile::SetPieceSize(int size)
 {
 	pieces.clear();
@@ -136,23 +155,26 @@ bool CFile::SetPieceSize(int size)
 		return false;
 	}
 	int count=this->size/size;
+	if(this->size%size>0)
+		count++;
 	if(count<=0) {
 		LOG_ERROR("SetPieceSize(): count<0\n");
 		return false;
 	}
 	for(int i=0; i<count; i++) {
-		pieces[i]=CPiece(size);
+		pieces.push_back(CPiece());
+		pieces[i]=CPiece();
 	}
 	piecesize=size;
+	LOG("SetPieceSize: %d\n", pieces.size());
 	return true;
 }
 
-int CFile::GetPiceSize(int piece)
+int CFile::GetPieceSize(int piece)
 {
 	if (piece>=0) {
 		assert(piece<=pieces.size());
-		LOG("%d %d\n", pieces.size(), piece);
-		if (pieces.size()==piece) //last piece
+		if (pieces.size()-1==piece) //last piece
 			return size%piecesize;
 		return piecesize;
 	}

@@ -7,6 +7,9 @@
 #include "FileSystem/FileSystem.h"
 #include "Downloader/IDownloader.h"
 
+class HashMD5;
+class HashSHA1;
+class CFile;
 
 class CHttpDownloader: public IDownloader
 {
@@ -27,6 +30,25 @@ public:
 	void downloadStream(const std::string& url,std::list<CFileSystem::FileData*>& files);
 	virtual bool search(std::list<IDownload>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
 	virtual bool download(IDownload& download);
+
+	class download_data
+	{
+	public:
+		download_data() {
+			file=NULL;
+			piece=0;
+			mirror=0;
+			easy_handle=curl_easy_init();
+		}
+		~download_data() {
+			curl_easy_cleanup(easy_handle);
+		}
+		CFile* file;
+		int piece;
+		CURL* easy_handle; //curl_easy_handle
+		int mirror; //number of mirror used
+	};
+
 private:
 	CURL* curl;
 	bool parallelDownload(IDownload& download);
@@ -34,6 +56,11 @@ private:
 	unsigned int stats_filepos;
 	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);
 	std::string escapeUrl(const std::string& url);
+	/**
+	*	gets next piece that can be downloaded, mark it as downloading
+	*/
+	bool getPiece(CFile& file, download_data* piece, IDownload& download, int mirror);
+	bool getRange(std::string& range, int piece, int piecesize, int filesize);
 };
 
 #endif

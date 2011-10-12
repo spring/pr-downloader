@@ -1,8 +1,12 @@
-#include <assert.h>
-
 #include "HashMD5.h"
 
+#include <assert.h>
+#include <string.h>
 
+HashMD5::HashMD5()
+{
+	memset(&mdContext,0,  sizeof(mdContext));
+}
 
 void HashMD5::Init()
 {

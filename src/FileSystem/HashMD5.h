@@ -7,7 +7,7 @@
 class HashMD5: public IHash
 {
 public:
-	HashMD5() {}
+	HashMD5();
 	void Init();
 	void Final();
 	void Update(const char* data,const int size);

@@ -7,7 +7,7 @@
 class HashSHA1: public IHash
 {
 public:
-	HashSHA1() {}
+	HashSHA1();
 	void Init();
 	void Final();
 	void Update(const char* data,const int size);
