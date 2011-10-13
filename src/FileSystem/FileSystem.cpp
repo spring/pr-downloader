@@ -372,11 +372,10 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	if (!parseSdp(filename, files))
 		return false;
 	std::list<CFileSystem::FileData>::iterator it;
-	LOG_INFO("filename	size	virtualname	crc32\n");
+	HashMD5 md5;
+	LOG_INFO("md5 (filename in pool)           crc32        size filename\n");
 	for(it=files.begin(); it!=files.end(); ++it) {
-		std::string md5;
-		md5ItoA((const unsigned char*)(*it).name.c_str() ,md5);
-		LOG_INFO("%s %8d %s %X\n",md5.c_str(), (*it).size, (*it).name.c_str(), (*it).crc32);
+		LOG_INFO("%s %.8X %8d %s\n",md5.toString((*it).md5, sizeof(CFileSystem::FileData::md5)).c_str(), (*it).crc32, (*it).size, (*it).name.c_str());
 	}
 	return true;
 }
