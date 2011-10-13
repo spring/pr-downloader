@@ -108,30 +108,41 @@ CFileSystem::~CFileSystem()
 }
 
 
-CFileSystem::CFileSystem()
+CFileSystem::CFileSystem(const std::string& writepath)
 {
 	tmpfiles.clear();
-#ifndef WIN32
-	char* buf;
-	buf=getenv("HOME");
-	springdir=buf;
-	springdir.append("/.spring");
-#else
-	TCHAR pathMyDocs[MAX_PATH];
-	SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
-	springdir=pathMyDocs;
-	springdir.append("\\My Games\\Spring");
-#endif
+	if (writepath.size()>0){
+		if(!directoryExists(writepath)){
+			LOG_ERROR("filesystem-writepath doesn't exist: %s\n", writepath.c_str());
+		}
+		springdir=writepath;
+	} else {
+	#ifndef WIN32
+		char* buf;
+		buf=getenv("HOME");
+		springdir=buf;
+		springdir.append("/.spring");
+	#else
+		TCHAR pathMyDocs[MAX_PATH];
+		SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
+		springdir=pathMyDocs;
+		springdir.append("\\My Games\\Spring");
+	#endif
+	}
+	LOG_INFO("Using filesystem-writepath: %s\n", springdir.c_str());
 }
 
-void CFileSystem::Initialize()
+static std::string fileWritePath;
+
+void CFileSystem::Initialize(const std::string& writepath)
 {
+	fileWritePath=writepath;
 }
 
 CFileSystem* CFileSystem::GetInstance()
 {
 	if (singleton==NULL)
-		singleton=new CFileSystem();
+		singleton=new CFileSystem(fileWritePath);
 	return singleton;
 }
 
@@ -201,7 +212,10 @@ const std::string CFileSystem::getPoolFileName(const std::string& md5) const
 
 int CFileSystem::validatePool(const std::string& path)
 {
-
+	if(!directoryExists(path)){
+		LOG_ERROR("Pool directory doesn't exist: %s\n", path.c_str());
+		return 0;
+	}
 	unsigned long time=0;
 	int res=0;
 	std::list <std::string*>dirs;
@@ -241,7 +255,7 @@ int CFileSystem::validatePool(const std::string& path)
 						LOG_ERROR("Invalid file: %s\n", absname.c_str());
 					} else {
 						md5="";
-						md5.push_back(absname.at(len-36));
+						md5.push_back(absname.at(len-36)); //get md5 from path + filename
 						md5.push_back(absname.at(len-35));
 						md5.append(absname.substr(len-33, 30));
 						if (!md5AtoI(md5,filedata.md5)) { //set md5 in filedata structure

@@ -24,7 +24,7 @@ class CFileSystem
 
 public:
 	static CFileSystem* GetInstance();
-	static void Initialize();
+	static void Initialize(const std::string& writepath="");
 	static void Shutdown();
 
 	//FIXME: maybe not portable?
@@ -36,7 +36,7 @@ public:
 		unsigned int compsize; //compressed size
 		bool download;
 	};
-	CFileSystem();
+	CFileSystem(const std::string& writepath="");
 	~CFileSystem();
 	/**
 		parses the file for a mod and creates

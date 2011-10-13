@@ -40,7 +40,7 @@ static struct option long_options[] = {
 	{"download-map"            , 1, 0, DOWNLOAD_MAP},
 	{"download-game"           , 1, 0, DOWNLOAD_GAME},
 	{"widget-search"           , 1, 0, WIDGET_SEARCH},
-	{"filesystem-writepath"    , 0, 0, FILESYSTEM_WRITEPATH},
+	{"filesystem-writepath"    , 1, 0, FILESYSTEM_WRITEPATH},
 	{"filesystem-dumpsdp"      , 1, 0, FILESYSTEM_DUMPSDP},
 	{"help"                    , 0, 0, HELP},
 	{0                         , 0, 0, 0}
@@ -150,7 +150,8 @@ int main(int argc, char **argv)
 			break;
 		}
 		case FILESYSTEM_WRITEPATH: {
-			LOG_INFO("%s\n",fileSystem->getSpringDir().c_str());
+			std::string tmp=optarg;
+			CFileSystem::Initialize(optarg);
 			break;
 		}
 		case FILESYSTEM_DUMPSDP: {
