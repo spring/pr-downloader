@@ -248,10 +248,17 @@ bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize, int
 
 bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& download, int mirror)
 {
+	HashSHA1 sha1=HashSHA1();
 	int pieceNum=-1;
 	for(int i=0; i<(int)download.pieces.size(); i++ ) { //find first not downloaded piece
 		assert(i<(int)download.pieces.size());
-		if ( (download.pieces[i].state==IDownload::STATE_NONE) ) {
+		if (download.pieces[i].state==IDownload::STATE_NONE) {
+			file.Hash(sha1, i);
+			if (sha1.compare((unsigned char*)&download.pieces[i].sha, 20)){
+				LOG("piece %d has already correct checksum, reusing\n", i);
+				download.pieces[i].state=IDownload::STATE_FINISHED;
+				continue;
+			}
 			pieceNum=i;
 			break;
 		}
@@ -298,7 +305,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 	for(int i=0; i<count; i++) {
 		download_data* dlData=new download_data();
 		if (!getPiece(file, dlData, download, i)) {
-			LOG_ERROR("couldn't get piece\n");
+			LOG_INFO("couldn't get piece, file already downloaded\n");
 			return false;
 		}
 		downloads.push_back(dlData);
