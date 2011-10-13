@@ -305,10 +305,11 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 		download_data* dlData=new download_data();
 		if (!getPiece(file, dlData, download, i)) {
 			LOG_INFO("couldn't get piece, file already downloaded\n");
-			return false;
+			delete dlData;
+		}else{
+			downloads.push_back(dlData);
+			curl_multi_add_handle(curlm, downloads[i]->easy_handle);
 		}
-		downloads.push_back(dlData);
-		curl_multi_add_handle(curlm, downloads[i]->easy_handle);
 	}
 	int running, last=1;
 	do {
@@ -355,6 +356,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 						//FIXME: mark mirror as broken (to avoid endless loops!)
 					}
 					//remove easy handle, as its finished
+					curl_easy_cleanup(data->easy_handle);
 					curl_multi_remove_handle(curlm, data->easy_handle);
 					//piece finished / failed, try a new one
 					//TODO: dynamic use mirrors
@@ -380,6 +382,10 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 			}
 		}
 	} while(running>0);
+	for (int i=0; i<downloads.size(); i++){
+		delete downloads[i];
+	}
+	downloads.clear();
 	curl_multi_cleanup(curlm);
 	file.Close();
 	return true;
