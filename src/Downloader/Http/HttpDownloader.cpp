@@ -150,7 +150,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 		if (resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeString) {
 			std::string base64=resfile["torrent"];
 			std::string binary;
-			base64_decode(base64, binary); //FIXME: this is a bug int the xml-rpc interface, it should return <base64> but returns <string>
+			base64_decode(base64, binary); //FIXME: this is a bug in the xml-rpc interface, it should return <base64> but returns <string>
 			fileSystem->parseTorrent(binary.c_str(),binary.size(),  dl);
 		}
 		res.push_back(dl);
@@ -174,7 +174,6 @@ std::string CHttpDownloader::escapeUrl(const std::string& url)
 
 bool CHttpDownloader::download(IDownload& download)
 {
-//FIXME: enable that
 	if (download.getMirrorCount()>1)
 		return parallelDownload(download);
 
@@ -313,10 +312,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 	}
 	int running, last=1;
 	do {
-		/*TODO:
-			add new download when piece is finished
-			(remove mirror when a mirror is slow and other mirrors are faster)
-		*/
+		//TODO: remove mirror when a mirror is slow/sent broken data and other mirrors are faster
 		CURLMcode ret=curl_multi_perform(curlm, &running);
 		if (ret!=CURLM_OK) {
 			LOG_ERROR("curl_multi_perform_error: %d\n", ret);
@@ -344,7 +340,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 					}
 					assert(data->file!=NULL);
 					assert(data->piece<(int)download.pieces.size());
-					data->file->Hash(sha1, data->piece); //TODO: create hash + compare with download.piece[i].hashes
+					data->file->Hash(sha1, data->piece);
 					if (download.pieces[data->piece].sha[0]==0) {
 						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
 					}
