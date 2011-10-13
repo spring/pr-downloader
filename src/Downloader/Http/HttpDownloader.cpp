@@ -174,7 +174,7 @@ std::string CHttpDownloader::escapeUrl(const std::string& url)
 
 bool CHttpDownloader::download(IDownload& download)
 {
-	if (download.getMirrorCount()>1)
+//	if (download.getMirrorCount()>1)
 		return parallelDownload(download);
 
 	LOG_DEBUG("%s",download.name.c_str());
@@ -252,16 +252,20 @@ void CHttpDownloader::showProcess(IDownload& download, CFile& file)
 	}else
 		return;
 	int done=0;
-	for(unsigned i=0; i<download.pieces.size(); i++){
-		switch(download.pieces[i].state){
-			case IDownload::STATE_FINISHED:
-				done+=download.piecesize;
-				break;
-			case IDownload::STATE_DOWNLOADING:
-				done+=file.GetPiecePos(i);
-				break;
-			default:
-				break;
+	if(download.pieces.size()<=0){
+		done=file.GetPiecePos();
+	}else{
+		for(unsigned i=0; i<download.pieces.size(); i++){
+			switch(download.pieces[i].state){
+				case IDownload::STATE_FINISHED:
+					done+=download.piecesize;
+					break;
+				case IDownload::STATE_DOWNLOADING:
+					done+=file.GetPiecePos(i);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	LOG_PROGRESS(done, download.size);
@@ -314,14 +318,13 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& dow
 bool CHttpDownloader::parallelDownload(IDownload& download)
 {
 	CFile file=CFile(download.name, download.size, download.piecesize);
-	HashMD5 md5=HashMD5();
 	HashSHA1 sha1=HashSHA1();
 	std::list<IHash*> hashes;
 	std::vector <download_data*> downloads;
 	CURLM* curlm=curl_multi_init();
-	const int count=std::min((int)download.pieces.size(), download.getMirrorCount()); //count of parallel downloads
-	if(count<=0) {
-		LOG_ERROR("No mirrors found or counts of pieces==0 (count=%d)\n", download.getMirrorCount());
+	const int count=std::max(1, std::min((int)download.pieces.size(), download.getMirrorCount())); //count of parallel downloads
+	if(download.getMirrorCount()==0) {
+		LOG_ERROR("No mirrors found\n");
 		return false;
 	}
 	LOG_INFO("Using %d parallel downloads\n", count);
@@ -407,6 +410,11 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 			}
 		}
 	} while(running>0);
+	if(download.pieces.size()==0){
+		HashMD5 md5=HashMD5();
+		file.Hash(md5);
+		md5.compare(download.md5, sizeof(download.md5));
+	}
 	lastprogress=0; //force progressbar to show 100%
 	showProcess(download, file);
 	LOG("\n");

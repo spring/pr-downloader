@@ -28,6 +28,6 @@ int HashMD5::getSize() const
 
 unsigned char HashMD5::get(int pos) const
 {
-	assert(pos<(int)sizeof(mdContext.digest[pos]));
+	assert(pos<(int)sizeof(mdContext.digest));
 	return mdContext.digest[pos];
 }
