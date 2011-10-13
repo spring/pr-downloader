@@ -301,11 +301,13 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 		LOG_ERROR("No mirrors found or counts of pieces==0 (count=%d)\n", download.getMirrorCount());
 		return false;
 	}
+	LOG("Using %d parallel downloads\n", count);
 	for(int i=0; i<count; i++) {
 		download_data* dlData=new download_data();
 		if (!getPiece(file, dlData, download, i)) {
 			LOG_INFO("couldn't get piece, file already downloaded\n");
 			delete dlData;
+			break;
 		}else{
 			downloads.push_back(dlData);
 			curl_multi_add_handle(curlm, downloads[i]->easy_handle);
