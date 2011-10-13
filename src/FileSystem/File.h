@@ -9,15 +9,15 @@
 class IHash;
 
 
-class CPiece
+class CFilePiece
 {
 public:
-	CPiece() {
+	CFilePiece() {
 		this->valid=false;
 		this->pos=0;
 	};
 	bool valid; //checksum validated
-	int pos; //current absolute read/write pos
+	int pos; //current relative read/write pos
 };
 
 class CFile
@@ -37,7 +37,7 @@ public:
 	/**
 	*	hashes a piece with given hashes (or complete file, if piece<=0)
 	*/
-	bool Hash(std::list <IHash*> hashs, int piece=-1);
+	bool Hash(IHash& hash, int piece=-1);
 	/**
 	*	open file
 	*/
@@ -82,8 +82,8 @@ private:
 	FILE* handle; //file handle
 	int piecesize; //size of a piece
 	long size; //file size
-	unsigned long curpos; //current file pointer position
-	std::vector <CPiece> pieces; //pieces of the file
+	unsigned long curpos; //current file pointer absolute position
+	std::vector <CFilePiece> pieces; //pieces of the file
 	std::map <std::string, IHash*> hashs; //checksums for the complete file
 
 };

@@ -18,7 +18,7 @@ CFile::CFile(const std::string& filename, int size, int piecesize)
 		this->piecesize=1;
 	else
 		this->piecesize=piecesize;
-	if(size>0)
+	if(piecesize>0)
 		SetPieceSize(piecesize);
 	curpos=0;
 }
@@ -63,18 +63,19 @@ bool CFile::Open(const std::string& filename)
 	return true;
 }
 
-bool CFile::Hash(std::list <IHash*> hashs, int piece)
+bool CFile::Hash(IHash& hash, int piece)
 {
 	std::list <IHash*>::iterator it;
 	char buf[IO_BUF_SIZE];
-	int bytes=0;
-	for(it=hashs.begin(); it!=hashs.end(); ++it) {
-		(*it)->Init();
-	}
+	hash.Init();
 	long unsigned left=GetPieceSize(piece); //total bytes to hash
 //	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
-	pieces[piece].pos=0; //reset read/write pos
+	if (piece>=0){
+		pieces[piece].pos=0; //reset piece pos to 0
+	}else
+		curpos=0;
 	int read=0;
+
 	while(left>0) {
 		int toread=std::min(left, (long unsigned)sizeof(buf));
 		read=Read(buf, toread, piece);
@@ -84,22 +85,16 @@ bool CFile::Hash(std::list <IHash*> hashs, int piece)
 			return false;
 		}
 		left=left-read;
-		for(it=hashs.begin(); it!=hashs.end(); ++it) {
-			(*it)->Update(buf, bytes);
-		}
+		hash.Update(buf, read);
 	}
-	if (left>0) {
-		LOG_ERROR("Couldn't read all bytes for hashing, %d\n", left);
-		return false;
-	}
-	for(it=hashs.begin(); it!=hashs.end(); ++it) {
-		(*it)->Final();
-	}
+	hash.Final();
+//	LOG("CFile::Hash(): %s\n", hash.toString().c_str());
 	return true;
 }
 
 int CFile::Read(char*buf, int bufsize, int piece)
 {
+//	LOG("read: %d %d\n", pieces[piece].pos, curpos);
 	RestorePos(piece);
 //	LOG("reading %d\n", bufsize);
 	int items=fread(buf, bufsize, 1, handle);
@@ -128,10 +123,9 @@ void CFile::IncPos(int piece, int pos)
 		assert(pieces[piece].pos<=size+pos);
 		assert(pos<=piecesize);
 		pieces[piece].pos +=pos;
-	} else {
-		assert((long)curpos<=size);
-		curpos += pos;
 	}
+	assert((long)curpos<=size);
+	curpos += pos;
 }
 
 int CFile::Write(const char*buf, int bufsize, int piece)
@@ -155,6 +149,7 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 
 int CFile::Seek(unsigned long pos, int piece)
 {
+	assert(piece<=pieces.size());
 	if(piece>=0) { //adjust position relative to piece pos
 		pos=this->piecesize*piece+pos;
 	}
@@ -181,13 +176,13 @@ bool CFile::SetPieceSize(int size)
 	int count=this->size/size;
 	if(this->size%size>0)
 		count++;
+	assert(count>0);
 	if(count<=0) {
 		LOG_ERROR("SetPieceSize(): count<0\n");
 		return false;
 	}
 	for(int i=0; i<count; i++) {
-		pieces.push_back(CPiece());
-		pieces[i]=CPiece();
+		pieces.push_back(CFilePiece());
 	}
 	piecesize=size;
 	LOG("SetPieceSize: %d\n", pieces.size());

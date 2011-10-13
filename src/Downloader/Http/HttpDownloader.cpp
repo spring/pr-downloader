@@ -288,9 +288,6 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 	HashMD5 md5=HashMD5();
 	HashSHA1 sha1=HashSHA1();
 	std::list<IHash*> hashes;
-	hashes.clear();
-	hashes.push_back(&md5);
-	hashes.push_back(&sha1);
 	std::vector <download_data*> downloads;
 	CURLM* curlm=curl_multi_init();
 	const int count=std::min((int)download.pieces.size(), download.getMirrorCount()); //count of parallel downloads
@@ -340,12 +337,13 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 					}
 					assert(data->file!=NULL);
 					assert(data->piece<(int)download.pieces.size());
-					data->file->Hash(hashes, data->piece); //TODO: create hash + compare with download.piece[i].hashes
+					data->file->Hash(sha1, data->piece); //TODO: create hash + compare with download.piece[i].hashes
 					if (download.pieces[data->piece].sha[0]==0) {
 						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
 					}
+					LOG("piece: %d\n", data->piece);
 					if ( (download.pieces[data->piece].sha[0]==0)
-					     || (sha1.compare((unsigned char*)download.pieces[data->piece].sha, 20))) { //piece valid
+					     || (sha1.compare((unsigned char*)&download.pieces[data->piece].sha, 20))) { //piece valid
 						download.pieces[data->piece].state=IDownload::STATE_FINISHED;
 					} else {
 						download.pieces[data->piece].state=IDownload::STATE_FINISHED;
