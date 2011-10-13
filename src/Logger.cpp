@@ -33,23 +33,21 @@ void LOG_DOWNLOAD(const char* filename)
 	printf("[Download] %s\n",filename);
 }
 
-void LOG_PROGRESS(float done, float total)
+void LOG_PROGRESS(unsigned int done,unsigned  int total)
 {
 	float percentage = 0;
 	if (total>0) {
-		percentage = done / total;
+		percentage = (float)done / total;
 	}
 	printf("[Progress] %3.0f%% [",percentage * 100.0f);
 	int totaldotz = 30;                           // how wide you want the progress meter to be
 	int dotz = percentage * totaldotz;
-	int ii=0;
-	for ( ; ii < dotz; ii++) {
-		printf("=");    //full
+	for (int i=0; i < totaldotz; i++) {
+		if (i>dotz)
+			printf(" ");    //blank
+		else
+			printf("=");    //full
 	}
-	for ( ; ii < totaldotz; ii++) {
-		printf(" ");    //blank
-	}
-
 	// and back to line begin - do not forget the fflush to avoid output buffering problems!
 	printf("] %d/%d ",(int)done,(int)total );
 	printf("\r");

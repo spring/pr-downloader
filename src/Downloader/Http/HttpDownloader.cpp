@@ -244,18 +244,41 @@ bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize, int
 	return true;
 }
 
+void CHttpDownloader::showProcess(IDownload& download, CFile& file)
+{
+	unsigned long now=getTime();
+	if(now>lastprogress){
+		lastprogress=now;
+	}else
+		return;
+	int done=0;
+	for(unsigned i=0; i<download.pieces.size(); i++){
+		switch(download.pieces[i].state){
+			case IDownload::STATE_FINISHED:
+				done+=download.piecesize;
+				break;
+			case IDownload::STATE_DOWNLOADING:
+				done+=file.GetPiecePos(i);
+				break;
+			default:
+				break;
+		}
+	}
+	LOG_PROGRESS(done, download.size);
+}
+
 
 bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& download, int mirror)
 {
 	HashSHA1 sha1=HashSHA1();
 	int pieceNum=-1;
-	for(int i=0; i<(int)download.pieces.size(); i++ ) { //find first not downloaded piece
-		assert(i<(int)download.pieces.size());
+	for(unsigned i=0; i<download.pieces.size(); i++ ) { //find first not downloaded piece
 		if (download.pieces[i].state==IDownload::STATE_NONE) {
 			file.Hash(sha1, i);
 			if (sha1.compare((unsigned char*)&download.pieces[i].sha, 20)){
-				LOG("piece %d has already correct checksum, reusing\n", i);
+//				LOG_DEBUG("piece %d has already correct checksum, reusing", i);
 				download.pieces[i].state=IDownload::STATE_FINISHED;
+				showProcess(download, file);
 				continue;
 			}
 			pieceNum=i;
@@ -301,11 +324,10 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 		LOG_ERROR("No mirrors found or counts of pieces==0 (count=%d)\n", download.getMirrorCount());
 		return false;
 	}
-	LOG("Using %d parallel downloads\n", count);
+	LOG_INFO("Using %d parallel downloads\n", count);
 	for(int i=0; i<count; i++) {
 		download_data* dlData=new download_data();
 		if (!getPiece(file, dlData, download, i)) {
-			LOG_INFO("couldn't get piece, file already downloaded\n");
 			delete dlData;
 			break;
 		}else{
@@ -357,6 +379,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 						LOG_ERROR("implement me! (redownload from different mirror)\n");
 						//FIXME: mark mirror as broken (to avoid endless loops!)
 					}
+					showProcess(download, file);
 					//remove easy handle, as its finished
 					curl_easy_cleanup(data->easy_handle);
 					curl_multi_remove_handle(curlm, data->easy_handle);
@@ -384,7 +407,10 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 			}
 		}
 	} while(running>0);
-	for (int i=0; i<downloads.size(); i++){
+	lastprogress=0; //force progressbar to show 100%
+	showProcess(download, file);
+	LOG("\n");
+	for (unsigned i=0; i<downloads.size(); i++){
 		delete downloads[i];
 	}
 	downloads.clear();

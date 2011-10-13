@@ -306,9 +306,9 @@ bool CFileSystem::fileExists(const std::string& filename)
 bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 {
 	struct be_node* node=be_decoden(data, size);
-#ifdef DEBUG
-	be_dump(node);
-#endif
+//#ifdef DEBUG
+//	be_dump(node);
+//#endif
 	if (node->type!=BE_DICT) {
 		LOG_ERROR("Error in torrent data\n");
 		be_free(node);
@@ -360,7 +360,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 			break;
 		}
 	}
-	LOG_DEBUG("Parsed torrent data: %s %d\n", dl.name.c_str(), dl.piecesize);
+	LOG_DEBUG("Parsed torrent data: %s %d", dl.name.c_str(), dl.piecesize);
 	be_free(node);
 	return true;
 }

@@ -23,7 +23,7 @@ bool IHash::compare(const unsigned char* data, int size)
 		unsigned char tmp=data[i];
 		if (get(i)!=tmp) {
 			LOG("compare failed(): %s %s\n", toString().c_str(), toString(data, size).c_str());
-			return true; //FIXME return false
+			return false;
 		}
 	}
 	return true;
@@ -35,13 +35,11 @@ const std::string IHash::toString(const unsigned char* data, int size){
 	if (data==NULL){
 		for(int i=0; i<getSize(); i++){
 			snprintf(buf,sizeof(buf),"%.2x", get(i));
-	//		LOG("%d: output: %s\n",i, buf);
 			str.append(buf);
 		}
 	}else{
 		for(int i=0; i<size; i++){
 			snprintf(buf,sizeof(buf),"%.2x", data[i]);
-	//		LOG("%d: output: %s\n",i, buf);
 			str.append(buf);
 		}
 	}

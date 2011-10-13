@@ -54,8 +54,14 @@ private:
 	bool parallelDownload(IDownload& download);
 	unsigned int stats_count;
 	unsigned int stats_filepos;
+	unsigned long lastprogress; //last time progress bar was shown
 	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);
 	std::string escapeUrl(const std::string& url);
+	/**
+	* show progress bar
+	*/
+	void showProcess(IDownload& download, CFile& file);
+
 	/**
 	*	gets next piece that can be downloaded, mark it as downloading
 	*/

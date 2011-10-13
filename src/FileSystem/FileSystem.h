@@ -30,7 +30,6 @@ public:
 	//FIXME: maybe not portable?
 	struct FileData {
 		std::string name;
-//		HashMD5 md5; //FIXME: use this
 		unsigned char md5[16];
 		unsigned int crc32;
 		unsigned int size;

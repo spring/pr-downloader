@@ -130,7 +130,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			if (sdp->skipped==LENGTH_SIZE) {
 				int towrite=intmin ((*sdp->list_it).compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
 						    buf_end-buf_pos);
-				LOG_DEBUG("%s %d %ld %ld %ld %d %d %d %d %d\n",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
+//				LOG_DEBUG("%s %d %ld %ld %ld %d %d %d %d %d\n",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
 				int res=0;
 				if (towrite>0) {
 					res=fwrite(buf_pos,1,towrite,sdp->file_handle);

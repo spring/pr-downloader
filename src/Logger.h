@@ -21,7 +21,7 @@ void LOG_ERROR(const char* format, ...);
 */
 void LOG_DOWNLOAD(const char* filename);
 
-void LOG_PROGRESS(float done, float total);
+void LOG_PROGRESS(unsigned int done,unsigned  int total);
 
 #ifdef DEBUG
 #define LOG_DEBUG(fmt, ...) \

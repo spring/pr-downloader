@@ -64,7 +64,10 @@ public:
 	*	@return the size of a peace
 	*/
 	int GetPieceSize(int piece=-1);
-
+	/**
+	*	gets the read/write position of piece
+	*/
+	int GetPiecePos(int piece=-1);
 private:
 	/**
 	* set the size of a pice

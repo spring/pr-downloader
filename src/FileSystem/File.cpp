@@ -149,7 +149,7 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 
 int CFile::Seek(unsigned long pos, int piece)
 {
-	assert(piece<=pieces.size());
+	assert(piece<=(int)pieces.size());
 	if(piece>=0) { //adjust position relative to piece pos
 		pos=this->piecesize*piece+pos;
 	}
@@ -172,7 +172,6 @@ bool CFile::SetPieceSize(int size)
 		LOG_ERROR("SetPieceSize(): FileSize<0\n");
 		return false;
 	}
-	LOG("SetPieceSize %d %d\n", size, this->size);
 	int count=this->size/size;
 	if(this->size%size>0)
 		count++;
@@ -185,7 +184,7 @@ bool CFile::SetPieceSize(int size)
 		pieces.push_back(CFilePiece());
 	}
 	piecesize=size;
-	LOG("SetPieceSize: %d\n", pieces.size());
+	LOG_DEBUG("SetPieceSize %d %d %d", size, this->size, pieces.size());
 	return true;
 }
 
@@ -198,4 +197,11 @@ int CFile::GetPieceSize(int piece)
 		return piecesize;
 	}
 	return size;
+}
+
+int CFile::GetPiecePos(int piece){
+	assert(piece<=piecesize);
+	if (piece>=0)
+		return pieces[piece].pos;
+	return curpos;
 }
