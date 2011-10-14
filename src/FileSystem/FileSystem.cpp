@@ -389,7 +389,7 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	HashMD5 md5;
 	LOG_INFO("md5 (filename in pool)           crc32        size filename\n");
 	for(it=files.begin(); it!=files.end(); ++it) {
-		LOG_INFO("%s %.8X %8d %s\n",md5.toString((*it).md5, sizeof(CFileSystem::FileData::md5)).c_str(), (*it).crc32, (*it).size, (*it).name.c_str());
+		LOG_INFO("%s %.8X %8d %s\n",md5.toString((*it).md5, 16).c_str(), (*it).crc32, (*it).size, (*it).name.c_str());
 	}
 	return true;
 }
