@@ -1,7 +1,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include "FileSystem/FileSystem.h"
+#include <stdio.h>
 
 /**
 *	plain log output

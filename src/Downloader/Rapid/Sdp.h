@@ -56,8 +56,8 @@ public:
 	}
 
 	bool downlooadInitialized;
-	std::list<CFileSystem::FileData>::iterator list_it;
-	std::list<CFileSystem::FileData>* globalFiles;
+	std::list<FileData>::iterator list_it;
+	std::list<FileData>* globalFiles;
 	FILE* file_handle;
 	std::string file_name;
 
@@ -95,7 +95,7 @@ private:
 	T 192.168.1.2:33202 -> 94.23.170.70:80 [AP]
 	......zL..c`..`d.....K.n/....
 	*/
-	bool downloadStream(std::string url,std::list<CFileSystem::FileData>& files);
+	bool downloadStream(std::string url,std::list<FileData>& files);
 	std::string name;
 	std::string md5;
 	std::string shortname;

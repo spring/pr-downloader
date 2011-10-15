@@ -304,13 +304,15 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& dow
 //	curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
 	curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
 	curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download.getMirror(mirror)).c_str());
-	std::string range;
-	if (!getRange(range, pieceNum, download.piecesize, download.size )) {
-		LOG_ERROR("Error getting range for download");
-		return false;
+	if (download.size>0){ //don't set range, if size unknown
+		std::string range;
+		if (!getRange(range, pieceNum, download.piecesize, download.size )) {
+			LOG_ERROR("Error getting range for download");
+			return false;
+		}
+		//set range for request, format is <start>-<end>
+		curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
 	}
-	//set range for request, format is <start>-<end>
-	curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
 	download.pieces[pieceNum].state=IDownload::STATE_DOWNLOADING;
 	return true;
 }
@@ -368,12 +370,13 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 					}
 					assert(data->file!=NULL);
 					assert(data->piece<(int)download.pieces.size());
-					data->file->Hash(sha1, data->piece);
-					if (download.pieces[data->piece].sha[0]==0) {
+					if (download.pieces[data->piece].sha[0]==0) { //FIXME : this check is incorrect
 						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
+					}else{
+						data->file->Hash(sha1, data->piece);
 					}
 					LOG("piece: %d\n", data->piece);
-					if ( (download.pieces[data->piece].sha[0]==0)
+					if ( (download.pieces[data->piece].sha[0]==0) //FIXME
 					     || (sha1.compare((unsigned char*)&download.pieces[data->piece].sha, 20))) { //piece valid
 						download.pieces[data->piece].state=IDownload::STATE_FINISHED;
 					} else {

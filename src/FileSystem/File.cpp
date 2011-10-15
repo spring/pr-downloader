@@ -13,14 +13,10 @@ CFile::CFile(const std::string& filename, int size, int piecesize)
 {
 	handle=NULL;
 	this->size=size;
+	this->piecesize=std::max(1, piecesize);
+	this->curpos=0;
 	Open(filename);
-	if (piecesize<=0)
-		this->piecesize=1;
-	else
-		this->piecesize=piecesize;
-	if(piecesize>0)
-		SetPieceSize(piecesize);
-	curpos=0;
+	SetPieceSize(piecesize);
 }
 
 CFile::~CFile()
@@ -43,7 +39,8 @@ bool CFile::Open(const std::string& filename)
 		return false;
 	}
 	struct stat sb;
-	if (stat(filename.c_str(), &sb)==0) { //check if file length is correct, if not set it
+	int res=stat(filename.c_str(), &sb);
+	if (res==0) { //check if file length is correct, if not set it
 		handle=fopen(filename.c_str(), "rb+");
 	} else {
 		handle=fopen(filename.c_str(), "wb+");
@@ -53,7 +50,7 @@ bool CFile::Open(const std::string& filename)
 		return false;
 	}
 
-	if(sb.st_size!=size) {
+	if((size!=-1) && (res!=0) && (sb.st_size!=size)) { //truncate file if real-size != excepted file size
 		int ret=ftruncate(fileno(handle), size);
 		if (ret!=0) {
 			LOG_ERROR("ftruncate failed\n");

@@ -29,3 +29,11 @@ unsigned char HashCRC32::get(int pos) const
 {
 	return crc;
 }
+
+bool HashCRC32::Set(unsigned char* data, int size){
+	if(size!=getSize())
+		return false;
+	for(int i=0; i<size; i++)
+		((unsigned char*)crc)[i]=data[i];
+	return true;
+}

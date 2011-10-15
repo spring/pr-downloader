@@ -31,3 +31,11 @@ unsigned char HashMD5::get(int pos) const
 	assert(pos<(int)sizeof(mdContext.digest));
 	return mdContext.digest[pos];
 }
+
+bool HashMD5::Set(unsigned char* data, int size){
+	if(size!=getSize())
+		return false;
+	for(int i=0; i<size; i++)
+		mdContext.digest[i]=data[i];
+	return true;
+}

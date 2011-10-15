@@ -2,6 +2,7 @@
 #include "RepoMaster.h"
 #include "Sdp.h"
 #include "FileSystem/FileSystem.h"
+#include "FileSystem/FileData.h"
 #include "Util.h"
 #include <string>
 #include <string.h>
@@ -19,9 +20,9 @@ bool CSdp::download()
 	}
 	int count=0;
 	filename  += this->md5 + ".sdp";
-	CFileSystem::FileData tmp;
-	md5AtoI(md5,tmp.md5);
-	std::list<CFileSystem::FileData> files;
+	FileData tmp=FileData();
+	tmp.md5->Set(md5);
+	std::list<FileData> files;
 
 	if (!fileSystem->parseSdp(filename,files)) { //file isn't avaiable, download it
 		IDownload dl(filename);
@@ -30,7 +31,7 @@ bool CSdp::download()
 		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}
 
-	std::list<CFileSystem::FileData>::iterator it;
+	std::list<FileData>::iterator it;
 	/*	CHttpDownload* tmp=httpDownload; //FIXME: extend interface?
 		tmp->setCount(files.size());
 	*/
@@ -38,13 +39,13 @@ bool CSdp::download()
 	it=files.begin();
 	while (it!=files.end()) {
 		i++;
-		std::string tmpmd5="";
-		md5ItoA((*it).md5, tmpmd5);
-		std::string filename=tmpmd5.substr(2);
+
+		std::string md5str=(*it).md5->toString();
+		std::string filename=md5str.substr(2);
 		filename.append(".gz");
 		std::string path("/pool/");
-		path += tmpmd5.at(0);
-		path += tmpmd5.at(1);
+		path += md5str.at(0);
+		path += md5str.at(1);
 		path += "/";
 
 		std::string file=fileSystem->getSpringDir() + path + filename; //absolute filename
@@ -182,7 +183,7 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	return 0;
 }
 
-bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& files)
+bool CSdp::downloadStream(std::string url,std::list<FileData>& files)
 {
 	CURL* curl;
 	curl = curl_easy_init();
@@ -193,7 +194,7 @@ bool CSdp::downloadStream(std::string url,std::list<CFileSystem::FileData>& file
 
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
-		std::list<CFileSystem::FileData>::iterator it;
+		std::list<FileData>::iterator it;
 		int  buflen=files.size()/8;
 		if (files.size()%8!=0)
 			buflen++;

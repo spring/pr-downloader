@@ -2,13 +2,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <list>
-#include <cstring>
+#include <string>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
 #include <limits.h>
 #include <time.h>
-#include "lib/bencode/bencode.h"
 
 
 #ifdef WIN32
@@ -24,7 +23,9 @@
 #include "Util.h"
 #include "Downloader/IDownloader.h"
 #include "FileSystem/HashMD5.h"
+#include "FileSystem/FileData.h"
 #include "Logger.h"
+#include "lib/bencode/bencode.h"
 
 
 CFileSystem* CFileSystem::singleton = NULL;
@@ -51,8 +52,7 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 			ERROR("File %s invalid, size wrong: %d but should be %d\n", filename.c_str(),filesize, mod->size);
 			return false;
 		}*/
-
-	if (!md5hash.compare(mod.md5, sizeof(mod.md5))) { //file is invalid
+	if (!md5hash.compare(mod.md5)) { //file is invalid
 //		ERROR("Damaged file found: %s\n",filename.c_str());
 //		unlink(filename.c_str());
 		return false;
@@ -60,7 +60,7 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	return true;
 }
 
-bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::FileData>& files)
+bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData>& files)
 {
 	char c_name[255];
 	unsigned char c_md5[16];
@@ -88,10 +88,9 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<CFileSystem::F
 
 		FileData f;
 		f.name = std::string(c_name, length);
-		std::memcpy(&f.md5, &c_md5, 16);
-		f.crc32 = parse_int32(c_crc32);
+		memcpy(&f.md5, &c_md5, 16);
+		f.crc32->Set(c_crc32, sizeof(c_crc32));
 		f.size = parse_int32(c_size);
-		f.compsize = 0;
 		files.push_back(f);
 	}
 	gzclose(in);
@@ -248,17 +247,17 @@ int CFileSystem::validatePool(const std::string& path)
 #endif
 					dirs.push_back(new std::string(absname));
 				} else {
-					FileData filedata;
-					std::string md5;
+					FileData filedata=FileData();
 					int len=absname.length();
 					if (len<36) { //file length has at least to be <md5[0]><md5[1]>/<md5[2-30]>.gz
 						LOG_ERROR("Invalid file: %s\n", absname.c_str());
 					} else {
-						md5="";
-						md5.push_back(absname.at(len-36)); //get md5 from path + filename
-						md5.push_back(absname.at(len-35));
-						md5.append(absname.substr(len-33, 30));
-						if (!md5AtoI(md5,filedata.md5)) { //set md5 in filedata structure
+						std::string md5str="";
+						md5str.push_back(absname.at(len-36)); //get md5 from path + filename
+						md5str.push_back(absname.at(len-35));
+						md5str.append(absname.substr(len-33, 30));
+
+						if (!filedata.md5->Set(md5str)) { //set md5 in filedata structure
 							LOG_ERROR("Invalid filename %s\n", absname.c_str());
 						}
 						if (!fileIsValid(filedata, absname)) { //check if md5 in filename is the same as in filename
@@ -381,15 +380,15 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 
 bool CFileSystem::dumpSDP(const std::string& filename)
 {
-	std::list<CFileSystem::FileData> files;
+	std::list<FileData> files;
 	files.clear();
 	if (!parseSdp(filename, files))
 		return false;
-	std::list<CFileSystem::FileData>::iterator it;
+	std::list<FileData>::iterator it;
 	HashMD5 md5;
 	LOG_INFO("md5 (filename in pool)           crc32        size filename\n");
 	for(it=files.begin(); it!=files.end(); ++it) {
-		LOG_INFO("%s %.8X %8d %s\n",md5.toString((*it).md5, 16).c_str(), (*it).crc32, (*it).size, (*it).name.c_str());
+		LOG_INFO("%s %.8X %8d %s\n",md5.toString().c_str(), (*it).crc32, (*it).size, (*it).name.c_str());
 	}
 	return true;
 }

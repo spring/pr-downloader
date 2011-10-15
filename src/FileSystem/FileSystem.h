@@ -13,6 +13,7 @@
 
 class SRepository;
 class CRepo;
+class FileData;
 struct IDownload;
 
 #define IO_BUF_SIZE 4096
@@ -27,21 +28,12 @@ public:
 	static void Initialize(const std::string& writepath="");
 	static void Shutdown();
 
-	//FIXME: maybe not portable?
-	struct FileData {
-		std::string name;
-		unsigned char md5[16];
-		unsigned int crc32;
-		unsigned int size;
-		unsigned int compsize; //compressed size
-		bool download;
-	};
 	CFileSystem(const std::string& writepath="");
 	~CFileSystem();
 	/**
 		parses the file for a mod and creates
 	*/
-	bool parseSdp(const std::string& filename, std::list<CFileSystem::FileData>& files);
+	bool parseSdp(const std::string& filename, std::list<FileData>& files);
 	/**
 	 *	Validates a pool-file, (checks the md5)
 	 */

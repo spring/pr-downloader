@@ -1,4 +1,5 @@
 add_library(FileSystem
+		"FileData.cpp"
 		"FileSystem.cpp"
 		"File.cpp"
 		"HashMD5.cpp"

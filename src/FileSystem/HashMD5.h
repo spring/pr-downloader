@@ -11,9 +11,11 @@ public:
 	void Init();
 	void Final();
 	void Update(const char* data,const int size);
+	bool Set(unsigned char* data, int size);
 protected:
 	int getSize() const;
 	unsigned char get(int pos) const;
+
 private:
 	MD5_CTX mdContext;
 };
