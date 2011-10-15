@@ -153,6 +153,10 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			base64_decode(base64, binary); //FIXME: this is a bug in the xml-rpc interface, it should return <base64> but returns <string>
 			fileSystem->parseTorrent(binary.c_str(),binary.size(),  dl);
 		}
+		if (resfile["md5"].getType()==XmlRpc::XmlRpcValue::TypeString){
+			dl.hash=new HashMD5();
+			dl.hash->Set(resfile["md5"]);
+		}
 		res.push_back(dl);
 	}
 	return true;
@@ -278,12 +282,14 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& dow
 	int pieceNum=-1;
 	for(unsigned i=0; i<download.pieces.size(); i++ ) { //find first not downloaded piece
 		if (download.pieces[i].state==IDownload::STATE_NONE) {
-			file.Hash(sha1, i);
-			if (sha1.compare((unsigned char*)&download.pieces[i].sha, 20)){
-//				LOG_DEBUG("piece %d has already correct checksum, reusing", i);
-				download.pieces[i].state=IDownload::STATE_FINISHED;
-				showProcess(download, file);
-				continue;
+			if (download.pieces[i].sha->isSet()){ //reuse piece, if checksum is fine
+				file.Hash(sha1, i);
+				if (sha1.compare(download.pieces[i].sha)){
+	//				LOG_DEBUG("piece %d has already correct checksum, reusing", i);
+					download.pieces[i].state=IDownload::STATE_FINISHED;
+					showProcess(download, file);
+					continue;
+				}
 			}
 			pieceNum=i;
 			break;
@@ -293,8 +299,12 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& dow
 		return false;
 	piece->file=&file;
 	piece->piece=pieceNum;
+	if (piece->easy_handle==NULL){
+		piece->easy_handle=curl_easy_init();
+	} else {
+		curl_easy_reset(piece->easy_handle);
+	}
 	CURL* curle= piece->easy_handle;
-	curl_easy_reset(curle);
 	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
 	curl_easy_setopt(curle, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
@@ -352,9 +362,14 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 			while(struct CURLMsg* msg=curl_multi_info_read(curlm, &msgs_left)) {
 				switch(msg->msg) {
 				case CURLMSG_DONE: { //a piece has been downloaded, verify it
-					if ( msg->data.result!=CURLE_OK) {
-						LOG_ERROR("CURLcode: %d\n", msg->data.result);
-
+					switch(msg->data.result){
+						case CURLE_OK:
+							break;
+						case CURLE_HTTP_RETURNED_ERROR: //some 4* HTTP-Error (file not found, access denied,...)
+						default:
+							LOG_ERROR("CURLcode: %d: %s\n",msg->msg, curl_easy_strerror(msg->data.result));
+							//FIXME: memleaks...
+							return false;
 					}
 					download_data* data=NULL;
 					for(int i=0; i<(int)downloads.size(); i++) { //search corresponding data structure
@@ -370,20 +385,18 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 					}
 					assert(data->file!=NULL);
 					assert(data->piece<(int)download.pieces.size());
-					if (download.pieces[data->piece].sha[0]==0) { //FIXME : this check is incorrect
-						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
-					}else{
+					if (download.pieces[data->piece].sha->isSet()) {
 						data->file->Hash(sha1, data->piece);
-					}
-					LOG("piece: %d\n", data->piece);
-					if ( (download.pieces[data->piece].sha[0]==0) //FIXME
-					     || (sha1.compare((unsigned char*)&download.pieces[data->piece].sha, 20))) { //piece valid
-						download.pieces[data->piece].state=IDownload::STATE_FINISHED;
+						if (sha1.compare(download.pieces[data->piece].sha)) { //piece valid
+							download.pieces[data->piece].state=IDownload::STATE_FINISHED;
+						} else {
+							download.pieces[data->piece].state=IDownload::STATE_FINISHED;
+							LOG_ERROR("Invalid piece retrieved\n %s", sha1.toString().c_str());
+							LOG_ERROR("implement me! (redownload from different mirror)\n");
+							//FIXME: mark mirror as broken (to avoid endless loops!)
+						}
 					} else {
-						download.pieces[data->piece].state=IDownload::STATE_FINISHED;
-						LOG_ERROR("Invalid piece retrieved\n %s", sha1.toString().c_str());
-						LOG_ERROR("implement me! (redownload from different mirror)\n");
-						//FIXME: mark mirror as broken (to avoid endless loops!)
+						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
 					}
 					showProcess(download, file);
 					//remove easy handle, as its finished
@@ -413,11 +426,12 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 			}
 		}
 	} while(running>0);
-	if(download.pieces.size()==0){
+	if((download.hash!=NULL) && (download.hash->isSet()) && (download.pieces.size()==0)){ //try to check md5
 		HashMD5 md5=HashMD5();
 		file.Hash(md5);
-		md5.compare(download.md5, sizeof(download.md5));
+		md5.compare(download.hash);
 	}
+
 	lastprogress=0; //force progressbar to show 100%
 	showProcess(download, file);
 	LOG("\n");

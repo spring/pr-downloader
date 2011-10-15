@@ -5,6 +5,8 @@
 #include <vector>
 #include <list>
 
+class IHash;
+
 class IDownload
 {
 public:
@@ -55,14 +57,14 @@ public:
 		STATE_FINISHED,    // piece downloaded successfully + verified
 	};
 	struct piece {
-		unsigned sha[5];
+		IHash* sha;
 		PIECE_STATE state;
 	};
 	/**
 	 *	sha1 sum of pieces
 	 */
 	std::vector<struct piece> pieces; //FIXME: make private
-	unsigned char md5[16];
+	IHash* hash;
 
 	/**
 	 *	file size

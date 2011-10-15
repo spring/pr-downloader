@@ -77,3 +77,7 @@ bool IHash::Set(const std::string& hash){
 	}
 	return true;
 }
+
+bool IHash::isSet(){
+	return isset;
+}

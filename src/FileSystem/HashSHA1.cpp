@@ -21,6 +21,7 @@ void HashSHA1::Update(const char* data, const int size)
 
 void HashSHA1::Final()
 {
+	isset=true;
 	SHA1Result(&sha1Context);
 }
 
@@ -43,5 +44,6 @@ bool HashSHA1::Set(unsigned char* data, int size){
 		return false;
 	for(int i=0; i<size; i++)
 		((unsigned char*)&sha1Context.Message_Digest[i/4]) [3-i%4]=data[i];
+	isset=true;
 	return true;
 }

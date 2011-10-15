@@ -1,3 +1,5 @@
+#ifndef _FILEDATA_H_
+#define _FILEDATA_H_
 class IHash;
 #include <string>
 //FIXME: maybe not portable?
@@ -14,3 +16,4 @@ class FileData {
 		bool download;
 };
 
+#endif

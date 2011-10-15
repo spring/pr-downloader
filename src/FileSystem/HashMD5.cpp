@@ -18,6 +18,7 @@ void HashMD5::Update(const char* data, const int size)
 }
 void HashMD5::Final()
 {
+	isset=true;
 	MD5Final(&mdContext);
 }
 
@@ -37,5 +38,6 @@ bool HashMD5::Set(unsigned char* data, int size){
 		return false;
 	for(int i=0; i<size; i++)
 		mdContext.digest[i]=data[i];
+	isset=true;
 	return true;
 }

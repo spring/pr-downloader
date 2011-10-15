@@ -44,11 +44,16 @@ public:
 	*	returns the size of binary hash for comparison
 	*/
 	virtual int getSize() const=0;
+	/**
+	*	returns true, if a hash is set/calculated
+	*/
+	virtual bool isSet();
 protected:
 	/**
 	*	@return part of binary hash store for comparison
 	*/
 	virtual unsigned char get(int pos) const=0;
+	bool isset;
 private:
 	/**
 	* convert hex to int

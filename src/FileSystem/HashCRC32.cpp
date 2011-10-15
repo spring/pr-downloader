@@ -18,6 +18,7 @@ void HashCRC32::Update(const char* data,const int size)
 
 void HashCRC32::Final()
 {
+	isset=true;
 }
 
 int HashCRC32::getSize() const
@@ -35,5 +36,6 @@ bool HashCRC32::Set(unsigned char* data, int size){
 		return false;
 	for(int i=0; i<size; i++)
 		((unsigned char*)crc)[i]=data[i];
+	isset=true;
 	return true;
 }
