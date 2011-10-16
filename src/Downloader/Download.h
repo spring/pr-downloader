@@ -25,6 +25,7 @@ public:
 	} cat;
 
 	IDownload(const std::string& filename="", category cat=CAT_NONE);
+	~IDownload();
 	/**
 	 *
 	 *	add a mirror to the download specified

@@ -3,6 +3,7 @@
 #include <list>
 #include <stdio.h>
 #include "Logger.h"
+#include "FileSystem/IHash.h"
 
 IDownload::IDownload(const std::string& name, category cat)
 {
@@ -10,6 +11,13 @@ IDownload::IDownload(const std::string& name, category cat)
 	this->cat=cat;
 	this->downloaded=false;
 	this->hash=NULL;
+}
+
+IDownload::~IDownload(){
+	for(unsigned i=0; i<pieces.size(); i++){
+		delete pieces[i].sha;
+	}
+	pieces.clear();
 }
 
 const std::string IDownload::getCat(category cat)
