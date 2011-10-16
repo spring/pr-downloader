@@ -263,7 +263,7 @@ void CHttpDownloader::showProcess(IDownload& download, CFile& file)
 		for(unsigned i=0; i<download.pieces.size(); i++){
 			switch(download.pieces[i].state){
 				case IDownload::STATE_FINISHED:
-					done+=download.piecesize;
+					done+=file.GetPieceSize(i);
 					break;
 				case IDownload::STATE_DOWNLOADING:
 					done+=file.GetPiecePos(i);
