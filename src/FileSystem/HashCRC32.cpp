@@ -3,11 +3,13 @@
 
 HashCRC32::HashCRC32()
 {
+	isset=false;
 	crc=0;
 }
 
 void HashCRC32::Init()
 {
+	isset=false;
 	crc=0;
 }
 
@@ -31,7 +33,7 @@ unsigned char HashCRC32::get(int pos) const
 	return crc;
 }
 
-bool HashCRC32::Set(unsigned char* data, int size){
+bool HashCRC32::Set(const unsigned char* data, int size){
 	if(size!=getSize())
 		return false;
 	for(int i=0; i<size; i++)

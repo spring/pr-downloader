@@ -5,11 +5,13 @@
 
 HashMD5::HashMD5()
 {
+	isset=false;
 	memset(&mdContext,0,  sizeof(mdContext));
 }
 
 void HashMD5::Init()
 {
+	isset=false;
 	MD5Init (&mdContext);
 }
 void HashMD5::Update(const char* data, const int size)
@@ -33,7 +35,7 @@ unsigned char HashMD5::get(int pos) const
 	return mdContext.digest[pos];
 }
 
-bool HashMD5::Set(unsigned char* data, int size){
+bool HashMD5::Set(const unsigned char* data, int size){
 	if(size!=getSize())
 		return false;
 	for(int i=0; i<size; i++)

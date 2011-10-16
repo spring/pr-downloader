@@ -353,9 +353,11 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 				const int count = be_str_len(datanode)/20; //one sha1 sum is 5 * 4 bytes long
 				for (int i=0; i<count; i++) {
 					struct IDownload::piece piece;
-					unsigned char* data=(unsigned char*)&datanode->val.s[i*20];
+					const unsigned char* data=(unsigned char*)&datanode->val.s[i*20];
 					piece.sha=new HashSHA1();
-					piece.sha->Set(data, 20);
+					if (!piece.sha->Set(data, 20)){
+						LOG_ERROR("Error setting sha1\n");
+					}
 					piece.state=IDownload::STATE_NONE;
 					dl.pieces.push_back(piece);
 				}

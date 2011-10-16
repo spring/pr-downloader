@@ -75,6 +75,7 @@ bool IHash::Set(const std::string& hash){
 		LOG_ERROR("IHash:Set(): Error setting");
 		return false;
 	}
+	isset=true;
 	return true;
 }
 

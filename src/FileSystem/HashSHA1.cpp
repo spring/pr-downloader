@@ -6,11 +6,13 @@
 
 HashSHA1::HashSHA1()
 {
+	isset=false;
 	memset(&sha1Context,0,  sizeof(sha1Context));
 }
 
 void HashSHA1::Init()
 {
+	isset=false;
 	SHA1Reset(&sha1Context);
 }
 
@@ -39,7 +41,7 @@ int HashSHA1::getSize() const
 }
 
 
-bool HashSHA1::Set(unsigned char* data, int size){
+bool HashSHA1::Set(const unsigned char* data, int size){
 	if(size!=getSize())
 		return false;
 	for(int i=0; i<size; i++)

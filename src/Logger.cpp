@@ -43,7 +43,7 @@ void LOG_PROGRESS(unsigned int done,unsigned  int total)
 	int totaldotz = 30;                           // how wide you want the progress meter to be
 	int dotz = percentage * totaldotz;
 	for (int i=0; i < totaldotz; i++) {
-		if (i>dotz)
+		if (i>=dotz)
 			printf(" ");    //blank
 		else
 			printf("=");    //full

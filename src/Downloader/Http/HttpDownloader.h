@@ -41,7 +41,10 @@ public:
 			easy_handle=curl_easy_init();
 		}
 		~download_data() {
-			curl_easy_cleanup(easy_handle);
+			if (easy_handle!=NULL){
+				curl_easy_cleanup(easy_handle);
+				easy_handle=NULL;
+			}
 		}
 		CFile* file;
 		int piece;

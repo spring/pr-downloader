@@ -66,7 +66,7 @@ bool CFile::Hash(IHash& hash, int piece)
 	char buf[IO_BUF_SIZE];
 	hash.Init();
 	long unsigned left=GetPieceSize(piece); //total bytes to hash
-//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
+	//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
 	if (piece>=0){
 		pieces[piece].pos=0; //reset piece pos to 0
 	}else
@@ -92,7 +92,7 @@ bool CFile::Hash(IHash& hash, int piece)
 
 int CFile::Read(char*buf, int bufsize, int piece)
 {
-//	LOG("read: %d %d\n", pieces[piece].pos, curpos);
+//	LOG("read: %d %d %d total: %d\n", pieces[piece].pos, curpos, bufsize, pieces[piece].pos+bufsize);
 	RestorePos(piece);
 //	LOG("reading %d\n", bufsize);
 	int items=fread(buf, bufsize, 1, handle);
@@ -174,7 +174,6 @@ bool CFile::SetPieceSize(int size)
 	int count=this->size/size;
 	if(this->size%size>0)
 		count++;
-	assert(count>0);
 	if(count<=0) {
 		LOG_ERROR("SetPieceSize(): count<0\n");
 		return false;

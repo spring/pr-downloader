@@ -69,6 +69,7 @@ CHttpDownloader::~CHttpDownloader()
 {
 	curl_easy_cleanup(curl);
 	curl = NULL;
+	curl_global_cleanup();
 }
 
 void CHttpDownloader::setCount(unsigned int count)
@@ -284,8 +285,9 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& dow
 		if (download.pieces[i].state==IDownload::STATE_NONE) {
 			if (download.pieces[i].sha->isSet()){ //reuse piece, if checksum is fine
 				file.Hash(sha1, i);
+//	LOG("bla %s %s\n", sha1.toString().c_str(), download.pieces[i].sha->toString().c_str());
 				if (sha1.compare(download.pieces[i].sha)){
-	//				LOG_DEBUG("piece %d has already correct checksum, reusing", i);
+//					LOG_DEBUG("piece %d has already correct checksum, reusing", i);
 					download.pieces[i].state=IDownload::STATE_FINISHED;
 					showProcess(download, file);
 					continue;
@@ -334,6 +336,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 	std::list<IHash*> hashes;
 	std::vector <download_data*> downloads;
 	CURLM* curlm=curl_multi_init();
+	bool aborted=false;
 	const int count=std::max(1, std::min((int)download.pieces.size(), download.getMirrorCount())); //count of parallel downloads
 	if(download.getMirrorCount()==0) {
 		LOG_ERROR("No mirrors found\n");
@@ -352,7 +355,6 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 	}
 	int running, last=1;
 	do {
-		//TODO: remove mirror when a mirror is slow/sent broken data and other mirrors are faster
 		CURLMcode ret=curl_multi_perform(curlm, &running);
 		if (ret!=CURLM_OK) {
 			LOG_ERROR("curl_multi_perform_error: %d\n", ret);
@@ -391,9 +393,10 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 							download.pieces[data->piece].state=IDownload::STATE_FINISHED;
 						} else {
 							download.pieces[data->piece].state=IDownload::STATE_FINISHED;
-							LOG_ERROR("Invalid piece retrieved\n %s", sha1.toString().c_str());
+							LOG_ERROR("Invalid piece %d retrieved %s\n",data->piece,  sha1.toString().c_str());
 							LOG_ERROR("implement me! (redownload from different mirror)\n");
-							//FIXME: mark mirror as broken (to avoid endless loops!)
+							aborted=true;
+							break; //FIXME: implement
 						}
 					} else {
 						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
@@ -402,8 +405,10 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 					//remove easy handle, as its finished
 					curl_easy_cleanup(data->easy_handle);
 					curl_multi_remove_handle(curlm, data->easy_handle);
+					data->easy_handle=NULL;
 					//piece finished / failed, try a new one
 					//TODO: dynamic use mirrors
+					//TODO: remove mirror when a mirror is slow/sent broken data and other mirrors are faster
 					/*
 										double dlSpeed;
 										curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
@@ -425,7 +430,7 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 				}
 			}
 		}
-	} while(running>0);
+	} while((running>0)&&(!aborted));
 	if((download.hash!=NULL) && (download.hash->isSet()) && (download.pieces.size()==0)){ //try to check md5
 		HashMD5 md5=HashMD5();
 		file.Hash(md5);

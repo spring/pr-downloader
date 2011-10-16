@@ -37,7 +37,7 @@ public:
 	/**
 	* Set the md5 hash
 	*/
-	virtual bool Set(unsigned char* data, int size)=0;
+	virtual bool Set(const unsigned char* data, int size)=0;
 
 	virtual bool Set(const std::string& hash);
 	/**
@@ -48,11 +48,11 @@ public:
 	*	returns true, if a hash is set/calculated
 	*/
 	virtual bool isSet();
-protected:
 	/**
 	*	@return part of binary hash store for comparison
 	*/
 	virtual unsigned char get(int pos) const=0;
+protected:
 	bool isset;
 private:
 	/**
