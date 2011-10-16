@@ -182,7 +182,7 @@ bool CFile::SetPieceSize(int size)
 		pieces.push_back(CFilePiece());
 	}
 	piecesize=size;
-	LOG_DEBUG("SetPieceSize %d %d %d", size, this->size, pieces.size());
+	LOG_DEBUG("SetPieceSize %d %ld %d", size, this->size, (int)pieces.size());
 	return true;
 }
 
