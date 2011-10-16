@@ -32,7 +32,7 @@ public:
 	*	@param filename filename of the file
 	*	@param size of the filename, -1 will read it from file or create a new one
 	*/
-	CFile(const std::string& filename, int size=-1, int piecesize=-1);
+	CFile(const std::string& filename, long size=-1, int piecesize=-1);
 	~CFile();
 	/**
 	*	hashes a piece with given hashes (or complete file, if piece<=0)
@@ -73,7 +73,7 @@ private:
 	* set the size of a pice
 	* @return count of pieces
 	*/
-	bool SetPieceSize(int size);
+	bool SetPieceSize(int pieceSize);
 	/**
 	* inc position of piece after read/write
 	*/

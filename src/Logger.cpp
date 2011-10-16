@@ -33,8 +33,10 @@ void LOG_DOWNLOAD(const char* filename)
 	printf("[Download] %s\n",filename);
 }
 
-void LOG_PROGRESS(unsigned int done,unsigned  int total)
+void LOG_PROGRESS(long done, long total)
 {
+	if (total<0) //if total bytes are unknown set to 50%
+		total=done/2;
 	float percentage = 0;
 	if (total>0) {
 		percentage = (float)done / total;
@@ -49,7 +51,7 @@ void LOG_PROGRESS(unsigned int done,unsigned  int total)
 			printf("=");    //full
 	}
 	// and back to line begin - do not forget the fflush to avoid output buffering problems!
-	printf("] %d/%d ",(int)done,(int)total );
+	printf("] %ld/%ld ", done, total);
 	printf("\r");
 	fflush(stdout);
 }

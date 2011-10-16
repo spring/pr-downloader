@@ -9,14 +9,14 @@
 #include <sys/stat.h>
 
 
-CFile::CFile(const std::string& filename, int size, int piecesize)
+CFile::CFile(const std::string& filename, long size, int piecesize)
 {
 	handle=NULL;
 	this->size=size;
 	this->piecesize=piecesize;
 	this->curpos=0;
-	Open(filename);
 	SetPieceSize(piecesize);
+	Open(filename);
 }
 
 CFile::~CFile()
@@ -164,15 +164,15 @@ int CFile::Seek(unsigned long pos, int piece)
 }
 
 
-bool CFile::SetPieceSize(int size)
+bool CFile::SetPieceSize(int pieceSize)
 {
 	pieces.clear();
-	if (this->size<=0) {
-		LOG_ERROR("SetPieceSize(): FileSize<0\n");
+	if ((size<=0) || (pieceSize<=0)) {
+		LOG_ERROR("SetPieceSize(): FileSize:%ld PieceSize: %d\n", size, pieceSize);
 		return false;
 	}
-	int count=this->size/size;
-	if(this->size%size>0)
+	int count=this->size/pieceSize;
+	if(this->size%pieceSize>0)
 		count++;
 	if(count<=0) {
 		LOG_ERROR("SetPieceSize(): count<0\n");
@@ -181,8 +181,8 @@ bool CFile::SetPieceSize(int size)
 	for(int i=0; i<count; i++) {
 		pieces.push_back(CFilePiece());
 	}
-	piecesize=size;
-	LOG_DEBUG("SetPieceSize %d %ld %d", size, this->size, (int)pieces.size());
+	piecesize=pieceSize;
+	LOG_DEBUG("SetPieceSize %d %ld %d", pieceSize, this->size, (int)pieces.size());
 	return true;
 }
 
