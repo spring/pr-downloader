@@ -81,7 +81,11 @@ private:
 	/**
 	*	restore position of piece for read/write operations
 	*/
-	void RestorePos(int piece);
+	void RestorePos(int piece=-1);
+	/**
+	* reset given read/write pos of piece to 0
+	*/
+	void ResetPos(int piece=-1);
 	FILE* handle; //file handle
 	int piecesize; //size of a piece
 	long size; //file size

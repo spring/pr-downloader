@@ -13,7 +13,7 @@ CFile::CFile(const std::string& filename, int size, int piecesize)
 {
 	handle=NULL;
 	this->size=size;
-	this->piecesize=std::max(1, piecesize);
+	this->piecesize=piecesize;
 	this->curpos=0;
 	Open(filename);
 	SetPieceSize(piecesize);
@@ -85,6 +85,7 @@ bool CFile::Hash(IHash& hash, int piece)
 		hash.Update(buf, read);
 	}
 	hash.Final();
+	ResetPos(piece);
 //	LOG("CFile::Hash(): %s\n", hash.toString().c_str());
 	return true;
 }
@@ -120,9 +121,10 @@ void CFile::IncPos(int piece, int pos)
 		assert(pieces[piece].pos<=size+pos);
 		assert(pos<=piecesize);
 		pieces[piece].pos +=pos;
+	} else {
+		assert((long)curpos<=size);
+		curpos += pos;
 	}
-	assert((long)curpos<=size);
-	curpos += pos;
 }
 
 int CFile::Write(const char*buf, int bufsize, int piece)
@@ -201,4 +203,11 @@ int CFile::GetPiecePos(int piece){
 	if (piece>=0)
 		return pieces[piece].pos;
 	return curpos;
+}
+
+void CFile::ResetPos(int piece){
+	if(piece>=0)
+		pieces[piece].pos=0;
+	else
+		curpos=0;
 }
