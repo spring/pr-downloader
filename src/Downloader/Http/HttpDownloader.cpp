@@ -92,14 +92,14 @@ void CHttpDownloader::setStatsPos(unsigned int pos)
 	this->stats_filepos=pos;
 }
 
-bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name, IDownload::category cat)
+bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
 {
 	LOG_DEBUG("%s", name.c_str()  );
 
 	const std::string method("springfiles.search");
 	std::string category;
 
-	XmlRpc::XmlRpcClient client("springfiles.com", 80, "http://springfiles.com/xmlrpc.php");
+	XmlRpc::XmlRpcClient client("springfiles.dev", 80, "http://localhost/upq/xmlrpc.php");
 	XmlRpc::XmlRpcValue arg;
 	arg["springname"]=name;
 	arg["torrent"]=true;
@@ -137,7 +137,7 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 			return false;
 		}
 		filename.append(resfile["filename"]);
-		IDownload dl=IDownload(filename);
+		IDownload* dl=new IDownload(filename);
 		XmlRpc::XmlRpcValue mirrors = resfile["mirrors"];
 		for(int j=0; j<mirrors.size(); j++) {
 			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString) {
@@ -145,18 +145,18 @@ bool CHttpDownloader::search(std::list<IDownload>& res, const std::string& name,
 				return false;
 			}
 
-			dl.addMirror(mirrors[j]);
+			dl->addMirror(mirrors[j]);
 		}
 		//torrent data avaiable
 		if (resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeString) {
 			std::string base64=resfile["torrent"];
 			std::string binary;
 			base64_decode(base64, binary); //FIXME: this is a bug in the xml-rpc interface, it should return <base64> but returns <string>
-			fileSystem->parseTorrent(binary.c_str(),binary.size(),  dl);
+			fileSystem->parseTorrent(binary.c_str(),binary.size(), dl);
 		}
 		if (resfile["md5"].getType()==XmlRpc::XmlRpcValue::TypeString){
-			dl.hash=new HashMD5();
-			dl.hash->Set(resfile["md5"]);
+			dl->hash=new HashMD5();
+			dl->hash->Set(resfile["md5"]);
 		}
 		res.push_back(dl);
 	}
@@ -176,65 +176,6 @@ std::string CHttpDownloader::escapeUrl(const std::string& url)
 	return res;
 }
 
-
-bool CHttpDownloader::download(IDownload& download)
-{
-//	if (download.getMirrorCount()>1)
-		return parallelDownload(download);
-
-	LOG_DEBUG("%s",download.name.c_str());
-	last_print = 0;
-	start_time = 0;
-	CURLcode res=CURLE_OK;
-
-	LOG_INFO("Using http\n");
-	LOG_DOWNLOAD(download.getUrl().c_str());  //destination is download.name.c_str()
-
-	//FIXME: use etag/timestamp as remote file could be modified
-	/*
-		if (fileSystem->fileExists(download.name)){
-			//TODO: validate file
-			INFO("file already downloaded: \"%s\"\n",download.name.c_str());
-			return true;
-		}
-	*/
-
-	if (!fileSystem->directoryExists(download.name)) {
-		fileSystem->createSubdirs(download.name);
-	}
-
-	if (!curl) {
-		LOG_ERROR("Error initializing curl");
-		return false;
-	}
-
-	std::string temp = download.name + ".download";
-
-	FILE* fp = fopen(temp.c_str() ,"wb+");
-	if (fp==NULL) {
-		LOG_ERROR("Could not open %s\n",temp.c_str());
-		return false;
-	}
-	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA ,this);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-	curl_easy_setopt(curl, CURLOPT_URL, escapeUrl(download.getUrl()).c_str());
-	res = curl_easy_perform(curl);
-	fclose(fp);
-	LOG("\n"); //new line because of downloadbar
-	if (res!=0) {
-		LOG_ERROR("Failed to download %s\n",download.getUrl().c_str());
-		unlink(temp.c_str());
-		return false;
-	}
-
-	if(rename(temp.c_str(),download.name.c_str())) {
-		LOG_ERROR("Could not write to %s\n",download.name.c_str());
-		return false;
-	}
-
-	return true;
-}
-
 size_t multi_write_data(void *ptr, size_t size, size_t nmemb, CHttpDownloader::download_data* data)
 {
 	return data->file->Write((const char*)ptr, size*nmemb, data->piece);
@@ -249,7 +190,7 @@ bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize, int
 	return true;
 }
 
-void CHttpDownloader::showProcess(IDownload& download, CFile& file)
+void CHttpDownloader::showProcess(IDownload* download, CFile& file)
 {
 	unsigned long now=getTime();
 	if(now>lastprogress){
@@ -257,11 +198,11 @@ void CHttpDownloader::showProcess(IDownload& download, CFile& file)
 	}else
 		return;
 	int done=0;
-	if(download.pieces.size()<=0){
+	if(download->pieces.size()<=0){
 		done=file.GetPiecePos();
 	}else{
-		for(unsigned i=0; i<download.pieces.size(); i++){
-			switch(download.pieces[i].state){
+		for(unsigned i=0; i<download->pieces.size(); i++){
+			switch(download->pieces[i].state){
 				case IDownload::STATE_FINISHED:
 					done+=file.GetPieceSize(i);
 					break;
@@ -273,22 +214,32 @@ void CHttpDownloader::showProcess(IDownload& download, CFile& file)
 			}
 		}
 	}
-	LOG_PROGRESS(done, download.size);
+	LOG_PROGRESS(done, download->size);
 }
 
 
-bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& download, int mirror)
+bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload* download, int mirror)
 {
 	HashSHA1 sha1=HashSHA1();
+	//verify file by md5 if pieces.size == 0
+	if((download->hash!=NULL) && (download->hash->isSet()) && (download->pieces.size()==0)){
+		HashMD5 md5=HashMD5();
+		file.Hash(md5);
+		if (md5.compare(download->hash)){
+			LOG_INFO("md5 correct: %s\n", md5.toString().c_str());
+			return false;
+		}
+	}
+
 	int pieceNum=-1;
-	for(unsigned i=0; i<download.pieces.size(); i++ ) { //find first not downloaded piece
-		if (download.pieces[i].state==IDownload::STATE_NONE) {
-			if (download.pieces[i].sha->isSet()){ //reuse piece, if checksum is fine
+	for(unsigned i=0; i<download->pieces.size(); i++ ) { //find first not downloaded piece
+		if (download->pieces[i].state==IDownload::STATE_NONE) {
+			if (download->pieces[i].sha->isSet()){ //reuse piece, if checksum is fine
 				file.Hash(sha1, i);
 //	LOG("bla %s %s\n", sha1.toString().c_str(), download.pieces[i].sha->toString().c_str());
-				if (sha1.compare(download.pieces[i].sha)){
+				if (sha1.compare(download->pieces[i].sha)){
 //					LOG_DEBUG("piece %d has already correct checksum, reusing", i);
-					download.pieces[i].state=IDownload::STATE_FINISHED;
+					download->pieces[i].state=IDownload::STATE_FINISHED;
 					showProcess(download, file);
 					continue;
 				}
@@ -297,8 +248,11 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& dow
 			break;
 		}
 	}
-	if (pieceNum<0) //all pieces downloaded or in state of downloading
+
+	if (pieceNum<0){ //all pieces downloaded or in state of downloading
+		LOG_DEBUG("pieceNum<0\n");
 		return false;
+	}
 	piece->file=&file;
 	piece->piece=pieceNum;
 	if (piece->easy_handle==NULL){
@@ -315,37 +269,37 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload& dow
 //	curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
 //	curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
 	curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
-	curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download.getMirror(mirror)).c_str());
-	if (download.size>0){ //don't set range, if size unknown
+	curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download->getMirror(mirror)).c_str());
+	if (download->size>0){ //don't set range, if size unknown
 		std::string range;
-		if (!getRange(range, pieceNum, download.piecesize, download.size )) {
+		if (!getRange(range, pieceNum, download->piecesize, download->size )) {
 			LOG_ERROR("Error getting range for download");
 			return false;
 		}
 		//set range for request, format is <start>-<end>
 		curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
 	}
-	download.pieces[pieceNum].state=IDownload::STATE_DOWNLOADING;
+	download->pieces[pieceNum].state=IDownload::STATE_DOWNLOADING;
 	return true;
 }
 
-bool CHttpDownloader::parallelDownload(IDownload& download)
+bool CHttpDownloader::download(IDownload* download)
 {
-	CFile file=CFile(download.name, download.size, download.piecesize);
+	CFile file=CFile(download->name, download->size, download->piecesize);
 	HashSHA1 sha1=HashSHA1();
 	std::list<IHash*> hashes;
 	std::vector <download_data*> downloads;
 	CURLM* curlm=curl_multi_init();
 	bool aborted=false;
-	const int count=std::max(1, std::min((int)download.pieces.size(), download.getMirrorCount())); //count of parallel downloads
-	if(download.getMirrorCount()==0) {
+	const int count=std::min(MAX_PARALLEL_DOWNLOADS, std::max(1, std::min((int)download->pieces.size(), download->getMirrorCount()))); //count of parallel downloads
+	if(download->getMirrorCount()==0) {
 		LOG_ERROR("No mirrors found\n");
 		return false;
 	}
 	LOG_INFO("Using %d parallel downloads\n", count);
 	for(int i=0; i<count; i++) {
 		download_data* dlData=new download_data();
-		if (!getPiece(file, dlData, download, i)) {
+		if (!getPiece(file, dlData, download, i)) { //no piece found (all pieces already downloaded), skip
 			delete dlData;
 			break;
 		}else{
@@ -353,8 +307,8 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 			curl_multi_add_handle(curlm, downloads[i]->easy_handle);
 		}
 	}
-	int running, last=1;
-	do {
+	int running=1, last=0;
+	while((running>0)&&(!aborted)){
 		CURLMcode ret=curl_multi_perform(curlm, &running);
 		if (ret!=CURLM_OK) {
 			LOG_ERROR("curl_multi_perform_error: %d\n", ret);
@@ -386,14 +340,15 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 						return false;
 					}
 					assert(data->file!=NULL);
-					assert(data->piece<(int)download.pieces.size());
-					if (download.pieces[data->piece].sha->isSet()) {
+					assert(data->piece<(int)download->pieces.size());
+					if (download->pieces[data->piece].sha->isSet()) {
 						data->file->Hash(sha1, data->piece);
-						if (sha1.compare(download.pieces[data->piece].sha)) { //piece valid
-							download.pieces[data->piece].state=IDownload::STATE_FINISHED;
+						if (sha1.compare(download->pieces[data->piece].sha)) { //piece valid
+							download->pieces[data->piece].state=IDownload::STATE_FINISHED;
 						} else {
-							download.pieces[data->piece].state=IDownload::STATE_FINISHED;
+							download->pieces[data->piece].state=IDownload::STATE_FINISHED;
 							LOG_ERROR("Invalid piece %d retrieved %s\n",data->piece,  sha1.toString().c_str());
+							LOG_ERROR("%s\n", download->pieces[data->piece].sha->toString().c_str());
 							LOG_ERROR("implement me! (redownload from different mirror)\n");
 							aborted=true;
 							break; //FIXME: implement
@@ -430,11 +385,6 @@ bool CHttpDownloader::parallelDownload(IDownload& download)
 				}
 			}
 		}
-	} while((running>0)&&(!aborted));
-	if((download.hash!=NULL) && (download.hash->isSet()) && (download.pieces.size()==0)){ //try to check md5
-		HashMD5 md5=HashMD5();
-		file.Hash(md5);
-		md5.compare(download.hash);
 	}
 
 	lastprogress=0; //force progressbar to show 100%

@@ -84,7 +84,7 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 
 
 
-bool CRapidDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category cat)
+bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category cat)
 {
 	LOG_DEBUG("%s",name.c_str());
 	reloadRepos();
@@ -93,17 +93,17 @@ bool CRapidDownloader::search(std::list<IDownload>& result, const std::string& n
 	for (it=sdps.begin(); it!=sdps.end(); ++it) {
 		if (match_download_name((*it).getShortName().c_str(),name)
 		    || (match_download_name((*it).getName().c_str(),name))) {
-			IDownload dl=IDownload((*it).getName().c_str());
-			dl.addMirror((*it).getShortName().c_str());
+			IDownload* dl=new IDownload((*it).getName().c_str());
+			dl->addMirror((*it).getShortName().c_str());
 			result.push_back(dl);
 		}
 	}
 	return true;
 }
 
-bool CRapidDownloader::download(IDownload& download)
+bool CRapidDownloader::download(IDownload* download)
 {
 	LOG_DEBUG("%s",download.name.c_str());
 	reloadRepos();
-	return download_name(download.name,0);
+	return download_name(download->name,0);
 }

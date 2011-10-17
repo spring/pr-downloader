@@ -27,7 +27,7 @@ bool CSdp::download()
 	if (!fileSystem->parseSdp(filename,files)) { //file isn't avaiable, download it
 		IDownload dl(filename);
 		dl.addMirror(url + "/packages/" + md5 + ".sdp");
-		httpDownload->download(dl);
+		httpDownload->download(&dl);
 		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}
 

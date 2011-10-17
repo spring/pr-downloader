@@ -15,7 +15,7 @@ CPlasmaDownloader::CPlasmaDownloader()
 	fileSystem->createSubdirs(this->torrentPath);
 }
 
-bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category category)
+bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category category)
 {
 	LOG_DEBUG("%s",name.c_str());
 	ContentServiceSoap12Proxy service;
@@ -59,27 +59,27 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 
 	std::string torrent;
 	torrent.assign((char*)fileResponse.torrent->__ptr,fileResponse.torrent->__size);
-	IDownload dl;
+	IDownload* dl = new IDownload();
 	//parse torrent data and fill set values inside dl
 	fileSystem->parseTorrent((char*)fileResponse.torrent->__ptr, fileResponse.torrent->__size, dl);
 
 	//set full path name
-	fileName.append(dl.name);
-	dl.name=fileName;
-	dl.cat=cat;
+	fileName.append(dl->name);
+	dl->name=fileName;
+	dl->cat=cat;
 	LOG_DEBUG("Got filename \"%s\" from torrent\n",fileName.c_str());
 
 	for (it=fileResponse.links->string.begin(); it!=fileResponse.links->string.end(); ++it) {
-		dl.addMirror((*it).c_str());
+		dl->addMirror((*it).c_str());
 	}
 	for (it=fileResponse.dependencies->string.begin(); it!=fileResponse.dependencies->string.end(); ++it) {
-		dl.addDepend((*it).c_str());
+		dl->addDepend((*it).c_str());
 	}
 	result.push_back(dl);
 	return true;
 }
 
-bool CPlasmaDownloader::download(IDownload& download)
+bool CPlasmaDownloader::download(IDownload* download)
 {
 	LOG_DEBUG("%s",download.name.c_str());
 	return httpDownload->download(download);

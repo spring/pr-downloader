@@ -57,6 +57,7 @@ bool CFile::Open(const std::string& filename)
 		}
 		LOG_ERROR("File already exists but file-size missmatched\n");
 	}
+	LOG_INFO("opened %s\n", filename.c_str());
 	return true;
 }
 
@@ -65,13 +66,15 @@ bool CFile::Hash(IHash& hash, int piece)
 	std::list <IHash*>::iterator it;
 	char buf[IO_BUF_SIZE];
 	hash.Init();
-	long unsigned left=GetPieceSize(piece); //total bytes to hash
 	//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
 	if (piece>=0){
 		pieces[piece].pos=0; //reset piece pos to 0
 	}else
 		curpos=0;
+	if (size<=0)
+		size=GetSize();
 	int read=0;
+	long unsigned left=GetPieceSize(piece); //total bytes to hash
 
 	while(left>0) {
 		int toread=std::min(left, (long unsigned)sizeof(buf));
@@ -96,6 +99,8 @@ int CFile::Read(char*buf, int bufsize, int piece)
 	RestorePos(piece);
 //	LOG("reading %d\n", bufsize);
 	int items=fread(buf, bufsize, 1, handle);
+	if(feof(handle))
+		return -1;
 	if(ferror(handle)!=0) {
 		int piecepos=0;
 		if (piece>0)
@@ -103,7 +108,7 @@ int CFile::Read(char*buf, int bufsize, int piece)
 		LOG_ERROR("read error %s bufsize: %d piecepos:%d curpos: %d\n", strerror(errno), bufsize, piecepos, curpos);
 		return items;
 	}
-	IncPos(piece, bufsize);
+	IncPos(piece, items);
 	return bufsize;
 }
 
@@ -122,7 +127,7 @@ void CFile::IncPos(int piece, int pos)
 		assert(pos<=piecesize);
 		pieces[piece].pos +=pos;
 	} else {
-		assert((long)curpos<=size);
+		assert(size<=0 || (long)curpos<=size);
 		curpos += pos;
 	}
 }
@@ -209,4 +214,14 @@ void CFile::ResetPos(int piece){
 		pieces[piece].pos=0;
 	else
 		curpos=0;
+}
+
+
+long CFile::GetSize(){
+	struct stat sb;
+	if (fstat(fileno(handle), &sb)!=0){
+		LOG_ERROR("CFile::SetSize(): fstat failed\n");
+		return -1;
+	}
+	return sb.st_size;
 }

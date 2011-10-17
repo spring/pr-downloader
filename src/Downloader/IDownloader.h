@@ -33,18 +33,18 @@ public:
 		download specificed download
 		@return returns true, when download was successfull
 	*/
-	virtual bool download(IDownload& dl)=0;
+	virtual bool download(IDownload* dl)=0;
 	/**
 		download all downloads in list
 		@return returns true, when all downloads were successfull
 	*/
-	bool download(std::list<IDownload>& download) {
-		std::list<IDownload>::iterator it;
+	bool download(std::list<IDownload*>& download) {
+		std::list<IDownload*>::iterator it;
 		bool res=true;
 		for (it=download.begin(); it!=download.end(); ++it) {
-			if (!(*it).downloaded) //don't download twice
-				(*it).downloaded=this->download(*it);
-			if (!(*it).downloaded) {
+			if (!(*it)->downloaded) //don't download twice
+				(*it)->downloaded=this->download(*it);
+			if (!(*it)->downloaded) {
 				res=false;
 			}
 		}
@@ -56,7 +56,7 @@ public:
 	/**
 		search for a string at the downloader
 	*/
-	virtual bool search(std::list<IDownload>& result, const std::string& name="", const IDownload::category=IDownload::CAT_NONE)=0;
+	virtual bool search(std::list<IDownload*>& result, const std::string& name="", const IDownload::category=IDownload::CAT_NONE)=0;
 
 private:
 	static IDownloader* httpdl;

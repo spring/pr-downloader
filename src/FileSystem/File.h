@@ -86,6 +86,11 @@ private:
 	* reset given read/write pos of piece to 0
 	*/
 	void ResetPos(int piece=-1);
+	/**
+	* retrieves the size of the file handle
+	*/
+	long GetSize();
+
 	FILE* handle; //file handle
 	int piecesize; //size of a piece
 	long size; //file size

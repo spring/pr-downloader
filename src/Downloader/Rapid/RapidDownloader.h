@@ -38,11 +38,11 @@ public:
 	/**
 		search for a mod, searches for the short + long name
 	*/
-	virtual bool search(std::list<IDownload>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
+	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
 	/**
 		start a download
 	*/
-	virtual bool download(IDownload& download);
+	virtual bool download(IDownload* download);
 
 private:
 	/**

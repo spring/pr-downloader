@@ -7,6 +7,8 @@
 #include "FileSystem/FileSystem.h"
 #include "Downloader/IDownloader.h"
 
+#define MAX_PARALLEL_DOWNLOADS 10
+
 class HashMD5;
 class HashSHA1;
 class CFile;
@@ -28,8 +30,8 @@ public:
 	unsigned int getCount();
 	const std::string& getCacheFile(const std::string &url);
 	void downloadStream(const std::string& url,std::list<FileData*>& files);
-	virtual bool search(std::list<IDownload>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
-	virtual bool download(IDownload& download);
+	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
+	virtual bool download(IDownload* download);
 
 	class download_data
 	{
@@ -63,12 +65,12 @@ private:
 	/**
 	* show progress bar
 	*/
-	void showProcess(IDownload& download, CFile& file);
+	void showProcess(IDownload* download, CFile& file);
 
 	/**
 	*	gets next piece that can be downloaded, mark it as downloading
 	*/
-	bool getPiece(CFile& file, download_data* piece, IDownload& download, int mirror);
+	bool getPiece(CFile& file, download_data* piece, IDownload* download, int mirror);
 	bool getRange(std::string& range, int piece, int piecesize, int filesize);
 };
 

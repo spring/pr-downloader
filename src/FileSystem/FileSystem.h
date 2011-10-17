@@ -83,7 +83,7 @@ public:
 	*	}
 	*
 	*/
-	bool parseTorrent(const char* data, int size, IDownload& dl);
+	bool parseTorrent(const char* data, int size, IDownload* dl);
 	/**
 	*	dumps info about the given .sdp
 	*/

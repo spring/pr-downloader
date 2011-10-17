@@ -19,7 +19,7 @@ void CRepoMaster::download(const std::string& name)
 		if (parse()) return;
 	IDownload dl(path);
 	dl.addMirror(name);
-	httpDownload->download(dl);
+	httpDownload->download(&dl);
 	parse();
 }
 

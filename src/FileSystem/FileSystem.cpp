@@ -317,7 +317,7 @@ bool CFileSystem::fileExists(const std::string& filename)
 	return true;
 }
 
-bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
+bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 {
 	struct be_node* node=be_decoden(data, size);
 //#ifdef DEBUG
@@ -359,15 +359,15 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload& dl)
 						LOG_ERROR("Error setting sha1\n");
 					}
 					piece.state=IDownload::STATE_NONE;
-					dl.pieces.push_back(piece);
+					dl->pieces.push_back(piece);
 				}
 			}
 			break;
 		case BE_INT: //current value is a int
 			if (strcmp("length",infonode->val.d[i].key)==0) { //filesize
-				dl.size=datanode->val.i;
+				dl->size=datanode->val.i;
 			} else if (!strcmp("piece length",infonode->val.d[i].key)) { //length of a piece
-				dl.piecesize=datanode->val.i;
+				dl->piecesize=datanode->val.i;
 			}
 			break;
 		default:

@@ -33,7 +33,7 @@ void CRepo::download()
 	fileSystem->createSubdirs(tmpFile);
 	IDownload dl(tmpFile);
 	dl.addMirror(repourl + "/versions.gz");
-	httpDownload->download(dl);
+	httpDownload->download(&dl);
 	parse();
 }
 
