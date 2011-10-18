@@ -179,7 +179,7 @@ bool CFile::SetPieceSize(int pieceSize)
 {
 	pieces.clear();
 	if ((size<=0) || (pieceSize<=0)) {
-		LOG_ERROR("SetPieceSize(): FileSize:%ld PieceSize: %d\n", size, pieceSize);
+		LOG_DEBUG("SetPieceSize(): FileSize:%ld PieceSize: %d\n", size, pieceSize);
 		return false;
 	}
 	int count=this->size/pieceSize;
