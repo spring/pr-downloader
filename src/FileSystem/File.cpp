@@ -227,6 +227,8 @@ void CFile::ResetPos(int piece)
 
 long CFile::GetSize()
 {
+	if(handle==NULL)
+		Open(filename);
 	struct stat sb;
 	if (fstat(fileno(handle), &sb)!=0) {
 		LOG_ERROR("CFile::SetSize(): fstat failed\n");
