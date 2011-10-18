@@ -15,8 +15,7 @@ CFile::CFile(const std::string& filename, long size, int piecesize)
 	this->size=size;
 	this->piecesize=piecesize;
 	this->curpos=0;
-	SetPieceSize(piecesize);
-	Open(filename);
+	this->filename=filename;
 }
 
 CFile::~CFile()
@@ -33,6 +32,7 @@ void CFile::Close()
 
 bool CFile::Open(const std::string& filename)
 {
+	SetPieceSize(piecesize);
 //	fileSystem->createSubdirs(filename);
 	if (handle!=0) {
 		LOG_ERROR("file opened before old was closed\n");
@@ -67,9 +67,9 @@ bool CFile::Hash(IHash& hash, int piece)
 	char buf[IO_BUF_SIZE];
 	hash.Init();
 	//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
-	if (piece>=0){
+	if (piece>=0) {
 		pieces[piece].pos=0; //reset piece pos to 0
-	}else
+	} else
 		curpos=0;
 	if (size<=0)
 		size=GetSize();
@@ -95,6 +95,8 @@ bool CFile::Hash(IHash& hash, int piece)
 
 int CFile::Read(char*buf, int bufsize, int piece)
 {
+	if(handle==NULL)
+		Open(filename);
 //	LOG("read: %d %d %d total: %d\n", pieces[piece].pos, curpos, bufsize, pieces[piece].pos+bufsize);
 	RestorePos(piece);
 //	LOG("reading %d\n", bufsize);
@@ -134,6 +136,8 @@ void CFile::IncPos(int piece, int pos)
 
 int CFile::Write(const char*buf, int bufsize, int piece)
 {
+	if(handle==NULL)
+		Open(filename);
 	RestorePos(piece);
 	fwrite(buf, bufsize, 1, handle);
 //	LOG("wrote bufsize %d\n", bufsize);
@@ -153,6 +157,8 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 
 int CFile::Seek(unsigned long pos, int piece)
 {
+	if(handle==NULL)
+		Open(filename);
 	assert(piece<=(int)pieces.size());
 	if(piece>=0) { //adjust position relative to piece pos
 		pos=this->piecesize*piece+pos;
@@ -202,14 +208,16 @@ int CFile::GetPieceSize(int piece)
 	return size;
 }
 
-int CFile::GetPiecePos(int piece){
+int CFile::GetPiecePos(int piece)
+{
 	assert(piece<=piecesize);
 	if (piece>=0)
 		return pieces[piece].pos;
 	return curpos;
 }
 
-void CFile::ResetPos(int piece){
+void CFile::ResetPos(int piece)
+{
 	if(piece>=0)
 		pieces[piece].pos=0;
 	else
@@ -217,9 +225,10 @@ void CFile::ResetPos(int piece){
 }
 
 
-long CFile::GetSize(){
+long CFile::GetSize()
+{
 	struct stat sb;
-	if (fstat(fileno(handle), &sb)!=0){
+	if (fstat(fileno(handle), &sb)!=0) {
 		LOG_ERROR("CFile::SetSize(): fstat failed\n");
 		return -1;
 	}
