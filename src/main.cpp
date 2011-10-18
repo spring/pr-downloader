@@ -110,7 +110,7 @@ int main(int argc, char **argv)
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
 		if (c == -1)
 			break;
-		std::list<IDownload> list;
+		std::list<IDownload*> list;
 		list.clear();
 		switch (c) {
 		case RAPID_DOWNLOAD: {
@@ -182,36 +182,7 @@ int main(int argc, char **argv)
 		}
 		case HELP:
 		default: {
-			IDownload dl=IDownload();
-			dl.addMirror("http://springfiles.dev/sites/default/files/downloads/spring/games/zk-v0.8.8.2.sdz");
-			dl.addMirror("http://springfiles.dev/sites/default/files/downloads/spring/games/zk-v0.8.8.2.sdz");
-			dl.addMirror("http://springfiles.dev/sites/default/files/downloads/spring/games/zk-v0.8.8.2.sdz");
-			dl.addMirror("http://springfiles.dev/sites/default/files/downloads/spring/games/zk-v0.8.8.2.sdz");
-			dl.addMirror("http://springfiles.dev/sites/default/files/downloads/spring/games/zk-v0.8.8.2.sdz");
-			dl.addMirror("http://springfiles.dev/sites/default/files/downloads/spring/games/zk-v0.8.8.2.sdz");
-			dl.name="zk-v0.8.8.2.sdz";
-			dl.piecesize=100000;
-			dl.size=135747208;
-			struct IDownload::piece piece;
-			int count=(dl.size/dl.piecesize);
-			if (dl.size%dl.piecesize>0)
-				count++;
-			LOG("piece count: %d\n", count);
-			for(int i=0; i<count ; i++ ){
-				piece.sha[0]=0;
-				piece.sha[1]=0;
-				piece.sha[2]=0;
-				piece.sha[3]=0;
-				piece.sha[4]=0;
-				piece.state=IDownload::STATE_NONE;
-				dl.pieces.push_back(piece);
-			}
-			LOG("added pieces: %d\n", dl.pieces.size());
-//			dl.pieces= new IDownload::piece;
-//			dl. =IDownload::CAT_MAPS;
-
-			httpDownload->download(dl);
-			//show_help(argv[0]);
+			show_help(argv[0]);
 			break;
 		}
 		}

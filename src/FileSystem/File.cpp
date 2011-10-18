@@ -63,6 +63,7 @@ bool CFile::Open(const std::string& filename)
 
 bool CFile::Hash(IHash& hash, int piece)
 {
+	Open(filename);
 	std::list <IHash*>::iterator it;
 	char buf[IO_BUF_SIZE];
 	hash.Init();
