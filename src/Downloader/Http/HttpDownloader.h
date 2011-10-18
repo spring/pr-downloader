@@ -69,9 +69,17 @@ private:
 
 	/**
 	*	gets next piece that can be downloaded, mark it as downloading
+	*	@return true when download_data is correctly set
 	*/
-	bool getPiece(CFile& file, download_data* piece, IDownload* download, int mirror);
+	bool setupDownload(CFile& file, download_data* piece, IDownload* download, int mirror);
 	bool getRange(std::string& range, int piece, int piecesize, int filesize);
+	/**
+	* returns piecenum for file, which isn't already downloaded
+	* verifies if parts of a file is already downloaded (if checksums are set in download)
+	* verified parts are marked with STATE_FINISHED
+	* @return number of the piece, -1 if no peaces are avaiable and the whole file needs to be downloaded
+	*/
+	int verifyAndGetNextPiece(CFile& file, IDownload* download);
 };
 
 #endif

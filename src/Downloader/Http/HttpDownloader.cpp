@@ -217,10 +217,7 @@ void CHttpDownloader::showProcess(IDownload* download, CFile& file)
 	LOG_PROGRESS(done, download->size);
 }
 
-
-bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload* download, int mirror)
-{
-	HashSHA1 sha1=HashSHA1();
+int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download){
 	//verify file by md5 if pieces.size == 0
 	if((download->hash!=NULL) && (download->hash->isSet()) && (download->pieces.size()<=0)){
 		HashMD5 md5=HashMD5();
@@ -228,13 +225,15 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload* dow
 		if (md5.compare(download->hash)){
 			LOG_INFO("md5 correct: %s\n", md5.toString().c_str());
 			download->state=IDownload::STATE_FINISHED;
-			return false;
+			return -1;
 		}else{
 			LOG_ERROR("md5 sum missmatch %s %s\n", download->hash->toString().c_str(), md5.toString().c_str());
 		}
 	}
 
+	HashSHA1 sha1=HashSHA1();
 	int pieceNum=-1;
+	unsigned alreadyDl=0;
 	for(unsigned i=0; i<download->pieces.size(); i++ ) { //find first not downloaded piece
 		if (download->pieces[i].state==IDownload::STATE_NONE) {
 			if (download->pieces[i].sha->isSet()){ //reuse piece, if checksum is fine
@@ -244,6 +243,7 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload* dow
 //					LOG_DEBUG("piece %d has already correct checksum, reusing", i);
 					download->pieces[i].state=IDownload::STATE_FINISHED;
 					showProcess(download, file);
+					alreadyDl++;
 					continue;
 				}
 			}
@@ -251,6 +251,18 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload* dow
 			break;
 		}
 	}
+
+	//all pieces verified, mark whole file so, too
+	if ((download->pieces.size()>0) && (alreadyDl==download->pieces.size()))
+		download->state=IDownload::STATE_FINISHED;
+	return pieceNum;
+}
+
+bool CHttpDownloader::setupDownload(CFile& file, download_data* piece, IDownload* download, int mirror)
+{
+	int pieceNum=verifyAndGetNextPiece(file, download);
+	if (download->state==IDownload::STATE_FINISHED)
+		return false;
 
 	piece->file=&file;
 	piece->piece=pieceNum;
@@ -298,20 +310,19 @@ bool CHttpDownloader::download(IDownload* download)
 	CFile file=CFile(download->name, download->size, download->piecesize);
 	for(int i=0; i<count; i++) {
 		download_data* dlData=new download_data();
-		if (!getPiece(file, dlData, download, i)) { //no piece found (all pieces already downloaded), skip
-			LOG_INFO("no piece found\n");
-			if (download->state==IDownload::STATE_FINISHED){
-				LOG_INFO("finished");
-			}
+		if (!setupDownload(file, dlData, download, i)) { //no piece found (all pieces already downloaded), skip
 			delete dlData;
-			break;
+			if (download->state==IDownload::STATE_FINISHED){
+				LOG_INFO("finished\n");
+				return true;
+			}else{
+				LOG_ERROR("no piece found\n");
+				return false;
+			}
 		}else{
 			downloads.push_back(dlData);
 			curl_multi_add_handle(curlm, downloads[i]->easy_handle);
 		}
-	}
-	if (downloads.size()==0){
-		LOG_ERROR("nothing to download\n");
 	}
 
 	bool aborted=false;
@@ -383,7 +394,7 @@ bool CHttpDownloader::download(IDownload* download)
 										curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
 										LOG("speed %.0f KB/s\n", dlSpeed/1024);
 					*/
-					if (!getPiece(file, data, download, 0)) {
+					if (!setupDownload(file, data, download, 0)) {
 						LOG_INFO("No piece found, all pieces finished / currently downloading\n");
 						break;
 					}
