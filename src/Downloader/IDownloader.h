@@ -38,19 +38,7 @@ public:
 		download all downloads in list
 		@return returns true, when all downloads were successfull
 	*/
-	bool download(std::list<IDownload*>& download) {
-		std::list<IDownload*>::iterator it;
-		bool res=true;
-		for (it=download.begin(); it!=download.end(); ++it) {
-			if (!(*it)->downloaded) //don't download twice
-				(*it)->downloaded=this->download(*it);
-			if (!(*it)->downloaded) {
-				res=false;
-			}
-		}
-		return res;
-	}
-
+	virtual bool download(std::list<IDownload*>& download);
 
 
 	/**

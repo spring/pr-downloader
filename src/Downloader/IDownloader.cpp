@@ -62,3 +62,21 @@ IDownloader* IDownloader::GetWidgetInstance()
 	return widgetdl;
 }
 
+bool IDownloader::download(std::list<IDownload*>& download)
+ {
+	std::list<IDownload*>::iterator it;
+	if (download.size()<=0){
+		LOG_ERROR("download list empty");
+		return false;
+	}
+	bool res=true;
+	for (it=download.begin(); it!=download.end(); ++it) {
+		if (!(*it)->downloaded) //don't download twice
+			(*it)->downloaded=this->download(*it);
+		if (!(*it)->downloaded) {
+			res=false;
+		}
+	}
+	return res;
+}
+

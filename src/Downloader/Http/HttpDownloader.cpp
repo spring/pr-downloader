@@ -323,7 +323,6 @@ bool CHttpDownloader::download(IDownload* download)
 			LOG_ERROR("curl_multi_perform_error: %d\n", ret);
 			aborted=true;
 		}
-LOG("%d %d\n", last, running);
 		if (last!=running) { //count of running downloads changed
 			int msgs_left;
 			while(struct CURLMsg* msg=curl_multi_info_read(curlm, &msgs_left)) {
