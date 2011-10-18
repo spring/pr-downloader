@@ -222,12 +222,15 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload* dow
 {
 	HashSHA1 sha1=HashSHA1();
 	//verify file by md5 if pieces.size == 0
-	if((download->hash!=NULL) && (download->hash->isSet()) && (download->pieces.size()==0)){
+	if((download->hash!=NULL) && (download->hash->isSet()) && (download->pieces.size()<=0)){
 		HashMD5 md5=HashMD5();
 		file.Hash(md5);
 		if (md5.compare(download->hash)){
 			LOG_INFO("md5 correct: %s\n", md5.toString().c_str());
+			download->state=IDownload::STATE_FINISHED;
 			return false;
+		}else{
+			LOG_ERROR("md5 sum missmatch %s %s\n", download->hash->toString().c_str(), md5.toString().c_str());
 		}
 	}
 
@@ -249,10 +252,6 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload* dow
 		}
 	}
 
-	if (pieceNum<0){ //all pieces downloaded or in state of downloading
-		LOG_DEBUG("pieceNum<0\n");
-		return false;
-	}
 	piece->file=&file;
 	piece->piece=pieceNum;
 	if (piece->easy_handle==NULL){
@@ -270,7 +269,8 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload* dow
 //	curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
 	curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
 	curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download->getMirror(mirror)).c_str());
-	if (download->size>0){ //don't set range, if size unknown
+
+	if ((download->size>0) && (pieceNum>=0)){ //don't set range, if size unknown
 		std::string range;
 		if (!getRange(range, pieceNum, download->piecesize, download->size )) {
 			LOG_ERROR("Error getting range for download");
@@ -278,28 +278,31 @@ bool CHttpDownloader::getPiece(CFile& file, download_data* piece, IDownload* dow
 		}
 		//set range for request, format is <start>-<end>
 		curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
+		download->pieces[pieceNum].state=IDownload::STATE_DOWNLOADING;
 	}
-	download->pieces[pieceNum].state=IDownload::STATE_DOWNLOADING;
 	return true;
 }
 
 bool CHttpDownloader::download(IDownload* download)
 {
-	CFile file=CFile(download->name, download->size, download->piecesize);
-	HashSHA1 sha1=HashSHA1();
-	std::list<IHash*> hashes;
-	std::vector <download_data*> downloads;
-	CURLM* curlm=curl_multi_init();
-	bool aborted=false;
+
 	const int count=std::min(MAX_PARALLEL_DOWNLOADS, std::max(1, std::min((int)download->pieces.size(), download->getMirrorCount()))); //count of parallel downloads
-	if(download->getMirrorCount()==0) {
+	if(download->getMirrorCount()<=0) {
 		LOG_ERROR("No mirrors found\n");
 		return false;
 	}
 	LOG_INFO("Using %d parallel downloads\n", count);
+
+	CURLM* curlm=curl_multi_init();
+	std::vector <download_data*> downloads;
+	CFile file=CFile(download->name, download->size, download->piecesize);
 	for(int i=0; i<count; i++) {
 		download_data* dlData=new download_data();
 		if (!getPiece(file, dlData, download, i)) { //no piece found (all pieces already downloaded), skip
+			LOG_INFO("no piece found\n");
+			if (download->state==IDownload::STATE_FINISHED){
+				LOG_INFO("finished");
+			}
 			delete dlData;
 			break;
 		}else{
@@ -307,13 +310,21 @@ bool CHttpDownloader::download(IDownload* download)
 			curl_multi_add_handle(curlm, downloads[i]->easy_handle);
 		}
 	}
-	int running=1, last=0;
+	if (downloads.size()==0){
+		LOG_ERROR("nothing to download\n");
+	}
+
+	bool aborted=false;
+	int running=1, last=-1;
+	HashSHA1 sha1=HashSHA1();
 	while((running>0)&&(!aborted)){
 		CURLMcode ret=curl_multi_perform(curlm, &running);
 		if (ret!=CURLM_OK) {
 			LOG_ERROR("curl_multi_perform_error: %d\n", ret);
+			aborted=true;
 		}
-		if ((last!=0) && (last!=running)) { //count of running downloads changed
+LOG("%d %d\n", last, running);
+		if (last!=running) { //count of running downloads changed
 			int msgs_left;
 			while(struct CURLMsg* msg=curl_multi_info_read(curlm, &msgs_left)) {
 				switch(msg->msg) {
@@ -333,6 +344,10 @@ bool CHttpDownloader::download(IDownload* download)
 							data=downloads[i];
 							break;
 						}
+					}
+					if (data->piece<0){ //download without pieces
+						LOG("download finished\n");
+						return false;
 					}
 
 					if (data==NULL) {
@@ -385,6 +400,9 @@ bool CHttpDownloader::download(IDownload* download)
 				}
 			}
 		}
+	}
+	if (download->state==IDownload::STATE_FINISHED){
+		LOG_INFO("download complete\n");
 	}
 
 	lastprogress=0; //force progressbar to show 100%

@@ -71,6 +71,7 @@ public:
 	 *	file size
 	 */
 	int size;
+	PIECE_STATE state;
 private:
 	std::list<std::string> mirror;
 

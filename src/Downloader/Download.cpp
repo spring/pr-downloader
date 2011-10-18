@@ -12,6 +12,7 @@ IDownload::IDownload(const std::string& name, category cat)
 	this->downloaded=false;
 	this->hash=NULL;
 	this->size=-1;
+	this->state=IDownload::STATE_NONE;
 }
 
 IDownload::~IDownload(){
