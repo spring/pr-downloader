@@ -4,6 +4,11 @@
 #define VERSION "0.1.1"
 #define USER_AGENT "unitsync-dev" + VERSION
 
+#define XMLRPC_METHOD "springfiles.search"
+#define XMLRPC_HOST "springfiles.com"
+#define XMLRPC_PORT 80
+#define XMLRPC_URI "/xmlrpc.php"
+
 #include "FileSystem/FileSystem.h"
 #include "Logger.h"
 /**

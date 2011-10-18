@@ -96,10 +96,9 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 {
 	LOG_DEBUG("%s", name.c_str()  );
 
-	const std::string method("springfiles.search");
+	const std::string method(XMLRPC_METHOD);
 	std::string category;
-
-	XmlRpc::XmlRpcClient client("springfiles.com", 80, "http://springfiles.com/xmlrpc.php");
+	XmlRpc::XmlRpcClient client(XMLRPC_HOST,XMLRPC_PORT, XMLRPC_URI);
 	XmlRpc::XmlRpcValue arg;
 	arg["springname"]=name;
 	arg["torrent"]=true;
