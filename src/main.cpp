@@ -67,7 +67,7 @@ void show_help(const char* cmd)
 
 bool download(const std::string& name, IDownload::category cat)
 {
-	std::list<IDownload> res;
+	std::list<IDownload*> res;
 	//only games can be (currently) downloaded by rapid
 	if (cat==IDownload::CAT_MODS) {
 		rapidDownload->search(res, optarg, cat);
@@ -83,14 +83,14 @@ bool download(const std::string& name, IDownload::category cat)
 	return false;
 }
 
-void show_results(std::list<IDownload>& list)
+void show_results(std::list<IDownload*>& list)
 {
-	std::list<IDownload>::iterator it;
+	std::list<IDownload*>::iterator it;
 	for (it=list.begin(); it!=list.end(); ++it) {
-		LOG_INFO("Output filename %s\n",(*it).name.c_str());
-		int count=(*it).getMirrorCount();
+		LOG_INFO("Output filename %s\n",(*it)->name.c_str());
+		int count=(*it)->getMirrorCount();
 		for(int i=0; i<count; i++) {
-			LOG_INFO("Download url: %s\n",(*it).getMirror(i).c_str());
+			LOG_INFO("Download url: %s\n",(*it)->getMirror(i).c_str());
 		}
 	}
 }
