@@ -52,6 +52,7 @@ public:
 		int piece;
 		CURL* easy_handle; //curl_easy_handle
 		int mirror; //number of mirror used
+		std::string url; //copy of the download url
 	};
 
 private:

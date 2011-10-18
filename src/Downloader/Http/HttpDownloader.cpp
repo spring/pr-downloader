@@ -273,6 +273,7 @@ bool CHttpDownloader::setupDownload(CFile& file, download_data* piece, IDownload
 		curl_easy_reset(piece->easy_handle);
 	}
 	CURL* curle= piece->easy_handle;
+	piece->url=download->getMirror(mirror);
 	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
 	curl_easy_setopt(curle, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
@@ -281,7 +282,7 @@ bool CHttpDownloader::setupDownload(CFile& file, download_data* piece, IDownload
 //	curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
 //	curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
 	curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
-	curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(download->getMirror(mirror)).c_str());
+	curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(piece->url).c_str());
 
 	if ((download->size>0) && (pieceNum>=0)) { //don't set range, if size unknown
 		std::string range;
@@ -314,16 +315,16 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <download_data*>
 	while(struct CURLMsg* msg=curl_multi_info_read(curlm, &msgs_left)) {
 		switch(msg->msg) {
 		case CURLMSG_DONE: { //a piece has been downloaded, verify it
+			CHttpDownloader::download_data* data=getDataByHandle(downloads, msg->easy_handle);
 			switch(msg->data.result) {
 			case CURLE_OK:
 				break;
 			case CURLE_HTTP_RETURNED_ERROR: //some 4* HTTP-Error (file not found, access denied,...)
 			default:
-				LOG_ERROR("CURLcode: %d: %s\n",msg->msg, curl_easy_strerror(msg->data.result));
+				LOG_ERROR("CURL error(%d): %s (%s)\n",msg->msg, curl_easy_strerror(msg->data.result), data->url.c_str());
 				//FIXME: memleaks...
 				return false;
 			}
-			CHttpDownloader::download_data* data=getDataByHandle(downloads, msg->easy_handle);
 
 			if (data==NULL) {
 				LOG_ERROR("Couldn't find download in download list\n");
