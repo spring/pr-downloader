@@ -295,6 +295,89 @@ bool CHttpDownloader::setupDownload(CFile& file, download_data* piece, IDownload
 	return true;
 }
 
+CHttpDownloader::download_data* CHttpDownloader::getDataByHandle(const std::vector <download_data*>& downloads, const CURL* easy_handle) const{
+	for(int i=0; i<(int)downloads.size(); i++) { //search corresponding data structure
+		if (downloads[i]->easy_handle == easy_handle) {
+			return downloads[i];
+		}
+	}
+	return NULL;
+}
+
+bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <download_data*>& downloads, IDownload* download, CFile& file)
+{
+	int msgs_left;
+	HashSHA1 sha1;
+	bool aborted=false;
+	while(struct CURLMsg* msg=curl_multi_info_read(curlm, &msgs_left)) {
+		switch(msg->msg) {
+			case CURLMSG_DONE: { //a piece has been downloaded, verify it
+				switch(msg->data.result){
+					case CURLE_OK:
+						break;
+					case CURLE_HTTP_RETURNED_ERROR: //some 4* HTTP-Error (file not found, access denied,...)
+					default:
+						LOG_ERROR("CURLcode: %d: %s\n",msg->msg, curl_easy_strerror(msg->data.result));
+						//FIXME: memleaks...
+						return false;
+				}
+				CHttpDownloader::download_data* data=getDataByHandle(downloads, msg->easy_handle);
+
+				if (data==NULL) {
+					LOG_ERROR("Couldn't find download in download list\n");
+					return false;
+				}
+				if (data->piece<0){ //download without pieces
+					LOG("download finished\n");
+					return false;
+				}
+				assert(data->file!=NULL);
+				assert(data->piece<(int)download->pieces.size());
+				if (download->pieces[data->piece].sha->isSet()) {
+					data->file->Hash(sha1, data->piece);
+					if (sha1.compare(download->pieces[data->piece].sha)) { //piece valid
+						download->pieces[data->piece].state=IDownload::STATE_FINISHED;
+					} else {
+						download->pieces[data->piece].state=IDownload::STATE_FINISHED;
+						LOG_ERROR("Invalid piece %d retrieved %s\n",data->piece,  sha1.toString().c_str());
+						LOG_ERROR("%s\n", download->pieces[data->piece].sha->toString().c_str());
+						LOG_ERROR("implement me! (redownload from different mirror)\n");
+						aborted=true;
+						break; //FIXME: implement
+					}
+				} else {
+					LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
+				}
+				showProcess(download, file);
+				//remove easy handle, as its finished
+				curl_easy_cleanup(data->easy_handle);
+				curl_multi_remove_handle(curlm, data->easy_handle);
+				data->easy_handle=NULL;
+				//piece finished / failed, try a new one
+				//TODO: dynamic use mirrors
+				//TODO: remove mirror when a mirror is slow/sent broken data and other mirrors are faster
+				/*
+									double dlSpeed;
+									curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
+									LOG("speed %.0f KB/s\n", dlSpeed/1024);
+				*/
+				if (!setupDownload(file, data, download, 0)) {
+					LOG_INFO("No piece found, all pieces finished / currently downloading\n");
+					break;
+				}
+				int ret=curl_multi_add_handle(curlm, data->easy_handle);
+				if (ret!=CURLM_OK) {
+					LOG_ERROR("curl_multi_perform_error: %d %d\n", ret, CURLM_BAD_EASY_HANDLE);
+				}
+				break;
+			}
+			default:
+				LOG_ERROR("Unhandled message %d\n", msg->msg);
+		}
+	}
+	return aborted;
+}
+
 bool CHttpDownloader::download(IDownload* download)
 {
 
@@ -327,7 +410,6 @@ bool CHttpDownloader::download(IDownload* download)
 
 	bool aborted=false;
 	int running=1, last=-1;
-	HashSHA1 sha1=HashSHA1();
 	while((running>0)&&(!aborted)){
 		CURLMcode ret=curl_multi_perform(curlm, &running);
 		if (ret!=CURLM_OK) {
@@ -335,80 +417,7 @@ bool CHttpDownloader::download(IDownload* download)
 			aborted=true;
 		}
 		if (last!=running) { //count of running downloads changed
-			int msgs_left;
-			while(struct CURLMsg* msg=curl_multi_info_read(curlm, &msgs_left)) {
-				switch(msg->msg) {
-				case CURLMSG_DONE: { //a piece has been downloaded, verify it
-					switch(msg->data.result){
-						case CURLE_OK:
-							break;
-						case CURLE_HTTP_RETURNED_ERROR: //some 4* HTTP-Error (file not found, access denied,...)
-						default:
-							LOG_ERROR("CURLcode: %d: %s\n",msg->msg, curl_easy_strerror(msg->data.result));
-							//FIXME: memleaks...
-							return false;
-					}
-					download_data* data=NULL;
-					for(int i=0; i<(int)downloads.size(); i++) { //search corresponding data structure
-						if (downloads[i]->easy_handle == msg->easy_handle) {
-							data=downloads[i];
-							break;
-						}
-					}
-					if (data->piece<0){ //download without pieces
-						LOG("download finished\n");
-						return false;
-					}
-
-					if (data==NULL) {
-						LOG_ERROR("Couldn't find download in download list\n");
-						return false;
-					}
-					assert(data->file!=NULL);
-					assert(data->piece<(int)download->pieces.size());
-					if (download->pieces[data->piece].sha->isSet()) {
-						data->file->Hash(sha1, data->piece);
-						if (sha1.compare(download->pieces[data->piece].sha)) { //piece valid
-							download->pieces[data->piece].state=IDownload::STATE_FINISHED;
-						} else {
-							download->pieces[data->piece].state=IDownload::STATE_FINISHED;
-							LOG_ERROR("Invalid piece %d retrieved %s\n",data->piece,  sha1.toString().c_str());
-							LOG_ERROR("%s\n", download->pieces[data->piece].sha->toString().c_str());
-							LOG_ERROR("implement me! (redownload from different mirror)\n");
-							aborted=true;
-							break; //FIXME: implement
-						}
-					} else {
-						LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
-					}
-					showProcess(download, file);
-					//remove easy handle, as its finished
-					curl_easy_cleanup(data->easy_handle);
-					curl_multi_remove_handle(curlm, data->easy_handle);
-					data->easy_handle=NULL;
-					//piece finished / failed, try a new one
-					//TODO: dynamic use mirrors
-					//TODO: remove mirror when a mirror is slow/sent broken data and other mirrors are faster
-					/*
-										double dlSpeed;
-										curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
-										LOG("speed %.0f KB/s\n", dlSpeed/1024);
-					*/
-					if (!setupDownload(file, data, download, 0)) {
-						LOG_INFO("No piece found, all pieces finished / currently downloading\n");
-						break;
-					}
-					ret=curl_multi_add_handle(curlm, data->easy_handle);
-					if (ret!=CURLM_OK) {
-						LOG_ERROR("curl_multi_perform_error: %d %d\n", ret, CURLM_BAD_EASY_HANDLE);
-					}
-					running++;
-					break;
-				}
-				default:
-					LOG_ERROR("Unhandled message %d\n", msg->msg);
-				}
-			}
+			processMessages(curlm, downloads, download, file);
 		}
 	}
 	if (download->state==IDownload::STATE_FINISHED){

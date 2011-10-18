@@ -43,7 +43,7 @@ public:
 			easy_handle=curl_easy_init();
 		}
 		~download_data() {
-			if (easy_handle!=NULL){
+			if (easy_handle!=NULL) {
 				curl_easy_cleanup(easy_handle);
 				easy_handle=NULL;
 			}
@@ -80,6 +80,16 @@ private:
 	* @return number of the piece, -1 if no peaces are avaiable and the whole file needs to be downloaded
 	*/
 	int verifyAndGetNextPiece(CFile& file, IDownload* download);
+	/**
+	*	process curl messages
+	*		- verify
+	*		- starts new pieces, when a piece is finished
+	*		- starts redownloads piece, when piece dl failed from some mirror
+	*		- keep some stats (mark broken mirrors, downloadspeed)
+	*	@returns false, when some fatal error occured -> abort
+	*/
+	bool processMessages(CURLM* curlm, std::vector <CHttpDownloader::download_data*>& downloads, IDownload* download, CFile& file);
+	download_data* getDataByHandle(const std::vector <download_data*>& downloads, const CURL* easy_handle) const;
 };
 
 #endif
