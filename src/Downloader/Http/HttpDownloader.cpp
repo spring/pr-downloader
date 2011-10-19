@@ -153,12 +153,14 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 			base64_decode(base64, binary);
 			fileSystem->parseTorrent(binary.c_str(),binary.size(), dl);
 		} else if(resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeBase64) {
-			XmlRpc::XmlRpcValue::BinaryData tmp= resfile["torrent"];
-			std::string str;
-			for(unsigned i=0; i<tmp.size(); i++)
-				str.append(&tmp[i]);
+			std::vector<char> tmp= resfile["torrent"]; //FIXME: this is stupid code and can surely be done easier (convert to char*)
+			char* mem=(char*)malloc(tmp.size());
+			for(int i=0; i<tmp.size(); i++) {
+				mem[i]=tmp[i];
+			}
 			std::string binary;
-			base64_decode(str, binary);
+			std::string tmpstr((char*)mem, tmp.size());
+			base64_decode(tmpstr, binary);
 			fileSystem->parseTorrent(binary.c_str(), binary.size(), dl);
 		}
 		if (resfile["md5"].getType()==XmlRpc::XmlRpcValue::TypeString) {
