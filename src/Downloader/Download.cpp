@@ -13,10 +13,12 @@ IDownload::IDownload(const std::string& name, category cat)
 	this->hash=NULL;
 	this->size=-1;
 	this->state=IDownload::STATE_NONE;
+	piecesize=0;
 }
 
-IDownload::~IDownload(){
-	for(unsigned i=0; i<pieces.size(); i++){
+IDownload::~IDownload()
+{
+	for(unsigned i=0; i<pieces.size(); i++) {
 		delete pieces[i].sha;
 	}
 	pieces.clear();
