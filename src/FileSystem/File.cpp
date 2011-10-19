@@ -128,7 +128,7 @@ void CFile::SetPos(long pos, int piece)
 
 int CFile::Write(const char*buf, int bufsize, int piece)
 {
-	LOG("Write() bufsize %d piece %d handle %d\n", bufsize, piece, fileno(handle));
+//	LOG("Write() bufsize %d piece %d handle %d\n", bufsize, piece, fileno(handle));
 	SetPos(GetPiecePos(piece), piece);
 	int res=fwrite(buf, bufsize, 1, handle);
 	if (res!=1)
