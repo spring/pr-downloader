@@ -103,7 +103,7 @@ bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& 
 
 bool CRapidDownloader::download(IDownload* download)
 {
-	LOG_DEBUG("%s",download.name.c_str());
+	LOG_DEBUG("%s",download->name.c_str());
 	reloadRepos();
 	return download_name(download->name,0);
 }

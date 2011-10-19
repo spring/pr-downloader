@@ -111,23 +111,23 @@ CFileSystem::~CFileSystem()
 CFileSystem::CFileSystem(const std::string& writepath)
 {
 	tmpfiles.clear();
-	if (writepath.size()>0){
-		if(!directoryExists(writepath)){
+	if (writepath.size()>0) {
+		if(!directoryExists(writepath)) {
 			LOG_ERROR("filesystem-writepath doesn't exist: %s\n", writepath.c_str());
 		}
 		springdir=writepath;
 	} else {
-	#ifndef WIN32
+#ifndef WIN32
 		char* buf;
 		buf=getenv("HOME");
 		springdir=buf;
 		springdir.append("/.spring");
-	#else
+#else
 		TCHAR pathMyDocs[MAX_PATH];
 		SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
 		springdir=pathMyDocs;
 		springdir.append("\\My Games\\Spring");
-	#endif
+#endif
 	}
 	LOG_INFO("Using filesystem-writepath: %s\n", springdir.c_str());
 }
@@ -212,7 +212,7 @@ const std::string CFileSystem::getPoolFileName(const std::string& md5) const
 
 int CFileSystem::validatePool(const std::string& path)
 {
-	if(!directoryExists(path)){
+	if(!directoryExists(path)) {
 		LOG_ERROR("Pool directory doesn't exist: %s\n", path.c_str());
 		return 0;
 	}
@@ -355,7 +355,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 					struct IDownload::piece piece;
 					const unsigned char* data=(unsigned char*)&datanode->val.s[i*20];
 					piece.sha=new HashSHA1();
-					if (!piece.sha->Set(data, 20)){
+					if (!piece.sha->Set(data, 20)) {
 						LOG_ERROR("Error setting sha1\n");
 					}
 					piece.state=IDownload::STATE_NONE;
@@ -374,7 +374,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 			break;
 		}
 	}
-	LOG_DEBUG("Parsed torrent data: %s %d", dl.name.c_str(), dl.piecesize);
+	LOG_DEBUG("Parsed torrent data: %s %d", dl->name.c_str(), dl->piecesize);
 	be_free(node);
 	return true;
 }
