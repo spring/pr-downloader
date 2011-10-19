@@ -168,7 +168,7 @@ bool CFile::SetPieceSize(int pieceSize)
 	assert(handle==NULL); //this function has to be called before the file is opened
 	pieces.clear();
 	if ((size<=0) || (pieceSize<=0)) {
-		LOG_DEBUG("SetPieceSize(): FileSize:%ld PieceSize: %d\n", size, pieceSize);
+		LOG_DEBUG("SetPieceSize(): FileSize:%ld PieceSize: %d", size, pieceSize);
 		return false;
 	}
 	int count=this->size/pieceSize;
