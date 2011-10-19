@@ -69,12 +69,7 @@ bool CFile::Hash(IHash& hash, int piece)
 	char buf[IO_BUF_SIZE];
 	hash.Init();
 	//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
-	if (piece>=0) {
-		pieces[piece].pos=0; //reset piece pos to 0
-	} else
-		curpos=0;
-	if (size<=0)
-		size=GetSize();
+	ResetPos(piece);
 	int read=0;
 	long unsigned left=GetPieceSize(piece); //total bytes to hash
 
@@ -165,11 +160,9 @@ int CFile::Seek(unsigned long pos, int piece)
 	if(piece>=0) { //adjust position relative to piece pos
 		pos=this->piecesize*piece+pos;
 	}
-
 	if (curpos!=pos) { //only seek if needed
-		int ret=fseek(handle, pos, SEEK_SET);
-		if (ret!=0) {
-			LOG_ERROR("seek error %d %d\n", ret, pos);
+		if (fseek(handle, pos, SEEK_SET)!=0) {
+			LOG_ERROR("seek error %d %d\n", pos);
 		}
 		curpos=pos;
 	}
