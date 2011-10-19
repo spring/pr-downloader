@@ -79,14 +79,6 @@ private:
 	*/
 	void SetPos(long piece, int pos);
 	/**
-	*	restore position of piece for read/write operations
-	*/
-	void RestorePos(int piece=-1);
-	/**
-	* reset given read/write pos of piece to 0
-	*/
-	void ResetPos(int piece=-1);
-	/**
 	* retrieves the size of the file handle
 	*/
 	long GetSize();

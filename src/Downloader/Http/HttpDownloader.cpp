@@ -156,7 +156,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 		} else if(resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeBase64) {
 			std::vector<char> tmp= resfile["torrent"]; //FIXME: this is stupid code and can surely be done easier (convert to char*)
 			char* mem=(char*)malloc(tmp.size());
-			for(int i=0; i<tmp.size(); i++) {
+			for(unsigned i=0; i<tmp.size(); i++) {
 				mem[i]=tmp[i];
 			}
 			std::string binary;
@@ -230,7 +230,7 @@ void CHttpDownloader::showProcess(IDownload* download, CFile& file)
 int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 {
 	//verify file by md5 if pieces.size == 0
-	if((download->hash!=NULL) && (download->hash->isSet()) && (download->pieces.size()<=0)) {
+	if((download->pieces.size()<=0) && (download->hash!=NULL) && (download->hash->isSet())) {
 		HashMD5 md5=HashMD5();
 		file.Hash(md5);
 		if (md5.compare(download->hash)) {
@@ -246,14 +246,16 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 	int pieceNum=-1;
 	unsigned alreadyDl=0;
 	for(unsigned i=0; i<download->pieces.size(); i++ ) { //find first not downloaded piece
-		if (download->pieces[i].state==IDownload::STATE_NONE) {
+		showProcess(download, file);
+		if (download->pieces[i].state==IDownload::STATE_FINISHED) {
+			alreadyDl++;
+		} else if (download->pieces[i].state==IDownload::STATE_NONE) {
 			if (download->pieces[i].sha->isSet()) { //reuse piece, if checksum is fine
 				file.Hash(sha1, i);
 //	LOG("bla %s %s\n", sha1.toString().c_str(), download.pieces[i].sha->toString().c_str());
 				if (sha1.compare(download->pieces[i].sha)) {
 //					LOG_DEBUG("piece %d has already correct checksum, reusing", i);
 					download->pieces[i].state=IDownload::STATE_FINISHED;
-					showProcess(download, file);
 					alreadyDl++;
 					continue;
 				}
@@ -274,6 +276,7 @@ bool CHttpDownloader::setupDownload(CFile& file, download_data* piece, IDownload
 	int pieceNum=verifyAndGetNextPiece(file, download);
 	if (download->state==IDownload::STATE_FINISHED)
 		return false;
+	assert(download->pieces.size()<=0 || pieceNum>=0);
 
 	piece->file=&file;
 	piece->piece=pieceNum;
@@ -350,6 +353,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <download_data*>
 				data->file->Hash(sha1, data->piece);
 				if (sha1.compare(download->pieces[data->piece].sha)) { //piece valid
 					download->pieces[data->piece].state=IDownload::STATE_FINISHED;
+//					LOG("piece %d verified!\n", data->piece);
 				} else {
 					download->pieces[data->piece].state=IDownload::STATE_FINISHED;
 					LOG_ERROR("Invalid piece %d retrieved %s\n",data->piece,  sha1.toString().c_str());
@@ -409,7 +413,9 @@ bool CHttpDownloader::download(IDownload* download)
 		if (!setupDownload(file, dlData, download, i)) { //no piece found (all pieces already downloaded), skip
 			delete dlData;
 			if (download->state==IDownload::STATE_FINISHED) {
-				LOG_INFO("finished\n");
+				lastprogress=0; //force progressbar to show 100%
+				showProcess(download, file);
+				LOG("\n");
 				return true;
 			} else {
 				LOG_ERROR("no piece found\n");
@@ -431,17 +437,18 @@ bool CHttpDownloader::download(IDownload* download)
 		}
 		if (last!=running) { //count of running downloads changed
 			aborted=processMessages(curlm, downloads, download, file);
-			if(!aborted)
-				running++;
+			last=running++;
 		}
-	}
-	if (download->state==IDownload::STATE_FINISHED) {
-		LOG_INFO("download complete\n");
 	}
 
 	lastprogress=0; //force progressbar to show 100%
 	showProcess(download, file);
 	LOG("\n");
+
+	if (download->state==IDownload::STATE_FINISHED) {
+		LOG_INFO("download complete\n");
+	}
+
 	for (unsigned i=0; i<downloads.size(); i++) {
 		delete downloads[i];
 	}
