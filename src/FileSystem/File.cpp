@@ -112,7 +112,7 @@ int CFile::Read(char*buf, int bufsize, int piece)
 		LOG_ERROR("read error %s bufsize: %d piecepos:%d curpos: %d\n", strerror(errno), bufsize, piecepos, curpos);
 		return items;
 	}
-	IncPos(piece, items);
+	IncPos(piece, bufsize);
 	return bufsize;
 }
 
@@ -195,6 +195,7 @@ bool CFile::SetPieceSize(int pieceSize)
 		pieces.push_back(CFilePiece());
 	}
 	piecesize=pieceSize;
+	curpos=0;
 	LOG_DEBUG("SetPieceSize %d %ld %d", pieceSize, this->size, (int)pieces.size());
 	return true;
 }

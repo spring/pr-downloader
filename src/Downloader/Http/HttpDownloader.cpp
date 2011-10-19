@@ -63,6 +63,7 @@ CHttpDownloader::CHttpDownloader()
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
 	stats_filepos=1;
 	stats_count=1;
+	lastprogress=0;
 }
 
 CHttpDownloader::~CHttpDownloader()
@@ -430,6 +431,8 @@ bool CHttpDownloader::download(IDownload* download)
 		}
 		if (last!=running) { //count of running downloads changed
 			aborted=processMessages(curlm, downloads, download, file);
+			if(!aborted)
+				running++;
 		}
 	}
 	if (download->state==IDownload::STATE_FINISHED) {
