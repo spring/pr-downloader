@@ -1,8 +1,11 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#define VERSION "0.1.1"
-#define USER_AGENT "unitsync-dev" + VERSION
+#define QUOTEME_(x) #x
+#define QUOTEME(x) QUOTEME_(x)
+
+#define VERSION QUOTEME(PR_DOWNLOADER_VERSION)
+#define USER_AGENT "unitsync-dev" + QUOTEME(PR_DOWNLOADER_VERSION)
 
 #define XMLRPC_METHOD "springfiles.search"
 #define XMLRPC_HOST "springfiles.com"
