@@ -77,7 +77,7 @@ private:
 	/**
 	* inc position of piece after read/write
 	*/
-	void IncPos(int piece, int pos);
+	void SetPos(long piece, int pos);
 	/**
 	*	restore position of piece for read/write operations
 	*/
