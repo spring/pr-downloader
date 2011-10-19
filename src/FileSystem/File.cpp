@@ -211,7 +211,7 @@ int CFile::GetPieceSize(int piece)
 	return size;
 }
 
-int CFile::GetPiecePos(int piece)
+long CFile::GetPiecePos(int piece)
 {
 	assert(piece<=piecesize);
 	if (piece>=0)

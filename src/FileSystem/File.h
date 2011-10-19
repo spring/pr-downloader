@@ -55,11 +55,6 @@ public:
 	*/
 	int Write(const char* buf, int bufsize, int piece=-1);
 	/**
-	* seek to the (relative) position in the piece
-	* @return the (relative) position in the piece, -1 means absolute
-	*/
-	int Seek(unsigned long pos, int piece=-1);
-	/**
 	*	gets the size of the given pice, returns file size when piece<0. hint: first piece=0
 	*	@return the size of a peace
 	*/
@@ -67,8 +62,13 @@ public:
 	/**
 	*	gets the read/write position of piece
 	*/
-	int GetPiecePos(int piece=-1);
+	long GetPiecePos(int piece=-1);
 private:
+	/**
+	* seek to the (relative) position in the piece
+	* @return the (relative) position in the piece, -1 means absolute
+	*/
+	int Seek(unsigned long pos, int piece=-1);
 	/**
 	* set the size of a pice
 	* @return count of pieces
