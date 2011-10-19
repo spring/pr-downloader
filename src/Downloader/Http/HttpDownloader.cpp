@@ -147,11 +147,19 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 			dl->addMirror(mirrors[j]);
 		}
 		//torrent data avaiable
-		if (resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeString) {
+		if (resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeString) { //FIXME: this is a bug in the xml-rpc interface, it should return <base64> but returns <string>
 			std::string base64=resfile["torrent"];
 			std::string binary;
-			base64_decode(base64, binary); //FIXME: this is a bug in the xml-rpc interface, it should return <base64> but returns <string>
+			base64_decode(base64, binary);
 			fileSystem->parseTorrent(binary.c_str(),binary.size(), dl);
+		} else if(resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeBase64) {
+			XmlRpc::XmlRpcValue::BinaryData tmp= resfile["torrent"];
+			std::string str;
+			for(unsigned i=0; i<tmp.size(); i++)
+				str.append(&tmp[i]);
+			std::string binary;
+			base64_decode(str, binary);
+			fileSystem->parseTorrent(binary.c_str(), binary.size(), dl);
 		}
 		if (resfile["md5"].getType()==XmlRpc::XmlRpcValue::TypeString) {
 			dl->hash=new HashMD5();
