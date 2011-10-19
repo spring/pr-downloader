@@ -34,7 +34,7 @@ bool CFile::Open(const std::string& filename)
 {
 	SetPieceSize(piecesize);
 //	fileSystem->createSubdirs(filename);
-	if (handle!=0) {
+	if (handle!=NULL) {
 		LOG_ERROR("file opened before old was closed\n");
 		return false;
 	}
@@ -63,7 +63,8 @@ bool CFile::Open(const std::string& filename)
 
 bool CFile::Hash(IHash& hash, int piece)
 {
-	Open(filename);
+	if (handle==NULL)
+		Open(filename);
 	std::list <IHash*>::iterator it;
 	char buf[IO_BUF_SIZE];
 	hash.Init();
