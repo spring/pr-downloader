@@ -168,6 +168,9 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 			dl->hash=new HashMD5();
 			dl->hash->Set(resfile["md5"]);
 		}
+		if (resfile["size"].getType()==XmlRpc::XmlRpcValue::TypeInt) {
+			dl->size=resfile["size"];
+		}
 		res.push_back(dl);
 	}
 	return true;

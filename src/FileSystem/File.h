@@ -78,7 +78,7 @@ private:
 	/**
 	* inc position of piece after read/write
 	*/
-	void SetPos(long piece, int pos);
+	void SetPos(long pos, int piece);
 	/**
 	* retrieves the size of the file handle
 	*/

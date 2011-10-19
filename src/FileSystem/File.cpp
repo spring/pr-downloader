@@ -75,11 +75,10 @@ bool CFile::Hash(IHash& hash, int piece)
 	//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
 	int read=0;
 	long unsigned left=GetPieceSize(piece); //total bytes to hash
-
 	while(left>0) {
 		int toread=std::min(left, (long unsigned)sizeof(buf));
 		read=Read(buf, toread, piece);
-		if(read<0) {
+		if(read<=0) {
 			LOG_ERROR("EOF or read error on piece %d, left: %d toread: %d size: %d, GetPiecePos %d GetPieceSize(): %d read: %d\n", piece, left, toread, GetPieceSize(piece), GetPiecePos(piece), GetPieceSize(piece), read);
 			LOG_ERROR("curpos: %d\n", curpos);
 			return false;
@@ -121,7 +120,7 @@ void CFile::SetPos(long pos, int piece)
 		assert(pos<=piecesize);
 		pieces[piece].pos =pos;
 	} else {
-		assert(size<=0 || (long)curpos<=size);
+		assert(size<=0 || pos<=size);
 		curpos = pos;
 	}
 	Seek(pos, piece);
@@ -205,7 +204,7 @@ long CFile::GetPiecePos(int piece)
 	assert(piece<=(int)pieces.size());
 	if (piece>=0)
 		return pieces[piece].pos;
-	return ftell(handle);
+	return curpos;
 }
 
 long CFile::GetSize()
