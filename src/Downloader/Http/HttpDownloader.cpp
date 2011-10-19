@@ -243,12 +243,12 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 	}
 
 	HashSHA1 sha1=HashSHA1();
-	int pieceNum=-1;
 	unsigned alreadyDl=0;
 	for(unsigned i=0; i<download->pieces.size(); i++ ) { //find first not downloaded piece
 		showProcess(download, file);
 		if (download->pieces[i].state==IDownload::STATE_FINISHED) {
 			alreadyDl++;
+			continue;
 		} else if (download->pieces[i].state==IDownload::STATE_NONE) {
 			if (download->pieces[i].sha->isSet()) { //reuse piece, if checksum is fine
 				file.Hash(sha1, i);
@@ -260,15 +260,14 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 					continue;
 				}
 			}
-			pieceNum=i;
+			return i;
 			break;
 		}
 	}
-
-	//all pieces verified, mark whole file so, too
-	if ((download->pieces.size()>0) && (alreadyDl==download->pieces.size()))
+	if (download->pieces.size()>0) {
 		download->state=IDownload::STATE_FINISHED;
-	return pieceNum;
+	}
+	return -1;
 }
 
 bool CHttpDownloader::setupDownload(CFile& file, download_data* piece, IDownload* download, int mirror)
