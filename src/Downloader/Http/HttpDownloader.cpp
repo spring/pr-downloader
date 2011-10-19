@@ -250,7 +250,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 			alreadyDl++;
 			continue;
 		} else if (download->pieces[i].state==IDownload::STATE_NONE) {
-			if (download->pieces[i].sha->isSet()) { //reuse piece, if checksum is fine
+			if ((download->pieces[i].sha->isSet()) && (!file.IsNewFile())) { //reuse piece, if checksum is fine
 				file.Hash(sha1, i);
 //	LOG("bla %s %s\n", sha1.toString().c_str(), download.pieces[i].sha->toString().c_str());
 				if (sha1.compare(download->pieces[i].sha)) {

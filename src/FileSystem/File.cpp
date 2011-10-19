@@ -42,24 +42,25 @@ bool CFile::Open(const std::string& filename)
 	}
 	struct stat sb;
 	int res=stat(filename.c_str(), &sb);
-	if (res==0) { //check if file length is correct, if not set it
-		handle=fopen(filename.c_str(), "r+");
-	} else {
+	isnewfile=res!=0;
+	if (isnewfile) { //check if file length is correct, if not set it
 		handle=fopen(filename.c_str(), "w+");
+	} else {
+		handle=fopen(filename.c_str(), "r+");
 	}
 	if (handle<=0) {
 		LOG_ERROR("open(%s): %s\n",filename.c_str(), strerror(errno));
 		return false;
 	}
 
-	if((size>0) && (size!=sb.st_size)) { //truncate file if real-size != excepted file size
+	if((!isnewfile) && (size>0) && (size!=sb.st_size)) { //truncate file if real-size != excepted file size
 		int ret=ftruncate(fileno(handle), size);
 		if (ret!=0) {
 			LOG_ERROR("ftruncate failed\n");
 		}
 		LOG_ERROR("File already exists but file-size missmatched\n");
 	} else if (size<=0) {
-		size=GetSize();
+		//TODO: allocate disk space
 	}
 	LOG_INFO("opened %s\n", filename.c_str());
 	return true;
@@ -220,4 +221,9 @@ long CFile::GetSize()
 		return -1;
 	}
 	return sb.st_size;
+}
+
+bool CFile::IsNewFile()
+{
+	return isnewfile;
 }

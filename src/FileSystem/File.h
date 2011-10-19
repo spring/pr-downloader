@@ -63,6 +63,7 @@ public:
 	*	gets the read/write position of piece
 	*/
 	long GetPiecePos(int piece=-1);
+	bool IsNewFile();
 private:
 	/**
 	* seek to the (relative) position in the piece
@@ -89,7 +90,7 @@ private:
 	unsigned long curpos; //current file pointer absolute position
 	std::vector <CFilePiece> pieces; //pieces of the file
 	std::map <std::string, IHash*> hashs; //checksums for the complete file
-
+	bool isnewfile;
 };
 
 #endif
