@@ -196,6 +196,8 @@ int CFile::GetPieceSize(int piece)
 //		LOG("GetPieceSize piece %d, pieces.size() %d piecesize: %d size %d \n", piece, pieces.size(),piecesize, size);
 		return piecesize;
 	}
+	if (size<0)
+		return GetSize();
 	return size;
 }
 
