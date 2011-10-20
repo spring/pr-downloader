@@ -1,4 +1,7 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "Logger.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 

@@ -1,3 +1,5 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef _DOWNLOAD_DATA_H
 #define _DOWNLOAD_DATA_H
 

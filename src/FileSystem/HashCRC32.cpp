@@ -1,4 +1,7 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "HashCRC32.h"
+
 #include <zlib.h>
 
 HashCRC32::HashCRC32()
@@ -33,7 +36,8 @@ unsigned char HashCRC32::get(int pos) const
 	return crc;
 }
 
-bool HashCRC32::Set(const unsigned char* data, int size){
+bool HashCRC32::Set(const unsigned char* data, int size)
+{
 	if(size!=getSize())
 		return false;
 	for(int i=0; i<size; i++)

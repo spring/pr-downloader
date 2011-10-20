@@ -1,30 +1,19 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef _SDP_H
 #define _SDP_H
 
-
-#include "RepoMaster.h"
-#include "FileSystem/FileSystem.h"
-#include <string.h>
+#include <string>
+#include <list>
 
 #define LENGTH_SIZE 4
+
+class FileData;
 
 class CSdp
 {
 public:
-	CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url) {
-		this->shortname=shortname;
-		this->name=name;
-		this->md5=md5;
-		this->url=url;
-		this->downloaded=false;
-		this->depends=depends;
-		this->file_handle=NULL;
-		this->downlooadInitialized=false;
-		this->cursize=0;
-		memset(this->cursize_buf,LENGTH_SIZE,0);
-		this->skipped=false;
-		this->file_pos=0;
-	}
+	CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url);
 	/**
 		download a mod, we already know the host where to download from + the md5 of the sdp file
 		we have to download the sdp + parse it + download associated files

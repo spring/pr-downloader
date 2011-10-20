@@ -1,7 +1,9 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "Downloader/IDownloader.h"
 #include "FileSystem/FileSystem.h"
 #include "Util.h"
-
+#include "Logger.h"
 
 #include <stdbool.h>
 #include <stdlib.h>

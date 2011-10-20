@@ -1,15 +1,10 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef FILE_SYSTEM_H
 #define FILE_SYSTEM_H
 
-#ifndef WIN32
-#include <stdlib.h>
-#else
-#include <windows.h>
-#endif
-
 #include <list>
 #include <string>
-#include "FileSystem/IHash.h"
 
 class SRepository;
 class CRepo;

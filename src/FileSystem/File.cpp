@@ -1,13 +1,16 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "File.h"
 #include "FileSystem.h"
 #include "Logger.h"
+#include "IHash.h"
 
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
-
+#include <stdlib.h>
 
 CFile::CFile(const std::string& filename, long size, int piecesize)
 {

@@ -1,8 +1,9 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef _HASH_CRC32_H
 #define _HASH_CRC32_H
 
 #include "IHash.h"
-
 
 class HashCRC32: public IHash
 {

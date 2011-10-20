@@ -1,3 +1,5 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef LOGGER_H
 #define LOGGER_H
 

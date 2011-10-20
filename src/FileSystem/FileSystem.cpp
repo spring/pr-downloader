@@ -1,23 +1,4 @@
-#include <zlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <list>
-#include <string>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <dirent.h>
-#include <limits.h>
-#include <time.h>
-
-
-#ifdef WIN32
-#include <windows.h>
-#include <shlobj.h>
-#include <math.h>
-#ifndef SHGFP_TYPE_CURRENT
-#define SHGFP_TYPE_CURRENT 0
-#endif
-#endif
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "FileSystem.h"
 #include "Util.h"
@@ -28,6 +9,21 @@
 #include "Logger.h"
 #include "lib/bencode/bencode.h"
 
+#include <zlib.h>
+#include <string.h>
+#include <list>
+#include <string>
+#include <sys/stat.h>
+#include <dirent.h>
+
+#ifdef WIN32
+#include <windows.h>
+#include <shlobj.h>
+#include <math.h>
+#ifndef SHGFP_TYPE_CURRENT
+#define SHGFP_TYPE_CURRENT 0
+#endif
+#endif
 
 CFileSystem* CFileSystem::singleton = NULL;
 

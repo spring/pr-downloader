@@ -1,9 +1,14 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "Widget.h"
+#include "Util.h"
+#include "Logger.h"
 #include "lib/pugixml/pugixml.hpp"
+
 #include <stdio.h>
 #include <list>
 #include <iostream>
-#include "Util.h"
+
 
 CWidget::CWidget(const std::string& filename)
 {

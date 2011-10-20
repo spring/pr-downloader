@@ -1,9 +1,12 @@
-#include "Downloader/Download.h"
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
+#include "Download.h"
+#include "Logger.h"
+#include "FileSystem/IHash.h"
+
 #include <string>
 #include <list>
 #include <stdio.h>
-#include "Logger.h"
-#include "FileSystem/IHash.h"
 
 IDownload::IDownload(const std::string& name, category cat)
 {

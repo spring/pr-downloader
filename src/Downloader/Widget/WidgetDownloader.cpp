@@ -1,5 +1,4 @@
-#ifndef WIDGET_DOWNLOADER_H
-#define WIDGET_DOWNLOADER_H
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "WidgetDownloader.h"
 #include "Widget.h"
@@ -59,4 +58,3 @@ bool CWidgetDownloader::search(std::list<IDownload*>& result, const std::string&
 	return true;
 }
 
-#endif

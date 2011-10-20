@@ -1,10 +1,14 @@
-#include "RepoMaster.h"
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "Repo.h"
+#include "RepoMaster.h"
 #include "FileSystem/FileSystem.h"
 #include "Downloader/IDownloader.h"
 #include "RapidDownloader.h"
 #include "Sdp.h"
 #include "Util.h"
+#include "Logger.h"
+
 #include <zlib.h>
 #include <stdio.h>
 

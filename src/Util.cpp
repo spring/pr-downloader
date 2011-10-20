@@ -1,5 +1,8 @@
-#include "FileSystem/FileSystem.h"
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "Util.h"
+#include "FileSystem/FileSystem.h"
+#include "Logger.h"
 
 #include <stdio.h>
 #include <string.h>

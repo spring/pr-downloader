@@ -22,5 +22,5 @@ please use the git-pre-commit hook:
 
 ##License
 
-pr-downloader is GPL-2 as it contains xmlrpcpp (GPL-2) and gsoap (GPL-2) code.
+pr-downloader is GPL-2 as it contains xmlrpcpp (GPL-2) and gsoap (GPL-2) code. For details, look at the LICENSE file.
 

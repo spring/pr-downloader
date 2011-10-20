@@ -1,6 +1,9 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef RAPID_DOWNLOADER_H
 #define RAPID_DOWNLOADER_H
 
+#include "Downloader/IDownloader.h"
 
 #include <string>
 #include <list>
@@ -10,12 +13,10 @@
 #define REPO_MASTER_RECHECK_TIME 3600 //how long to cache the repo-master file in secs without rechecking
 #define REPO_RECHECK_TIME 600
 
-#include "Downloader/IDownloader.h"
-#include "RepoMaster.h"
-
 class CSdp;
 class CHttpDownload;
 class CFileSystem;
+class CRepoMaster;
 
 class CRapidDownloader: public IDownloader
 {

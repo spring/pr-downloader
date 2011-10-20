@@ -1,13 +1,35 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
+#include "Sdp.h"
 #include "RapidDownloader.h"
 #include "RepoMaster.h"
-#include "Sdp.h"
+#include "Util.h"
+#include "Logger.h"
 #include "FileSystem/FileSystem.h"
 #include "FileSystem/FileData.h"
-#include "Util.h"
+#include "FileSystem/HashMD5.h"
+
 #include <string>
 #include <string.h>
 #include <stdio.h>
 #include <curl/curl.h>
+#include <stdlib.h>
+
+CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url)
+{
+	this->shortname=shortname;
+	this->name=name;
+	this->md5=md5;
+	this->url=url;
+	this->downloaded=false;
+	this->depends=depends;
+	this->file_handle=NULL;
+	this->downlooadInitialized=false;
+	this->cursize=0;
+	memset(this->cursize_buf,LENGTH_SIZE,0);
+	this->skipped=false;
+	this->file_pos=0;
+}
 
 bool CSdp::download()
 {

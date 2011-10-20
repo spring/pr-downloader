@@ -1,3 +1,5 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef UTIL_H
 #define UTIL_H
 
@@ -10,9 +12,12 @@
 #define XMLRPC_HOST "springfiles.com"
 #define XMLRPC_PORT 80
 #define XMLRPC_URI "/xmlrpc.php"
+#define MAX_PARALLEL_DOWNLOADS 10
 
-#include "FileSystem/FileSystem.h"
-#include "Logger.h"
+#include <string>
+
+class FileData;
+
 /**
 	creates a url from fileinfo, for example
 	<path>/<first2chars of md5>/<last 30 chars of md5>.gz

@@ -1,8 +1,10 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "HashSHA1.h"
+#include "Logger.h"
 
 #include <assert.h>
 #include <string.h>
-#include "Logger.h"
 
 HashSHA1::HashSHA1()
 {
@@ -41,7 +43,8 @@ int HashSHA1::getSize() const
 }
 
 
-bool HashSHA1::Set(const unsigned char* data, int size){
+bool HashSHA1::Set(const unsigned char* data, int size)
+{
 	if(size!=getSize())
 		return false;
 	for(int i=0; i<size; i++)

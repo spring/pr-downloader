@@ -1,9 +1,10 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef _CCHECKSUM_H
 #define _CCHECKSUM_H
 
 #include <string>
 #include <assert.h>
-
 
 class IHash
 {

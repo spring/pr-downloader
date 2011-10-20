@@ -1,10 +1,12 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "RapidDownloader.h"
 #include "FileSystem/FileSystem.h"
 #include "Util.h"
 #include "Logger.h"
 #include "RepoMaster.h"
-
 #include "Sdp.h"
+
 #include <stdio.h>
 #include <string>
 #include <string.h>

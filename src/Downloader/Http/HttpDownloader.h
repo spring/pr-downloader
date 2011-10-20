@@ -1,16 +1,17 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef HTTP_DOWNLOAD_H
 #define HTTP_DOWNLOAD_H
 
-#include <string>
-#include <list>
-#include "FileSystem/FileSystem.h"
 #include "Downloader/IDownloader.h"
 
-#define MAX_PARALLEL_DOWNLOADS 10
+#include <string>
+#include <list>
 
 class HashMD5;
 class HashSHA1;
 class CFile;
+class FileData;
 class DownloadData;
 typedef void CURLM;
 typedef void CURL;

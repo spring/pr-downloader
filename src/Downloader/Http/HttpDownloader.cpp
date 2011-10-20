@@ -1,5 +1,15 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "HttpDownloader.h"
 #include "DownloadData.h"
+#include "FileSystem/FileSystem.h"
+#include "FileSystem/File.h"
+#include "FileSystem/HashMD5.h"
+#include "FileSystem/HashSHA1.h"
+#include "Util.h"
+#include "Logger.h"
+#include "lib/xmlrpc++/src/XmlRpc.h"
+
 
 #include <stdio.h>
 #include <curl/curl.h>
@@ -13,13 +23,6 @@
 #include <malloc.h>
 
 
-#include "lib/xmlrpc++/src/XmlRpc.h"
-#include "FileSystem/File.h"
-#include "FileSystem/IHash.h"
-#include "FileSystem/HashMD5.h"
-#include "FileSystem/HashCRC32.h"
-#include "FileSystem/HashSHA1.h"
-#include "Util.h"
 
 CHttpDownloader::CHttpDownloader()
 {

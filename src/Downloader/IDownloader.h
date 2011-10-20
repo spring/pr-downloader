@@ -1,11 +1,13 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef I_DOWNLOADER_H
 #define I_DOWNLOADER_H
 
+#include "Download.h"
+
 #include <list>
 #include <string>
-
 #include <stdio.h>
-#include "Download.h"
 
 class IDownloader
 {

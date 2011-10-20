@@ -1,3 +1,5 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "HashMD5.h"
 
 #include <assert.h>
@@ -35,7 +37,8 @@ unsigned char HashMD5::get(int pos) const
 	return mdContext.digest[pos];
 }
 
-bool HashMD5::Set(const unsigned char* data, int size){
+bool HashMD5::Set(const unsigned char* data, int size)
+{
 	if(size!=getSize())
 		return false;
 	for(int i=0; i<size; i++)

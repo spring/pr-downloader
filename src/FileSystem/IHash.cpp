@@ -1,5 +1,8 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "IHash.h"
 #include "Logger.h"
+
 #include <stdio.h>
 
 bool IHash::compare(const IHash* checksum)
@@ -31,16 +34,17 @@ bool IHash::compare(const unsigned char* data, int size)
 	return true;
 }
 
-const std::string IHash::toString(const unsigned char* data, int size){
+const std::string IHash::toString(const unsigned char* data, int size)
+{
 	std::string str;
 	char buf[3];
-	if (data==NULL){
-		for(int i=0; i<getSize(); i++){
+	if (data==NULL) {
+		for(int i=0; i<getSize(); i++) {
 			snprintf(buf,sizeof(buf),"%.2x", get(i));
 			str.append(buf);
 		}
-	}else{
-		for(int i=0; i<size; i++){
+	} else {
+		for(int i=0; i<size; i++) {
 			snprintf(buf,sizeof(buf),"%.2x", data[i]);
 			str.append(buf);
 		}
@@ -48,7 +52,8 @@ const std::string IHash::toString(const unsigned char* data, int size){
 	return str;
 }
 
-unsigned IHash::getVal(char c){
+unsigned IHash::getVal(char c)
+{
 	if ((c>='0') && (c<='9'))
 		return c-'0';
 	if ((c>='a') && (c<='f'))
@@ -58,20 +63,21 @@ unsigned IHash::getVal(char c){
 	return 0;
 }
 
-bool IHash::Set(const std::string& hash){
+bool IHash::Set(const std::string& hash)
+{
 	unsigned char buf[256];
-	if(hash.size()>sizeof(buf)){
+	if(hash.size()>sizeof(buf)) {
 		LOG_ERROR("IHash::Set(): buffer to small\n");
 		return false;
 	}
-	if(hash.size()%2!=0){
+	if(hash.size()%2!=0) {
 		LOG_ERROR("IHash::Set(): buffer%2  != 0\n");
 		return false;
 	}
-	for(unsigned i=0; i<hash.size()/2; i++){
+	for(unsigned i=0; i<hash.size()/2; i++) {
 		buf[i]=getVal(hash.at((i*2)+1)) + getVal(hash.at(i*2))*16;
 	}
-	if(!Set(buf, hash.size()/2)){
+	if(!Set(buf, hash.size()/2)) {
 		LOG_ERROR("IHash:Set(): Error setting");
 		return false;
 	}
@@ -79,6 +85,7 @@ bool IHash::Set(const std::string& hash){
 	return true;
 }
 
-bool IHash::isSet(){
+bool IHash::isSet()
+{
 	return isset;
 }

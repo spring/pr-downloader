@@ -1,12 +1,12 @@
-
-#include "lib/soap/soapContentServiceSoap12Proxy.h"
-#include "lib/soap/ContentServiceSoap.nsmap"
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "PlasmaDownloader.h"
 #include "FileSystem/FileSystem.h"
 #include "Util.h"
 #include "Downloader/Download.h"
-
+#include "Logger.h"
+#include "lib/soap/soapContentServiceSoap12Proxy.h"
+#include "lib/soap/ContentServiceSoap.nsmap"
 
 
 CPlasmaDownloader::CPlasmaDownloader()

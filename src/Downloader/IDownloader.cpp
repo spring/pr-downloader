@@ -1,10 +1,12 @@
-#include "IDownloader.h"
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
+#include "IDownloader.h"
 #include "Http/HttpDownloader.h"
 #include "Rapid/RapidDownloader.h"
 #include "Plasma/PlasmaDownloader.h"
 #include "Widget/WidgetDownloader.h"
 #include "Util.h"
+#include "Logger.h"
 
 class IDownloader;
 
@@ -63,9 +65,9 @@ IDownloader* IDownloader::GetWidgetInstance()
 }
 
 bool IDownloader::download(std::list<IDownload*>& download)
- {
+{
 	std::list<IDownload*>::iterator it;
-	if (download.size()<=0){
+	if (download.size()<=0) {
 		LOG_ERROR("download list empty");
 		return false;
 	}

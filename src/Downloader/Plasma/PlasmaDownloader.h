@@ -1,8 +1,9 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef PLASMA_DOWNLOADER_H
 #define PLASMA_DOWNLOADER_H
 
 #include "Downloader/IDownloader.h"
-
 
 class CPlasmaDownloader: public IDownloader
 {
