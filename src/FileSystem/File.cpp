@@ -171,14 +171,17 @@ bool CFile::SetPieceSize(int pieceSize)
 		LOG_DEBUG("SetPieceSize(): FileSize:%ld PieceSize: %d", size, pieceSize);
 		return false;
 	}
-	int count=this->size/pieceSize;
+	unsigned count=this->size/pieceSize;
+	if (count==pieces.size()) //check if size is already correct
+		return true;
+	pieces.clear();
 	if(this->size%pieceSize>0)
 		count++;
 	if(count<=0) {
 		LOG_ERROR("SetPieceSize(): count<0\n");
 		return false;
 	}
-	for(int i=0; i<count; i++) {
+	for(unsigned i=0; i<count; i++) {
 		pieces.push_back(CFilePiece());
 	}
 	piecesize=pieceSize;
@@ -197,7 +200,7 @@ int CFile::GetPieceSize(int piece)
 		return piecesize;
 	}
 	if (size<0)
-		return GetSize();
+		return GetSizeFromHandle();
 	return size;
 }
 
@@ -209,7 +212,7 @@ long CFile::GetPiecePos(int piece)
 	return curpos;
 }
 
-long CFile::GetSize()
+long CFile::GetSizeFromHandle()
 {
 	if(handle==NULL) {
 		LOG_ERROR("GetSize(): file isn't opened!\n");

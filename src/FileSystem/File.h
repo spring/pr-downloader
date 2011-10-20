@@ -82,7 +82,7 @@ private:
 	/**
 	* retrieves the size of the file handle
 	*/
-	long GetSize();
+	long GetSizeFromHandle();
 	std::string filename;
 	FILE* handle; //file handle
 	int piecesize; //size of a piece
