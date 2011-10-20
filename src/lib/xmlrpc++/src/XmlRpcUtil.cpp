@@ -10,6 +10,7 @@
 #endif
 
 #include "XmlRpc.h"
+#include "Util.h"
 
 using namespace XmlRpc;
 
@@ -21,7 +22,7 @@ using namespace XmlRpc;
 #endif
 
 // Version id
-const char XmlRpc::XMLRPC_VERSION[] = "XMLRPC++ 0.7";
+const char XmlRpc::XMLRPC_VERSION[] = VERSION;
 
 // Default log verbosity: 0 for no messages through 5 (writes everything)
 int XmlRpcLogHandler::_verbosity = 0;
