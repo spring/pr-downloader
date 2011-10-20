@@ -8,6 +8,7 @@
 #include <time.h>
 #include <iostream>
 #include <sstream>
+#include <malloc.h>
 
 
 #include "lib/xmlrpc++/src/XmlRpc.h"
