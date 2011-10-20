@@ -95,17 +95,19 @@ bool CFile::Hash(IHash& hash, int piece)
 int CFile::Read(char*buf, int bufsize, int piece)
 {
 	SetPos(GetPiecePos(piece), piece);
-//	LOG("Read() bufsize: %d GetPiecePos(%d): %d GetPiecePos: %d GetPieceSize() %d\n",bufsize, piece, GetPiecePos(piece), GetPiecePos(), GetPieceSize(piece));
+//	LOG("Read(%d) bufsize: %d GetPiecePos(): %d GetPieceSize() %d\n",piece, bufsize, GetPiecePos(piece), GetPieceSize(piece));
+	clearerr(handle);
 	int items=fread(buf, bufsize, 1, handle);
 	if (items<=0) {
-		if(feof(handle)) {
-			LOG_ERROR("EOF while Read: '%s'!\n", strerror(errno));
-			return -1;
-		}
 		if(ferror(handle)) {
 			LOG_ERROR("read error %s bufsize: %d curpos: %d GetPieceSize: %d\n", strerror(errno), bufsize, curpos, GetPieceSize());
 			SetPos(0, piece);
-			return items;
+			return -1;
+		}
+		if(feof(handle)) {
+			LOG_ERROR("EOF while Read: '%s' items: %d!\n", strerror(errno), items);
+			LOG_ERROR("read error %s bufsize: %d curpos: %d GetPieceSize: %d\n", strerror(errno), bufsize, curpos, GetPieceSize());
+			return -1;
 		}
 	}
 	SetPos(GetPiecePos(piece)+bufsize, piece); //inc pos
@@ -130,6 +132,7 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 {
 //	LOG("Write() bufsize %d piece %d handle %d\n", bufsize, piece, fileno(handle));
 	SetPos(GetPiecePos(piece), piece);
+	clearerr(handle);
 	int res=fwrite(buf, bufsize, 1, handle);
 	if (res!=1)
 		LOG_ERROR("write error %d\n", res);
@@ -152,11 +155,12 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 
 int CFile::Seek(unsigned long pos, int piece)
 {
-//	LOG("Seek() pos: %d piece: %d\n", pos, piece);
 	assert(piece<=(int)pieces.size());
 	if(piece>=0) { //adjust position relative to piece pos
 		pos=this->piecesize*piece+pos;
 	}
+//	LOG("Seek() pos: %d piece: %d\n", pos, piece);
+	clearerr(handle);
 	if (fseek(handle, pos, SEEK_SET)!=0) {
 		LOG_ERROR("seek error %ld\n", pos);
 	}
