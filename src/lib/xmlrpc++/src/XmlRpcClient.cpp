@@ -250,7 +250,7 @@ XmlRpcClient::generateHeader(std::string const& body)
   header += buff;
   header += "Content-Type: text/xml\r\nContent-length: ";
 
-  sprintf(buff,"%d\r\n\r\n", body.size());
+  sprintf(buff,"%d\r\n\r\n", (int)body.size());
 
   return header + buff;
 }
@@ -395,7 +395,7 @@ XmlRpcClient::parseResponse(XmlRpcValue& result)
   // Expect either <params><param>... or <fault>...
   if ((XmlRpcUtil::nextTagIs(PARAMS_TAG,_response,&offset) &&
        XmlRpcUtil::nextTagIs(PARAM_TAG,_response,&offset)) ||
-      XmlRpcUtil::nextTagIs(FAULT_TAG,_response,&offset) && (_isFault = true))
+      (XmlRpcUtil::nextTagIs(FAULT_TAG,_response,&offset) && (_isFault = true)))
   {
     if ( ! result.fromXml(_response, &offset)) {
       XmlRpcUtil::error("Error in XmlRpcClient::parseResponse: Invalid response value. Response:\n%s", _response.c_str());
