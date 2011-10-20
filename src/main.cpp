@@ -28,7 +28,8 @@ enum {
 	FILESYSTEM_DUMPSDP,
 	DOWNLOAD_MAP,
 	DOWNLOAD_GAME,
-	HELP
+	HELP,
+	SHOW_VERSION
 };
 
 static struct option long_options[] = {
@@ -45,25 +46,32 @@ static struct option long_options[] = {
 	{"filesystem-writepath"    , 1, 0, FILESYSTEM_WRITEPATH},
 	{"filesystem-dumpsdp"      , 1, 0, FILESYSTEM_DUMPSDP},
 	{"help"                    , 0, 0, HELP},
+	{"version"                 , 0, 0, SHOW_VERSION},
 	{0                         , 0, 0, 0}
 };
 
+void show_version()
+{
+	LOG("pr-downloader " VERSION "\n");
+}
+
 void show_help(const char* cmd)
 {
+	show_version();
 	int i=0;
-	printf("Usage: %s ", cmd);
+	LOG("Usage: %s \n", cmd);
 	bool append=false;
 	while (long_options[i].name!=0) {
 		if (append) {
-			printf("\n");
+			LOG("\n");
 		}
 		append=true;
-		printf("--%s",long_options[i].name);
+		LOG("--%s",long_options[i].name);
 		if (long_options[i].has_arg!=0)
-			printf(" <name>");
+			LOG(" <name>");
 		i++;
 	}
-	printf("\n");
+	LOG("\n");
 	exit(1);
 }
 
@@ -101,8 +109,6 @@ int main(int argc, char **argv)
 {
 	if (argc<2)
 		show_help(argv[0]);
-
-	LOG_INFO("[pr-downloader] " VERSION " \n");
 
 	CFileSystem::Initialize();
 	IDownloader::Initialize();
@@ -182,6 +188,9 @@ int main(int argc, char **argv)
 			}
 			break;
 		}
+		case SHOW_VERSION:
+			show_version();
+			break;
 		case HELP:
 		default: {
 			show_help(argv[0]);
@@ -192,9 +201,5 @@ int main(int argc, char **argv)
 	IDownloader::Shutdown();
 	CFileSystem::Shutdown();
 
-	printf("[Finished]\n");
-
 	return 0;
 }
-
-
