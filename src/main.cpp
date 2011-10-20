@@ -87,7 +87,7 @@ void show_results(std::list<IDownload*>& list)
 {
 	std::list<IDownload*>::iterator it;
 	for (it=list.begin(); it!=list.end(); ++it) {
-		LOG_INFO("Output filename %s\n",(*it)->name.c_str());
+		LOG_INFO("Filename: %s Size: %d\n",(*it)->name.c_str(), (*it)->size);
 		int count=(*it)->getMirrorCount();
 		for(int i=0; i<count; i++) {
 			LOG_INFO("Download url: %s\n",(*it)->getMirror(i).c_str());
