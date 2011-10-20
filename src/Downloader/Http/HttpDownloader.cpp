@@ -432,13 +432,18 @@ bool CHttpDownloader::download(IDownload* download)
 	int running=1, last=-1;
 	while((running>0)&&(!aborted)) {
 		CURLMcode ret=curl_multi_perform(curlm, &running);
-		if (ret!=CURLM_OK) {
+		switch(ret) {
+		case CURLM_CALL_MULTI_PERFORM:
+			break;
+		case CURLM_OK:
+			if (last!=running) { //count of running downloads changed
+				aborted=processMessages(curlm, downloads, download, file);
+				last=running++;
+			}
+			break;
+		default:
 			LOG_ERROR("curl_multi_perform_error: %d\n", ret);
 			aborted=true;
-		}
-		if (last!=running) { //count of running downloads changed
-			aborted=processMessages(curlm, downloads, download, file);
-			last=running++;
 		}
 	}
 
