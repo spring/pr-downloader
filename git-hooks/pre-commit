@@ -12,7 +12,7 @@ fi
 
 ASTYLE_PARAMETERS="--style=linux --indent=force-tab"
 FILE_PATTERN="\.(c|cpp|h)$"
-IGNORE_PATTERN="^lib/"
+IGNORE_PATTERN="^src/lib/"
 
 echo "--Checking style--"
 for file in `git diff-index --cached --name-only HEAD --diff-filter=ACMR| egrep $FILE_PATTERN| egrep -v $IGNORE_PATTERN` ; do
