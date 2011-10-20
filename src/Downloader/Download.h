@@ -8,6 +8,7 @@
 #include <list>
 
 class IHash;
+class Mirror;
 
 class IDownload
 {
@@ -45,10 +46,8 @@ public:
 	 *	returns first url
 	 */
 	const std::string getUrl();
-	/**
-	 *
-	 */
-	const std::string& getMirror(const int i);
+	Mirror* getMirror(unsigned i);
+	Mirror* getFastestMirror();
 	int getMirrorCount();
 	/**
 	*	size of pieces, last piece size can be different
@@ -75,7 +74,8 @@ public:
 	int size;
 	PIECE_STATE state;
 private:
-	std::list<std::string> mirror;
+	std::vector <Mirror*> mirrors;
+
 
 };
 

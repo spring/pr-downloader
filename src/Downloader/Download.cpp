@@ -3,6 +3,7 @@
 #include "Download.h"
 #include "Logger.h"
 #include "FileSystem/IHash.h"
+#include "Mirror.h"
 
 #include <string>
 #include <list>
@@ -36,25 +37,35 @@ const std::string IDownload::getCat(category cat)
 const std::string IDownload::getUrl()
 {
 	const std::string empty="";
-	if (!mirror.empty())
-		return mirror.front();
+	if (!mirrors.empty())
+		return mirrors[0]->url;
 	return empty;
 }
 
-const std::string& IDownload::getMirror(const int i)
+Mirror* IDownload::getMirror(unsigned i)
 {
-	int pos=0;
-	std::list<std::string>::iterator it;
-	for(it=mirror.begin(); it!=mirror.end(); ++it) {
-		if(pos==i)
-			return *it;
-		pos++;
+	assert((i<mirrors.size()) && (i>=0));
+	return mirrors[i];
+}
+
+Mirror* IDownload::getFastestMirror()
+{
+	int max=-1;
+	int pos=-1;
+	for(unsigned i=0; i<mirrors.size(); i++) {
+		if(mirrors[i]->status==Mirror::STATUS_UNKNOWN) //prefer mirrors with unknown status
+			return mirrors[i];
+		if ((mirrors[i]->status!=Mirror::STATUS_BROKEN) && (mirrors[i]->maxspeed>max)) {
+			max=mirrors[i]->maxspeed;
+			pos=i;
+		}
 	}
-	LOG_ERROR("Invalid index in getMirror: %d\n", i);
-	return mirror.front();
+	if (pos<0)
+		return NULL;
+	return mirrors[pos];
 }
 
 int IDownload::getMirrorCount()
 {
-	return mirror.size();
+	return mirrors.size();
 }

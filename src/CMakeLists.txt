@@ -8,6 +8,7 @@ set(myRapidFiles
 	Logger.cpp
 	Downloader/Download.cpp
 	Downloader/IDownloader.cpp
+	Downloader/Mirror.cpp
 )
 
 set (RAPID "pr-downloader")

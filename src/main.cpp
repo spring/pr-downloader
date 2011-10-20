@@ -1,6 +1,7 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "Downloader/IDownloader.h"
+#include "Downloader/Mirror.h"
 #include "FileSystem/FileSystem.h"
 #include "Util.h"
 #include "Logger.h"
@@ -100,7 +101,7 @@ void show_results(std::list<IDownload*>& list)
 		LOG_INFO("Filename: %s Size: %d\n",(*it)->name.c_str(), (*it)->size);
 		int count=(*it)->getMirrorCount();
 		for(int i=0; i<count; i++) {
-			LOG_INFO("Download url: %s\n",(*it)->getMirror(i).c_str());
+			LOG_INFO("Download url: %s\n",(*it)->getMirror(i)->url.c_str());
 		}
 	}
 }

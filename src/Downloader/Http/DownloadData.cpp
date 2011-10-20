@@ -8,7 +8,7 @@ DownloadData::DownloadData()
 {
 	file=NULL;
 	piece=0;
-	mirror=0;
+	mirror=NULL;
 	easy_handle=curl_easy_init();
 }
 

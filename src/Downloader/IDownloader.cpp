@@ -7,6 +7,7 @@
 #include "Widget/WidgetDownloader.h"
 #include "Util.h"
 #include "Logger.h"
+#include "Mirror.h"
 
 class IDownloader;
 
@@ -18,7 +19,8 @@ IDownloader* IDownloader::widgetdl=NULL;
 bool IDownload::addMirror(const std::string& url)
 {
 	LOG_DEBUG("%s",url.c_str());
-	this->mirror.push_back(url);
+	Mirror* mirror=new Mirror(url);
+	this->mirrors.push_back(mirror);
 	return true;
 }
 

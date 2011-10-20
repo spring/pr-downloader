@@ -5,6 +5,7 @@
 
 #include <string>
 class CFile;
+class Mirror;
 typedef void CURL;
 
 class DownloadData
@@ -15,8 +16,7 @@ public:
 	CFile* file;
 	int piece;
 	CURL* easy_handle; //curl_easy_handle
-	int mirror; //number of mirror used
-	std::string url; //copy of the download url
+	Mirror* mirror; //mirror used
 };
 
 #endif

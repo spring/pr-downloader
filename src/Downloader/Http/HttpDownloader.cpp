@@ -8,8 +8,8 @@
 #include "FileSystem/HashSHA1.h"
 #include "Util.h"
 #include "Logger.h"
+#include "Downloader/Mirror.h"
 #include "lib/xmlrpc++/src/XmlRpc.h"
-
 
 #include <stdio.h>
 #include <curl/curl.h>
@@ -116,19 +116,6 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 	return true;
 }
 
-std::string CHttpDownloader::escapeUrl(const std::string& url)
-{
-	std::string res;
-
-	for(unsigned int i=0; i<url.size(); i++) {
-		if (url[i]==' ')
-			res.append("%20");
-		else
-			res.append(1,url[i]);
-	}
-	return res;
-}
-
 size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data)
 {
 	return data->file->Write((const char*)ptr, size*nmemb, data->piece);
@@ -228,14 +215,21 @@ bool CHttpDownloader::setupDownload(CFile& file, DownloadData* piece, IDownload*
 		curl_easy_reset(piece->easy_handle);
 	}
 	CURL* curle= piece->easy_handle;
-	piece->url=download->getMirror(mirror);
+	piece->mirror=download->getFastestMirror();
+	if (piece->mirror==NULL) {
+		LOG_ERROR("No mirror found\n");
+		return false;
+	}
+	std::string escaped;
+	piece->mirror->escapeUrl(escaped);
+
 	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
 	curl_easy_setopt(curle, CURLOPT_USERAGENT, USER_AGENT);
 	curl_easy_setopt(curle, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 1L);
 	curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
-	curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(piece->url).c_str());
+	curl_easy_setopt(curle, CURLOPT_URL, escaped.c_str());
 
 	if ((download->size>0) && (pieceNum>=0)) { //don't set range, if size unknown
 		std::string range;
@@ -274,8 +268,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 				break;
 			case CURLE_HTTP_RETURNED_ERROR: //some 4* HTTP-Error (file not found, access denied,...)
 			default:
-				LOG_ERROR("CURL error(%d): %s (%s)\n",msg->msg, curl_easy_strerror(msg->data.result), data->url.c_str());
-				//FIXME: memleaks...
+				LOG_ERROR("CURL error(%d): %s (%s)\n",msg->msg, curl_easy_strerror(msg->data.result), data->mirror->url.c_str());
 				return false;
 			}
 
@@ -294,30 +287,26 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 				if (sha1.compare(download->pieces[data->piece].sha)) { //piece valid
 					download->pieces[data->piece].state=IDownload::STATE_FINISHED;
 //					LOG("piece %d verified!\n", data->piece);
-				} else {
-					download->pieces[data->piece].state=IDownload::STATE_FINISHED;
-					LOG_ERROR("Invalid piece %d retrieved %s\n",data->piece,  sha1.toString().c_str());
-					LOG_ERROR("%s\n", download->pieces[data->piece].sha->toString().c_str());
-					LOG_ERROR("implement me! (redownload from different mirror)\n");
-					aborted=true;
-					break; //FIXME: implement
+				} else { //piece download broken, mark mirror as broken (for this file)
+					download->pieces[data->piece].state=IDownload::STATE_NONE;
+					data->mirror->status=Mirror::STATUS_BROKEN;
+					break;
 				}
 			} else {
 				LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
 			}
 			showProcess(download, file);
+			//get speed at which this piece was downloaded + update mirror info
+			double dlSpeed;
+			curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
+			data->mirror->UpdateSpeed(dlSpeed);
+
 			//remove easy handle, as its finished
 			curl_easy_cleanup(data->easy_handle);
 			curl_multi_remove_handle(curlm, data->easy_handle);
 			data->easy_handle=NULL;
+
 			//piece finished / failed, try a new one
-			//TODO: dynamic use mirrors
-			//TODO: remove mirror when a mirror is slow/sent broken data and other mirrors are faster
-			/*
-								double dlSpeed;
-								curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
-								LOG("speed %.0f KB/s\n", dlSpeed/1024);
-			*/
 			if (!setupDownload(file, data, download, 0)) {
 				LOG_INFO("No piece found, all pieces finished / currently downloading\n");
 				break;
