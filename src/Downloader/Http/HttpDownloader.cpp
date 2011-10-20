@@ -160,10 +160,8 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 			for(unsigned i=0; i<tmp.size(); i++) {
 				mem[i]=tmp[i];
 			}
-			std::string binary;
-			std::string tmpstr((char*)mem, tmp.size());
-			base64_decode(tmpstr, binary);
-			fileSystem->parseTorrent(binary.c_str(), binary.size(), dl);
+			fileSystem->parseTorrent(mem, tmp.size(), dl);
+			free(mem);
 		}
 		if (resfile["md5"].getType()==XmlRpc::XmlRpcValue::TypeString) {
 			dl->hash=new HashMD5();
