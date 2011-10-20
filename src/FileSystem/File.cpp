@@ -44,9 +44,9 @@ bool CFile::Open(const std::string& filename)
 	int res=stat(filename.c_str(), &sb);
 	isnewfile=res!=0;
 	if (isnewfile) { //check if file length is correct, if not set it
-		handle=fopen(filename.c_str(), "w+");
+		handle=fopen(filename.c_str(), "wb+");
 	} else {
-		handle=fopen(filename.c_str(), "r+");
+		handle=fopen(filename.c_str(), "rb+");
 	}
 	if (handle<=0) {
 		LOG_ERROR("open(%s): %s\n",filename.c_str(), strerror(errno));
