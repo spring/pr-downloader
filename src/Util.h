@@ -5,8 +5,7 @@
 #define QUOTEME(x) QUOTEME_(x)
 
 #define VERSION QUOTEME(PR_DOWNLOADER_VERSION)
-#define USER_AGENT "unitsync-dev" + QUOTEME(PR_DOWNLOADER_VERSION)
-
+#define USER_AGENT "pr-downloader/" VERSION
 #define XMLRPC_METHOD "springfiles.search"
 #define XMLRPC_HOST "springfiles.com"
 #define XMLRPC_PORT 80

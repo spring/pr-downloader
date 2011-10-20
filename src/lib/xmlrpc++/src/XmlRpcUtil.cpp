@@ -22,7 +22,7 @@ using namespace XmlRpc;
 #endif
 
 // Version id
-const char XmlRpc::XMLRPC_VERSION[] = VERSION;
+const char XmlRpc::XMLRPC_VERSION[] = USER_AGENT;
 
 // Default log verbosity: 0 for no messages through 5 (writes everything)
 int XmlRpcLogHandler::_verbosity = 0;
