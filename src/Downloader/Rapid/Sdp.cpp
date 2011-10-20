@@ -214,7 +214,7 @@ bool CSdp::downloadStream(std::string url,std::list<FileData>& files)
 
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_streamed_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
-		curl_easy_setopt(curl, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
+		curl_easy_setopt(curl, CURLOPT_USERAGENT, USER_AGENT);
 
 		globalFiles=&files;
 		curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);

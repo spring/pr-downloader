@@ -1,4 +1,6 @@
 #include "HttpDownloader.h"
+#include "DownloadData.h"
+
 #include <stdio.h>
 #include <curl/curl.h>
 #include <unistd.h>
@@ -17,81 +19,17 @@
 #include "FileSystem/HashMD5.h"
 #include "FileSystem/HashCRC32.h"
 #include "FileSystem/HashSHA1.h"
-
 #include "Util.h"
-
-time_t last_print;
-time_t start_time;
-
-/** *
-	draw a nice download status-bar
-*/
-int progress_func(CHttpDownloader* ptr, double TotalToDownload, double NowDownloaded,
-		  double TotalToUpload, double NowUploaded)
-{
-	time_t now=time(NULL);
-	if (start_time==0)
-		start_time=now;
-	if (now!=last_print) { //check if 1 second is gone afters last update
-		last_print=now;
-	} else {
-		if(TotalToDownload!=NowDownloaded) //print 100%
-			return 0;
-	}
-
-	LOG_PROGRESS(NowDownloaded,TotalToDownload);
-
-	return 0;
-}
-
-
-size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
-{
-	int written = fwrite(ptr, size, nmemb, stream);
-	return written;
-}
 
 CHttpDownloader::CHttpDownloader()
 {
-	curl_global_init(CURL_GLOBAL_ALL);
-	curl = curl_easy_init();
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
-	curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
-	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
-	curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
-	curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, this);
-	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-	stats_filepos=1;
-	stats_count=1;
 	lastprogress=0;
+	curl_global_init(CURL_GLOBAL_ALL);
 }
 
 CHttpDownloader::~CHttpDownloader()
 {
-	curl_easy_cleanup(curl);
-	curl = NULL;
 	curl_global_cleanup();
-}
-
-void CHttpDownloader::setCount(unsigned int count)
-{
-	this->stats_count=count;
-}
-
-unsigned int CHttpDownloader::getCount()
-{
-	return this->stats_count;
-}
-
-unsigned int CHttpDownloader::getStatsPos()
-{
-	return this->stats_filepos;
-}
-
-void CHttpDownloader::setStatsPos(unsigned int pos)
-{
-	this->stats_filepos=pos;
 }
 
 bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
@@ -188,7 +126,7 @@ std::string CHttpDownloader::escapeUrl(const std::string& url)
 	return res;
 }
 
-size_t multi_write_data(void *ptr, size_t size, size_t nmemb, CHttpDownloader::download_data* data)
+size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data)
 {
 	return data->file->Write((const char*)ptr, size*nmemb, data->piece);
 }
@@ -272,7 +210,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 	return -1;
 }
 
-bool CHttpDownloader::setupDownload(CFile& file, download_data* piece, IDownload* download, int mirror)
+bool CHttpDownloader::setupDownload(CFile& file, DownloadData* piece, IDownload* download, int mirror)
 {
 	int pieceNum=verifyAndGetNextPiece(file, download);
 	if (download->state==IDownload::STATE_FINISHED)
@@ -290,11 +228,9 @@ bool CHttpDownloader::setupDownload(CFile& file, download_data* piece, IDownload
 	piece->url=download->getMirror(mirror);
 	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
-	curl_easy_setopt(curle, CURLOPT_USERAGENT, PR_DOWNLOADER_AGENT);
+	curl_easy_setopt(curle, CURLOPT_USERAGENT, USER_AGENT);
 	curl_easy_setopt(curle, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 1L);
-//	curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
-//	curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, this);
 	curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
 	curl_easy_setopt(curle, CURLOPT_URL, escapeUrl(piece->url).c_str());
 
@@ -311,7 +247,7 @@ bool CHttpDownloader::setupDownload(CFile& file, download_data* piece, IDownload
 	return true;
 }
 
-CHttpDownloader::download_data* CHttpDownloader::getDataByHandle(const std::vector <download_data*>& downloads, const CURL* easy_handle) const
+DownloadData* CHttpDownloader::getDataByHandle(const std::vector <DownloadData*>& downloads, const CURL* easy_handle) const
 {
 	for(int i=0; i<(int)downloads.size(); i++) { //search corresponding data structure
 		if (downloads[i]->easy_handle == easy_handle) {
@@ -321,7 +257,7 @@ CHttpDownloader::download_data* CHttpDownloader::getDataByHandle(const std::vect
 	return NULL;
 }
 
-bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <download_data*>& downloads, IDownload* download, CFile& file)
+bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>& downloads, IDownload* download, CFile& file)
 {
 	int msgs_left;
 	HashSHA1 sha1;
@@ -329,7 +265,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <download_data*>
 	while(struct CURLMsg* msg=curl_multi_info_read(curlm, &msgs_left)) {
 		switch(msg->msg) {
 		case CURLMSG_DONE: { //a piece has been downloaded, verify it
-			CHttpDownloader::download_data* data=getDataByHandle(downloads, msg->easy_handle);
+			DownloadData* data=getDataByHandle(downloads, msg->easy_handle);
 			switch(msg->data.result) {
 			case CURLE_OK:
 				break;
@@ -407,10 +343,10 @@ bool CHttpDownloader::download(IDownload* download)
 	LOG_INFO("Using %d parallel downloads\n", count);
 
 	CURLM* curlm=curl_multi_init();
-	std::vector <download_data*> downloads;
+	std::vector <DownloadData*> downloads;
 	CFile file=CFile(download->name, download->size, download->piecesize);
 	for(int i=0; i<count; i++) {
-		download_data* dlData=new download_data();
+		DownloadData* dlData=new DownloadData();
 		if (!setupDownload(file, dlData, download, i)) { //no piece found (all pieces already downloaded), skip
 			delete dlData;
 			if (download->state==IDownload::STATE_FINISHED) {

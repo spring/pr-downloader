@@ -3,7 +3,6 @@
 
 #include <string>
 #include <list>
-#include <curl/curl.h>
 #include "FileSystem/FileSystem.h"
 #include "Downloader/IDownloader.h"
 
@@ -12,6 +11,9 @@
 class HashMD5;
 class HashSHA1;
 class CFile;
+class DownloadData;
+typedef void CURLM;
+typedef void CURL;
 
 class CHttpDownloader: public IDownloader
 {
@@ -33,33 +35,8 @@ public:
 	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
 	virtual bool download(IDownload* download);
 
-	class download_data
-	{
-	public:
-		download_data() {
-			file=NULL;
-			piece=0;
-			mirror=0;
-			easy_handle=curl_easy_init();
-		}
-		~download_data() {
-			if (easy_handle!=NULL) {
-				curl_easy_cleanup(easy_handle);
-				easy_handle=NULL;
-			}
-		}
-		CFile* file;
-		int piece;
-		CURL* easy_handle; //curl_easy_handle
-		int mirror; //number of mirror used
-		std::string url; //copy of the download url
-	};
-
 private:
-	CURL* curl;
 	bool parallelDownload(IDownload& download);
-	unsigned int stats_count;
-	unsigned int stats_filepos;
 	unsigned long lastprogress; //last time progress bar was shown
 	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);
 	std::string escapeUrl(const std::string& url);
@@ -70,9 +47,9 @@ private:
 
 	/**
 	*	gets next piece that can be downloaded, mark it as downloading
-	*	@return true when download_data is correctly set
+	*	@return true when DownloadData is correctly set
 	*/
-	bool setupDownload(CFile& file, download_data* piece, IDownload* download, int mirror);
+	bool setupDownload(CFile& file, DownloadData* piece, IDownload* download, int mirror);
 	bool getRange(std::string& range, int piece, int piecesize, int filesize);
 	/**
 	* returns piecenum for file, which isn't already downloaded
@@ -89,8 +66,8 @@ private:
 	*		- keep some stats (mark broken mirrors, downloadspeed)
 	*	@returns false, when some fatal error occured -> abort
 	*/
-	bool processMessages(CURLM* curlm, std::vector <CHttpDownloader::download_data*>& downloads, IDownload* download, CFile& file);
-	download_data* getDataByHandle(const std::vector <download_data*>& downloads, const CURL* easy_handle) const;
+	bool processMessages(CURLM* curlm, std::vector <DownloadData*>& downloads, IDownload* download, CFile& file);
+	DownloadData* getDataByHandle(const std::vector <DownloadData*>& downloads, const CURL* easy_handle) const;
 };
 
 #endif
