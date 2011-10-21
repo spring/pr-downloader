@@ -22,6 +22,7 @@ ENDIF ()
 
 add_library(${RAPID_LIB} SHARED
 	${myRapidFiles}
+	pr-downloader.cpp
 )
 
 target_link_libraries(${RAPID_LIB}
