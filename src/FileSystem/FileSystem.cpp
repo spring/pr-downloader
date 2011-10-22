@@ -164,19 +164,22 @@ bool CFileSystem::directoryExists(const std::string& path) const
 
 void CFileSystem::createSubdirs (const std::string& path) const
 {
-	std::string tmp;
-	tmp=path;
+	std::string tmp=path;
 	if (path[path.length()]!=PATH_DELIMITER) {
 		tmp=tmp.substr(0,tmp.rfind(PATH_DELIMITER));
 	}
+
 	for (unsigned int i=0; i<tmp.size(); i++) {
 		char c=tmp.at(i);
 		if (c==PATH_DELIMITER) {
+			const std::string tocreate=tmp.substr(0,i);
+			if (!fileSystem->directoryExists(tocreate)) {
 #ifdef WIN32
-			mkdir(tmp.substr(0,i).c_str());
+				mkdir(tmp.substr(0,i).c_str());
 #else
-			mkdir(tmp.substr(0,i).c_str(),0777);
+				mkdir(tmp.substr(0,i).c_str(),0777);
 #endif
+			}
 		}
 	}
 #ifdef WIN32

@@ -37,6 +37,7 @@ void CFile::Close()
 
 bool CFile::Open(const std::string& filename)
 {
+	fileSystem->createSubdirs(filename);
 	SetPieceSize(piecesize);
 //	fileSystem->createSubdirs(filename);
 	if (handle!=NULL) {
