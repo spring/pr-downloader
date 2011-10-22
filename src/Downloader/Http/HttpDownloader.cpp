@@ -20,8 +20,11 @@
 #include <time.h>
 #include <iostream>
 #include <sstream>
+#ifdef __APPLE__
+#include <malloc/malloc.h>
+#else
 #include <malloc.h>
-
+#endif
 
 
 CHttpDownloader::CHttpDownloader()
