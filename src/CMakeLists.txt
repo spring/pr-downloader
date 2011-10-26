@@ -65,3 +65,7 @@ ELSE()
 
 ENDIF(WIN32)
 
+INSTALL (FILES
+        pr-downloader.h
+        DESTINATION ${INCLUDE_DIR}/Downloader COMPONENT Devel )
+
