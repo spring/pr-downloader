@@ -70,3 +70,11 @@ bool IDownloader::download(std::list<IDownload*>& download)
 	return res;
 }
 
+void IDownloader::freeResult(std::list<IDownload*>& list)
+{
+	std::list<IDownload*>::iterator it;
+	for(it=list.begin(); it!=list.end(); ++it) {
+		delete *it;
+	}
+	list.clear();
+}

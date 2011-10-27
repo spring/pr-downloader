@@ -129,6 +129,7 @@ int main(int argc, char **argv)
 			} else if (!rapidDownload->download(list)) {
 				LOG_ERROR("Error downloading %s\n",optarg);
 			}
+			IDownloader::freeResult(list);
 			break;
 		}
 		case RAPID_VALIDATE: {
@@ -139,23 +140,27 @@ int main(int argc, char **argv)
 		case RAPID_LIST: {
 			rapidDownload->search(list);
 			show_results(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case PLASMA_SEARCH: {
 			std::string tmp=optarg;
 			plasmaDownload->search(list, tmp);
 			show_results(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case PLASMA_DOWNLOAD: {
 			plasmaDownload->search(list, optarg);
 			if (!list.empty())
 				plasmaDownload->download(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case WIDGET_SEARCH: {
 			std::string tmp=optarg;
 			widgetDownload->search(list, tmp);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case FILESYSTEM_WRITEPATH: {
@@ -170,11 +175,13 @@ int main(int argc, char **argv)
 		case HTTP_SEARCH: {
 			httpDownload->search(list, optarg);
 			show_results(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case HTTP_DOWNLOAD: {
 			httpDownload->search(list, optarg);
 			httpDownload->download(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case DOWNLOAD_MAP: {

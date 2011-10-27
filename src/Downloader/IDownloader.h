@@ -42,9 +42,16 @@ public:
 
 
 	/**
-		search for a string at the downloader
+	*	search for a string at the downloader
+	*	NOTE: the caller has to free the list, IDownload is allocated for each result!
+	*	@see freeResult
 	*/
 	virtual bool search(std::list<IDownload*>& result, const std::string& name="", const IDownload::category=IDownload::CAT_NONE)=0;
+
+	/**
+	*	free's a result list
+	*/
+	static void freeResult(std::list<IDownload*>& list);
 
 private:
 	static IDownloader* httpdl;

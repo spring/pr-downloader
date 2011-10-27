@@ -26,6 +26,12 @@ IDownload::~IDownload()
 		delete pieces[i].sha;
 	}
 	pieces.clear();
+	for(unsigned i=0; i<mirrors.size(); i++) {
+		delete mirrors[i];
+	}
+	if (hash!=NULL)
+		delete hash;
+	hash=NULL;
 }
 
 const std::string IDownload::getCat(category cat)
