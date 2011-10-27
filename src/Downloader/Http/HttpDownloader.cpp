@@ -305,8 +305,8 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			data->mirror->UpdateSpeed(dlSpeed);
 
 			//remove easy handle, as its finished
-			curl_easy_cleanup(data->easy_handle);
 			curl_multi_remove_handle(curlm, data->easy_handle);
+			curl_easy_cleanup(data->easy_handle);
 			data->easy_handle=NULL;
 
 			//piece finished / failed, try a new one
