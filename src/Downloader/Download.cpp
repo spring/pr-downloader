@@ -69,3 +69,17 @@ int IDownload::getMirrorCount()
 {
 	return mirrors.size();
 }
+
+bool IDownload::addMirror(const std::string& url)
+{
+	LOG_DEBUG("%s",url.c_str());
+	Mirror* mirror=new Mirror(url);
+	this->mirrors.push_back(mirror);
+	return true;
+}
+
+bool IDownload::addDepend(const std::string& depend)
+{
+	this->depend.push_back(depend);
+	return true;
+}
