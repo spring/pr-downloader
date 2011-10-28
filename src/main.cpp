@@ -53,18 +53,18 @@ static struct option long_options[] = {
 
 void show_version()
 {
-	LOG("pr-downloader " VERSION "\n");
+	LOG("pr-downloader " VERSION "");
 }
 
 void show_help(const char* cmd)
 {
 	show_version();
 	int i=0;
-	LOG("Usage: %s \n", cmd);
+	LOG("Usage: %s ", cmd);
 	bool append=false;
 	while (long_options[i].name!=0) {
 		if (append) {
-			LOG("\n");
+			LOG("");
 		}
 		append=true;
 		LOG("--%s",long_options[i].name);
@@ -72,7 +72,7 @@ void show_help(const char* cmd)
 			LOG(" <name>");
 		i++;
 	}
-	LOG("\n");
+	LOG("");
 	exit(1);
 }
 
@@ -98,10 +98,10 @@ void show_results(std::list<IDownload*>& list)
 {
 	std::list<IDownload*>::iterator it;
 	for (it=list.begin(); it!=list.end(); ++it) {
-		LOG_INFO("Filename: %s Size: %d\n",(*it)->name.c_str(), (*it)->size);
+		LOG_INFO("Filename: %s Size: %d",(*it)->name.c_str(), (*it)->size);
 		int count=(*it)->getMirrorCount();
 		for(int i=0; i<count; i++) {
-			LOG_INFO("Download url: %s\n",(*it)->getMirror(i)->url.c_str());
+			LOG_INFO("Download url: %s",(*it)->getMirror(i)->url.c_str());
 		}
 	}
 }
@@ -125,9 +125,9 @@ int main(int argc, char **argv)
 		case RAPID_DOWNLOAD: {
 			rapidDownload->search(list, optarg);
 			if (list.empty()) {
-				LOG_ERROR("Coulnd't find %s\n",optarg);
+				LOG_ERROR("Coulnd't find %s",optarg);
 			} else if (!rapidDownload->download(list)) {
-				LOG_ERROR("Error downloading %s\n",optarg);
+				LOG_ERROR("Error downloading %s",optarg);
 			}
 			IDownloader::freeResult(list);
 			break;
@@ -186,13 +186,13 @@ int main(int argc, char **argv)
 		}
 		case DOWNLOAD_MAP: {
 			if (!download(optarg, IDownload::CAT_MAPS)) {
-				LOG_ERROR("No map found for %s\n",optarg);
+				LOG_ERROR("No map found for %s",optarg);
 			}
 			break;
 		}
 		case DOWNLOAD_GAME: {
 			if (!download(optarg, IDownload::CAT_MODS)) {
-				LOG_ERROR("No game found for %s\n",optarg);
+				LOG_ERROR("No game found for %s",optarg);
 			}
 			break;
 		}

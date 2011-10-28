@@ -19,6 +19,7 @@ void LOG_INFO(const char* format, ...)
 	va_start(args, format);
 	printf("[Info] ");
 	vprintf(format, args);
+	printf("\n");
 	va_end(args);
 }
 
@@ -28,6 +29,7 @@ void LOG_ERROR(const char* format, ...)
 	va_start(args,format);
 	printf("[Error] ");
 	vprintf(format,args);
+	printf("\n");
 	va_end(args);
 }
 

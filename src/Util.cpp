@@ -101,7 +101,7 @@ bool urlToPath(const std::string& url, std::string& path)
 {
 	size_t pos=url.find("//");
 	if (pos==std::string::npos) { //not found
-		LOG_ERROR("urlToPath failed: %s\n",path.c_str());
+		LOG_ERROR("urlToPath failed: %s",path.c_str());
 		return false;
 	}
 	path=url.substr(pos+2);

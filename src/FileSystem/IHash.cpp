@@ -27,7 +27,7 @@ bool IHash::compare(const unsigned char* data, int size)
 	for (int i=0; i<getSize(); i++) {
 		unsigned char tmp=data[i];
 		if (get(i)!=tmp) {
-			LOG("compare failed(): %s %s\n", toString().c_str(), toString(data, size).c_str());
+			LOG_INFO("compare failed(): %s %s", toString().c_str(), toString(data, size).c_str());
 			return false;
 		}
 	}
@@ -67,11 +67,11 @@ bool IHash::Set(const std::string& hash)
 {
 	unsigned char buf[256];
 	if(hash.size()>sizeof(buf)) {
-		LOG_ERROR("IHash::Set(): buffer to small\n");
+		LOG_ERROR("IHash::Set(): buffer to small");
 		return false;
 	}
 	if(hash.size()%2!=0) {
-		LOG_ERROR("IHash::Set(): buffer%2  != 0\n");
+		LOG_ERROR("IHash::Set(): buffer%2  != 0");
 		return false;
 	}
 	for(unsigned i=0; i<hash.size()/2; i++) {

@@ -40,7 +40,7 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	SetPieceSize(piecesize);
 //	fileSystem->createSubdirs(filename);
 	if (handle!=NULL) {
-		LOG_ERROR("file opened before old was closed\n");
+		LOG_ERROR("file opened before old was closed");
 		return false;
 	}
 	struct stat sb;
@@ -52,34 +52,34 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 		handle=fopen(filename.c_str(), "rb+");
 	}
 	if (handle<=0) {
-		LOG_ERROR("open(%s): %s\n",filename.c_str(), strerror(errno));
+		LOG_ERROR("open(%s): %s",filename.c_str(), strerror(errno));
 		return false;
 	}
 
 	if((!isnewfile) && (size>0) && (size!=sb.st_size)) { //truncate file if real-size != excepted file size
 		int ret=ftruncate(fileno(handle), size);
 		if (ret!=0) {
-			LOG_ERROR("ftruncate failed\n");
+			LOG_ERROR("ftruncate failed");
 		}
-		LOG_ERROR("File already exists but file-size missmatched\n");
+		LOG_ERROR("File already exists but file-size missmatched");
 	} else if (size<=0) {
 		//TODO: allocate disk space
 	}
-	LOG_INFO("opened %s\n", filename.c_str());
+	LOG_INFO("opened %s", filename.c_str());
 	return true;
 }
 
 bool CFile::Hash(IHash& hash, int piece)
 {
-//	LOG("Hash() piece %d\n", piece);
+//	LOG("Hash() piece %d", piece);
 	char buf[IO_BUF_SIZE];
 	SetPos(0, piece);
 	hash.Init();
-//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
+//	LOG("piece %d left: %d",piece,  GetPieceSize(piece));
 	int read=0;
 	long unsigned left=GetPieceSize(piece); //total bytes to hash
 	if (left==0) {
-		LOG_ERROR("tried to hash empty piece %d\n", piece);
+		LOG_ERROR("tried to hash empty piece %d", piece);
 		return false;
 	}
 
@@ -87,8 +87,8 @@ bool CFile::Hash(IHash& hash, int piece)
 		int toread=std::min(left, (long unsigned)sizeof(buf));
 		read=Read(buf, toread, piece);
 		if(read<=0) {
-			LOG_ERROR("EOF or read error on piece %d, left: %d toread: %d size: %d, GetPiecePos %d GetPieceSize(): %d read: %d\n", piece, left, toread, GetPieceSize(piece), GetPiecePos(piece), GetPieceSize(piece), read);
-			LOG_ERROR("curpos: %d\n", curpos);
+			LOG_ERROR("EOF or read error on piece %d, left: %d toread: %d size: %d, GetPiecePos %d GetPieceSize(): %d read: %d", piece, left, toread, GetPieceSize(piece), GetPiecePos(piece), GetPieceSize(piece), read);
+			LOG_ERROR("curpos: %d", curpos);
 			return false;
 		}
 		hash.Update(buf, toread);
@@ -96,25 +96,25 @@ bool CFile::Hash(IHash& hash, int piece)
 	}
 	hash.Final();
 	SetPos(0, piece);
-//	LOG("CFile::Hash(): %s piece:%d\n", hash.toString().c_str(), piece);
+//	LOG("CFile::Hash(): %s piece:%d", hash.toString().c_str(), piece);
 	return true;
 }
 
 int CFile::Read(char*buf, int bufsize, int piece)
 {
 	SetPos(GetPiecePos(piece), piece);
-//	LOG("Read(%d) bufsize: %d GetPiecePos(): %d GetPieceSize() %d\n",piece, bufsize, GetPiecePos(piece), GetPieceSize(piece));
+//	LOG("Read(%d) bufsize: %d GetPiecePos(): %d GetPieceSize() %d",piece, bufsize, GetPiecePos(piece), GetPieceSize(piece));
 	clearerr(handle);
 	int items=fread(buf, bufsize, 1, handle);
 	if (items<=0) {
 		if(ferror(handle)) {
-			LOG_ERROR("read error %s bufsize: %d curpos: %d GetPieceSize: %d\n", strerror(errno), bufsize, curpos, GetPieceSize());
+			LOG_ERROR("read error %s bufsize: %d curpos: %d GetPieceSize: %d", strerror(errno), bufsize, curpos, GetPieceSize());
 			SetPos(0, piece);
 			return -1;
 		}
 		if(feof(handle)) {
-			LOG_ERROR("EOF while Read: '%s' items: %d!\n", strerror(errno), items);
-			LOG_ERROR("read error %s bufsize: %d curpos: %d GetPieceSize: %d\n", strerror(errno), bufsize, curpos, GetPieceSize());
+			LOG_ERROR("EOF while Read: '%s' items: %d!", strerror(errno), items);
+			LOG_ERROR("read error %s bufsize: %d curpos: %d GetPieceSize: %d", strerror(errno), bufsize, curpos, GetPieceSize());
 			return -1;
 		}
 	}
@@ -124,7 +124,7 @@ int CFile::Read(char*buf, int bufsize, int piece)
 
 void CFile::SetPos(long pos, int piece)
 {
-//	LOG("SetPos() pos %d piece%d\n", pos, piece);
+//	LOG("SetPos() pos %d piece%d", pos, piece);
 	if (piece>=0) {
 		assert(pieces[piece].pos<=size+pos);
 		assert(pos<=piecesize);
@@ -140,21 +140,21 @@ int CFile::Write(const char*buf, int bufsize, int piece)
 {
 	SetPos(GetPiecePos(piece), piece);
 	clearerr(handle);
-//	LOG("Write() bufsize %d piece %d handle %d\n", bufsize, piece, fileno(handle));
+//	LOG("Write() bufsize %d piece %d handle %d", bufsize, piece, fileno(handle));
 	int res=fwrite(buf, bufsize, 1, handle);
 	if (res!=1)
-		LOG_ERROR("write error %d\n", res);
-//	LOG("wrote bufsize %d\n", bufsize);
+		LOG_ERROR("write error %d", res);
+//	LOG("wrote bufsize %d", bufsize);
 	if(ferror(handle)!=0) {
-		LOG_ERROR("Error in write(): %s\n", strerror(errno));
+		LOG_ERROR("Error in write(): %s", strerror(errno));
 		abort();
 	}
 	if(feof(handle)) {
-		LOG_ERROR("EOF in write(): %s\n", strerror(errno));
+		LOG_ERROR("EOF in write(): %s", strerror(errno));
 	}
 	SetPos(GetPiecePos(piece)+bufsize, piece);
 	/*	if ((piece>=0) && (GetPiecePos(piece)==GetPieceSize(piece))) {
-			LOG("piece finished: %d\n", piece);
+			LOG("piece finished: %d", piece);
 		}
 	*/
 	return bufsize;
@@ -167,10 +167,10 @@ int CFile::Seek(unsigned long pos, int piece)
 	if(piece>=0) { //adjust position relative to piece pos
 		pos=this->piecesize*piece+pos;
 	}
-//	LOG("Seek() pos: %d piece: %d\n", pos, piece);
+//	LOG("Seek() pos: %d piece: %d", pos, piece);
 	clearerr(handle);
 	if (fseek(handle, pos, SEEK_SET)!=0) {
-		LOG_ERROR("seek error %ld\n", pos);
+		LOG_ERROR("seek error %ld", pos);
 	}
 	return pos;
 }
@@ -190,7 +190,7 @@ bool CFile::SetPieceSize(int pieceSize)
 	if(this->size%pieceSize>0)
 		count++;
 	if(count<=0) {
-		LOG_ERROR("SetPieceSize(): count<0\n");
+		LOG_ERROR("SetPieceSize(): count<0");
 		return false;
 	}
 	for(unsigned i=0; i<count; i++) {
@@ -198,7 +198,7 @@ bool CFile::SetPieceSize(int pieceSize)
 	}
 	piecesize=pieceSize;
 	curpos=0;
-//	LOG("SetPieceSize piecesize: %d filesize: %ld pieces count:%d\n", pieceSize, this->size, (int)pieces.size());
+//	LOG("SetPieceSize piecesize: %d filesize: %ld pieces count:%d", pieceSize, this->size, (int)pieces.size());
 	return true;
 }
 
@@ -208,7 +208,7 @@ int CFile::GetPieceSize(int piece)
 		assert(piece<=(int)pieces.size());
 		if ((int)pieces.size()-1==piece) //last piece
 			return size%piecesize;
-//		LOG("GetPieceSize piece %d, pieces.size() %d piecesize: %d size %d \n", piece, pieces.size(),piecesize, size);
+//		LOG("GetPieceSize piece %d, pieces.size() %d piecesize: %d size %d ", piece, pieces.size(),piecesize, size);
 		return piecesize;
 	}
 	if (size<0) {
@@ -228,16 +228,16 @@ long CFile::GetPiecePos(int piece)
 long CFile::GetSizeFromHandle()
 {
 	if(handle==NULL) {
-		LOG_ERROR("GetSize(): file isn't opened!\n");
+		LOG_ERROR("GetSize(): file isn't opened!");
 		return -1;
 	}
 
 	struct stat sb;
 	if (fstat(fileno(handle), &sb)!=0) {
-		LOG_ERROR("CFile::SetSize(): fstat failed\n");
+		LOG_ERROR("CFile::SetSize(): fstat failed");
 		return -1;
 	}
-	LOG("GetSizeFromHandle: %d blocks: %d\n", sb.st_size, sb.st_blocks);
+	LOG("GetSizeFromHandle: %d blocks: %d", sb.st_size, sb.st_blocks);
 	return sb.st_size;
 }
 
