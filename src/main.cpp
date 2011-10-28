@@ -19,7 +19,7 @@
 enum {
 	RAPID_DOWNLOAD=0,
 	RAPID_VALIDATE,
-	RAPID_LIST,
+	RAPID_SEARCH,
 	HTTP_SEARCH,
 	HTTP_DOWNLOAD,
 	PLASMA_DOWNLOAD,
@@ -36,7 +36,7 @@ enum {
 static struct option long_options[] = {
 	{"rapid-download"          , 1, 0, RAPID_DOWNLOAD},
 	{"rapid-validate"          , 0, 0, RAPID_VALIDATE},
-	{"rapid-list"              , 0, 0, RAPID_LIST},
+	{"rapid-search"            , 1, 0, RAPID_SEARCH},
 	{"plasma-download"         , 1, 0, PLASMA_DOWNLOAD},
 	{"plasma-search"           , 1, 0, PLASMA_SEARCH},
 	{"http-download"           , 1, 0, HTTP_DOWNLOAD},
@@ -60,11 +60,11 @@ void show_help(const char* cmd)
 {
 	show_version();
 	int i=0;
-	LOG("Usage: %s ", cmd);
+	LOG("Usage: %s \n", cmd);
 	bool append=false;
 	while (long_options[i].name!=0) {
 		if (append) {
-			LOG("");
+			LOG("\n");
 		}
 		append=true;
 		LOG("--%s",long_options[i].name);
@@ -72,7 +72,7 @@ void show_help(const char* cmd)
 			LOG(" <name>");
 		i++;
 	}
-	LOG("");
+	LOG("\n");
 	exit(1);
 }
 
@@ -137,8 +137,9 @@ int main(int argc, char **argv)
 			LOG_INFO("Validated %d files",res);
 			break;
 		}
-		case RAPID_LIST: {
-			rapidDownload->search(list);
+		case RAPID_SEARCH: {
+			std::string tmp=optarg;
+			rapidDownload->search(list, tmp);
 			show_results(list);
 			IDownloader::freeResult(list);
 			break;
