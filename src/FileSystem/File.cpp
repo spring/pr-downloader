@@ -12,15 +12,12 @@
 #include <sys/stat.h>
 #include <stdlib.h>
 
-CFile::CFile(const std::string& filename, long size, int piecesize)
+CFile::CFile()
 {
 	handle=NULL;
-//	LOG("CFile() size: %d\n",size);
-	this->size=size;
-	this->piecesize=piecesize;
+	this->size=-1;
+	this->piecesize=-1;
 	this->curpos=0;
-	this->filename=filename;
-	Open(filename);
 }
 
 CFile::~CFile()
@@ -35,8 +32,10 @@ void CFile::Close()
 	handle=0;
 }
 
-bool CFile::Open(const std::string& filename)
+bool CFile::Open(const std::string& filename, long size, int piecesize)
 {
+	this->filename=filename;
+	this->size=size;
 	fileSystem->createSubdirs(filename);
 	SetPieceSize(piecesize);
 //	fileSystem->createSubdirs(filename);
@@ -47,7 +46,7 @@ bool CFile::Open(const std::string& filename)
 	struct stat sb;
 	int res=stat(filename.c_str(), &sb);
 	isnewfile=res!=0;
-	if (isnewfile) { //check if file length is correct, if not set it
+	if (isnewfile) { //if file is new, create it, if not, open the existing one without truncating it
 		handle=fopen(filename.c_str(), "wb+");
 	} else {
 		handle=fopen(filename.c_str(), "rb+");
@@ -76,7 +75,7 @@ bool CFile::Hash(IHash& hash, int piece)
 	char buf[IO_BUF_SIZE];
 	SetPos(0, piece);
 	hash.Init();
-	//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
+//	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
 	int read=0;
 	long unsigned left=GetPieceSize(piece); //total bytes to hash
 	while(left>0) {
@@ -134,9 +133,9 @@ void CFile::SetPos(long pos, int piece)
 
 int CFile::Write(const char*buf, int bufsize, int piece)
 {
-//	LOG("Write() bufsize %d piece %d handle %d\n", bufsize, piece, fileno(handle));
 	SetPos(GetPiecePos(piece), piece);
 	clearerr(handle);
+//	LOG("Write() bufsize %d piece %d handle %d\n", bufsize, piece, fileno(handle));
 	int res=fwrite(buf, bufsize, 1, handle);
 	if (res!=1)
 		LOG_ERROR("write error %d\n", res);
@@ -207,8 +206,9 @@ int CFile::GetPieceSize(int piece)
 //		LOG("GetPieceSize piece %d, pieces.size() %d piecesize: %d size %d \n", piece, pieces.size(),piecesize, size);
 		return piecesize;
 	}
-	if (size<0)
+	if (size<0) {
 		return GetSizeFromHandle();
+	}
 	return size;
 }
 
@@ -232,6 +232,7 @@ long CFile::GetSizeFromHandle()
 		LOG_ERROR("CFile::SetSize(): fstat failed\n");
 		return -1;
 	}
+//	LOG("GetSizeFromHandle: %d blocks: %d\n", sb.st_size, sb.st_blocks);
 	return sb.st_size;
 }
 

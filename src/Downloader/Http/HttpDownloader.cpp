@@ -141,8 +141,9 @@ void CHttpDownloader::showProcess(IDownload* download, CFile& file)
 	} else
 		return;
 	int done=0;
+
 	if(download->pieces.size()<=0) {
-		done=file.GetPiecePos();
+		done=file.GetPieceSize();
 	} else {
 		for(unsigned i=0; i<download->pieces.size(); i++) {
 			switch(download->pieces[i].state) {
@@ -157,7 +158,10 @@ void CHttpDownloader::showProcess(IDownload* download, CFile& file)
 			}
 		}
 	}
-	LOG_PROGRESS(done, download->size);
+	int size=download->size;
+	if ((size<0) && (download->state==IDownload::STATE_FINISHED))
+		size=done;
+	LOG_PROGRESS(done, size);
 }
 
 int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
@@ -280,7 +284,6 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 				return false;
 			}
 			if (data->piece<0) { //download without pieces
-				LOG("download finished\n");
 				return false;
 			}
 			assert(data->file!=NULL);
@@ -298,7 +301,6 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			} else {
 				LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d\n", data->piece);
 			}
-			showProcess(download, file);
 			//get speed at which this piece was downloaded + update mirror info
 			double dlSpeed;
 			curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
@@ -336,20 +338,17 @@ bool CHttpDownloader::download(IDownload* download)
 		return false;
 	}
 	LOG_INFO("Using %d parallel downloads\n", count);
-
+	CFile file=CFile();
+	if(!file.Open(download->name, download->size, download->piecesize)) {
+		return false;
+	}
 	CURLM* curlm=curl_multi_init();
 	std::vector <DownloadData*> downloads;
-	CFile file=CFile(download->name, download->size, download->piecesize);
 	for(int i=0; i<count; i++) {
 		DownloadData* dlData=new DownloadData();
 		if (!setupDownload(file, dlData, download, i)) { //no piece found (all pieces already downloaded), skip
 			delete dlData;
-			if (download->state==IDownload::STATE_FINISHED) {
-				lastprogress=0; //force progressbar to show 100%
-				showProcess(download, file);
-				LOG("\n");
-				return true;
-			} else {
+			if (download->state!=IDownload::STATE_FINISHED) {
 				LOG_ERROR("no piece found\n");
 				return false;
 			}
@@ -363,6 +362,7 @@ bool CHttpDownloader::download(IDownload* download)
 	int running=1, last=-1;
 	while((running>0)&&(!aborted)) {
 		CURLMcode ret=curl_multi_perform(curlm, &running);
+		showProcess(download, file);
 		switch(ret) {
 		case CURLM_CALL_MULTI_PERFORM:
 			break;

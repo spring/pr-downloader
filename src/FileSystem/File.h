@@ -34,7 +34,7 @@ public:
 	*	@param filename filename of the file
 	*	@param size of the filename, -1 will read it from file or create a new one
 	*/
-	CFile(const std::string& filename, long size=-1, int piecesize=-1);
+	CFile();
 	~CFile();
 	/**
 	*	hashes a piece with given hashes (or complete file, if piece<=0)
@@ -43,7 +43,7 @@ public:
 	/**
 	*	open file
 	*/
-	bool Open(const std::string& filename);
+	bool Open(const std::string& filename, long size=-1, int piecesize=-1);
 	/**
 	*	close file
 	*/

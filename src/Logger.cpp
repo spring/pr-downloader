@@ -39,7 +39,7 @@ void LOG_DOWNLOAD(const char* filename)
 void LOG_PROGRESS(long done, long total)
 {
 	if (total<0) //if total bytes are unknown set to 50%
-		total=done/2;
+		total=done*2;
 	float percentage = 0;
 	if (total>0) {
 		percentage = (float)done / total;
