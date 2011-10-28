@@ -93,8 +93,8 @@ bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& 
 	sdps.sort(list_compare);
 	std::list<CSdp>::iterator it;
 	for (it=sdps.begin(); it!=sdps.end(); ++it) {
-		if (match_download_name((*it).getShortName().c_str(),name)
-		    || (match_download_name((*it).getName().c_str(),name))) {
+		if (match_download_name((*it).getShortName(),name)
+		    || (match_download_name((*it).getName(),name))) {
 			IDownload* dl=new IDownload((*it).getName().c_str());
 			dl->addMirror((*it).getShortName().c_str());
 			result.push_back(dl);
