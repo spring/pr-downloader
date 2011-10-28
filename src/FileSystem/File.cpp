@@ -78,6 +78,11 @@ bool CFile::Hash(IHash& hash, int piece)
 //	LOG("piece %d left: %d\n",piece,  GetPieceSize(piece));
 	int read=0;
 	long unsigned left=GetPieceSize(piece); //total bytes to hash
+	if (left==0) {
+		LOG_ERROR("tried to hash empty piece %d\n", piece);
+		return false;
+	}
+
 	while(left>0) {
 		int toread=std::min(left, (long unsigned)sizeof(buf));
 		read=Read(buf, toread, piece);
@@ -232,7 +237,7 @@ long CFile::GetSizeFromHandle()
 		LOG_ERROR("CFile::SetSize(): fstat failed\n");
 		return -1;
 	}
-//	LOG("GetSizeFromHandle: %d blocks: %d\n", sb.st_size, sb.st_blocks);
+	LOG("GetSizeFromHandle: %d blocks: %d\n", sb.st_size, sb.st_blocks);
 	return sb.st_size;
 }
 
