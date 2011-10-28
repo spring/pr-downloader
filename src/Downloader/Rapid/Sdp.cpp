@@ -43,12 +43,13 @@ bool CSdp::download()
 	int count=0;
 	filename  += this->md5 + ".sdp";
 	FileData tmp=FileData();
-	tmp.md5->Set(md5);
+	HashMD5 md5= HashMD5();
+	md5.Set(tmp.md5, sizeof(tmp.md5));
 	std::list<FileData> files;
 
 	if (!fileSystem->parseSdp(filename,files)) { //file isn't avaiable, download it
 		IDownload dl(filename);
-		dl.addMirror(url + "/packages/" + md5 + ".sdp");
+		dl.addMirror(url + "/packages/" + md5.toString() + ".sdp");
 		httpDownload->download(&dl);
 		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}
@@ -61,8 +62,8 @@ bool CSdp::download()
 	it=files.begin();
 	while (it!=files.end()) {
 		i++;
-
-		std::string md5str=(*it).md5->toString();
+		md5.Set((*it).md5, sizeof((*it).md5));
+		std::string md5str=md5.toString();
 		std::string filename=md5str.substr(2);
 		filename.append(".gz");
 		std::string path("/pool/");

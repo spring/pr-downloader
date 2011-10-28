@@ -58,6 +58,13 @@ private:
 	/**
 		helper function for sort
 	*/
+	/**
+	*	compare str1 with str2
+	*	if str2==* or "" it matches
+	*	used for search in downloaders
+	*/
+	static bool match_download_name(const std::string &str1,const std::string& str2);
+
 	static bool list_compare(CSdp& first ,CSdp& second);
 	CRepoMaster* repoMaster;
 	std::list<CSdp> sdps;

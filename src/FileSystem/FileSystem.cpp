@@ -49,7 +49,7 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 			ERROR("File %s invalid, size wrong: %d but should be %d", filename.c_str(),filesize, mod->size);
 			return false;
 		}*/
-	if (!md5hash.compare(mod.md5)) { //file is invalid
+	if (!md5hash.compare(mod.md5, sizeof(mod.md5) )) { //file is invalid
 //		ERROR("Damaged file found: %s",filename.c_str());
 //		unlink(filename.c_str());
 		return false;
@@ -86,7 +86,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData>& fil
 		FileData f;
 		f.name = std::string(c_name, length);
 		memcpy(&f.md5, &c_md5, 16);
-		f.crc32->Set(c_crc32, sizeof(c_crc32));
+		memcpy(&f.crc32, &c_crc32, 4);
 		f.size = parse_int32(c_size);
 		files.push_back(f);
 	}
@@ -256,10 +256,7 @@ int CFileSystem::validatePool(const std::string& path)
 						md5str.push_back(absname.at(len-36)); //get md5 from path + filename
 						md5str.push_back(absname.at(len-35));
 						md5str.append(absname.substr(len-33, 30));
-
-						if (!filedata.md5->Set(md5str)) { //set md5 in filedata structure
-							LOG_ERROR("Invalid filename %s", absname.c_str());
-						}
+						memcpy(filedata.md5, md5str.c_str(), sizeof(filedata.md5));
 						if (!fileIsValid(filedata, absname)) { //check if md5 in filename is the same as in filename
 							LOG_ERROR("Invalid File in pool: %s",absname.c_str());
 						} else {

@@ -80,14 +80,6 @@ unsigned int intmin(int x, int y)
 	return y;
 }
 
-bool match_download_name(const std::string &str1,const std::string& str2)
-{
-	if (str2=="") return true;
-	if (str2=="*") return true;
-	if (str1==str2) return true;
-	return false;
-}
-
 void urlEncode(std::string& url)
 {
 	for (int i=url.length()-1; i>=0; i--) {

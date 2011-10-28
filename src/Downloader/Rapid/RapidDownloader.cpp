@@ -11,6 +11,7 @@
 #include <string>
 #include <string.h>
 #include <list>
+#include <regex.h>
 
 
 CRapidDownloader::CRapidDownloader(const std::string& url)
@@ -108,4 +109,19 @@ bool CRapidDownloader::download(IDownload* download)
 	LOG_DEBUG("%s",download->name.c_str());
 	reloadRepos();
 	return download_name(download->name,0);
+}
+
+bool CRapidDownloader::match_download_name(const std::string &str1,const std::string& str2)
+{
+	if (str2=="") return true;
+	regex_t regex;
+	if (regcomp(&regex, str2.c_str(), 0)==0) {
+		int res=regexec(&regex, str1.c_str(),0, NULL, 0 );
+		regfree(&regex);
+		if (res==0) {
+			return true;
+		}
+	}
+	if (str1==str2) return true;
+	return false;
 }
