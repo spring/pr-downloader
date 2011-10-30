@@ -4,3 +4,4 @@
 .*swp
 obj-*
 debian/*.log
+build/
