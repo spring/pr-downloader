@@ -1,8 +1,8 @@
-*.orig
+*\.orig
 *~
-.pc*
-.*swp
+\.pc*
+\.*swp
 obj-*
-*.cmake
-/debian/*.log
+*\.cmake
+/debian/*\.log
 /html
