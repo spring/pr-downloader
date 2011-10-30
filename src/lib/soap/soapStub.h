@@ -17,22 +17,28 @@
 \******************************************************************************/
 
 
-#ifndef SOAP_TYPE_ns1__ResourceType
-#define SOAP_TYPE_ns1__ResourceType (35)
-/* ns1:ResourceType */
-enum ns1__ResourceType {ns1__ResourceType__Map = 0, ns1__ResourceType__Mod = 1};
+#ifndef SOAP_TYPE_Plasma__ResourceType
+#define SOAP_TYPE_Plasma__ResourceType (74)
+/* Plasma:ResourceType */
+enum Plasma__ResourceType {Plasma__ResourceType__Map = 0, Plasma__ResourceType__Mod = 1};
 #endif
 
-#ifndef SOAP_TYPE_ns1__ReturnValue
-#define SOAP_TYPE_ns1__ReturnValue (36)
-/* ns1:ReturnValue */
-enum ns1__ReturnValue {ns1__ReturnValue__Ok = 0, ns1__ReturnValue__InvalidLogin = 1, ns1__ReturnValue__ResourceNotFound = 2, ns1__ReturnValue__InternalNameAlreadyExistsWithDifferentSpringHash = 3, ns1__ReturnValue__Md5AlreadyExists = 4, ns1__ReturnValue__Md5AlreadyExistsWithDifferentName = 5};
+#ifndef SOAP_TYPE_Plasma__AutohostMode
+#define SOAP_TYPE_Plasma__AutohostMode (75)
+/* Plasma:AutohostMode */
+enum Plasma__AutohostMode {Plasma__AutohostMode__Planetwars = 0, Plasma__AutohostMode__Game1v1 = 1, Plasma__AutohostMode__GameTeams = 2, Plasma__AutohostMode__GameFFA = 3, Plasma__AutohostMode__GameChickens = 4};
 #endif
 
-#ifndef SOAP_TYPE_ns1__ProgramType
-#define SOAP_TYPE_ns1__ProgramType (37)
-/* ns1:ProgramType */
-enum ns1__ProgramType {ns1__ProgramType__MissionEditor = 0};
+#ifndef SOAP_TYPE_Plasma__ReturnValue
+#define SOAP_TYPE_Plasma__ReturnValue (76)
+/* Plasma:ReturnValue */
+enum Plasma__ReturnValue {Plasma__ReturnValue__Ok = 0, Plasma__ReturnValue__InvalidLogin = 1, Plasma__ReturnValue__ResourceNotFound = 2, Plasma__ReturnValue__InternalNameAlreadyExistsWithDifferentSpringHash = 3, Plasma__ReturnValue__Md5AlreadyExists = 4, Plasma__ReturnValue__Md5AlreadyExistsWithDifferentName = 5};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ProgramType
+#define SOAP_TYPE_Plasma__ProgramType (77)
+/* Plasma:ProgramType */
+enum Plasma__ProgramType {Plasma__ProgramType__MissionEditor = 0};
 #endif
 
 /******************************************************************************\
@@ -69,420 +75,1200 @@ public:
 };
 #endif
 
+#ifndef SOAP_TYPE_Plasma__ArrayOfAccountTeam
+#define SOAP_TYPE_Plasma__ArrayOfAccountTeam (13)
+/* Plasma:ArrayOfAccountTeam */
+class SOAP_CMAC Plasma__ArrayOfAccountTeam
+{
+public:
+	std::vector<class Plasma__AccountTeam * >AccountTeam;	/* optional element of type Plasma:AccountTeam */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 13; } /* = unique id SOAP_TYPE_Plasma__ArrayOfAccountTeam */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__ArrayOfAccountTeam() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfAccountTeam() { }
+};
+#endif
+
 #if 0 /* volatile type: do not redeclare */
 
 #endif
 
-#ifndef SOAP_TYPE_ns1__ArrayOfString
-#define SOAP_TYPE_ns1__ArrayOfString (13)
-/* ns1:ArrayOfString */
-class SOAP_CMAC ns1__ArrayOfString
+#ifndef SOAP_TYPE_Plasma__AccountTeam
+#define SOAP_TYPE_Plasma__AccountTeam (14)
+/* Plasma:AccountTeam */
+class SOAP_CMAC Plasma__AccountTeam
+{
+public:
+	int AccountID;	/* required element of type xsd:int */
+	int AllyID;	/* required element of type xsd:int */
+	std::string *Name;	/* optional element of type xsd:string */
+	bool Spectate;	/* required element of type xsd:boolean */
+	int TeamID;	/* required element of type xsd:int */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 14; } /* = unique id SOAP_TYPE_Plasma__AccountTeam */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__AccountTeam() : AccountID(0), AllyID(0), Name(NULL), Spectate((bool)0), TeamID(0), soap(NULL) { }
+	virtual ~Plasma__AccountTeam() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__BalanceTeamsResult
+#define SOAP_TYPE_Plasma__BalanceTeamsResult (15)
+/* Plasma:BalanceTeamsResult */
+class SOAP_CMAC Plasma__BalanceTeamsResult
+{
+public:
+	Plasma__ArrayOfAccountTeam *BalancedTeams;	/* optional element of type Plasma:ArrayOfAccountTeam */
+	class Plasma__ArrayOfBotTeam *Bots;	/* optional element of type Plasma:ArrayOfBotTeam */
+	std::string *Message;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 15; } /* = unique id SOAP_TYPE_Plasma__BalanceTeamsResult */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__BalanceTeamsResult() : BalancedTeams(NULL), Bots(NULL), Message(NULL), soap(NULL) { }
+	virtual ~Plasma__BalanceTeamsResult() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ArrayOfBotTeam
+#define SOAP_TYPE_Plasma__ArrayOfBotTeam (16)
+/* Plasma:ArrayOfBotTeam */
+class SOAP_CMAC Plasma__ArrayOfBotTeam
+{
+public:
+	std::vector<class Plasma__BotTeam * >BotTeam;	/* optional element of type Plasma:BotTeam */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 16; } /* = unique id SOAP_TYPE_Plasma__ArrayOfBotTeam */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__ArrayOfBotTeam() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfBotTeam() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__BotTeam
+#define SOAP_TYPE_Plasma__BotTeam (17)
+/* Plasma:BotTeam */
+class SOAP_CMAC Plasma__BotTeam
+{
+public:
+	int AllyID;	/* required element of type xsd:int */
+	std::string *BotName;	/* optional element of type xsd:string */
+	int TeamID;	/* required element of type xsd:int */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 17; } /* = unique id SOAP_TYPE_Plasma__BotTeam */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__BotTeam() : AllyID(0), BotName(NULL), TeamID(0), soap(NULL) { }
+	virtual ~Plasma__BotTeam() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ArrayOfString
+#define SOAP_TYPE_Plasma__ArrayOfString (18)
+/* Plasma:ArrayOfString */
+class SOAP_CMAC Plasma__ArrayOfString
 {
 public:
 	std::vector<std::string >string;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 13; } /* = unique id SOAP_TYPE_ns1__ArrayOfString */
+	virtual int soap_type() const { return 18; } /* = unique id SOAP_TYPE_Plasma__ArrayOfString */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         ns1__ArrayOfString() : soap(NULL) { }
-	virtual ~ns1__ArrayOfString() { }
+	         Plasma__ArrayOfString() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfString() { }
 };
 #endif
 
-#ifndef SOAP_TYPE_ns1__ResourceData
-#define SOAP_TYPE_ns1__ResourceData (14)
-/* ns1:ResourceData */
-class SOAP_CMAC ns1__ResourceData
+#ifndef SOAP_TYPE_Plasma__EloInfo
+#define SOAP_TYPE_Plasma__EloInfo (19)
+/* Plasma:EloInfo */
+class SOAP_CMAC Plasma__EloInfo
 {
 public:
-	ns1__ArrayOfString *Dependencies;	/* optional element of type ns1:ArrayOfString */
+	double Elo;	/* required element of type xsd:double */
+	double Weight;	/* required element of type xsd:double */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 19; } /* = unique id SOAP_TYPE_Plasma__EloInfo */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__EloInfo() : Elo(0), Weight(0), soap(NULL) { }
+	virtual ~Plasma__EloInfo() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__RecommendedMapResult
+#define SOAP_TYPE_Plasma__RecommendedMapResult (20)
+/* Plasma:RecommendedMapResult */
+class SOAP_CMAC Plasma__RecommendedMapResult
+{
+public:
+	std::string *MapName;	/* optional element of type xsd:string */
+	std::string *Message;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 20; } /* = unique id SOAP_TYPE_Plasma__RecommendedMapResult */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__RecommendedMapResult() : MapName(NULL), Message(NULL), soap(NULL) { }
+	virtual ~Plasma__RecommendedMapResult() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ResourceData
+#define SOAP_TYPE_Plasma__ResourceData (21)
+/* Plasma:ResourceData */
+class SOAP_CMAC Plasma__ResourceData
+{
+public:
+	Plasma__ArrayOfString *Dependencies;	/* optional element of type Plasma:ArrayOfString */
 	std::string *InternalName;	/* optional element of type xsd:string */
-	enum ns1__ResourceType ResourceType;	/* required element of type ns1:ResourceType */
-	class ns1__ArrayOfSpringHashEntry *SpringHashes;	/* optional element of type ns1:ArrayOfSpringHashEntry */
+	enum Plasma__ResourceType ResourceType;	/* required element of type Plasma:ResourceType */
+	class Plasma__ArrayOfSpringHashEntry *SpringHashes;	/* optional element of type Plasma:ArrayOfSpringHashEntry */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 14; } /* = unique id SOAP_TYPE_ns1__ResourceData */
+	virtual int soap_type() const { return 21; } /* = unique id SOAP_TYPE_Plasma__ResourceData */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         ns1__ResourceData() : Dependencies(NULL), InternalName(NULL), ResourceType((enum ns1__ResourceType)0), SpringHashes(NULL), soap(NULL) { }
-	virtual ~ns1__ResourceData() { }
+	         Plasma__ResourceData() : Dependencies(NULL), InternalName(NULL), ResourceType((enum Plasma__ResourceType)0), SpringHashes(NULL), soap(NULL) { }
+	virtual ~Plasma__ResourceData() { }
 };
 #endif
 
-#ifndef SOAP_TYPE_ns1__ArrayOfSpringHashEntry
-#define SOAP_TYPE_ns1__ArrayOfSpringHashEntry (15)
-/* ns1:ArrayOfSpringHashEntry */
-class SOAP_CMAC ns1__ArrayOfSpringHashEntry
+#ifndef SOAP_TYPE_Plasma__ArrayOfSpringHashEntry
+#define SOAP_TYPE_Plasma__ArrayOfSpringHashEntry (22)
+/* Plasma:ArrayOfSpringHashEntry */
+class SOAP_CMAC Plasma__ArrayOfSpringHashEntry
 {
 public:
-	std::vector<class ns1__SpringHashEntry * >SpringHashEntry;	/* optional element of type ns1:SpringHashEntry */
+	std::vector<class Plasma__SpringHashEntry * >SpringHashEntry;	/* optional element of type Plasma:SpringHashEntry */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 15; } /* = unique id SOAP_TYPE_ns1__ArrayOfSpringHashEntry */
+	virtual int soap_type() const { return 22; } /* = unique id SOAP_TYPE_Plasma__ArrayOfSpringHashEntry */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         ns1__ArrayOfSpringHashEntry() : soap(NULL) { }
-	virtual ~ns1__ArrayOfSpringHashEntry() { }
+	         Plasma__ArrayOfSpringHashEntry() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfSpringHashEntry() { }
 };
 #endif
 
-#ifndef SOAP_TYPE_ns1__SpringHashEntry
-#define SOAP_TYPE_ns1__SpringHashEntry (16)
-/* ns1:SpringHashEntry */
-class SOAP_CMAC ns1__SpringHashEntry
+#ifndef SOAP_TYPE_Plasma__SpringHashEntry
+#define SOAP_TYPE_Plasma__SpringHashEntry (23)
+/* Plasma:SpringHashEntry */
+class SOAP_CMAC Plasma__SpringHashEntry
 {
 public:
 	int SpringHash;	/* required element of type xsd:int */
 	std::string *SpringVersion;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 16; } /* = unique id SOAP_TYPE_ns1__SpringHashEntry */
+	virtual int soap_type() const { return 23; } /* = unique id SOAP_TYPE_Plasma__SpringHashEntry */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         ns1__SpringHashEntry() : SpringHash(0), SpringVersion(NULL), soap(NULL) { }
-	virtual ~ns1__SpringHashEntry() { }
+	         Plasma__SpringHashEntry() : SpringHash(0), SpringVersion(NULL), soap(NULL) { }
+	virtual ~Plasma__SpringHashEntry() { }
 };
 #endif
 
-#ifndef SOAP_TYPE_ns1__ArrayOfResourceData
-#define SOAP_TYPE_ns1__ArrayOfResourceData (17)
-/* ns1:ArrayOfResourceData */
-class SOAP_CMAC ns1__ArrayOfResourceData
+#ifndef SOAP_TYPE_Plasma__ArrayOfResourceData
+#define SOAP_TYPE_Plasma__ArrayOfResourceData (24)
+/* Plasma:ArrayOfResourceData */
+class SOAP_CMAC Plasma__ArrayOfResourceData
 {
 public:
-	std::vector<ns1__ResourceData * >ResourceData;	/* optional element of type ns1:ResourceData */
+	std::vector<Plasma__ResourceData * >ResourceData;	/* optional element of type Plasma:ResourceData */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 17; } /* = unique id SOAP_TYPE_ns1__ArrayOfResourceData */
+	virtual int soap_type() const { return 24; } /* = unique id SOAP_TYPE_Plasma__ArrayOfResourceData */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         ns1__ArrayOfResourceData() : soap(NULL) { }
-	virtual ~ns1__ArrayOfResourceData() { }
+	         Plasma__ArrayOfResourceData() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfResourceData() { }
 };
 #endif
 
-#ifndef SOAP_TYPE_ns1__ScriptMissionData
-#define SOAP_TYPE_ns1__ScriptMissionData (18)
-/* ns1:ScriptMissionData */
-class SOAP_CMAC ns1__ScriptMissionData
+#ifndef SOAP_TYPE_Plasma__ScriptMissionData
+#define SOAP_TYPE_Plasma__ScriptMissionData (25)
+/* Plasma:ScriptMissionData */
+class SOAP_CMAC Plasma__ScriptMissionData
 {
 public:
-	ns1__ArrayOfString *ManualDependencies;	/* optional element of type ns1:ArrayOfString */
+	Plasma__ArrayOfString *ManualDependencies;	/* optional element of type Plasma:ArrayOfString */
 	std::string *MapName;	/* optional element of type xsd:string */
 	std::string *ModTag;	/* optional element of type xsd:string */
 	std::string *Name;	/* optional element of type xsd:string */
 	std::string *StartScript;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 18; } /* = unique id SOAP_TYPE_ns1__ScriptMissionData */
+	virtual int soap_type() const { return 25; } /* = unique id SOAP_TYPE_Plasma__ScriptMissionData */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         ns1__ScriptMissionData() : ManualDependencies(NULL), MapName(NULL), ModTag(NULL), Name(NULL), StartScript(NULL), soap(NULL) { }
-	virtual ~ns1__ScriptMissionData() { }
+	         Plasma__ScriptMissionData() : ManualDependencies(NULL), MapName(NULL), ModTag(NULL), Name(NULL), StartScript(NULL), soap(NULL) { }
+	virtual ~Plasma__ScriptMissionData() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__DownloadFile
-#define SOAP_TYPE__ns1__DownloadFile (19)
-/* ns1:DownloadFile */
-class SOAP_CMAC _ns1__DownloadFile
+#ifndef SOAP_TYPE_Plasma__ArrayOfBattleStartSetupPlayer
+#define SOAP_TYPE_Plasma__ArrayOfBattleStartSetupPlayer (26)
+/* Plasma:ArrayOfBattleStartSetupPlayer */
+class SOAP_CMAC Plasma__ArrayOfBattleStartSetupPlayer
+{
+public:
+	std::vector<class Plasma__BattleStartSetupPlayer * >BattleStartSetupPlayer;	/* optional element of type Plasma:BattleStartSetupPlayer */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 26; } /* = unique id SOAP_TYPE_Plasma__ArrayOfBattleStartSetupPlayer */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__ArrayOfBattleStartSetupPlayer() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfBattleStartSetupPlayer() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__BattleStartSetupPlayer
+#define SOAP_TYPE_Plasma__BattleStartSetupPlayer (27)
+/* Plasma:BattleStartSetupPlayer */
+class SOAP_CMAC Plasma__BattleStartSetupPlayer
+{
+public:
+	int AccountID;	/* required element of type xsd:int */
+	int AllyTeam;	/* required element of type xsd:int */
+	bool IsSpectator;	/* required element of type xsd:boolean */
+	int SpringPlayerID;	/* required element of type xsd:int */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 27; } /* = unique id SOAP_TYPE_Plasma__BattleStartSetupPlayer */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__BattleStartSetupPlayer() : AccountID(0), AllyTeam(0), IsSpectator((bool)0), SpringPlayerID(0), soap(NULL) { }
+	virtual ~Plasma__BattleStartSetupPlayer() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__SpringBattleStartSetup
+#define SOAP_TYPE_Plasma__SpringBattleStartSetup (28)
+/* Plasma:SpringBattleStartSetup */
+class SOAP_CMAC Plasma__SpringBattleStartSetup
+{
+public:
+	class Plasma__ArrayOfScriptKeyValuePair *ModOptions;	/* optional element of type Plasma:ArrayOfScriptKeyValuePair */
+	class Plasma__ArrayOfUserCustomParameters *UserParameters;	/* optional element of type Plasma:ArrayOfUserCustomParameters */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 28; } /* = unique id SOAP_TYPE_Plasma__SpringBattleStartSetup */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__SpringBattleStartSetup() : ModOptions(NULL), UserParameters(NULL), soap(NULL) { }
+	virtual ~Plasma__SpringBattleStartSetup() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ArrayOfScriptKeyValuePair
+#define SOAP_TYPE_Plasma__ArrayOfScriptKeyValuePair (29)
+/* Plasma:ArrayOfScriptKeyValuePair */
+class SOAP_CMAC Plasma__ArrayOfScriptKeyValuePair
+{
+public:
+	std::vector<class Plasma__ScriptKeyValuePair * >ScriptKeyValuePair;	/* optional element of type Plasma:ScriptKeyValuePair */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 29; } /* = unique id SOAP_TYPE_Plasma__ArrayOfScriptKeyValuePair */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__ArrayOfScriptKeyValuePair() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfScriptKeyValuePair() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ScriptKeyValuePair
+#define SOAP_TYPE_Plasma__ScriptKeyValuePair (30)
+/* Plasma:ScriptKeyValuePair */
+class SOAP_CMAC Plasma__ScriptKeyValuePair
+{
+public:
+	std::string *Key;	/* optional element of type xsd:string */
+	std::string *Value;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 30; } /* = unique id SOAP_TYPE_Plasma__ScriptKeyValuePair */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__ScriptKeyValuePair() : Key(NULL), Value(NULL), soap(NULL) { }
+	virtual ~Plasma__ScriptKeyValuePair() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ArrayOfUserCustomParameters
+#define SOAP_TYPE_Plasma__ArrayOfUserCustomParameters (31)
+/* Plasma:ArrayOfUserCustomParameters */
+class SOAP_CMAC Plasma__ArrayOfUserCustomParameters
+{
+public:
+	std::vector<class Plasma__UserCustomParameters * >UserCustomParameters;	/* optional element of type Plasma:UserCustomParameters */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 31; } /* = unique id SOAP_TYPE_Plasma__ArrayOfUserCustomParameters */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__ArrayOfUserCustomParameters() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfUserCustomParameters() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__UserCustomParameters
+#define SOAP_TYPE_Plasma__UserCustomParameters (32)
+/* Plasma:UserCustomParameters */
+class SOAP_CMAC Plasma__UserCustomParameters
+{
+public:
+	int AccountID;	/* required element of type xsd:int */
+	Plasma__ArrayOfScriptKeyValuePair *Parameters;	/* optional element of type Plasma:ArrayOfScriptKeyValuePair */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 32; } /* = unique id SOAP_TYPE_Plasma__UserCustomParameters */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__UserCustomParameters() : AccountID(0), Parameters(NULL), soap(NULL) { }
+	virtual ~Plasma__UserCustomParameters() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__BattleResult
+#define SOAP_TYPE_Plasma__BattleResult (33)
+/* Plasma:BattleResult */
+class SOAP_CMAC Plasma__BattleResult
+{
+public:
+	int Duration;	/* required element of type xsd:int */
+	std::string *EngineBattleID;	/* optional element of type xsd:string */
+	std::string *EngineVersion;	/* optional element of type xsd:string */
+	time_t *IngameStartTime;	/* required element of type xsd:dateTime */
+	bool IsBots;	/* required element of type xsd:boolean */
+	bool IsMission;	/* required element of type xsd:boolean */
+	std::string *Map;	/* optional element of type xsd:string */
+	std::string *Mod;	/* optional element of type xsd:string */
+	std::string *ReplayName;	/* optional element of type xsd:string */
+	time_t StartTime;	/* required element of type xsd:dateTime */
+	std::string *Title;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 33; } /* = unique id SOAP_TYPE_Plasma__BattleResult */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__BattleResult() : Duration(0), EngineBattleID(NULL), EngineVersion(NULL), IngameStartTime(NULL), IsBots((bool)0), IsMission((bool)0), Map(NULL), Mod(NULL), ReplayName(NULL), StartTime(0), Title(NULL), soap(NULL) { }
+	virtual ~Plasma__BattleResult() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ArrayOfBattlePlayerResult
+#define SOAP_TYPE_Plasma__ArrayOfBattlePlayerResult (34)
+/* Plasma:ArrayOfBattlePlayerResult */
+class SOAP_CMAC Plasma__ArrayOfBattlePlayerResult
+{
+public:
+	std::vector<class Plasma__BattlePlayerResult * >BattlePlayerResult;	/* optional element of type Plasma:BattlePlayerResult */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 34; } /* = unique id SOAP_TYPE_Plasma__ArrayOfBattlePlayerResult */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__ArrayOfBattlePlayerResult() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfBattlePlayerResult() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__BattlePlayerResult
+#define SOAP_TYPE_Plasma__BattlePlayerResult (35)
+/* Plasma:BattlePlayerResult */
+class SOAP_CMAC Plasma__BattlePlayerResult
+{
+public:
+	int AccountID;	/* required element of type xsd:int */
+	int AllyNumber;	/* required element of type xsd:int */
+	class Plasma__ArrayOfPlayerAward *Awards;	/* optional element of type Plasma:ArrayOfPlayerAward */
+	std::string *CommanderType;	/* optional element of type xsd:string */
+	bool IsIngameReady;	/* required element of type xsd:boolean */
+	bool IsSpectator;	/* required element of type xsd:boolean */
+	bool IsVictoryTeam;	/* required element of type xsd:boolean */
+	int *LoseTime;	/* required element of type xsd:int */
+	int Rank;	/* required element of type xsd:int */
+	class Plasma__ArrayOfPlayerStats *Stats;	/* optional element of type Plasma:ArrayOfPlayerStats */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 35; } /* = unique id SOAP_TYPE_Plasma__BattlePlayerResult */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__BattlePlayerResult() : AccountID(0), AllyNumber(0), Awards(NULL), CommanderType(NULL), IsIngameReady((bool)0), IsSpectator((bool)0), IsVictoryTeam((bool)0), LoseTime(NULL), Rank(0), Stats(NULL), soap(NULL) { }
+	virtual ~Plasma__BattlePlayerResult() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ArrayOfPlayerAward
+#define SOAP_TYPE_Plasma__ArrayOfPlayerAward (36)
+/* Plasma:ArrayOfPlayerAward */
+class SOAP_CMAC Plasma__ArrayOfPlayerAward
+{
+public:
+	std::vector<class Plasma__PlayerAward * >PlayerAward;	/* optional element of type Plasma:PlayerAward */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 36; } /* = unique id SOAP_TYPE_Plasma__ArrayOfPlayerAward */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__ArrayOfPlayerAward() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfPlayerAward() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__PlayerAward
+#define SOAP_TYPE_Plasma__PlayerAward (37)
+/* Plasma:PlayerAward */
+class SOAP_CMAC Plasma__PlayerAward
+{
+public:
+	std::string *Award;	/* optional element of type xsd:string */
+	std::string *Description;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 37; } /* = unique id SOAP_TYPE_Plasma__PlayerAward */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__PlayerAward() : Award(NULL), Description(NULL), soap(NULL) { }
+	virtual ~Plasma__PlayerAward() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__ArrayOfPlayerStats
+#define SOAP_TYPE_Plasma__ArrayOfPlayerStats (38)
+/* Plasma:ArrayOfPlayerStats */
+class SOAP_CMAC Plasma__ArrayOfPlayerStats
+{
+public:
+	std::vector<class Plasma__PlayerStats * >PlayerStats;	/* optional element of type Plasma:PlayerStats */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 38; } /* = unique id SOAP_TYPE_Plasma__ArrayOfPlayerStats */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__ArrayOfPlayerStats() : soap(NULL) { }
+	virtual ~Plasma__ArrayOfPlayerStats() { }
+};
+#endif
+
+#ifndef SOAP_TYPE_Plasma__PlayerStats
+#define SOAP_TYPE_Plasma__PlayerStats (39)
+/* Plasma:PlayerStats */
+class SOAP_CMAC Plasma__PlayerStats
+{
+public:
+	std::string *Key;	/* optional element of type xsd:string */
+	double Value;	/* required element of type xsd:double */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 39; } /* = unique id SOAP_TYPE_Plasma__PlayerStats */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         Plasma__PlayerStats() : Key(NULL), Value(0), soap(NULL) { }
+	virtual ~Plasma__PlayerStats() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__AutohostPlayerJoined
+#define SOAP_TYPE__Plasma__AutohostPlayerJoined (40)
+/* Plasma:AutohostPlayerJoined */
+class SOAP_CMAC _Plasma__AutohostPlayerJoined
+{
+public:
+	std::string *autohostName;	/* optional element of type xsd:string */
+	std::string *mapName;	/* optional element of type xsd:string */
+	int accountID;	/* required element of type xsd:int */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 40; } /* = unique id SOAP_TYPE__Plasma__AutohostPlayerJoined */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__AutohostPlayerJoined() : autohostName(NULL), mapName(NULL), accountID(0), soap(NULL) { }
+	virtual ~_Plasma__AutohostPlayerJoined() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__AutohostPlayerJoinedResponse
+#define SOAP_TYPE__Plasma__AutohostPlayerJoinedResponse (41)
+/* Plasma:AutohostPlayerJoinedResponse */
+class SOAP_CMAC _Plasma__AutohostPlayerJoinedResponse
+{
+public:
+	std::string *AutohostPlayerJoinedResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 41; } /* = unique id SOAP_TYPE__Plasma__AutohostPlayerJoinedResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__AutohostPlayerJoinedResponse() : AutohostPlayerJoinedResult(NULL), soap(NULL) { }
+	virtual ~_Plasma__AutohostPlayerJoinedResponse() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__BalanceTeams
+#define SOAP_TYPE__Plasma__BalanceTeams (42)
+/* Plasma:BalanceTeams */
+class SOAP_CMAC _Plasma__BalanceTeams
+{
+public:
+	std::string *autoHost;	/* optional element of type xsd:string */
+	std::string *map;	/* optional element of type xsd:string */
+	Plasma__ArrayOfAccountTeam *currentTeams;	/* optional element of type Plasma:ArrayOfAccountTeam */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 42; } /* = unique id SOAP_TYPE__Plasma__BalanceTeams */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__BalanceTeams() : autoHost(NULL), map(NULL), currentTeams(NULL), soap(NULL) { }
+	virtual ~_Plasma__BalanceTeams() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__BalanceTeamsResponse
+#define SOAP_TYPE__Plasma__BalanceTeamsResponse (43)
+/* Plasma:BalanceTeamsResponse */
+class SOAP_CMAC _Plasma__BalanceTeamsResponse
+{
+public:
+	Plasma__BalanceTeamsResult *BalanceTeamsResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type Plasma:BalanceTeamsResult */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 43; } /* = unique id SOAP_TYPE__Plasma__BalanceTeamsResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__BalanceTeamsResponse() : BalanceTeamsResult(NULL), soap(NULL) { }
+	virtual ~_Plasma__BalanceTeamsResponse() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__DownloadFile
+#define SOAP_TYPE__Plasma__DownloadFile (44)
+/* Plasma:DownloadFile */
+class SOAP_CMAC _Plasma__DownloadFile
 {
 public:
 	std::string *internalName;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 19; } /* = unique id SOAP_TYPE__ns1__DownloadFile */
+	virtual int soap_type() const { return 44; } /* = unique id SOAP_TYPE__Plasma__DownloadFile */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__DownloadFile() : internalName(NULL), soap(NULL) { }
-	virtual ~_ns1__DownloadFile() { }
+	         _Plasma__DownloadFile() : internalName(NULL), soap(NULL) { }
+	virtual ~_Plasma__DownloadFile() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__DownloadFileResponse
-#define SOAP_TYPE__ns1__DownloadFileResponse (20)
-/* ns1:DownloadFileResponse */
-class SOAP_CMAC _ns1__DownloadFileResponse
+#ifndef SOAP_TYPE__Plasma__DownloadFileResponse
+#define SOAP_TYPE__Plasma__DownloadFileResponse (45)
+/* Plasma:DownloadFileResponse */
+class SOAP_CMAC _Plasma__DownloadFileResponse
 {
 public:
 	bool DownloadFileResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:boolean */
-	ns1__ArrayOfString *links;	/* optional element of type ns1:ArrayOfString */
+	Plasma__ArrayOfString *links;	/* optional element of type Plasma:ArrayOfString */
 	xsd__base64Binary *torrent;	/* optional element of type xsd:base64Binary */
-	ns1__ArrayOfString *dependencies;	/* optional element of type ns1:ArrayOfString */
-	enum ns1__ResourceType resourceType;	/* required element of type ns1:ResourceType */
+	Plasma__ArrayOfString *dependencies;	/* optional element of type Plasma:ArrayOfString */
+	enum Plasma__ResourceType resourceType;	/* required element of type Plasma:ResourceType */
 	std::string *torrentFileName;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 20; } /* = unique id SOAP_TYPE__ns1__DownloadFileResponse */
+	virtual int soap_type() const { return 45; } /* = unique id SOAP_TYPE__Plasma__DownloadFileResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__DownloadFileResponse() : DownloadFileResult((bool)0), links(NULL), torrent(NULL), dependencies(NULL), resourceType((enum ns1__ResourceType)0), torrentFileName(NULL), soap(NULL) { }
-	virtual ~_ns1__DownloadFileResponse() { }
+	         _Plasma__DownloadFileResponse() : DownloadFileResult((bool)0), links(NULL), torrent(NULL), dependencies(NULL), resourceType((enum Plasma__ResourceType)0), torrentFileName(NULL), soap(NULL) { }
+	virtual ~_Plasma__DownloadFileResponse() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__GetResourceData
-#define SOAP_TYPE__ns1__GetResourceData (21)
-/* ns1:GetResourceData */
-class SOAP_CMAC _ns1__GetResourceData
+#ifndef SOAP_TYPE__Plasma__GetEloByAccountID
+#define SOAP_TYPE__Plasma__GetEloByAccountID (46)
+/* Plasma:GetEloByAccountID */
+class SOAP_CMAC _Plasma__GetEloByAccountID
+{
+public:
+	int accountID;	/* required element of type xsd:int */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 46; } /* = unique id SOAP_TYPE__Plasma__GetEloByAccountID */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetEloByAccountID() : accountID(0), soap(NULL) { }
+	virtual ~_Plasma__GetEloByAccountID() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__GetEloByAccountIDResponse
+#define SOAP_TYPE__Plasma__GetEloByAccountIDResponse (47)
+/* Plasma:GetEloByAccountIDResponse */
+class SOAP_CMAC _Plasma__GetEloByAccountIDResponse
+{
+public:
+	Plasma__EloInfo *GetEloByAccountIDResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type Plasma:EloInfo */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 47; } /* = unique id SOAP_TYPE__Plasma__GetEloByAccountIDResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetEloByAccountIDResponse() : GetEloByAccountIDResult(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetEloByAccountIDResponse() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__GetEloByName
+#define SOAP_TYPE__Plasma__GetEloByName (48)
+/* Plasma:GetEloByName */
+class SOAP_CMAC _Plasma__GetEloByName
+{
+public:
+	std::string *name;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 48; } /* = unique id SOAP_TYPE__Plasma__GetEloByName */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetEloByName() : name(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetEloByName() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__GetEloByNameResponse
+#define SOAP_TYPE__Plasma__GetEloByNameResponse (49)
+/* Plasma:GetEloByNameResponse */
+class SOAP_CMAC _Plasma__GetEloByNameResponse
+{
+public:
+	Plasma__EloInfo *GetEloByNameResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type Plasma:EloInfo */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 49; } /* = unique id SOAP_TYPE__Plasma__GetEloByNameResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetEloByNameResponse() : GetEloByNameResult(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetEloByNameResponse() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__GetEloTop10
+#define SOAP_TYPE__Plasma__GetEloTop10 (50)
+/* Plasma:GetEloTop10 */
+class SOAP_CMAC _Plasma__GetEloTop10
+{
+public:
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 50; } /* = unique id SOAP_TYPE__Plasma__GetEloTop10 */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetEloTop10() : soap(NULL) { }
+	virtual ~_Plasma__GetEloTop10() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__GetEloTop10Response
+#define SOAP_TYPE__Plasma__GetEloTop10Response (51)
+/* Plasma:GetEloTop10Response */
+class SOAP_CMAC _Plasma__GetEloTop10Response
+{
+public:
+	Plasma__ArrayOfString *GetEloTop10Result;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type Plasma:ArrayOfString */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 51; } /* = unique id SOAP_TYPE__Plasma__GetEloTop10Response */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetEloTop10Response() : GetEloTop10Result(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetEloTop10Response() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__GetRecommendedMap
+#define SOAP_TYPE__Plasma__GetRecommendedMap (52)
+/* Plasma:GetRecommendedMap */
+class SOAP_CMAC _Plasma__GetRecommendedMap
+{
+public:
+	std::string *autohostName;	/* optional element of type xsd:string */
+	Plasma__ArrayOfAccountTeam *accounts;	/* optional element of type Plasma:ArrayOfAccountTeam */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 52; } /* = unique id SOAP_TYPE__Plasma__GetRecommendedMap */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetRecommendedMap() : autohostName(NULL), accounts(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetRecommendedMap() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__GetRecommendedMapResponse
+#define SOAP_TYPE__Plasma__GetRecommendedMapResponse (53)
+/* Plasma:GetRecommendedMapResponse */
+class SOAP_CMAC _Plasma__GetRecommendedMapResponse
+{
+public:
+	Plasma__RecommendedMapResult *GetRecommendedMapResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type Plasma:RecommendedMapResult */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 53; } /* = unique id SOAP_TYPE__Plasma__GetRecommendedMapResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetRecommendedMapResponse() : GetRecommendedMapResult(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetRecommendedMapResponse() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__GetResourceData
+#define SOAP_TYPE__Plasma__GetResourceData (54)
+/* Plasma:GetResourceData */
+class SOAP_CMAC _Plasma__GetResourceData
 {
 public:
 	std::string *md5;	/* optional element of type xsd:string */
 	std::string *internalName;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 21; } /* = unique id SOAP_TYPE__ns1__GetResourceData */
+	virtual int soap_type() const { return 54; } /* = unique id SOAP_TYPE__Plasma__GetResourceData */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__GetResourceData() : md5(NULL), internalName(NULL), soap(NULL) { }
-	virtual ~_ns1__GetResourceData() { }
+	         _Plasma__GetResourceData() : md5(NULL), internalName(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetResourceData() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__GetResourceDataResponse
-#define SOAP_TYPE__ns1__GetResourceDataResponse (22)
-/* ns1:GetResourceDataResponse */
-class SOAP_CMAC _ns1__GetResourceDataResponse
+#ifndef SOAP_TYPE__Plasma__GetResourceDataResponse
+#define SOAP_TYPE__Plasma__GetResourceDataResponse (55)
+/* Plasma:GetResourceDataResponse */
+class SOAP_CMAC _Plasma__GetResourceDataResponse
 {
 public:
-	ns1__ResourceData *GetResourceDataResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type ns1:ResourceData */
+	Plasma__ResourceData *GetResourceDataResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type Plasma:ResourceData */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 22; } /* = unique id SOAP_TYPE__ns1__GetResourceDataResponse */
+	virtual int soap_type() const { return 55; } /* = unique id SOAP_TYPE__Plasma__GetResourceDataResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__GetResourceDataResponse() : GetResourceDataResult(NULL), soap(NULL) { }
-	virtual ~_ns1__GetResourceDataResponse() { }
+	         _Plasma__GetResourceDataResponse() : GetResourceDataResult(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetResourceDataResponse() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__GetResourceList
-#define SOAP_TYPE__ns1__GetResourceList (23)
-/* ns1:GetResourceList */
-class SOAP_CMAC _ns1__GetResourceList
+#ifndef SOAP_TYPE__Plasma__GetResourceList
+#define SOAP_TYPE__Plasma__GetResourceList (56)
+/* Plasma:GetResourceList */
+class SOAP_CMAC _Plasma__GetResourceList
 {
 public:
 	time_t *lastChange;	/* required element of type xsd:dateTime */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 23; } /* = unique id SOAP_TYPE__ns1__GetResourceList */
+	virtual int soap_type() const { return 56; } /* = unique id SOAP_TYPE__Plasma__GetResourceList */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__GetResourceList() : lastChange(NULL), soap(NULL) { }
-	virtual ~_ns1__GetResourceList() { }
+	         _Plasma__GetResourceList() : lastChange(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetResourceList() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__GetResourceListResponse
-#define SOAP_TYPE__ns1__GetResourceListResponse (24)
-/* ns1:GetResourceListResponse */
-class SOAP_CMAC _ns1__GetResourceListResponse
+#ifndef SOAP_TYPE__Plasma__GetResourceListResponse
+#define SOAP_TYPE__Plasma__GetResourceListResponse (57)
+/* Plasma:GetResourceListResponse */
+class SOAP_CMAC _Plasma__GetResourceListResponse
 {
 public:
-	ns1__ArrayOfResourceData *GetResourceListResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type ns1:ArrayOfResourceData */
+	Plasma__ArrayOfResourceData *GetResourceListResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type Plasma:ArrayOfResourceData */
 	time_t currentTime;	/* required element of type xsd:dateTime */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 24; } /* = unique id SOAP_TYPE__ns1__GetResourceListResponse */
+	virtual int soap_type() const { return 57; } /* = unique id SOAP_TYPE__Plasma__GetResourceListResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__GetResourceListResponse() : GetResourceListResult(NULL), currentTime(0), soap(NULL) { }
-	virtual ~_ns1__GetResourceListResponse() { }
+	         _Plasma__GetResourceListResponse() : GetResourceListResult(NULL), currentTime(0), soap(NULL) { }
+	virtual ~_Plasma__GetResourceListResponse() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__GetScriptMissionData
-#define SOAP_TYPE__ns1__GetScriptMissionData (25)
-/* ns1:GetScriptMissionData */
-class SOAP_CMAC _ns1__GetScriptMissionData
+#ifndef SOAP_TYPE__Plasma__GetScriptMissionData
+#define SOAP_TYPE__Plasma__GetScriptMissionData (58)
+/* Plasma:GetScriptMissionData */
+class SOAP_CMAC _Plasma__GetScriptMissionData
 {
 public:
 	std::string *name;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 25; } /* = unique id SOAP_TYPE__ns1__GetScriptMissionData */
+	virtual int soap_type() const { return 58; } /* = unique id SOAP_TYPE__Plasma__GetScriptMissionData */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__GetScriptMissionData() : name(NULL), soap(NULL) { }
-	virtual ~_ns1__GetScriptMissionData() { }
+	         _Plasma__GetScriptMissionData() : name(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetScriptMissionData() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__GetScriptMissionDataResponse
-#define SOAP_TYPE__ns1__GetScriptMissionDataResponse (26)
-/* ns1:GetScriptMissionDataResponse */
-class SOAP_CMAC _ns1__GetScriptMissionDataResponse
+#ifndef SOAP_TYPE__Plasma__GetScriptMissionDataResponse
+#define SOAP_TYPE__Plasma__GetScriptMissionDataResponse (59)
+/* Plasma:GetScriptMissionDataResponse */
+class SOAP_CMAC _Plasma__GetScriptMissionDataResponse
 {
 public:
-	ns1__ScriptMissionData *GetScriptMissionDataResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type ns1:ScriptMissionData */
+	Plasma__ScriptMissionData *GetScriptMissionDataResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type Plasma:ScriptMissionData */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 26; } /* = unique id SOAP_TYPE__ns1__GetScriptMissionDataResponse */
+	virtual int soap_type() const { return 59; } /* = unique id SOAP_TYPE__Plasma__GetScriptMissionDataResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__GetScriptMissionDataResponse() : GetScriptMissionDataResult(NULL), soap(NULL) { }
-	virtual ~_ns1__GetScriptMissionDataResponse() { }
+	         _Plasma__GetScriptMissionDataResponse() : GetScriptMissionDataResult(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetScriptMissionDataResponse() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__NotifyMissionRun
-#define SOAP_TYPE__ns1__NotifyMissionRun (27)
-/* ns1:NotifyMissionRun */
-class SOAP_CMAC _ns1__NotifyMissionRun
+#ifndef SOAP_TYPE__Plasma__GetSpringBattleStartSetup
+#define SOAP_TYPE__Plasma__GetSpringBattleStartSetup (60)
+/* Plasma:GetSpringBattleStartSetup */
+class SOAP_CMAC _Plasma__GetSpringBattleStartSetup
+{
+public:
+	std::string *hostName;	/* optional element of type xsd:string */
+	std::string *map;	/* optional element of type xsd:string */
+	std::string *mod;	/* optional element of type xsd:string */
+	Plasma__ArrayOfBattleStartSetupPlayer *players;	/* optional element of type Plasma:ArrayOfBattleStartSetupPlayer */
+	enum Plasma__AutohostMode mode;	/* required element of type Plasma:AutohostMode */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 60; } /* = unique id SOAP_TYPE__Plasma__GetSpringBattleStartSetup */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetSpringBattleStartSetup() : hostName(NULL), map(NULL), mod(NULL), players(NULL), mode((enum Plasma__AutohostMode)0), soap(NULL) { }
+	virtual ~_Plasma__GetSpringBattleStartSetup() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__GetSpringBattleStartSetupResponse
+#define SOAP_TYPE__Plasma__GetSpringBattleStartSetupResponse (61)
+/* Plasma:GetSpringBattleStartSetupResponse */
+class SOAP_CMAC _Plasma__GetSpringBattleStartSetupResponse
+{
+public:
+	Plasma__SpringBattleStartSetup *GetSpringBattleStartSetupResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type Plasma:SpringBattleStartSetup */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 61; } /* = unique id SOAP_TYPE__Plasma__GetSpringBattleStartSetupResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__GetSpringBattleStartSetupResponse() : GetSpringBattleStartSetupResult(NULL), soap(NULL) { }
+	virtual ~_Plasma__GetSpringBattleStartSetupResponse() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__NotifyMissionRun
+#define SOAP_TYPE__Plasma__NotifyMissionRun (62)
+/* Plasma:NotifyMissionRun */
+class SOAP_CMAC _Plasma__NotifyMissionRun
 {
 public:
 	std::string *login;	/* optional element of type xsd:string */
 	std::string *missionName;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 27; } /* = unique id SOAP_TYPE__ns1__NotifyMissionRun */
+	virtual int soap_type() const { return 62; } /* = unique id SOAP_TYPE__Plasma__NotifyMissionRun */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__NotifyMissionRun() : login(NULL), missionName(NULL), soap(NULL) { }
-	virtual ~_ns1__NotifyMissionRun() { }
+	         _Plasma__NotifyMissionRun() : login(NULL), missionName(NULL), soap(NULL) { }
+	virtual ~_Plasma__NotifyMissionRun() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__NotifyMissionRunResponse
-#define SOAP_TYPE__ns1__NotifyMissionRunResponse (28)
-/* ns1:NotifyMissionRunResponse */
-class SOAP_CMAC _ns1__NotifyMissionRunResponse
+#ifndef SOAP_TYPE__Plasma__NotifyMissionRunResponse
+#define SOAP_TYPE__Plasma__NotifyMissionRunResponse (63)
+/* Plasma:NotifyMissionRunResponse */
+class SOAP_CMAC _Plasma__NotifyMissionRunResponse
 {
 public:
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 28; } /* = unique id SOAP_TYPE__ns1__NotifyMissionRunResponse */
+	virtual int soap_type() const { return 63; } /* = unique id SOAP_TYPE__Plasma__NotifyMissionRunResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__NotifyMissionRunResponse() : soap(NULL) { }
-	virtual ~_ns1__NotifyMissionRunResponse() { }
+	         _Plasma__NotifyMissionRunResponse() : soap(NULL) { }
+	virtual ~_Plasma__NotifyMissionRunResponse() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__RegisterResource
-#define SOAP_TYPE__ns1__RegisterResource (29)
-/* ns1:RegisterResource */
-class SOAP_CMAC _ns1__RegisterResource
+#ifndef SOAP_TYPE__Plasma__RegisterResource
+#define SOAP_TYPE__Plasma__RegisterResource (64)
+/* Plasma:RegisterResource */
+class SOAP_CMAC _Plasma__RegisterResource
 {
 public:
 	int apiVersion;	/* required element of type xsd:int */
 	std::string *springVersion;	/* optional element of type xsd:string */
 	std::string *md5;	/* optional element of type xsd:string */
 	int length;	/* required element of type xsd:int */
-	enum ns1__ResourceType resourceType;	/* required element of type ns1:ResourceType */
+	enum Plasma__ResourceType resourceType;	/* required element of type Plasma:ResourceType */
 	std::string *archiveName;	/* optional element of type xsd:string */
 	std::string *internalName;	/* optional element of type xsd:string */
 	int springHash;	/* required element of type xsd:int */
 	xsd__base64Binary *serializedData;	/* optional element of type xsd:base64Binary */
-	ns1__ArrayOfString *dependencies;	/* optional element of type ns1:ArrayOfString */
+	Plasma__ArrayOfString *dependencies;	/* optional element of type Plasma:ArrayOfString */
 	xsd__base64Binary *minimap;	/* optional element of type xsd:base64Binary */
 	xsd__base64Binary *metalMap;	/* optional element of type xsd:base64Binary */
 	xsd__base64Binary *heightMap;	/* optional element of type xsd:base64Binary */
 	xsd__base64Binary *torrentData;	/* optional element of type xsd:base64Binary */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 29; } /* = unique id SOAP_TYPE__ns1__RegisterResource */
+	virtual int soap_type() const { return 64; } /* = unique id SOAP_TYPE__Plasma__RegisterResource */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__RegisterResource() : apiVersion(0), springVersion(NULL), md5(NULL), length(0), resourceType((enum ns1__ResourceType)0), archiveName(NULL), internalName(NULL), springHash(0), serializedData(NULL), dependencies(NULL), minimap(NULL), metalMap(NULL), heightMap(NULL), torrentData(NULL), soap(NULL) { }
-	virtual ~_ns1__RegisterResource() { }
+	         _Plasma__RegisterResource() : apiVersion(0), springVersion(NULL), md5(NULL), length(0), resourceType((enum Plasma__ResourceType)0), archiveName(NULL), internalName(NULL), springHash(0), serializedData(NULL), dependencies(NULL), minimap(NULL), metalMap(NULL), heightMap(NULL), torrentData(NULL), soap(NULL) { }
+	virtual ~_Plasma__RegisterResource() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__RegisterResourceResponse
-#define SOAP_TYPE__ns1__RegisterResourceResponse (30)
-/* ns1:RegisterResourceResponse */
-class SOAP_CMAC _ns1__RegisterResourceResponse
+#ifndef SOAP_TYPE__Plasma__RegisterResourceResponse
+#define SOAP_TYPE__Plasma__RegisterResourceResponse (65)
+/* Plasma:RegisterResourceResponse */
+class SOAP_CMAC _Plasma__RegisterResourceResponse
 {
 public:
-	enum ns1__ReturnValue RegisterResourceResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type ns1:ReturnValue */
+	enum Plasma__ReturnValue RegisterResourceResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type Plasma:ReturnValue */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 30; } /* = unique id SOAP_TYPE__ns1__RegisterResourceResponse */
+	virtual int soap_type() const { return 65; } /* = unique id SOAP_TYPE__Plasma__RegisterResourceResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__RegisterResourceResponse() : RegisterResourceResult((enum ns1__ReturnValue)0), soap(NULL) { }
-	virtual ~_ns1__RegisterResourceResponse() { }
+	         _Plasma__RegisterResourceResponse() : RegisterResourceResult((enum Plasma__ReturnValue)0), soap(NULL) { }
+	virtual ~_Plasma__RegisterResourceResponse() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__SubmitMissionScore
-#define SOAP_TYPE__ns1__SubmitMissionScore (31)
-/* ns1:SubmitMissionScore */
-class SOAP_CMAC _ns1__SubmitMissionScore
+#ifndef SOAP_TYPE__Plasma__SubmitMissionScore
+#define SOAP_TYPE__Plasma__SubmitMissionScore (66)
+/* Plasma:SubmitMissionScore */
+class SOAP_CMAC _Plasma__SubmitMissionScore
 {
 public:
 	std::string *login;	/* optional element of type xsd:string */
@@ -492,245 +1278,514 @@ public:
 	int gameSeconds;	/* required element of type xsd:int */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 31; } /* = unique id SOAP_TYPE__ns1__SubmitMissionScore */
+	virtual int soap_type() const { return 66; } /* = unique id SOAP_TYPE__Plasma__SubmitMissionScore */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__SubmitMissionScore() : login(NULL), passwordHash(NULL), missionName(NULL), score(0), gameSeconds(0), soap(NULL) { }
-	virtual ~_ns1__SubmitMissionScore() { }
+	         _Plasma__SubmitMissionScore() : login(NULL), passwordHash(NULL), missionName(NULL), score(0), gameSeconds(0), soap(NULL) { }
+	virtual ~_Plasma__SubmitMissionScore() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__SubmitMissionScoreResponse
-#define SOAP_TYPE__ns1__SubmitMissionScoreResponse (32)
-/* ns1:SubmitMissionScoreResponse */
-class SOAP_CMAC _ns1__SubmitMissionScoreResponse
+#ifndef SOAP_TYPE__Plasma__SubmitMissionScoreResponse
+#define SOAP_TYPE__Plasma__SubmitMissionScoreResponse (67)
+/* Plasma:SubmitMissionScoreResponse */
+class SOAP_CMAC _Plasma__SubmitMissionScoreResponse
 {
 public:
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 32; } /* = unique id SOAP_TYPE__ns1__SubmitMissionScoreResponse */
+	virtual int soap_type() const { return 67; } /* = unique id SOAP_TYPE__Plasma__SubmitMissionScoreResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__SubmitMissionScoreResponse() : soap(NULL) { }
-	virtual ~_ns1__SubmitMissionScoreResponse() { }
+	         _Plasma__SubmitMissionScoreResponse() : soap(NULL) { }
+	virtual ~_Plasma__SubmitMissionScoreResponse() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__SubmitStackTrace
-#define SOAP_TYPE__ns1__SubmitStackTrace (33)
-/* ns1:SubmitStackTrace */
-class SOAP_CMAC _ns1__SubmitStackTrace
+#ifndef SOAP_TYPE__Plasma__SubmitSpringBattleResult
+#define SOAP_TYPE__Plasma__SubmitSpringBattleResult (68)
+/* Plasma:SubmitSpringBattleResult */
+class SOAP_CMAC _Plasma__SubmitSpringBattleResult
 {
 public:
-	enum ns1__ProgramType programType;	/* required element of type ns1:ProgramType */
+	std::string *accountName;	/* optional element of type xsd:string */
+	std::string *password;	/* optional element of type xsd:string */
+	Plasma__BattleResult *result;	/* optional element of type Plasma:BattleResult */
+	Plasma__ArrayOfBattlePlayerResult *players;	/* optional element of type Plasma:ArrayOfBattlePlayerResult */
+	Plasma__ArrayOfString *extraData;	/* optional element of type Plasma:ArrayOfString */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 68; } /* = unique id SOAP_TYPE__Plasma__SubmitSpringBattleResult */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__SubmitSpringBattleResult() : accountName(NULL), password(NULL), result(NULL), players(NULL), extraData(NULL), soap(NULL) { }
+	virtual ~_Plasma__SubmitSpringBattleResult() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__SubmitSpringBattleResultResponse
+#define SOAP_TYPE__Plasma__SubmitSpringBattleResultResponse (69)
+/* Plasma:SubmitSpringBattleResultResponse */
+class SOAP_CMAC _Plasma__SubmitSpringBattleResultResponse
+{
+public:
+	std::string *SubmitSpringBattleResultResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 69; } /* = unique id SOAP_TYPE__Plasma__SubmitSpringBattleResultResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__SubmitSpringBattleResultResponse() : SubmitSpringBattleResultResult(NULL), soap(NULL) { }
+	virtual ~_Plasma__SubmitSpringBattleResultResponse() { }
+};
+#endif
+
+#ifndef SOAP_TYPE__Plasma__SubmitStackTrace
+#define SOAP_TYPE__Plasma__SubmitStackTrace (70)
+/* Plasma:SubmitStackTrace */
+class SOAP_CMAC _Plasma__SubmitStackTrace
+{
+public:
+	enum Plasma__ProgramType programType;	/* required element of type Plasma:ProgramType */
 	std::string *playerName;	/* optional element of type xsd:string */
 	std::string *exception;	/* optional element of type xsd:string */
 	std::string *extraData;	/* optional element of type xsd:string */
 	std::string *programVersion;	/* optional element of type xsd:string */
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 33; } /* = unique id SOAP_TYPE__ns1__SubmitStackTrace */
+	virtual int soap_type() const { return 70; } /* = unique id SOAP_TYPE__Plasma__SubmitStackTrace */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__SubmitStackTrace() : programType((enum ns1__ProgramType)0), playerName(NULL), exception(NULL), extraData(NULL), programVersion(NULL), soap(NULL) { }
-	virtual ~_ns1__SubmitStackTrace() { }
+	         _Plasma__SubmitStackTrace() : programType((enum Plasma__ProgramType)0), playerName(NULL), exception(NULL), extraData(NULL), programVersion(NULL), soap(NULL) { }
+	virtual ~_Plasma__SubmitStackTrace() { }
 };
 #endif
 
-#ifndef SOAP_TYPE__ns1__SubmitStackTraceResponse
-#define SOAP_TYPE__ns1__SubmitStackTraceResponse (34)
-/* ns1:SubmitStackTraceResponse */
-class SOAP_CMAC _ns1__SubmitStackTraceResponse
+#ifndef SOAP_TYPE__Plasma__SubmitStackTraceResponse
+#define SOAP_TYPE__Plasma__SubmitStackTraceResponse (71)
+/* Plasma:SubmitStackTraceResponse */
+class SOAP_CMAC _Plasma__SubmitStackTraceResponse
 {
 public:
 	struct soap *soap;	/* transient */
 public:
-	virtual int soap_type() const { return 34; } /* = unique id SOAP_TYPE__ns1__SubmitStackTraceResponse */
+	virtual int soap_type() const { return 71; } /* = unique id SOAP_TYPE__Plasma__SubmitStackTraceResponse */
 	virtual void soap_default(struct soap*);
 	virtual void soap_serialize(struct soap*) const;
 	virtual int soap_put(struct soap*, const char*, const char*) const;
 	virtual int soap_out(struct soap*, const char*, int, const char*) const;
 	virtual void *soap_get(struct soap*, const char*, const char*);
 	virtual void *soap_in(struct soap*, const char*, const char*);
-	         _ns1__SubmitStackTraceResponse() : soap(NULL) { }
-	virtual ~_ns1__SubmitStackTraceResponse() { }
+	         _Plasma__SubmitStackTraceResponse() : soap(NULL) { }
+	virtual ~_Plasma__SubmitStackTraceResponse() { }
 };
 #endif
 
-#ifndef SOAP_TYPE___ns2__DownloadFile
-#define SOAP_TYPE___ns2__DownloadFile (56)
-/* Operation wrapper: */
-struct __ns2__DownloadFile
+#ifndef SOAP_TYPE__Plasma__VerifyAccountData
+#define SOAP_TYPE__Plasma__VerifyAccountData (72)
+/* Plasma:VerifyAccountData */
+class SOAP_CMAC _Plasma__VerifyAccountData
 {
 public:
-	_ns1__DownloadFile *ns1__DownloadFile;	/* optional element of type ns1:DownloadFile */
+	std::string *login;	/* optional element of type xsd:string */
+	std::string *password;	/* optional element of type xsd:string */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 72; } /* = unique id SOAP_TYPE__Plasma__VerifyAccountData */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__VerifyAccountData() : login(NULL), password(NULL), soap(NULL) { }
+	virtual ~_Plasma__VerifyAccountData() { }
 };
 #endif
 
-#ifndef SOAP_TYPE___ns2__GetResourceData
-#define SOAP_TYPE___ns2__GetResourceData (60)
-/* Operation wrapper: */
-struct __ns2__GetResourceData
+#ifndef SOAP_TYPE__Plasma__VerifyAccountDataResponse
+#define SOAP_TYPE__Plasma__VerifyAccountDataResponse (73)
+/* Plasma:VerifyAccountDataResponse */
+class SOAP_CMAC _Plasma__VerifyAccountDataResponse
 {
 public:
-	_ns1__GetResourceData *ns1__GetResourceData;	/* optional element of type ns1:GetResourceData */
+	bool VerifyAccountDataResult;	/* SOAP 1.2 RPC return element (when namespace qualified) */	/* required element of type xsd:boolean */
+	struct soap *soap;	/* transient */
+public:
+	virtual int soap_type() const { return 73; } /* = unique id SOAP_TYPE__Plasma__VerifyAccountDataResponse */
+	virtual void soap_default(struct soap*);
+	virtual void soap_serialize(struct soap*) const;
+	virtual int soap_put(struct soap*, const char*, const char*) const;
+	virtual int soap_out(struct soap*, const char*, int, const char*) const;
+	virtual void *soap_get(struct soap*, const char*, const char*);
+	virtual void *soap_in(struct soap*, const char*, const char*);
+	         _Plasma__VerifyAccountDataResponse() : VerifyAccountDataResult((bool)0), soap(NULL) { }
+	virtual ~_Plasma__VerifyAccountDataResponse() { }
 };
 #endif
 
-#ifndef SOAP_TYPE___ns2__GetResourceList
-#define SOAP_TYPE___ns2__GetResourceList (64)
+#ifndef SOAP_TYPE___Plasma2__AutohostPlayerJoined
+#define SOAP_TYPE___Plasma2__AutohostPlayerJoined (127)
 /* Operation wrapper: */
-struct __ns2__GetResourceList
+struct __Plasma2__AutohostPlayerJoined
 {
 public:
-	_ns1__GetResourceList *ns1__GetResourceList;	/* optional element of type ns1:GetResourceList */
+	_Plasma__AutohostPlayerJoined *Plasma__AutohostPlayerJoined;	/* optional element of type Plasma:AutohostPlayerJoined */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns2__GetScriptMissionData
-#define SOAP_TYPE___ns2__GetScriptMissionData (68)
+#ifndef SOAP_TYPE___Plasma2__BalanceTeams
+#define SOAP_TYPE___Plasma2__BalanceTeams (131)
 /* Operation wrapper: */
-struct __ns2__GetScriptMissionData
+struct __Plasma2__BalanceTeams
 {
 public:
-	_ns1__GetScriptMissionData *ns1__GetScriptMissionData;	/* optional element of type ns1:GetScriptMissionData */
+	_Plasma__BalanceTeams *Plasma__BalanceTeams;	/* optional element of type Plasma:BalanceTeams */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns2__NotifyMissionRun
-#define SOAP_TYPE___ns2__NotifyMissionRun (72)
+#ifndef SOAP_TYPE___Plasma2__DownloadFile
+#define SOAP_TYPE___Plasma2__DownloadFile (135)
 /* Operation wrapper: */
-struct __ns2__NotifyMissionRun
+struct __Plasma2__DownloadFile
 {
 public:
-	_ns1__NotifyMissionRun *ns1__NotifyMissionRun;	/* optional element of type ns1:NotifyMissionRun */
+	_Plasma__DownloadFile *Plasma__DownloadFile;	/* optional element of type Plasma:DownloadFile */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns2__RegisterResource
-#define SOAP_TYPE___ns2__RegisterResource (76)
+#ifndef SOAP_TYPE___Plasma2__GetEloByAccountID
+#define SOAP_TYPE___Plasma2__GetEloByAccountID (139)
 /* Operation wrapper: */
-struct __ns2__RegisterResource
+struct __Plasma2__GetEloByAccountID
 {
 public:
-	_ns1__RegisterResource *ns1__RegisterResource;	/* optional element of type ns1:RegisterResource */
+	_Plasma__GetEloByAccountID *Plasma__GetEloByAccountID;	/* optional element of type Plasma:GetEloByAccountID */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns2__SubmitMissionScore
-#define SOAP_TYPE___ns2__SubmitMissionScore (80)
+#ifndef SOAP_TYPE___Plasma2__GetEloByName
+#define SOAP_TYPE___Plasma2__GetEloByName (143)
 /* Operation wrapper: */
-struct __ns2__SubmitMissionScore
+struct __Plasma2__GetEloByName
 {
 public:
-	_ns1__SubmitMissionScore *ns1__SubmitMissionScore;	/* optional element of type ns1:SubmitMissionScore */
+	_Plasma__GetEloByName *Plasma__GetEloByName;	/* optional element of type Plasma:GetEloByName */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns2__SubmitStackTrace
-#define SOAP_TYPE___ns2__SubmitStackTrace (84)
+#ifndef SOAP_TYPE___Plasma2__GetEloTop10
+#define SOAP_TYPE___Plasma2__GetEloTop10 (147)
 /* Operation wrapper: */
-struct __ns2__SubmitStackTrace
+struct __Plasma2__GetEloTop10
 {
 public:
-	_ns1__SubmitStackTrace *ns1__SubmitStackTrace;	/* optional element of type ns1:SubmitStackTrace */
+	_Plasma__GetEloTop10 *Plasma__GetEloTop10;	/* optional element of type Plasma:GetEloTop10 */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns3__DownloadFile
-#define SOAP_TYPE___ns3__DownloadFile (86)
+#ifndef SOAP_TYPE___Plasma2__GetRecommendedMap
+#define SOAP_TYPE___Plasma2__GetRecommendedMap (151)
 /* Operation wrapper: */
-struct __ns3__DownloadFile
+struct __Plasma2__GetRecommendedMap
 {
 public:
-	_ns1__DownloadFile *ns1__DownloadFile;	/* optional element of type ns1:DownloadFile */
+	_Plasma__GetRecommendedMap *Plasma__GetRecommendedMap;	/* optional element of type Plasma:GetRecommendedMap */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns3__GetResourceData
-#define SOAP_TYPE___ns3__GetResourceData (88)
+#ifndef SOAP_TYPE___Plasma2__GetResourceData
+#define SOAP_TYPE___Plasma2__GetResourceData (155)
 /* Operation wrapper: */
-struct __ns3__GetResourceData
+struct __Plasma2__GetResourceData
 {
 public:
-	_ns1__GetResourceData *ns1__GetResourceData;	/* optional element of type ns1:GetResourceData */
+	_Plasma__GetResourceData *Plasma__GetResourceData;	/* optional element of type Plasma:GetResourceData */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns3__GetResourceList
-#define SOAP_TYPE___ns3__GetResourceList (90)
+#ifndef SOAP_TYPE___Plasma2__GetResourceList
+#define SOAP_TYPE___Plasma2__GetResourceList (159)
 /* Operation wrapper: */
-struct __ns3__GetResourceList
+struct __Plasma2__GetResourceList
 {
 public:
-	_ns1__GetResourceList *ns1__GetResourceList;	/* optional element of type ns1:GetResourceList */
+	_Plasma__GetResourceList *Plasma__GetResourceList;	/* optional element of type Plasma:GetResourceList */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns3__GetScriptMissionData
-#define SOAP_TYPE___ns3__GetScriptMissionData (92)
+#ifndef SOAP_TYPE___Plasma2__GetScriptMissionData
+#define SOAP_TYPE___Plasma2__GetScriptMissionData (163)
 /* Operation wrapper: */
-struct __ns3__GetScriptMissionData
+struct __Plasma2__GetScriptMissionData
 {
 public:
-	_ns1__GetScriptMissionData *ns1__GetScriptMissionData;	/* optional element of type ns1:GetScriptMissionData */
+	_Plasma__GetScriptMissionData *Plasma__GetScriptMissionData;	/* optional element of type Plasma:GetScriptMissionData */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns3__NotifyMissionRun
-#define SOAP_TYPE___ns3__NotifyMissionRun (94)
+#ifndef SOAP_TYPE___Plasma2__GetSpringBattleStartSetup
+#define SOAP_TYPE___Plasma2__GetSpringBattleStartSetup (167)
 /* Operation wrapper: */
-struct __ns3__NotifyMissionRun
+struct __Plasma2__GetSpringBattleStartSetup
 {
 public:
-	_ns1__NotifyMissionRun *ns1__NotifyMissionRun;	/* optional element of type ns1:NotifyMissionRun */
+	_Plasma__GetSpringBattleStartSetup *Plasma__GetSpringBattleStartSetup;	/* optional element of type Plasma:GetSpringBattleStartSetup */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns3__RegisterResource
-#define SOAP_TYPE___ns3__RegisterResource (96)
+#ifndef SOAP_TYPE___Plasma2__NotifyMissionRun
+#define SOAP_TYPE___Plasma2__NotifyMissionRun (171)
 /* Operation wrapper: */
-struct __ns3__RegisterResource
+struct __Plasma2__NotifyMissionRun
 {
 public:
-	_ns1__RegisterResource *ns1__RegisterResource;	/* optional element of type ns1:RegisterResource */
+	_Plasma__NotifyMissionRun *Plasma__NotifyMissionRun;	/* optional element of type Plasma:NotifyMissionRun */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns3__SubmitMissionScore
-#define SOAP_TYPE___ns3__SubmitMissionScore (98)
+#ifndef SOAP_TYPE___Plasma2__RegisterResource
+#define SOAP_TYPE___Plasma2__RegisterResource (175)
 /* Operation wrapper: */
-struct __ns3__SubmitMissionScore
+struct __Plasma2__RegisterResource
 {
 public:
-	_ns1__SubmitMissionScore *ns1__SubmitMissionScore;	/* optional element of type ns1:SubmitMissionScore */
+	_Plasma__RegisterResource *Plasma__RegisterResource;	/* optional element of type Plasma:RegisterResource */
 };
 #endif
 
-#ifndef SOAP_TYPE___ns3__SubmitStackTrace
-#define SOAP_TYPE___ns3__SubmitStackTrace (100)
+#ifndef SOAP_TYPE___Plasma2__SubmitMissionScore
+#define SOAP_TYPE___Plasma2__SubmitMissionScore (179)
 /* Operation wrapper: */
-struct __ns3__SubmitStackTrace
+struct __Plasma2__SubmitMissionScore
 {
 public:
-	_ns1__SubmitStackTrace *ns1__SubmitStackTrace;	/* optional element of type ns1:SubmitStackTrace */
+	_Plasma__SubmitMissionScore *Plasma__SubmitMissionScore;	/* optional element of type Plasma:SubmitMissionScore */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma2__SubmitSpringBattleResult
+#define SOAP_TYPE___Plasma2__SubmitSpringBattleResult (183)
+/* Operation wrapper: */
+struct __Plasma2__SubmitSpringBattleResult
+{
+public:
+	_Plasma__SubmitSpringBattleResult *Plasma__SubmitSpringBattleResult;	/* optional element of type Plasma:SubmitSpringBattleResult */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma2__SubmitStackTrace
+#define SOAP_TYPE___Plasma2__SubmitStackTrace (187)
+/* Operation wrapper: */
+struct __Plasma2__SubmitStackTrace
+{
+public:
+	_Plasma__SubmitStackTrace *Plasma__SubmitStackTrace;	/* optional element of type Plasma:SubmitStackTrace */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma2__VerifyAccountData
+#define SOAP_TYPE___Plasma2__VerifyAccountData (191)
+/* Operation wrapper: */
+struct __Plasma2__VerifyAccountData
+{
+public:
+	_Plasma__VerifyAccountData *Plasma__VerifyAccountData;	/* optional element of type Plasma:VerifyAccountData */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__AutohostPlayerJoined
+#define SOAP_TYPE___Plasma3__AutohostPlayerJoined (193)
+/* Operation wrapper: */
+struct __Plasma3__AutohostPlayerJoined
+{
+public:
+	_Plasma__AutohostPlayerJoined *Plasma__AutohostPlayerJoined;	/* optional element of type Plasma:AutohostPlayerJoined */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__BalanceTeams
+#define SOAP_TYPE___Plasma3__BalanceTeams (195)
+/* Operation wrapper: */
+struct __Plasma3__BalanceTeams
+{
+public:
+	_Plasma__BalanceTeams *Plasma__BalanceTeams;	/* optional element of type Plasma:BalanceTeams */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__DownloadFile
+#define SOAP_TYPE___Plasma3__DownloadFile (197)
+/* Operation wrapper: */
+struct __Plasma3__DownloadFile
+{
+public:
+	_Plasma__DownloadFile *Plasma__DownloadFile;	/* optional element of type Plasma:DownloadFile */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__GetEloByAccountID
+#define SOAP_TYPE___Plasma3__GetEloByAccountID (199)
+/* Operation wrapper: */
+struct __Plasma3__GetEloByAccountID
+{
+public:
+	_Plasma__GetEloByAccountID *Plasma__GetEloByAccountID;	/* optional element of type Plasma:GetEloByAccountID */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__GetEloByName
+#define SOAP_TYPE___Plasma3__GetEloByName (201)
+/* Operation wrapper: */
+struct __Plasma3__GetEloByName
+{
+public:
+	_Plasma__GetEloByName *Plasma__GetEloByName;	/* optional element of type Plasma:GetEloByName */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__GetEloTop10
+#define SOAP_TYPE___Plasma3__GetEloTop10 (203)
+/* Operation wrapper: */
+struct __Plasma3__GetEloTop10
+{
+public:
+	_Plasma__GetEloTop10 *Plasma__GetEloTop10;	/* optional element of type Plasma:GetEloTop10 */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__GetRecommendedMap
+#define SOAP_TYPE___Plasma3__GetRecommendedMap (205)
+/* Operation wrapper: */
+struct __Plasma3__GetRecommendedMap
+{
+public:
+	_Plasma__GetRecommendedMap *Plasma__GetRecommendedMap;	/* optional element of type Plasma:GetRecommendedMap */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__GetResourceData
+#define SOAP_TYPE___Plasma3__GetResourceData (207)
+/* Operation wrapper: */
+struct __Plasma3__GetResourceData
+{
+public:
+	_Plasma__GetResourceData *Plasma__GetResourceData;	/* optional element of type Plasma:GetResourceData */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__GetResourceList
+#define SOAP_TYPE___Plasma3__GetResourceList (209)
+/* Operation wrapper: */
+struct __Plasma3__GetResourceList
+{
+public:
+	_Plasma__GetResourceList *Plasma__GetResourceList;	/* optional element of type Plasma:GetResourceList */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__GetScriptMissionData
+#define SOAP_TYPE___Plasma3__GetScriptMissionData (211)
+/* Operation wrapper: */
+struct __Plasma3__GetScriptMissionData
+{
+public:
+	_Plasma__GetScriptMissionData *Plasma__GetScriptMissionData;	/* optional element of type Plasma:GetScriptMissionData */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__GetSpringBattleStartSetup
+#define SOAP_TYPE___Plasma3__GetSpringBattleStartSetup (213)
+/* Operation wrapper: */
+struct __Plasma3__GetSpringBattleStartSetup
+{
+public:
+	_Plasma__GetSpringBattleStartSetup *Plasma__GetSpringBattleStartSetup;	/* optional element of type Plasma:GetSpringBattleStartSetup */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__NotifyMissionRun
+#define SOAP_TYPE___Plasma3__NotifyMissionRun (215)
+/* Operation wrapper: */
+struct __Plasma3__NotifyMissionRun
+{
+public:
+	_Plasma__NotifyMissionRun *Plasma__NotifyMissionRun;	/* optional element of type Plasma:NotifyMissionRun */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__RegisterResource
+#define SOAP_TYPE___Plasma3__RegisterResource (217)
+/* Operation wrapper: */
+struct __Plasma3__RegisterResource
+{
+public:
+	_Plasma__RegisterResource *Plasma__RegisterResource;	/* optional element of type Plasma:RegisterResource */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__SubmitMissionScore
+#define SOAP_TYPE___Plasma3__SubmitMissionScore (219)
+/* Operation wrapper: */
+struct __Plasma3__SubmitMissionScore
+{
+public:
+	_Plasma__SubmitMissionScore *Plasma__SubmitMissionScore;	/* optional element of type Plasma:SubmitMissionScore */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__SubmitSpringBattleResult
+#define SOAP_TYPE___Plasma3__SubmitSpringBattleResult (221)
+/* Operation wrapper: */
+struct __Plasma3__SubmitSpringBattleResult
+{
+public:
+	_Plasma__SubmitSpringBattleResult *Plasma__SubmitSpringBattleResult;	/* optional element of type Plasma:SubmitSpringBattleResult */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__SubmitStackTrace
+#define SOAP_TYPE___Plasma3__SubmitStackTrace (223)
+/* Operation wrapper: */
+struct __Plasma3__SubmitStackTrace
+{
+public:
+	_Plasma__SubmitStackTrace *Plasma__SubmitStackTrace;	/* optional element of type Plasma:SubmitStackTrace */
+};
+#endif
+
+#ifndef SOAP_TYPE___Plasma3__VerifyAccountData
+#define SOAP_TYPE___Plasma3__VerifyAccountData (225)
+/* Operation wrapper: */
+struct __Plasma3__VerifyAccountData
+{
+public:
+	_Plasma__VerifyAccountData *Plasma__VerifyAccountData;	/* optional element of type Plasma:VerifyAccountData */
 };
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Header
-#define SOAP_TYPE_SOAP_ENV__Header (101)
+#define SOAP_TYPE_SOAP_ENV__Header (226)
 /* SOAP Header: */
 struct SOAP_ENV__Header
 {
@@ -742,7 +1797,7 @@ private:
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Code
-#define SOAP_TYPE_SOAP_ENV__Code (102)
+#define SOAP_TYPE_SOAP_ENV__Code (227)
 /* SOAP Fault Code: */
 struct SOAP_ENV__Code
 {
@@ -753,7 +1808,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Detail
-#define SOAP_TYPE_SOAP_ENV__Detail (104)
+#define SOAP_TYPE_SOAP_ENV__Detail (229)
 /* SOAP-ENV:Detail */
 struct SOAP_ENV__Detail
 {
@@ -765,7 +1820,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Reason
-#define SOAP_TYPE_SOAP_ENV__Reason (107)
+#define SOAP_TYPE_SOAP_ENV__Reason (232)
 /* SOAP-ENV:Reason */
 struct SOAP_ENV__Reason
 {
@@ -775,7 +1830,7 @@ public:
 #endif
 
 #ifndef SOAP_TYPE_SOAP_ENV__Fault
-#define SOAP_TYPE_SOAP_ENV__Fault (108)
+#define SOAP_TYPE_SOAP_ENV__Fault (233)
 /* SOAP Fault: */
 struct SOAP_ENV__Fault
 {

@@ -1,8 +1,9 @@
 all:
-	wsdl2h -o plasma.h http://zero-k.info/ContentService.asmx?WSDL
+	wsdl2h -o plasma.h -nPlasma -NPlasma http://zero-k.info/ContentService.asmx?WSDL
 	soapcpp2 -i -C -I/usr/include/gsoap/ plasma.h
 clean:
 	rm -rf \
+	ContentService.asmx?WSDL \
 	ContentServiceSoap12.DownloadFile.req.xml \
 	ContentServiceSoap12.DownloadFile.res.xml \
 	ContentServiceSoap12.GetResourceData.req.xml \
@@ -44,4 +45,41 @@ clean:
 	soapContentServiceSoapProxy.cpp \
 	soapContentServiceSoapProxy.h \
 	soapH.h \
-	soapStub.h
+	soapStub.h \
+	ContentServiceSoap12.AutohostPlayerJoined.req.xml \
+	ContentServiceSoap12.AutohostPlayerJoined.res.xml \
+	ContentServiceSoap12.BalanceTeams.req.xml \
+	ContentServiceSoap12.BalanceTeams.res.xml \
+	ContentServiceSoap12.GetEloByAccountID.req.xml \
+	ContentServiceSoap12.GetEloByAccountID.res.xml \
+	ContentServiceSoap12.GetEloByName.req.xml \
+	ContentServiceSoap12.GetEloByName.res.xml \
+	ContentServiceSoap12.GetEloTop10.req.xml \
+	ContentServiceSoap12.GetEloTop10.res.xml \
+	ContentServiceSoap12.GetRecommendedMap.req.xml \
+	ContentServiceSoap12.GetRecommendedMap.res.xml \
+	ContentServiceSoap12.GetSpringBattleStartSetup.req.xml \
+	ContentServiceSoap12.GetSpringBattleStartSetup.res.xml \
+	ContentServiceSoap12.SubmitSpringBattleResult.req.xml \
+	ContentServiceSoap12.SubmitSpringBattleResult.res.xml \
+	ContentServiceSoap12.VerifyAccountData.req.xml \
+	ContentServiceSoap12.VerifyAccountData.res.xml \
+	ContentServiceSoap.AutohostPlayerJoined.req.xml \
+	ContentServiceSoap.AutohostPlayerJoined.res.xml \
+	ContentServiceSoap.BalanceTeams.req.xml \
+	ContentServiceSoap.BalanceTeams.res.xml \
+	ContentServiceSoap.GetEloByAccountID.req.xml \
+	ContentServiceSoap.GetEloByAccountID.res.xml \
+	ContentServiceSoap.GetEloByName.req.xml \
+	ContentServiceSoap.GetEloByName.res.xml \
+	ContentServiceSoap.GetEloTop10.req.xml \
+	ContentServiceSoap.GetEloTop10.res.xml \
+	ContentServiceSoap.GetRecommendedMap.req.xml \
+	ContentServiceSoap.GetRecommendedMap.res.xml \
+	ContentServiceSoap.GetSpringBattleStartSetup.req.xml \
+	ContentServiceSoap.GetSpringBattleStartSetup.res.xml \
+	ContentServiceSoap.SubmitSpringBattleResult.req.xml \
+	ContentServiceSoap.SubmitSpringBattleResult.res.xml \
+	ContentServiceSoap.VerifyAccountData.req.xml \
+	ContentServiceSoap.VerifyAccountData.res.xml
+

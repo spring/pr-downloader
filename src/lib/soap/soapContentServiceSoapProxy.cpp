@@ -29,9 +29,9 @@ void ContentServiceSoapProxy::ContentServiceSoapProxy_init(soap_mode imode, soap
 	{"SOAP-ENC", "http://schemas.xmlsoap.org/soap/encoding/", "http://www.w3.org/*/soap-encoding", NULL},
 	{"xsi", "http://www.w3.org/2001/XMLSchema-instance", "http://www.w3.org/*/XMLSchema-instance", NULL},
 	{"xsd", "http://www.w3.org/2001/XMLSchema", "http://www.w3.org/*/XMLSchema", NULL},
-	{"ns2", "http://tempuri.org/ContentServiceSoap", NULL, NULL},
-	{"ns1", "http://tempuri.org/", NULL, NULL},
-	{"ns3", "http://tempuri.org/ContentServiceSoap12", NULL, NULL},
+	{"Plasma2", "http://tempuri.org/ContentServiceSoap", NULL, NULL},
+	{"Plasma", "http://tempuri.org/", NULL, NULL},
+	{"Plasma3", "http://tempuri.org/ContentServiceSoap12", NULL, NULL},
 	{NULL, NULL, NULL, NULL}
 };
 	if (!this->namespaces)
@@ -57,25 +57,135 @@ const char *ContentServiceSoapProxy::soap_fault_detail()
 {	return *soap_faultdetail(this);
 }
 
-int ContentServiceSoapProxy::DownloadFile(_ns1__DownloadFile *ns1__DownloadFile, _ns1__DownloadFileResponse *ns1__DownloadFileResponse)
+int ContentServiceSoapProxy::AutohostPlayerJoined(_Plasma__AutohostPlayerJoined *Plasma__AutohostPlayerJoined, _Plasma__AutohostPlayerJoinedResponse *Plasma__AutohostPlayerJoinedResponse)
 {	struct soap *soap = this;
-	struct __ns2__DownloadFile soap_tmp___ns2__DownloadFile;
+	struct __Plasma2__AutohostPlayerJoined soap_tmp___Plasma2__AutohostPlayerJoined;
+	const char *soap_action = NULL;
+	if (!soap_endpoint)
+		soap_endpoint = "http://zero-k.info/ContentService.asmx";
+	soap_action = "http://tempuri.org/AutohostPlayerJoined";
+	soap->encodingStyle = NULL;
+	soap_tmp___Plasma2__AutohostPlayerJoined.Plasma__AutohostPlayerJoined = Plasma__AutohostPlayerJoined;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize___Plasma2__AutohostPlayerJoined(soap, &soap_tmp___Plasma2__AutohostPlayerJoined);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put___Plasma2__AutohostPlayerJoined(soap, &soap_tmp___Plasma2__AutohostPlayerJoined, "-Plasma2:AutohostPlayerJoined", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put___Plasma2__AutohostPlayerJoined(soap, &soap_tmp___Plasma2__AutohostPlayerJoined, "-Plasma2:AutohostPlayerJoined", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	if (!Plasma__AutohostPlayerJoinedResponse)
+		return soap_closesock(soap);
+	Plasma__AutohostPlayerJoinedResponse->soap_default(soap);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	Plasma__AutohostPlayerJoinedResponse->soap_get(soap, "Plasma:AutohostPlayerJoinedResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+int ContentServiceSoapProxy::BalanceTeams(_Plasma__BalanceTeams *Plasma__BalanceTeams, _Plasma__BalanceTeamsResponse *Plasma__BalanceTeamsResponse)
+{	struct soap *soap = this;
+	struct __Plasma2__BalanceTeams soap_tmp___Plasma2__BalanceTeams;
+	const char *soap_action = NULL;
+	if (!soap_endpoint)
+		soap_endpoint = "http://zero-k.info/ContentService.asmx";
+	soap_action = "http://tempuri.org/BalanceTeams";
+	soap->encodingStyle = NULL;
+	soap_tmp___Plasma2__BalanceTeams.Plasma__BalanceTeams = Plasma__BalanceTeams;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize___Plasma2__BalanceTeams(soap, &soap_tmp___Plasma2__BalanceTeams);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put___Plasma2__BalanceTeams(soap, &soap_tmp___Plasma2__BalanceTeams, "-Plasma2:BalanceTeams", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put___Plasma2__BalanceTeams(soap, &soap_tmp___Plasma2__BalanceTeams, "-Plasma2:BalanceTeams", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	if (!Plasma__BalanceTeamsResponse)
+		return soap_closesock(soap);
+	Plasma__BalanceTeamsResponse->soap_default(soap);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	Plasma__BalanceTeamsResponse->soap_get(soap, "Plasma:BalanceTeamsResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+int ContentServiceSoapProxy::DownloadFile(_Plasma__DownloadFile *Plasma__DownloadFile, _Plasma__DownloadFileResponse *Plasma__DownloadFileResponse)
+{	struct soap *soap = this;
+	struct __Plasma2__DownloadFile soap_tmp___Plasma2__DownloadFile;
 	const char *soap_action = NULL;
 	if (!soap_endpoint)
 		soap_endpoint = "http://zero-k.info/ContentService.asmx";
 	soap_action = "http://tempuri.org/DownloadFile";
 	soap->encodingStyle = NULL;
-	soap_tmp___ns2__DownloadFile.ns1__DownloadFile = ns1__DownloadFile;
+	soap_tmp___Plasma2__DownloadFile.Plasma__DownloadFile = Plasma__DownloadFile;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize___ns2__DownloadFile(soap, &soap_tmp___ns2__DownloadFile);
+	soap_serialize___Plasma2__DownloadFile(soap, &soap_tmp___Plasma2__DownloadFile);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put___ns2__DownloadFile(soap, &soap_tmp___ns2__DownloadFile, "-ns2:DownloadFile", "")
+		 || soap_put___Plasma2__DownloadFile(soap, &soap_tmp___Plasma2__DownloadFile, "-Plasma2:DownloadFile", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -86,20 +196,20 @@ int ContentServiceSoapProxy::DownloadFile(_ns1__DownloadFile *ns1__DownloadFile,
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put___ns2__DownloadFile(soap, &soap_tmp___ns2__DownloadFile, "-ns2:DownloadFile", "")
+	 || soap_put___Plasma2__DownloadFile(soap, &soap_tmp___Plasma2__DownloadFile, "-Plasma2:DownloadFile", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	if (!ns1__DownloadFileResponse)
+	if (!Plasma__DownloadFileResponse)
 		return soap_closesock(soap);
-	ns1__DownloadFileResponse->soap_default(soap);
+	Plasma__DownloadFileResponse->soap_default(soap);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	ns1__DownloadFileResponse->soap_get(soap, "ns1:DownloadFileResponse", "");
+	Plasma__DownloadFileResponse->soap_get(soap, "Plasma:DownloadFileResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -112,25 +222,245 @@ int ContentServiceSoapProxy::DownloadFile(_ns1__DownloadFile *ns1__DownloadFile,
 	return soap_closesock(soap);
 }
 
-int ContentServiceSoapProxy::GetResourceData(_ns1__GetResourceData *ns1__GetResourceData, _ns1__GetResourceDataResponse *ns1__GetResourceDataResponse)
+int ContentServiceSoapProxy::GetEloByAccountID(_Plasma__GetEloByAccountID *Plasma__GetEloByAccountID, _Plasma__GetEloByAccountIDResponse *Plasma__GetEloByAccountIDResponse)
 {	struct soap *soap = this;
-	struct __ns2__GetResourceData soap_tmp___ns2__GetResourceData;
+	struct __Plasma2__GetEloByAccountID soap_tmp___Plasma2__GetEloByAccountID;
+	const char *soap_action = NULL;
+	if (!soap_endpoint)
+		soap_endpoint = "http://zero-k.info/ContentService.asmx";
+	soap_action = "http://tempuri.org/GetEloByAccountID";
+	soap->encodingStyle = NULL;
+	soap_tmp___Plasma2__GetEloByAccountID.Plasma__GetEloByAccountID = Plasma__GetEloByAccountID;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize___Plasma2__GetEloByAccountID(soap, &soap_tmp___Plasma2__GetEloByAccountID);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put___Plasma2__GetEloByAccountID(soap, &soap_tmp___Plasma2__GetEloByAccountID, "-Plasma2:GetEloByAccountID", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put___Plasma2__GetEloByAccountID(soap, &soap_tmp___Plasma2__GetEloByAccountID, "-Plasma2:GetEloByAccountID", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	if (!Plasma__GetEloByAccountIDResponse)
+		return soap_closesock(soap);
+	Plasma__GetEloByAccountIDResponse->soap_default(soap);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	Plasma__GetEloByAccountIDResponse->soap_get(soap, "Plasma:GetEloByAccountIDResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+int ContentServiceSoapProxy::GetEloByName(_Plasma__GetEloByName *Plasma__GetEloByName, _Plasma__GetEloByNameResponse *Plasma__GetEloByNameResponse)
+{	struct soap *soap = this;
+	struct __Plasma2__GetEloByName soap_tmp___Plasma2__GetEloByName;
+	const char *soap_action = NULL;
+	if (!soap_endpoint)
+		soap_endpoint = "http://zero-k.info/ContentService.asmx";
+	soap_action = "http://tempuri.org/GetEloByName";
+	soap->encodingStyle = NULL;
+	soap_tmp___Plasma2__GetEloByName.Plasma__GetEloByName = Plasma__GetEloByName;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize___Plasma2__GetEloByName(soap, &soap_tmp___Plasma2__GetEloByName);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put___Plasma2__GetEloByName(soap, &soap_tmp___Plasma2__GetEloByName, "-Plasma2:GetEloByName", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put___Plasma2__GetEloByName(soap, &soap_tmp___Plasma2__GetEloByName, "-Plasma2:GetEloByName", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	if (!Plasma__GetEloByNameResponse)
+		return soap_closesock(soap);
+	Plasma__GetEloByNameResponse->soap_default(soap);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	Plasma__GetEloByNameResponse->soap_get(soap, "Plasma:GetEloByNameResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+int ContentServiceSoapProxy::GetEloTop10(_Plasma__GetEloTop10 *Plasma__GetEloTop10, _Plasma__GetEloTop10Response *Plasma__GetEloTop10Response)
+{	struct soap *soap = this;
+	struct __Plasma2__GetEloTop10 soap_tmp___Plasma2__GetEloTop10;
+	const char *soap_action = NULL;
+	if (!soap_endpoint)
+		soap_endpoint = "http://zero-k.info/ContentService.asmx";
+	soap_action = "http://tempuri.org/GetEloTop10";
+	soap->encodingStyle = NULL;
+	soap_tmp___Plasma2__GetEloTop10.Plasma__GetEloTop10 = Plasma__GetEloTop10;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize___Plasma2__GetEloTop10(soap, &soap_tmp___Plasma2__GetEloTop10);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put___Plasma2__GetEloTop10(soap, &soap_tmp___Plasma2__GetEloTop10, "-Plasma2:GetEloTop10", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put___Plasma2__GetEloTop10(soap, &soap_tmp___Plasma2__GetEloTop10, "-Plasma2:GetEloTop10", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	if (!Plasma__GetEloTop10Response)
+		return soap_closesock(soap);
+	Plasma__GetEloTop10Response->soap_default(soap);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	Plasma__GetEloTop10Response->soap_get(soap, "Plasma:GetEloTop10Response", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+int ContentServiceSoapProxy::GetRecommendedMap(_Plasma__GetRecommendedMap *Plasma__GetRecommendedMap, _Plasma__GetRecommendedMapResponse *Plasma__GetRecommendedMapResponse)
+{	struct soap *soap = this;
+	struct __Plasma2__GetRecommendedMap soap_tmp___Plasma2__GetRecommendedMap;
+	const char *soap_action = NULL;
+	if (!soap_endpoint)
+		soap_endpoint = "http://zero-k.info/ContentService.asmx";
+	soap_action = "http://tempuri.org/GetRecommendedMap";
+	soap->encodingStyle = NULL;
+	soap_tmp___Plasma2__GetRecommendedMap.Plasma__GetRecommendedMap = Plasma__GetRecommendedMap;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize___Plasma2__GetRecommendedMap(soap, &soap_tmp___Plasma2__GetRecommendedMap);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put___Plasma2__GetRecommendedMap(soap, &soap_tmp___Plasma2__GetRecommendedMap, "-Plasma2:GetRecommendedMap", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put___Plasma2__GetRecommendedMap(soap, &soap_tmp___Plasma2__GetRecommendedMap, "-Plasma2:GetRecommendedMap", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	if (!Plasma__GetRecommendedMapResponse)
+		return soap_closesock(soap);
+	Plasma__GetRecommendedMapResponse->soap_default(soap);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	Plasma__GetRecommendedMapResponse->soap_get(soap, "Plasma:GetRecommendedMapResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+int ContentServiceSoapProxy::GetResourceData(_Plasma__GetResourceData *Plasma__GetResourceData, _Plasma__GetResourceDataResponse *Plasma__GetResourceDataResponse)
+{	struct soap *soap = this;
+	struct __Plasma2__GetResourceData soap_tmp___Plasma2__GetResourceData;
 	const char *soap_action = NULL;
 	if (!soap_endpoint)
 		soap_endpoint = "http://zero-k.info/ContentService.asmx";
 	soap_action = "http://tempuri.org/GetResourceData";
 	soap->encodingStyle = NULL;
-	soap_tmp___ns2__GetResourceData.ns1__GetResourceData = ns1__GetResourceData;
+	soap_tmp___Plasma2__GetResourceData.Plasma__GetResourceData = Plasma__GetResourceData;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize___ns2__GetResourceData(soap, &soap_tmp___ns2__GetResourceData);
+	soap_serialize___Plasma2__GetResourceData(soap, &soap_tmp___Plasma2__GetResourceData);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put___ns2__GetResourceData(soap, &soap_tmp___ns2__GetResourceData, "-ns2:GetResourceData", "")
+		 || soap_put___Plasma2__GetResourceData(soap, &soap_tmp___Plasma2__GetResourceData, "-Plasma2:GetResourceData", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -141,20 +471,20 @@ int ContentServiceSoapProxy::GetResourceData(_ns1__GetResourceData *ns1__GetReso
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put___ns2__GetResourceData(soap, &soap_tmp___ns2__GetResourceData, "-ns2:GetResourceData", "")
+	 || soap_put___Plasma2__GetResourceData(soap, &soap_tmp___Plasma2__GetResourceData, "-Plasma2:GetResourceData", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	if (!ns1__GetResourceDataResponse)
+	if (!Plasma__GetResourceDataResponse)
 		return soap_closesock(soap);
-	ns1__GetResourceDataResponse->soap_default(soap);
+	Plasma__GetResourceDataResponse->soap_default(soap);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	ns1__GetResourceDataResponse->soap_get(soap, "ns1:GetResourceDataResponse", "");
+	Plasma__GetResourceDataResponse->soap_get(soap, "Plasma:GetResourceDataResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -167,25 +497,25 @@ int ContentServiceSoapProxy::GetResourceData(_ns1__GetResourceData *ns1__GetReso
 	return soap_closesock(soap);
 }
 
-int ContentServiceSoapProxy::GetResourceList(_ns1__GetResourceList *ns1__GetResourceList, _ns1__GetResourceListResponse *ns1__GetResourceListResponse)
+int ContentServiceSoapProxy::GetResourceList(_Plasma__GetResourceList *Plasma__GetResourceList, _Plasma__GetResourceListResponse *Plasma__GetResourceListResponse)
 {	struct soap *soap = this;
-	struct __ns2__GetResourceList soap_tmp___ns2__GetResourceList;
+	struct __Plasma2__GetResourceList soap_tmp___Plasma2__GetResourceList;
 	const char *soap_action = NULL;
 	if (!soap_endpoint)
 		soap_endpoint = "http://zero-k.info/ContentService.asmx";
 	soap_action = "http://tempuri.org/GetResourceList";
 	soap->encodingStyle = NULL;
-	soap_tmp___ns2__GetResourceList.ns1__GetResourceList = ns1__GetResourceList;
+	soap_tmp___Plasma2__GetResourceList.Plasma__GetResourceList = Plasma__GetResourceList;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize___ns2__GetResourceList(soap, &soap_tmp___ns2__GetResourceList);
+	soap_serialize___Plasma2__GetResourceList(soap, &soap_tmp___Plasma2__GetResourceList);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put___ns2__GetResourceList(soap, &soap_tmp___ns2__GetResourceList, "-ns2:GetResourceList", "")
+		 || soap_put___Plasma2__GetResourceList(soap, &soap_tmp___Plasma2__GetResourceList, "-Plasma2:GetResourceList", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -196,20 +526,20 @@ int ContentServiceSoapProxy::GetResourceList(_ns1__GetResourceList *ns1__GetReso
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put___ns2__GetResourceList(soap, &soap_tmp___ns2__GetResourceList, "-ns2:GetResourceList", "")
+	 || soap_put___Plasma2__GetResourceList(soap, &soap_tmp___Plasma2__GetResourceList, "-Plasma2:GetResourceList", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	if (!ns1__GetResourceListResponse)
+	if (!Plasma__GetResourceListResponse)
 		return soap_closesock(soap);
-	ns1__GetResourceListResponse->soap_default(soap);
+	Plasma__GetResourceListResponse->soap_default(soap);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	ns1__GetResourceListResponse->soap_get(soap, "ns1:GetResourceListResponse", "");
+	Plasma__GetResourceListResponse->soap_get(soap, "Plasma:GetResourceListResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -222,25 +552,25 @@ int ContentServiceSoapProxy::GetResourceList(_ns1__GetResourceList *ns1__GetReso
 	return soap_closesock(soap);
 }
 
-int ContentServiceSoapProxy::GetScriptMissionData(_ns1__GetScriptMissionData *ns1__GetScriptMissionData, _ns1__GetScriptMissionDataResponse *ns1__GetScriptMissionDataResponse)
+int ContentServiceSoapProxy::GetScriptMissionData(_Plasma__GetScriptMissionData *Plasma__GetScriptMissionData, _Plasma__GetScriptMissionDataResponse *Plasma__GetScriptMissionDataResponse)
 {	struct soap *soap = this;
-	struct __ns2__GetScriptMissionData soap_tmp___ns2__GetScriptMissionData;
+	struct __Plasma2__GetScriptMissionData soap_tmp___Plasma2__GetScriptMissionData;
 	const char *soap_action = NULL;
 	if (!soap_endpoint)
 		soap_endpoint = "http://zero-k.info/ContentService.asmx";
 	soap_action = "http://tempuri.org/GetScriptMissionData";
 	soap->encodingStyle = NULL;
-	soap_tmp___ns2__GetScriptMissionData.ns1__GetScriptMissionData = ns1__GetScriptMissionData;
+	soap_tmp___Plasma2__GetScriptMissionData.Plasma__GetScriptMissionData = Plasma__GetScriptMissionData;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize___ns2__GetScriptMissionData(soap, &soap_tmp___ns2__GetScriptMissionData);
+	soap_serialize___Plasma2__GetScriptMissionData(soap, &soap_tmp___Plasma2__GetScriptMissionData);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put___ns2__GetScriptMissionData(soap, &soap_tmp___ns2__GetScriptMissionData, "-ns2:GetScriptMissionData", "")
+		 || soap_put___Plasma2__GetScriptMissionData(soap, &soap_tmp___Plasma2__GetScriptMissionData, "-Plasma2:GetScriptMissionData", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -251,20 +581,20 @@ int ContentServiceSoapProxy::GetScriptMissionData(_ns1__GetScriptMissionData *ns
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put___ns2__GetScriptMissionData(soap, &soap_tmp___ns2__GetScriptMissionData, "-ns2:GetScriptMissionData", "")
+	 || soap_put___Plasma2__GetScriptMissionData(soap, &soap_tmp___Plasma2__GetScriptMissionData, "-Plasma2:GetScriptMissionData", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	if (!ns1__GetScriptMissionDataResponse)
+	if (!Plasma__GetScriptMissionDataResponse)
 		return soap_closesock(soap);
-	ns1__GetScriptMissionDataResponse->soap_default(soap);
+	Plasma__GetScriptMissionDataResponse->soap_default(soap);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	ns1__GetScriptMissionDataResponse->soap_get(soap, "ns1:GetScriptMissionDataResponse", "");
+	Plasma__GetScriptMissionDataResponse->soap_get(soap, "Plasma:GetScriptMissionDataResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -277,25 +607,80 @@ int ContentServiceSoapProxy::GetScriptMissionData(_ns1__GetScriptMissionData *ns
 	return soap_closesock(soap);
 }
 
-int ContentServiceSoapProxy::NotifyMissionRun(_ns1__NotifyMissionRun *ns1__NotifyMissionRun, _ns1__NotifyMissionRunResponse *ns1__NotifyMissionRunResponse)
+int ContentServiceSoapProxy::GetSpringBattleStartSetup(_Plasma__GetSpringBattleStartSetup *Plasma__GetSpringBattleStartSetup, _Plasma__GetSpringBattleStartSetupResponse *Plasma__GetSpringBattleStartSetupResponse)
 {	struct soap *soap = this;
-	struct __ns2__NotifyMissionRun soap_tmp___ns2__NotifyMissionRun;
+	struct __Plasma2__GetSpringBattleStartSetup soap_tmp___Plasma2__GetSpringBattleStartSetup;
+	const char *soap_action = NULL;
+	if (!soap_endpoint)
+		soap_endpoint = "http://zero-k.info/ContentService.asmx";
+	soap_action = "http://tempuri.org/GetSpringBattleStartSetup";
+	soap->encodingStyle = NULL;
+	soap_tmp___Plasma2__GetSpringBattleStartSetup.Plasma__GetSpringBattleStartSetup = Plasma__GetSpringBattleStartSetup;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize___Plasma2__GetSpringBattleStartSetup(soap, &soap_tmp___Plasma2__GetSpringBattleStartSetup);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put___Plasma2__GetSpringBattleStartSetup(soap, &soap_tmp___Plasma2__GetSpringBattleStartSetup, "-Plasma2:GetSpringBattleStartSetup", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put___Plasma2__GetSpringBattleStartSetup(soap, &soap_tmp___Plasma2__GetSpringBattleStartSetup, "-Plasma2:GetSpringBattleStartSetup", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	if (!Plasma__GetSpringBattleStartSetupResponse)
+		return soap_closesock(soap);
+	Plasma__GetSpringBattleStartSetupResponse->soap_default(soap);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	Plasma__GetSpringBattleStartSetupResponse->soap_get(soap, "Plasma:GetSpringBattleStartSetupResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+int ContentServiceSoapProxy::NotifyMissionRun(_Plasma__NotifyMissionRun *Plasma__NotifyMissionRun, _Plasma__NotifyMissionRunResponse *Plasma__NotifyMissionRunResponse)
+{	struct soap *soap = this;
+	struct __Plasma2__NotifyMissionRun soap_tmp___Plasma2__NotifyMissionRun;
 	const char *soap_action = NULL;
 	if (!soap_endpoint)
 		soap_endpoint = "http://zero-k.info/ContentService.asmx";
 	soap_action = "http://tempuri.org/NotifyMissionRun";
 	soap->encodingStyle = NULL;
-	soap_tmp___ns2__NotifyMissionRun.ns1__NotifyMissionRun = ns1__NotifyMissionRun;
+	soap_tmp___Plasma2__NotifyMissionRun.Plasma__NotifyMissionRun = Plasma__NotifyMissionRun;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize___ns2__NotifyMissionRun(soap, &soap_tmp___ns2__NotifyMissionRun);
+	soap_serialize___Plasma2__NotifyMissionRun(soap, &soap_tmp___Plasma2__NotifyMissionRun);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put___ns2__NotifyMissionRun(soap, &soap_tmp___ns2__NotifyMissionRun, "-ns2:NotifyMissionRun", "")
+		 || soap_put___Plasma2__NotifyMissionRun(soap, &soap_tmp___Plasma2__NotifyMissionRun, "-Plasma2:NotifyMissionRun", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -306,20 +691,20 @@ int ContentServiceSoapProxy::NotifyMissionRun(_ns1__NotifyMissionRun *ns1__Notif
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put___ns2__NotifyMissionRun(soap, &soap_tmp___ns2__NotifyMissionRun, "-ns2:NotifyMissionRun", "")
+	 || soap_put___Plasma2__NotifyMissionRun(soap, &soap_tmp___Plasma2__NotifyMissionRun, "-Plasma2:NotifyMissionRun", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	if (!ns1__NotifyMissionRunResponse)
+	if (!Plasma__NotifyMissionRunResponse)
 		return soap_closesock(soap);
-	ns1__NotifyMissionRunResponse->soap_default(soap);
+	Plasma__NotifyMissionRunResponse->soap_default(soap);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	ns1__NotifyMissionRunResponse->soap_get(soap, "ns1:NotifyMissionRunResponse", "");
+	Plasma__NotifyMissionRunResponse->soap_get(soap, "Plasma:NotifyMissionRunResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -332,25 +717,25 @@ int ContentServiceSoapProxy::NotifyMissionRun(_ns1__NotifyMissionRun *ns1__Notif
 	return soap_closesock(soap);
 }
 
-int ContentServiceSoapProxy::RegisterResource(_ns1__RegisterResource *ns1__RegisterResource, _ns1__RegisterResourceResponse *ns1__RegisterResourceResponse)
+int ContentServiceSoapProxy::RegisterResource(_Plasma__RegisterResource *Plasma__RegisterResource, _Plasma__RegisterResourceResponse *Plasma__RegisterResourceResponse)
 {	struct soap *soap = this;
-	struct __ns2__RegisterResource soap_tmp___ns2__RegisterResource;
+	struct __Plasma2__RegisterResource soap_tmp___Plasma2__RegisterResource;
 	const char *soap_action = NULL;
 	if (!soap_endpoint)
 		soap_endpoint = "http://zero-k.info/ContentService.asmx";
 	soap_action = "http://tempuri.org/RegisterResource";
 	soap->encodingStyle = NULL;
-	soap_tmp___ns2__RegisterResource.ns1__RegisterResource = ns1__RegisterResource;
+	soap_tmp___Plasma2__RegisterResource.Plasma__RegisterResource = Plasma__RegisterResource;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize___ns2__RegisterResource(soap, &soap_tmp___ns2__RegisterResource);
+	soap_serialize___Plasma2__RegisterResource(soap, &soap_tmp___Plasma2__RegisterResource);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put___ns2__RegisterResource(soap, &soap_tmp___ns2__RegisterResource, "-ns2:RegisterResource", "")
+		 || soap_put___Plasma2__RegisterResource(soap, &soap_tmp___Plasma2__RegisterResource, "-Plasma2:RegisterResource", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -361,20 +746,20 @@ int ContentServiceSoapProxy::RegisterResource(_ns1__RegisterResource *ns1__Regis
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put___ns2__RegisterResource(soap, &soap_tmp___ns2__RegisterResource, "-ns2:RegisterResource", "")
+	 || soap_put___Plasma2__RegisterResource(soap, &soap_tmp___Plasma2__RegisterResource, "-Plasma2:RegisterResource", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	if (!ns1__RegisterResourceResponse)
+	if (!Plasma__RegisterResourceResponse)
 		return soap_closesock(soap);
-	ns1__RegisterResourceResponse->soap_default(soap);
+	Plasma__RegisterResourceResponse->soap_default(soap);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	ns1__RegisterResourceResponse->soap_get(soap, "ns1:RegisterResourceResponse", "");
+	Plasma__RegisterResourceResponse->soap_get(soap, "Plasma:RegisterResourceResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -387,25 +772,25 @@ int ContentServiceSoapProxy::RegisterResource(_ns1__RegisterResource *ns1__Regis
 	return soap_closesock(soap);
 }
 
-int ContentServiceSoapProxy::SubmitMissionScore(_ns1__SubmitMissionScore *ns1__SubmitMissionScore, _ns1__SubmitMissionScoreResponse *ns1__SubmitMissionScoreResponse)
+int ContentServiceSoapProxy::SubmitMissionScore(_Plasma__SubmitMissionScore *Plasma__SubmitMissionScore, _Plasma__SubmitMissionScoreResponse *Plasma__SubmitMissionScoreResponse)
 {	struct soap *soap = this;
-	struct __ns2__SubmitMissionScore soap_tmp___ns2__SubmitMissionScore;
+	struct __Plasma2__SubmitMissionScore soap_tmp___Plasma2__SubmitMissionScore;
 	const char *soap_action = NULL;
 	if (!soap_endpoint)
 		soap_endpoint = "http://zero-k.info/ContentService.asmx";
 	soap_action = "http://tempuri.org/SubmitMissionScore";
 	soap->encodingStyle = NULL;
-	soap_tmp___ns2__SubmitMissionScore.ns1__SubmitMissionScore = ns1__SubmitMissionScore;
+	soap_tmp___Plasma2__SubmitMissionScore.Plasma__SubmitMissionScore = Plasma__SubmitMissionScore;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize___ns2__SubmitMissionScore(soap, &soap_tmp___ns2__SubmitMissionScore);
+	soap_serialize___Plasma2__SubmitMissionScore(soap, &soap_tmp___Plasma2__SubmitMissionScore);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put___ns2__SubmitMissionScore(soap, &soap_tmp___ns2__SubmitMissionScore, "-ns2:SubmitMissionScore", "")
+		 || soap_put___Plasma2__SubmitMissionScore(soap, &soap_tmp___Plasma2__SubmitMissionScore, "-Plasma2:SubmitMissionScore", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -416,20 +801,20 @@ int ContentServiceSoapProxy::SubmitMissionScore(_ns1__SubmitMissionScore *ns1__S
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put___ns2__SubmitMissionScore(soap, &soap_tmp___ns2__SubmitMissionScore, "-ns2:SubmitMissionScore", "")
+	 || soap_put___Plasma2__SubmitMissionScore(soap, &soap_tmp___Plasma2__SubmitMissionScore, "-Plasma2:SubmitMissionScore", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	if (!ns1__SubmitMissionScoreResponse)
+	if (!Plasma__SubmitMissionScoreResponse)
 		return soap_closesock(soap);
-	ns1__SubmitMissionScoreResponse->soap_default(soap);
+	Plasma__SubmitMissionScoreResponse->soap_default(soap);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	ns1__SubmitMissionScoreResponse->soap_get(soap, "ns1:SubmitMissionScoreResponse", "");
+	Plasma__SubmitMissionScoreResponse->soap_get(soap, "Plasma:SubmitMissionScoreResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);
@@ -442,25 +827,25 @@ int ContentServiceSoapProxy::SubmitMissionScore(_ns1__SubmitMissionScore *ns1__S
 	return soap_closesock(soap);
 }
 
-int ContentServiceSoapProxy::SubmitStackTrace(_ns1__SubmitStackTrace *ns1__SubmitStackTrace, _ns1__SubmitStackTraceResponse *ns1__SubmitStackTraceResponse)
+int ContentServiceSoapProxy::SubmitSpringBattleResult(_Plasma__SubmitSpringBattleResult *Plasma__SubmitSpringBattleResult, _Plasma__SubmitSpringBattleResultResponse *Plasma__SubmitSpringBattleResultResponse)
 {	struct soap *soap = this;
-	struct __ns2__SubmitStackTrace soap_tmp___ns2__SubmitStackTrace;
+	struct __Plasma2__SubmitSpringBattleResult soap_tmp___Plasma2__SubmitSpringBattleResult;
 	const char *soap_action = NULL;
 	if (!soap_endpoint)
 		soap_endpoint = "http://zero-k.info/ContentService.asmx";
-	soap_action = "http://tempuri.org/SubmitStackTrace";
+	soap_action = "http://tempuri.org/SubmitSpringBattleResult";
 	soap->encodingStyle = NULL;
-	soap_tmp___ns2__SubmitStackTrace.ns1__SubmitStackTrace = ns1__SubmitStackTrace;
+	soap_tmp___Plasma2__SubmitSpringBattleResult.Plasma__SubmitSpringBattleResult = Plasma__SubmitSpringBattleResult;
 	soap_begin(soap);
 	soap_serializeheader(soap);
-	soap_serialize___ns2__SubmitStackTrace(soap, &soap_tmp___ns2__SubmitStackTrace);
+	soap_serialize___Plasma2__SubmitSpringBattleResult(soap, &soap_tmp___Plasma2__SubmitSpringBattleResult);
 	if (soap_begin_count(soap))
 		return soap->error;
 	if (soap->mode & SOAP_IO_LENGTH)
 	{	if (soap_envelope_begin_out(soap)
 		 || soap_putheader(soap)
 		 || soap_body_begin_out(soap)
-		 || soap_put___ns2__SubmitStackTrace(soap, &soap_tmp___ns2__SubmitStackTrace, "-ns2:SubmitStackTrace", "")
+		 || soap_put___Plasma2__SubmitSpringBattleResult(soap, &soap_tmp___Plasma2__SubmitSpringBattleResult, "-Plasma2:SubmitSpringBattleResult", "")
 		 || soap_body_end_out(soap)
 		 || soap_envelope_end_out(soap))
 			 return soap->error;
@@ -471,20 +856,130 @@ int ContentServiceSoapProxy::SubmitStackTrace(_ns1__SubmitStackTrace *ns1__Submi
 	 || soap_envelope_begin_out(soap)
 	 || soap_putheader(soap)
 	 || soap_body_begin_out(soap)
-	 || soap_put___ns2__SubmitStackTrace(soap, &soap_tmp___ns2__SubmitStackTrace, "-ns2:SubmitStackTrace", "")
+	 || soap_put___Plasma2__SubmitSpringBattleResult(soap, &soap_tmp___Plasma2__SubmitSpringBattleResult, "-Plasma2:SubmitSpringBattleResult", "")
 	 || soap_body_end_out(soap)
 	 || soap_envelope_end_out(soap)
 	 || soap_end_send(soap))
 		return soap_closesock(soap);
-	if (!ns1__SubmitStackTraceResponse)
+	if (!Plasma__SubmitSpringBattleResultResponse)
 		return soap_closesock(soap);
-	ns1__SubmitStackTraceResponse->soap_default(soap);
+	Plasma__SubmitSpringBattleResultResponse->soap_default(soap);
 	if (soap_begin_recv(soap)
 	 || soap_envelope_begin_in(soap)
 	 || soap_recv_header(soap)
 	 || soap_body_begin_in(soap))
 		return soap_closesock(soap);
-	ns1__SubmitStackTraceResponse->soap_get(soap, "ns1:SubmitStackTraceResponse", "");
+	Plasma__SubmitSpringBattleResultResponse->soap_get(soap, "Plasma:SubmitSpringBattleResultResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+int ContentServiceSoapProxy::SubmitStackTrace(_Plasma__SubmitStackTrace *Plasma__SubmitStackTrace, _Plasma__SubmitStackTraceResponse *Plasma__SubmitStackTraceResponse)
+{	struct soap *soap = this;
+	struct __Plasma2__SubmitStackTrace soap_tmp___Plasma2__SubmitStackTrace;
+	const char *soap_action = NULL;
+	if (!soap_endpoint)
+		soap_endpoint = "http://zero-k.info/ContentService.asmx";
+	soap_action = "http://tempuri.org/SubmitStackTrace";
+	soap->encodingStyle = NULL;
+	soap_tmp___Plasma2__SubmitStackTrace.Plasma__SubmitStackTrace = Plasma__SubmitStackTrace;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize___Plasma2__SubmitStackTrace(soap, &soap_tmp___Plasma2__SubmitStackTrace);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put___Plasma2__SubmitStackTrace(soap, &soap_tmp___Plasma2__SubmitStackTrace, "-Plasma2:SubmitStackTrace", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put___Plasma2__SubmitStackTrace(soap, &soap_tmp___Plasma2__SubmitStackTrace, "-Plasma2:SubmitStackTrace", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	if (!Plasma__SubmitStackTraceResponse)
+		return soap_closesock(soap);
+	Plasma__SubmitStackTraceResponse->soap_default(soap);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	Plasma__SubmitStackTraceResponse->soap_get(soap, "Plasma:SubmitStackTraceResponse", "");
+	if (soap->error)
+	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
+			return soap_recv_fault(soap);
+		return soap_closesock(soap);
+	}
+	if (soap_body_end_in(soap)
+	 || soap_envelope_end_in(soap)
+	 || soap_end_recv(soap))
+		return soap_closesock(soap);
+	return soap_closesock(soap);
+}
+
+int ContentServiceSoapProxy::VerifyAccountData(_Plasma__VerifyAccountData *Plasma__VerifyAccountData, _Plasma__VerifyAccountDataResponse *Plasma__VerifyAccountDataResponse)
+{	struct soap *soap = this;
+	struct __Plasma2__VerifyAccountData soap_tmp___Plasma2__VerifyAccountData;
+	const char *soap_action = NULL;
+	if (!soap_endpoint)
+		soap_endpoint = "http://zero-k.info/ContentService.asmx";
+	soap_action = "http://tempuri.org/VerifyAccountData";
+	soap->encodingStyle = NULL;
+	soap_tmp___Plasma2__VerifyAccountData.Plasma__VerifyAccountData = Plasma__VerifyAccountData;
+	soap_begin(soap);
+	soap_serializeheader(soap);
+	soap_serialize___Plasma2__VerifyAccountData(soap, &soap_tmp___Plasma2__VerifyAccountData);
+	if (soap_begin_count(soap))
+		return soap->error;
+	if (soap->mode & SOAP_IO_LENGTH)
+	{	if (soap_envelope_begin_out(soap)
+		 || soap_putheader(soap)
+		 || soap_body_begin_out(soap)
+		 || soap_put___Plasma2__VerifyAccountData(soap, &soap_tmp___Plasma2__VerifyAccountData, "-Plasma2:VerifyAccountData", "")
+		 || soap_body_end_out(soap)
+		 || soap_envelope_end_out(soap))
+			 return soap->error;
+	}
+	if (soap_end_count(soap))
+		return soap->error;
+	if (soap_connect(soap, soap_endpoint, soap_action)
+	 || soap_envelope_begin_out(soap)
+	 || soap_putheader(soap)
+	 || soap_body_begin_out(soap)
+	 || soap_put___Plasma2__VerifyAccountData(soap, &soap_tmp___Plasma2__VerifyAccountData, "-Plasma2:VerifyAccountData", "")
+	 || soap_body_end_out(soap)
+	 || soap_envelope_end_out(soap)
+	 || soap_end_send(soap))
+		return soap_closesock(soap);
+	if (!Plasma__VerifyAccountDataResponse)
+		return soap_closesock(soap);
+	Plasma__VerifyAccountDataResponse->soap_default(soap);
+	if (soap_begin_recv(soap)
+	 || soap_envelope_begin_in(soap)
+	 || soap_recv_header(soap)
+	 || soap_body_begin_in(soap))
+		return soap_closesock(soap);
+	Plasma__VerifyAccountDataResponse->soap_get(soap, "Plasma:VerifyAccountDataResponse", "");
 	if (soap->error)
 	{	if (soap->error == SOAP_TAG_MISMATCH && soap->level == 2)
 			return soap_recv_fault(soap);

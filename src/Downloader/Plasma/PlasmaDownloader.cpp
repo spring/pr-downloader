@@ -19,8 +19,8 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 {
 	LOG_DEBUG("%s",name.c_str());
 	ContentServiceSoap12Proxy service;
-	_ns1__DownloadFile file;
-	_ns1__DownloadFileResponse fileResponse;
+	_Plasma__DownloadFile file;
+	_Plasma__DownloadFileResponse fileResponse;
 	std::string tmpname=name;
 	file.internalName=&tmpname;
 	int res;
@@ -38,11 +38,11 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 	IDownload::category cat=category;
 	std::string fileName=fileSystem->getSpringDir() + PATH_DELIMITER;
 	switch (fileResponse.resourceType) {
-	case ns1__ResourceType__Map:
+	case Plasma__ResourceType__Map:
 		cat=IDownload::CAT_MAPS;
 		fileName.append("maps");
 		break;
-	case ns1__ResourceType__Mod:
+	case Plasma__ResourceType__Mod:
 		cat=IDownload::CAT_MODS;
 		fileName.append("games");
 		break;

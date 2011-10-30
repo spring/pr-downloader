@@ -31,21 +31,39 @@ class SOAP_CMAC ContentServiceSoap12Proxy : public soap
 	virtual	const char *soap_fault_string();
 	/// Get SOAP Fault detail as string (NULL when absent)
 	virtual	const char *soap_fault_detail();
+	/// Web service operation 'AutohostPlayerJoined' (return error code or SOAP_OK)
+	virtual	int AutohostPlayerJoined(_Plasma__AutohostPlayerJoined *Plasma__AutohostPlayerJoined, _Plasma__AutohostPlayerJoinedResponse *Plasma__AutohostPlayerJoinedResponse);
+	/// Web service operation 'BalanceTeams' (return error code or SOAP_OK)
+	virtual	int BalanceTeams(_Plasma__BalanceTeams *Plasma__BalanceTeams, _Plasma__BalanceTeamsResponse *Plasma__BalanceTeamsResponse);
 	/// Web service operation 'DownloadFile' (return error code or SOAP_OK)
-	virtual	int DownloadFile(_ns1__DownloadFile *ns1__DownloadFile, _ns1__DownloadFileResponse *ns1__DownloadFileResponse);
+	virtual	int DownloadFile(_Plasma__DownloadFile *Plasma__DownloadFile, _Plasma__DownloadFileResponse *Plasma__DownloadFileResponse);
+	/// Web service operation 'GetEloByAccountID' (return error code or SOAP_OK)
+	virtual	int GetEloByAccountID(_Plasma__GetEloByAccountID *Plasma__GetEloByAccountID, _Plasma__GetEloByAccountIDResponse *Plasma__GetEloByAccountIDResponse);
+	/// Web service operation 'GetEloByName' (return error code or SOAP_OK)
+	virtual	int GetEloByName(_Plasma__GetEloByName *Plasma__GetEloByName, _Plasma__GetEloByNameResponse *Plasma__GetEloByNameResponse);
+	/// Web service operation 'GetEloTop10' (return error code or SOAP_OK)
+	virtual	int GetEloTop10(_Plasma__GetEloTop10 *Plasma__GetEloTop10, _Plasma__GetEloTop10Response *Plasma__GetEloTop10Response);
+	/// Web service operation 'GetRecommendedMap' (return error code or SOAP_OK)
+	virtual	int GetRecommendedMap(_Plasma__GetRecommendedMap *Plasma__GetRecommendedMap, _Plasma__GetRecommendedMapResponse *Plasma__GetRecommendedMapResponse);
 	/// Web service operation 'GetResourceData' (return error code or SOAP_OK)
-	virtual	int GetResourceData(_ns1__GetResourceData *ns1__GetResourceData, _ns1__GetResourceDataResponse *ns1__GetResourceDataResponse);
+	virtual	int GetResourceData(_Plasma__GetResourceData *Plasma__GetResourceData, _Plasma__GetResourceDataResponse *Plasma__GetResourceDataResponse);
 	/// Web service operation 'GetResourceList' (return error code or SOAP_OK)
-	virtual	int GetResourceList(_ns1__GetResourceList *ns1__GetResourceList, _ns1__GetResourceListResponse *ns1__GetResourceListResponse);
+	virtual	int GetResourceList(_Plasma__GetResourceList *Plasma__GetResourceList, _Plasma__GetResourceListResponse *Plasma__GetResourceListResponse);
 	/// Web service operation 'GetScriptMissionData' (return error code or SOAP_OK)
-	virtual	int GetScriptMissionData(_ns1__GetScriptMissionData *ns1__GetScriptMissionData, _ns1__GetScriptMissionDataResponse *ns1__GetScriptMissionDataResponse);
+	virtual	int GetScriptMissionData(_Plasma__GetScriptMissionData *Plasma__GetScriptMissionData, _Plasma__GetScriptMissionDataResponse *Plasma__GetScriptMissionDataResponse);
+	/// Web service operation 'GetSpringBattleStartSetup' (return error code or SOAP_OK)
+	virtual	int GetSpringBattleStartSetup(_Plasma__GetSpringBattleStartSetup *Plasma__GetSpringBattleStartSetup, _Plasma__GetSpringBattleStartSetupResponse *Plasma__GetSpringBattleStartSetupResponse);
 	/// Web service operation 'NotifyMissionRun' (return error code or SOAP_OK)
-	virtual	int NotifyMissionRun(_ns1__NotifyMissionRun *ns1__NotifyMissionRun, _ns1__NotifyMissionRunResponse *ns1__NotifyMissionRunResponse);
+	virtual	int NotifyMissionRun(_Plasma__NotifyMissionRun *Plasma__NotifyMissionRun, _Plasma__NotifyMissionRunResponse *Plasma__NotifyMissionRunResponse);
 	/// Web service operation 'RegisterResource' (return error code or SOAP_OK)
-	virtual	int RegisterResource(_ns1__RegisterResource *ns1__RegisterResource, _ns1__RegisterResourceResponse *ns1__RegisterResourceResponse);
+	virtual	int RegisterResource(_Plasma__RegisterResource *Plasma__RegisterResource, _Plasma__RegisterResourceResponse *Plasma__RegisterResourceResponse);
 	/// Web service operation 'SubmitMissionScore' (return error code or SOAP_OK)
-	virtual	int SubmitMissionScore(_ns1__SubmitMissionScore *ns1__SubmitMissionScore, _ns1__SubmitMissionScoreResponse *ns1__SubmitMissionScoreResponse);
+	virtual	int SubmitMissionScore(_Plasma__SubmitMissionScore *Plasma__SubmitMissionScore, _Plasma__SubmitMissionScoreResponse *Plasma__SubmitMissionScoreResponse);
+	/// Web service operation 'SubmitSpringBattleResult' (return error code or SOAP_OK)
+	virtual	int SubmitSpringBattleResult(_Plasma__SubmitSpringBattleResult *Plasma__SubmitSpringBattleResult, _Plasma__SubmitSpringBattleResultResponse *Plasma__SubmitSpringBattleResultResponse);
 	/// Web service operation 'SubmitStackTrace' (return error code or SOAP_OK)
-	virtual	int SubmitStackTrace(_ns1__SubmitStackTrace *ns1__SubmitStackTrace, _ns1__SubmitStackTraceResponse *ns1__SubmitStackTraceResponse);
+	virtual	int SubmitStackTrace(_Plasma__SubmitStackTrace *Plasma__SubmitStackTrace, _Plasma__SubmitStackTraceResponse *Plasma__SubmitStackTraceResponse);
+	/// Web service operation 'VerifyAccountData' (return error code or SOAP_OK)
+	virtual	int VerifyAccountData(_Plasma__VerifyAccountData *Plasma__VerifyAccountData, _Plasma__VerifyAccountDataResponse *Plasma__VerifyAccountDataResponse);
 };
 #endif
