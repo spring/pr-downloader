@@ -1,16 +1,14 @@
 
-
+subdirs(lib)
 subdirs(Downloader)
+subdirs(FileSystem)
 
 set(myRapidFiles
-	FileSystem.cpp
 	Util.cpp
-	md5.cpp
-	sha1.cpp
-	main.cpp
-	Download.cpp
+	Logger.cpp
+	Downloader/Download.cpp
 	Downloader/IDownloader.cpp
-	bencode/bencode.c
+	Downloader/Mirror.cpp
 )
 
 set (RAPID "pr-downloader")
@@ -24,6 +22,7 @@ ENDIF ()
 
 add_library(${RAPID_LIB} SHARED
 	${myRapidFiles}
+	pr-downloader.cpp
 )
 
 target_link_libraries(${RAPID_LIB}
@@ -31,23 +30,22 @@ target_link_libraries(${RAPID_LIB}
 	Http
 	Plasma
 	Widget
-	${CURL_LIBRARIES}
-	${ZLIB_LIBRARIES}
+	FileSystem
 	${XMLRPC_LIBRARIES}
-	${ADDITIONAL_LIBS}
 )
 
-add_executable(${RAPID} ${myRapidFiles})
+add_executable(${RAPID}
+	main.cpp
+	${myRapidFiles}
+)
 
 target_link_libraries(${RAPID}
 	${WIN32LIBS}
-	${ZLIB_LIBRARIES}
-	${XMLRPC_LIBRARIES}
-	${CURL_LIBRARIES}
 	Rapid
 	Http
 	Plasma
 	Widget
+	FileSystem
 )
 
 FILE( GLOB_RECURSE header "*.h" )
@@ -60,10 +58,14 @@ ELSE()
 		LIBRARY DESTINATION ${LIBDIR}
 		ARCHIVE DESTINATION ${LIBDIR} )
 
-	SET( VERSION "0.1.1" )
+	SET( VERSION "${PR_DOWNLOADER_VERSION}" )
 	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
 	               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
 	install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${LIBDIR}/pkgconfig")
 
 ENDIF(WIN32)
+
+INSTALL (FILES
+        pr-downloader.h
+        DESTINATION ${INCLUDE_DIR}/Downloader COMPONENT Devel )
 

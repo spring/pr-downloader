@@ -10,6 +10,16 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 set (CMAKE_CXX_FLAGS_DEBUG "-DDEBUG")
 set (CMAKE_CXX_FLAGS_RELEASE "")
 
+SET(CMAKE_MODULES_DOWNLOADER "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_MODULES_DOWNLOADER}")
+INCLUDE(UtilGit)
+if (GIT_FOUND)
+	Git_Util_Describe(PR_DOWNLOADER_VERSION "src" "*")
+else()
+	SET(PR_DOWNLOAD_VERSION "dev")
+endif()
+
+MESSAGE(INFO "Version ${PR_DOWNLOADER_VERSION}")
 
 if   (MINGW)
 	set(MINGWLIBS "${CMAKE_SOURCE_DIR}/mingwlibs" CACHE PATH "Location of the mingwlibs package")
@@ -39,7 +49,10 @@ else (MINGW)
 	mark_as_advanced( BINDIR LIBDIR INCLUDE_DIR )
 	set(CMAKE_INSTALL_RPATH "${LIBDIR}")
 endif (MINGW)
-set(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
+
+#FIXME: set this compile flag only for one file
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DPR_DOWNLOADER_VERSION=\"${PR_DOWNLOADER_VERSION}\"")
+set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS}")
 
 find_package(CURL REQUIRED)
 find_package(ZLIB REQUIRED)
@@ -48,8 +61,10 @@ include_directories(SYSTEM ${CURL_INCLUDE_DIR})
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
 
 
-include_directories("${CMAKE_SOURCE_DIR}/include")
 include_directories("${CMAKE_SOURCE_DIR}/src")
 
 subdirs(src)
+
+ENABLE_TESTING()
+Add_Subdirectory(test)
 

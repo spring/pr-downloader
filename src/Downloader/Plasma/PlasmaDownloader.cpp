@@ -1,12 +1,12 @@
-
-#include "soap/soapContentServiceSoap12Proxy.h"
-#include "soap/ContentServiceSoap.nsmap"
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "PlasmaDownloader.h"
-#include "../../FileSystem.h"
-#include "../../Util.h"
-#include "pr-downloader/Download.h"
-
+#include "FileSystem/FileSystem.h"
+#include "Util.h"
+#include "Downloader/Download.h"
+#include "Logger.h"
+#include "lib/soap/soapContentServiceSoap12Proxy.h"
+#include "lib/soap/ContentServiceSoap.nsmap"
 
 
 CPlasmaDownloader::CPlasmaDownloader()
@@ -15,9 +15,9 @@ CPlasmaDownloader::CPlasmaDownloader()
 	fileSystem->createSubdirs(this->torrentPath);
 }
 
-bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category category)
+bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category category)
 {
-	DEBUG_LINE("%s",name.c_str());
+	LOG_DEBUG("%s",name.c_str());
 	ContentServiceSoap12Proxy service;
 	_ns1__DownloadFile file;
 	_ns1__DownloadFileResponse fileResponse;
@@ -26,11 +26,11 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 	int res;
 	res=service.DownloadFile(&file, &fileResponse);
 	if (res != SOAP_OK) {
-		printf("Soap error: %d: %s\n",res, service.soap_fault_string());
+		LOG_ERROR("Soap error: %d: %s\n",res, service.soap_fault_string());
 		return NULL;
 	}
 	if (!fileResponse.DownloadFileResult) {
-		printf("No file found for criteria %s\n",name.c_str());
+		LOG_ERROR("No file found for criteria %s\n",name.c_str());
 		return NULL;
 	}
 
@@ -47,40 +47,40 @@ bool CPlasmaDownloader::search(std::list<IDownload>& result, const std::string& 
 		fileName.append("games");
 		break;
 	default:
-		DEBUG_LINE("Unknown category in result: %d\n", cat);
+		LOG_DEBUG("Unknown category in result: %d\n", cat);
 		cat=IDownload::CAT_NONE;
 		break;
 	}
 	fileName+=PATH_DELIMITER;
 	if (fileResponse.links->string.size()==0) {
-		printf("got no mirror in plasmaresoult\n");
+		LOG_ERROR("No mirror in plasma result.\n");
 		return false;
 	}
 
 	std::string torrent;
 	torrent.assign((char*)fileResponse.torrent->__ptr,fileResponse.torrent->__size);
-	IDownload dl;
+	IDownload* dl = new IDownload();
 	//parse torrent data and fill set values inside dl
 	fileSystem->parseTorrent((char*)fileResponse.torrent->__ptr, fileResponse.torrent->__size, dl);
 
 	//set full path name
-	fileName.append(dl.name);
-	dl.name=fileName;
-	dl.cat=cat;
-	DEBUG_LINE("Got filename \"%s\" from torrent\n",fileName.c_str());
+	fileName.append(dl->name);
+	dl->name=fileName;
+	dl->cat=cat;
+	LOG_DEBUG("Got filename \"%s\" from torrent\n",fileName.c_str());
 
 	for (it=fileResponse.links->string.begin(); it!=fileResponse.links->string.end(); ++it) {
-		dl.addMirror((*it).c_str());
+		dl->addMirror((*it).c_str());
 	}
 	for (it=fileResponse.dependencies->string.begin(); it!=fileResponse.dependencies->string.end(); ++it) {
-		dl.addDepend((*it).c_str());
+		dl->addDepend((*it).c_str());
 	}
 	result.push_back(dl);
 	return true;
 }
 
-bool CPlasmaDownloader::download(IDownload& download)
+bool CPlasmaDownloader::download(IDownload* download)
 {
-	DEBUG_LINE("%s",download.name.c_str());
+	LOG_DEBUG("%s",download->name.c_str());
 	return httpDownload->download(download);
 }

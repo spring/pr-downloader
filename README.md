@@ -16,10 +16,11 @@ pr-downloader --download-game "Balanced Annihilation v7.20" --download-map "Delt
 
 ##coding style
 
-astyle --style=linux --indent=force-tab
+please use the git-pre-commit hook:
 
+	ln -sfv ../../git-hooks/pre-commit .git/hooks/pre-commit
 
 ##License
 
-pr-downloader is GPL-2 as it contains xmlrpcpp (GPL-2) and gsoap (GPL-2) code.
+pr-downloader is GPL-2 as it contains xmlrpcpp (GPL-2) and gsoap (GPL-2) code. For details, look at the LICENSE file.
 

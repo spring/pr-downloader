@@ -1,10 +1,14 @@
-#include "RepoMaster.h"
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "Repo.h"
-#include "../../FileSystem.h"
-#include "../IDownloader.h"
+#include "RepoMaster.h"
+#include "FileSystem/FileSystem.h"
+#include "Downloader/IDownloader.h"
 #include "RapidDownloader.h"
 #include "Sdp.h"
-#include "../../Util.h"
+#include "Util.h"
+#include "Logger.h"
+
 #include <zlib.h>
 #include <stdio.h>
 
@@ -24,7 +28,7 @@ void CRepo::download()
 {
 	std::string tmp;
 	urlToPath(repourl,tmp);
-	DEBUG_LINE("%s",tmp.c_str());
+	LOG_DEBUG("%s",tmp.c_str());
 	this->tmpFile = fileSystem->getSpringDir() + PATH_DELIMITER + "rapid" + PATH_DELIMITER +tmp + PATH_DELIMITER +"versions.gz";
 	fileSystem->createSubdirs(tmpFile);
 	if (fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME))
@@ -33,19 +37,20 @@ void CRepo::download()
 	fileSystem->createSubdirs(tmpFile);
 	IDownload dl(tmpFile);
 	dl.addMirror(repourl + "/versions.gz");
-	httpDownload->download(dl);
+	httpDownload->download(&dl);
 	parse();
 }
 
 bool CRepo::parse()
 {
-	DEBUG_LINE("%s",tmpFile.c_str());
+	LOG_DEBUG("%s",tmpFile.c_str());
 	gzFile fp=gzopen(tmpFile.c_str(), "r");
 	if (fp==Z_NULL) {
-		printf("Could not open %s\n",tmpFile.c_str());
+		LOG_ERROR("Could not open %s\n",tmpFile.c_str());
 		return false;
 	}
-	char buf[1024];
+
+	char buf[IO_BUF_SIZE];
 	sdps.empty();
 	while ((gzgets(fp, buf, sizeof(buf)))!=Z_NULL) {
 		for (unsigned int i=0; i<sizeof(buf); i++) {

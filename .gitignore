@@ -3,5 +3,7 @@
 .pc*
 .*swp
 obj-*
-debian/*.log
+*.cmake
+/debian/*.log
+/html
 build/

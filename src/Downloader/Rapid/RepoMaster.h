@@ -1,6 +1,7 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef REPO_MASTER_H
 #define REPO_MASTER_H
-
 
 #include <string>
 #include <list>

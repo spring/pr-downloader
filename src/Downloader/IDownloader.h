@@ -1,13 +1,13 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef I_DOWNLOADER_H
 #define I_DOWNLOADER_H
 
+#include "Download.h"
+
 #include <list>
 #include <string>
-
 #include <stdio.h>
-#include "pr-downloader/Download.h"
-#define PR_DOWNLOADER_AGENT "pr-downloader/0.1"
-
 
 class IDownloader
 {
@@ -33,30 +33,18 @@ public:
 		download specificed download
 		@return returns true, when download was successfull
 	*/
-	virtual bool download(IDownload& dl)=0;
+	virtual bool download(IDownload* dl)=0;
 	/**
 		download all downloads in list
 		@return returns true, when all downloads were successfull
 	*/
-	bool download(std::list<IDownload>& download) {
-		std::list<IDownload>::iterator it;
-		bool res=true;
-		for (it=download.begin(); it!=download.end(); ++it) {
-			if (!(*it).downloaded) //don't download twice
-				(*it).downloaded=this->download(*it);
-			if (!(*it).downloaded) {
-				res=false;
-			}
-		}
-		return res;
-	}
-
+	virtual bool download(std::list<IDownload*>& download);
 
 
 	/**
 		search for a string at the downloader
 	*/
-	virtual bool search(std::list<IDownload>& result, const std::string& name="", const IDownload::category=IDownload::CAT_NONE)=0;
+	virtual bool search(std::list<IDownload*>& result, const std::string& name="", const IDownload::category=IDownload::CAT_NONE)=0;
 
 private:
 	static IDownloader* httpdl;

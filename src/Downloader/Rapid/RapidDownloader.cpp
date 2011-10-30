@@ -1,12 +1,16 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "RapidDownloader.h"
-#include "../../FileSystem.h"
-#include "../../Util.h"
+#include "FileSystem/FileSystem.h"
+#include "Util.h"
+#include "Logger.h"
+#include "RepoMaster.h"
 #include "Sdp.h"
+
 #include <stdio.h>
 #include <string>
 #include <string.h>
 #include <list>
-#include "RepoMaster.h"
 
 
 CRapidDownloader::CRapidDownloader(const std::string& url)
@@ -59,13 +63,15 @@ bool CRapidDownloader::reloadRepos()
 
 bool CRapidDownloader::download_name(const std::string& longname, int reccounter)
 {
-	DEBUG_LINE("%s",longname.c_str());
+	LOG_DEBUG("%s",longname.c_str());
 	std::list<CSdp>::iterator it;
 	if (reccounter>10)
 		return false;
+	LOG_INFO("Using rapid\n");
 	for (it=sdps.begin(); it!=sdps.end(); ++it) {
 		if (match_download_name((*it).getName(),longname)) {
-			printf("Found Depends, downloading %s\n", (*it).getName().c_str());
+
+			LOG_DOWNLOAD((it)->getName().c_str() );
 			if (!(*it).download())
 				return false;
 			if ((*it).getDepends().length()>0) {
@@ -80,26 +86,26 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 
 
 
-bool CRapidDownloader::search(std::list<IDownload>& result, const std::string& name, IDownload::category cat)
+bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category cat)
 {
-	DEBUG_LINE("%s",name.c_str());
+	LOG_DEBUG("%s",name.c_str());
 	reloadRepos();
 	sdps.sort(list_compare);
 	std::list<CSdp>::iterator it;
 	for (it=sdps.begin(); it!=sdps.end(); ++it) {
 		if (match_download_name((*it).getShortName().c_str(),name)
 		    || (match_download_name((*it).getName().c_str(),name))) {
-			IDownload dl=IDownload((*it).getName().c_str());
-			dl.addMirror((*it).getShortName().c_str());
+			IDownload* dl=new IDownload((*it).getName().c_str());
+			dl->addMirror((*it).getShortName().c_str());
 			result.push_back(dl);
 		}
 	}
 	return true;
 }
 
-bool CRapidDownloader::download(IDownload& download)
+bool CRapidDownloader::download(IDownload* download)
 {
-	DEBUG_LINE("%s",download.name.c_str());
+	LOG_DEBUG("%s",download->name.c_str());
 	reloadRepos();
-	return download_name(download.name,0);
+	return download_name(download->name,0);
 }

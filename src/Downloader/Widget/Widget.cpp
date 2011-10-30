@@ -1,5 +1,10 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #include "Widget.h"
-#include "pugixml/pugixml.hpp"
+#include "Util.h"
+#include "Logger.h"
+#include "lib/pugixml/pugixml.hpp"
+
 #include <stdio.h>
 #include <list>
 #include <iostream>
@@ -8,8 +13,8 @@
 CWidget::CWidget(const std::string& filename)
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file(filename.c_str());
-	printf("Parsing %s\n", filename.c_str());
+//	pugi::xml_parse_result result = doc.load_file(filename.c_str());
+	LOG_INFO("Parsing %s\n", filename.c_str());
 	pugi::xml_node widget=doc.child("root");
 
 	std::list<CWidget> widgets;
@@ -31,6 +36,6 @@ CWidget::CWidget(const std::string& filename)
 				std::cout << std::endl; */
 		count++;
 	}
-	printf("Parsed %d widgets.\n",count);
+	LOG_INFO("Parsed %d widgets.\n",count);
 
 }

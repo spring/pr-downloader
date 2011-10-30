@@ -1,23 +1,28 @@
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
+
 #ifndef UTIL_H
 #define UTIL_H
 
-#include "FileSystem.h"
+#define QUOTEME_(x) #x
+#define QUOTEME(x) QUOTEME_(x)
+
+#define VERSION QUOTEME(PR_DOWNLOADER_VERSION)
+#define USER_AGENT "pr-downloader/" VERSION
+#define XMLRPC_METHOD "springfiles.search"
+#define XMLRPC_HOST "springfiles.com"
+#define XMLRPC_PORT 80
+#define XMLRPC_URI "/xmlrpc.php"
+#define MAX_PARALLEL_DOWNLOADS 10
+
+#include <string>
+
+class FileData;
 
 /**
 	creates a url from fileinfo, for example
 	<path>/<first2chars of md5>/<last 30 chars of md5>.gz
 */
-std::string getUrl(const CFileSystem::FileData* info, const std::string& path);
-
-/**
-	converts md5 ascii to bin
-*/
-bool md5AtoI(const std::string& md5, unsigned char* dest);
-
-/**
-	converts md5 bin to ascii
-*/
-bool md5ItoA(const unsigned char* source, std::string& md5);
+std::string getUrl(const FileData* info, const std::string& path);
 
 /**
 	returns substring number idx split by c
@@ -58,20 +63,14 @@ void urlEncode(std::string& url);
 */
 bool urlToPath(const std::string& url, std::string& path);
 
-#ifdef DEBUG
-
-#define DEBUG_LINE(fmt, ...) \
-	printf( "%s:%d:%s(): " fmt "\n", __FILE__, \
-                                __LINE__, __FUNCTION__, __VA_ARGS__);
-#else
-
-#define	DEBUG_LINE(fmt, ...)
-
-#endif
-
-#endif
-
 /**
  * base64 decode a string
  */
 void base64_decode(const std::string& encoded_string, std::string& ret);
+
+/**
+ *	returns the time
+ */
+unsigned long getTime();
+
+#endif
