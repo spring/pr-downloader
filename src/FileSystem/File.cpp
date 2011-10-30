@@ -237,7 +237,7 @@ long CFile::GetSizeFromHandle()
 		LOG_ERROR("CFile::SetSize(): fstat failed");
 		return -1;
 	}
-	LOG("GetSizeFromHandle: %d blocks: %d", sb.st_size, sb.st_blocks);
+//	LOG("GetSizeFromHandle: %d blocks: %d", sb.st_size, sb.st_blocks);
 	return sb.st_size;
 }
 
