@@ -19,6 +19,7 @@ void LOG_INFO(const char* format, ...)
 	va_start(args, format);
 	printf("[Info] ");
 	vprintf(format, args);
+	printf("\n");
 	va_end(args);
 }
 
@@ -28,6 +29,7 @@ void LOG_ERROR(const char* format, ...)
 	va_start(args,format);
 	printf("[Error] ");
 	vprintf(format,args);
+	printf("\n");
 	va_end(args);
 }
 
@@ -39,7 +41,7 @@ void LOG_DOWNLOAD(const char* filename)
 void LOG_PROGRESS(long done, long total)
 {
 	if (total<0) //if total bytes are unknown set to 50%
-		total=done/2;
+		total=done*2;
 	float percentage = 0;
 	if (total>0) {
 		percentage = (float)done / total;

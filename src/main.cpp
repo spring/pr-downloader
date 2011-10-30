@@ -19,7 +19,7 @@
 enum {
 	RAPID_DOWNLOAD=0,
 	RAPID_VALIDATE,
-	RAPID_LIST,
+	RAPID_SEARCH,
 	HTTP_SEARCH,
 	HTTP_DOWNLOAD,
 	PLASMA_DOWNLOAD,
@@ -36,7 +36,7 @@ enum {
 static struct option long_options[] = {
 	{"rapid-download"          , 1, 0, RAPID_DOWNLOAD},
 	{"rapid-validate"          , 0, 0, RAPID_VALIDATE},
-	{"rapid-list"              , 0, 0, RAPID_LIST},
+	{"rapid-search"            , 1, 0, RAPID_SEARCH},
 	{"plasma-download"         , 1, 0, PLASMA_DOWNLOAD},
 	{"plasma-search"           , 1, 0, PLASMA_SEARCH},
 	{"http-download"           , 1, 0, HTTP_DOWNLOAD},
@@ -53,7 +53,7 @@ static struct option long_options[] = {
 
 void show_version()
 {
-	LOG("pr-downloader " VERSION "\n");
+	LOG("pr-downloader " VERSION "");
 }
 
 void show_help(const char* cmd)
@@ -98,10 +98,10 @@ void show_results(std::list<IDownload*>& list)
 {
 	std::list<IDownload*>::iterator it;
 	for (it=list.begin(); it!=list.end(); ++it) {
-		LOG_INFO("Filename: %s Size: %d\n",(*it)->name.c_str(), (*it)->size);
+		LOG_INFO("Filename: %s Size: %d",(*it)->name.c_str(), (*it)->size);
 		int count=(*it)->getMirrorCount();
 		for(int i=0; i<count; i++) {
-			LOG_INFO("Download url: %s\n",(*it)->getMirror(i)->url.c_str());
+			LOG_INFO("Download url: %s",(*it)->getMirror(i)->url.c_str());
 		}
 	}
 }
@@ -125,10 +125,11 @@ int main(int argc, char **argv)
 		case RAPID_DOWNLOAD: {
 			rapidDownload->search(list, optarg);
 			if (list.empty()) {
-				LOG_ERROR("Coulnd't find %s\n",optarg);
+				LOG_ERROR("Coulnd't find %s",optarg);
 			} else if (!rapidDownload->download(list)) {
-				LOG_ERROR("Error downloading %s\n",optarg);
+				LOG_ERROR("Error downloading %s",optarg);
 			}
+			IDownloader::freeResult(list);
 			break;
 		}
 		case RAPID_VALIDATE: {
@@ -136,26 +137,31 @@ int main(int argc, char **argv)
 			LOG_INFO("Validated %d files",res);
 			break;
 		}
-		case RAPID_LIST: {
-			rapidDownload->search(list);
+		case RAPID_SEARCH: {
+			std::string tmp=optarg;
+			rapidDownload->search(list, tmp);
 			show_results(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case PLASMA_SEARCH: {
 			std::string tmp=optarg;
 			plasmaDownload->search(list, tmp);
 			show_results(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case PLASMA_DOWNLOAD: {
 			plasmaDownload->search(list, optarg);
 			if (!list.empty())
 				plasmaDownload->download(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case WIDGET_SEARCH: {
 			std::string tmp=optarg;
 			widgetDownload->search(list, tmp);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case FILESYSTEM_WRITEPATH: {
@@ -170,22 +176,24 @@ int main(int argc, char **argv)
 		case HTTP_SEARCH: {
 			httpDownload->search(list, optarg);
 			show_results(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case HTTP_DOWNLOAD: {
 			httpDownload->search(list, optarg);
 			httpDownload->download(list);
+			IDownloader::freeResult(list);
 			break;
 		}
 		case DOWNLOAD_MAP: {
 			if (!download(optarg, IDownload::CAT_MAPS)) {
-				LOG_ERROR("No map found for %s\n",optarg);
+				LOG_ERROR("No map found for %s",optarg);
 			}
 			break;
 		}
 		case DOWNLOAD_GAME: {
 			if (!download(optarg, IDownload::CAT_MODS)) {
-				LOG_ERROR("No game found for %s\n",optarg);
+				LOG_ERROR("No game found for %s",optarg);
 			}
 			break;
 		}

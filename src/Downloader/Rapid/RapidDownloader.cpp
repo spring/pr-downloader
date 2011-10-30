@@ -11,6 +11,7 @@
 #include <string>
 #include <string.h>
 #include <list>
+#include <regex.h>
 
 
 CRapidDownloader::CRapidDownloader(const std::string& url)
@@ -67,7 +68,7 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 	std::list<CSdp>::iterator it;
 	if (reccounter>10)
 		return false;
-	LOG_INFO("Using rapid\n");
+	LOG_INFO("Using rapid");
 	for (it=sdps.begin(); it!=sdps.end(); ++it) {
 		if (match_download_name((*it).getName(),longname)) {
 
@@ -93,8 +94,8 @@ bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& 
 	sdps.sort(list_compare);
 	std::list<CSdp>::iterator it;
 	for (it=sdps.begin(); it!=sdps.end(); ++it) {
-		if (match_download_name((*it).getShortName().c_str(),name)
-		    || (match_download_name((*it).getName().c_str(),name))) {
+		if (match_download_name((*it).getShortName(),name)
+		    || (match_download_name((*it).getName(),name))) {
 			IDownload* dl=new IDownload((*it).getName().c_str());
 			dl->addMirror((*it).getShortName().c_str());
 			result.push_back(dl);
@@ -108,4 +109,19 @@ bool CRapidDownloader::download(IDownload* download)
 	LOG_DEBUG("%s",download->name.c_str());
 	reloadRepos();
 	return download_name(download->name,0);
+}
+
+bool CRapidDownloader::match_download_name(const std::string &str1,const std::string& str2)
+{
+	if (str2=="") return true;
+	regex_t regex;
+	if (regcomp(&regex, str2.c_str(), 0)==0) {
+		int res=regexec(&regex, str1.c_str(),0, NULL, 0 );
+		regfree(&regex);
+		if (res==0) {
+			return true;
+		}
+	}
+	if (str1==str2) return true;
+	return false;
 }

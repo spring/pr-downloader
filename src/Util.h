@@ -44,13 +44,6 @@ unsigned int parse_int32(unsigned char c[4]);
 unsigned int intmin(int x, int y);
 
 /**
-	compare str1 with str2
-	if str2==* or "" it matches
-	used for search in downloaders
-*/
-bool match_download_name(const std::string &str1,const std::string& str2);
-
-/**
 	replace " " with %20 in an url
 	FIXME: this should handle all special chars
 */

@@ -26,11 +26,11 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 	int res;
 	res=service.DownloadFile(&file, &fileResponse);
 	if (res != SOAP_OK) {
-		LOG_ERROR("Soap error: %d: %s\n",res, service.soap_fault_string());
+		LOG_ERROR("Soap error: %d: %s",res, service.soap_fault_string());
 		return NULL;
 	}
 	if (!fileResponse.DownloadFileResult) {
-		LOG_ERROR("No file found for criteria %s\n",name.c_str());
+		LOG_ERROR("No file found for criteria %s",name.c_str());
 		return NULL;
 	}
 
@@ -47,13 +47,13 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 		fileName.append("games");
 		break;
 	default:
-		LOG_DEBUG("Unknown category in result: %d\n", cat);
+		LOG_DEBUG("Unknown category in result: %d", cat);
 		cat=IDownload::CAT_NONE;
 		break;
 	}
 	fileName+=PATH_DELIMITER;
 	if (fileResponse.links->string.size()==0) {
-		LOG_ERROR("No mirror in plasma result.\n");
+		LOG_ERROR("No mirror in plasma result.");
 		return false;
 	}
 
@@ -67,7 +67,7 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 	fileName.append(dl->name);
 	dl->name=fileName;
 	dl->cat=cat;
-	LOG_DEBUG("Got filename \"%s\" from torrent\n",fileName.c_str());
+	LOG_DEBUG("Got filename \"%s\" from torrent",fileName.c_str());
 
 	for (it=fileResponse.links->string.begin(); it!=fileResponse.links->string.end(); ++it) {
 		dl->addMirror((*it).c_str());
