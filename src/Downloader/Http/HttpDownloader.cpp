@@ -74,7 +74,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 		else if (category=="game")
 			filename+="games";
 		else
-			LOG_DEBUG("Unknown Category %s", category.c_str());
+			LOG_ERROR("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
 		    (resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
@@ -124,7 +124,7 @@ size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data
 	return data->file->Write((const char*)ptr, size*nmemb, data->piece);
 }
 
-bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize, int filesize)
+bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize)
 {
 	std::ostringstream s;
 	s << (int)(piecesize*piece) <<"-"<< (piecesize*piece) + piecesize-1;
@@ -207,7 +207,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 	return -1;
 }
 
-bool CHttpDownloader::setupDownload(CFile& file, DownloadData* piece, IDownload* download, int mirror)
+bool CHttpDownloader::setupDownload(CFile& file, DownloadData* piece, IDownload* download)
 {
 	int pieceNum=verifyAndGetNextPiece(file, download);
 	if (download->state==IDownload::STATE_FINISHED)
@@ -240,7 +240,7 @@ bool CHttpDownloader::setupDownload(CFile& file, DownloadData* piece, IDownload*
 
 	if ((download->size>0) && (pieceNum>=0)) { //don't set range, if size unknown
 		std::string range;
-		if (!getRange(range, pieceNum, download->piecesize, download->size )) {
+		if (!getRange(range, pieceNum, download->piecesize)) {
 			LOG_ERROR("Error getting range for download");
 			return false;
 		}
@@ -312,7 +312,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			data->easy_handle=NULL;
 
 			//piece finished / failed, try a new one
-			if (!setupDownload(file, data, download, 0)) {
+			if (!setupDownload(file, data, download)) {
 				LOG_INFO("No piece found, all pieces finished / currently downloading");
 				break;
 			}
@@ -346,7 +346,7 @@ bool CHttpDownloader::download(IDownload* download)
 	std::vector <DownloadData*> downloads;
 	for(int i=0; i<count; i++) {
 		DownloadData* dlData=new DownloadData();
-		if (!setupDownload(file, dlData, download, i)) { //no piece found (all pieces already downloaded), skip
+		if (!setupDownload(file, dlData, download)) { //no piece found (all pieces already downloaded), skip
 			delete dlData;
 			if (download->state!=IDownload::STATE_FINISHED) {
 				LOG_ERROR("no piece found");

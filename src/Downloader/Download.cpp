@@ -50,7 +50,7 @@ const std::string IDownload::getUrl()
 
 Mirror* IDownload::getMirror(unsigned i)
 {
-	assert((i<mirrors.size()) && (i>=0));
+	assert(i<mirrors.size());
 	return mirrors[i];
 }
 

@@ -50,8 +50,8 @@ private:
 	*	gets next piece that can be downloaded, mark it as downloading
 	*	@return true when DownloadData is correctly set
 	*/
-	bool setupDownload(CFile& file, DownloadData* piece, IDownload* download, int mirror);
-	bool getRange(std::string& range, int piece, int piecesize, int filesize);
+	bool setupDownload(CFile& file, DownloadData* piece, IDownload* download);
+	bool getRange(std::string& range, int piece, int piecesize);
 	/**
 	* returns piecenum for file, which isn't already downloaded
 	* verifies if parts of a file is already downloaded (if checksums are set in download)
