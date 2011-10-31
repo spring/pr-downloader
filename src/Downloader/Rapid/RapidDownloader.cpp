@@ -11,7 +11,9 @@
 #include <string>
 #include <string.h>
 #include <list>
+#ifndef WIN32
 #include <regex.h>
+#endif
 
 
 CRapidDownloader::CRapidDownloader(const std::string& url)
@@ -114,6 +116,10 @@ bool CRapidDownloader::download(IDownload* download)
 bool CRapidDownloader::match_download_name(const std::string &str1,const std::string& str2)
 {
 	if (str2=="") return true;
+	if (str1==str2) return true;
+	if (str2=="*")	 return true;
+//FIXME: add regex support for win32
+#ifndef WIN32
 	regex_t regex;
 	if (regcomp(&regex, str2.c_str(), 0)==0) {
 		int res=regexec(&regex, str1.c_str(),0, NULL, 0 );
@@ -122,6 +128,6 @@ bool CRapidDownloader::match_download_name(const std::string &str1,const std::st
 			return true;
 		}
 	}
-	if (str1==str2) return true;
+#endif
 	return false;
 }
