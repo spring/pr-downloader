@@ -20,7 +20,6 @@ else()
 endif()
 
 MESSAGE(INFO "Version ${PR_DOWNLOADER_VERSION}")
-
 if   (MINGW)
 	if(NOT DEFINED ${MINGWLIBS})
 		set(MINGWLIBS "${CMAKE_SOURCE_DIR}/mingwlibs" CACHE PATH "Location of the mingwlibs package")
@@ -58,6 +57,9 @@ set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS}")
 
 find_package(CURL REQUIRED)
 find_package(ZLIB REQUIRED)
+
+#compile fix for soap (springlobby defines this)
+remove_definitions(-DHAVE_CONFIG_H)
 
 include_directories(SYSTEM ${CURL_INCLUDE_DIR})
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
