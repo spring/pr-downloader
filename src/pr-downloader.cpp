@@ -10,10 +10,10 @@ int downloadSearch(category cat, char* name)
 {
 	switch(cat) {
 	case CAT_MAP:
-		httpDownload->search(downloads);
+		httpDownload->search(downloads, name);
 		break;
 	case CAT_GAME:
-		httpDownload->search(downloads);
+		httpDownload->search(downloads, name);
 	}
 	return downloads.size();
 }
