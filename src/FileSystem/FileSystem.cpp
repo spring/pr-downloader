@@ -221,6 +221,7 @@ int CFileSystem::validatePool(const std::string& path)
 	dirs.push_back(new std::string(path));
 	int maxdirs=257; //FIXME: unknown dirs in pool will break bar
 	int finished=0;
+	IHash* md5=new HashMD5();
 	while(!dirs.empty()) {
 		struct dirent* dentry;
 		DIR* d;
@@ -256,7 +257,11 @@ int CFileSystem::validatePool(const std::string& path)
 						md5str.push_back(absname.at(len-36)); //get md5 from path + filename
 						md5str.push_back(absname.at(len-35));
 						md5str.append(absname.substr(len-33, 30));
-						memcpy(filedata.md5, md5str.c_str(), sizeof(filedata.md5));
+						md5->Set(md5str);
+						for(unsigned i=0; i<16; i++) {
+							filedata.md5[i]=md5->get(i);
+						}
+
 						if (!fileIsValid(filedata, absname)) { //check if md5 in filename is the same as in filename
 							LOG_ERROR("Invalid File in pool: %s",absname.c_str());
 						} else {
@@ -270,6 +275,7 @@ int CFileSystem::validatePool(const std::string& path)
 		delete(dir);
 		closedir(d);
 	}
+	delete md5;
 	LOG_PROGRESS(finished, maxdirs);
 	LOG("");
 	return res;

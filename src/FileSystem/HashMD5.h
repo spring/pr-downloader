@@ -14,9 +14,9 @@ public:
 	void Final();
 	void Update(const char* data,const int size);
 	bool Set(const unsigned char* data, int size);
+	unsigned char get(int pos) const;
 protected:
 	int getSize() const;
-	unsigned char get(int pos) const;
 
 private:
 	MD5_CTX mdContext;
