@@ -28,11 +28,11 @@ public:
 	/**
 		parses the file for a mod and creates
 	*/
-	bool parseSdp(const std::string& filename, std::list<FileData>& files);
+	bool parseSdp(const std::string& filename, std::list<FileData*>& files);
 	/**
 	 *	Validates a pool-file, (checks the md5)
 	 */
-	bool fileIsValid(const FileData& mod, const std::string& filename) const;
+	bool fileIsValid(const FileData* mod, const std::string& filename) const;
 
 	/**
 		returns the spring writeable directory

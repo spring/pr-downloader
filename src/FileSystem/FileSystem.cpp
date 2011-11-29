@@ -27,7 +27,7 @@
 
 CFileSystem* CFileSystem::singleton = NULL;
 
-bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) const
+bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) const
 {
 	HashMD5 md5hash;
 	int bytes;
@@ -49,7 +49,7 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 			ERROR("File %s invalid, size wrong: %d but should be %d", filename.c_str(),filesize, mod->size);
 			return false;
 		}*/
-	if (!md5hash.compare(mod.md5, sizeof(mod.md5) )) { //file is invalid
+	if (!md5hash.compare(mod->md5, sizeof(mod->md5) )) { //file is invalid
 //		ERROR("Damaged file found: %s",filename.c_str());
 //		unlink(filename.c_str());
 		return false;
@@ -57,7 +57,7 @@ bool CFileSystem::fileIsValid(const FileData& mod, const std::string& filename) 
 	return true;
 }
 
-bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData>& files)
+bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& files)
 {
 	char c_name[255];
 	unsigned char c_md5[16];
@@ -70,7 +70,6 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData>& fil
 		return NULL;
 	}
 	files.clear();
-	FileData tmpfile;
 	while (!gzeof(in)) {
 		int length = gzgetc(in);
 		if (length == -1) break;
@@ -82,12 +81,11 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData>& fil
 			gzclose(in);
 			return false;
 		}
-
-		FileData f;
-		f.name = std::string(c_name, length);
-		memcpy(&f.md5, &c_md5, 16);
-		memcpy(&f.crc32, &c_crc32, 4);
-		f.size = parse_int32(c_size);
+		FileData* f=new FileData;
+		f->name = std::string(c_name, length);
+		memcpy(f->md5, &c_md5, 16);
+		memcpy(f->crc32, &c_crc32, 4);
+		f->size = parse_int32(c_size);
 		files.push_back(f);
 	}
 	gzclose(in);
@@ -262,7 +260,7 @@ int CFileSystem::validatePool(const std::string& path)
 							filedata.md5[i]=md5->get(i);
 						}
 
-						if (!fileIsValid(filedata, absname)) { //check if md5 in filename is the same as in filename
+						if (!fileIsValid(&filedata, absname)) { //check if md5 in filename is the same as in filename
 							LOG_ERROR("Invalid File in pool: %s",absname.c_str());
 						} else {
 							res++;
@@ -383,15 +381,16 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 
 bool CFileSystem::dumpSDP(const std::string& filename)
 {
-	std::list<FileData> files;
+	std::list<FileData*> files;
 	files.clear();
 	if (!parseSdp(filename, files))
 		return false;
-	std::list<FileData>::iterator it;
-	HashMD5 md5;
 	LOG_INFO("md5 (filename in pool)           crc32        size filename");
+	std::list<FileData*>::iterator it;
+	HashMD5 md5;
 	for(it=files.begin(); it!=files.end(); ++it) {
-		LOG_INFO("%s %.8X %8d %s",md5.toString().c_str(), (*it).crc32, (*it).size, (*it).name.c_str());
+		md5.Set((*it)->md5, sizeof((*it)->md5));
+		LOG_INFO("%s %.8X %8d %s",md5.toString().c_str(), (*it)->crc32, (*it)->size, (*it)->name.c_str());
 	}
 	return true;
 }

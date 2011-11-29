@@ -45,7 +45,7 @@ bool CSdp::download()
 	FileData tmp=FileData();
 	HashMD5 md5= HashMD5();
 	md5.Set(tmp.md5, sizeof(tmp.md5));
-	std::list<FileData> files;
+	std::list<FileData*> files;
 
 	if (!fileSystem->parseSdp(filename,files)) { //file isn't avaiable, download it
 		IDownload dl(filename);
@@ -54,7 +54,7 @@ bool CSdp::download()
 		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}
 
-	std::list<FileData>::iterator it;
+	std::list<FileData*>::iterator it;
 	/*	CHttpDownload* tmp=httpDownload; //FIXME: extend interface?
 		tmp->setCount(files.size());
 	*/
@@ -62,7 +62,7 @@ bool CSdp::download()
 	it=files.begin();
 	while (it!=files.end()) {
 		i++;
-		md5.Set((*it).md5, sizeof((*it).md5));
+		md5.Set((*it)->md5, sizeof((*it)->md5));
 		std::string md5str=md5.toString();
 		std::string filename=md5str.substr(2);
 		filename.append(".gz");
@@ -79,9 +79,9 @@ bool CSdp::download()
 
 		if (!fileSystem->fileExists(file)) { //add non-existing files to download list
 			count++;
-			(*it).download=true;
+			(*it)->download=true;
 		} else {
-			(*it).download=false;
+			(*it)->download=false;
 		}
 		if (i%10==0) {
 			LOG_DEBUG("\r%d/%d checked",i,(int)files.size());
@@ -124,14 +124,14 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 
 	while (buf_pos<buf_end) { //all bytes written?
 		if (sdp->file_handle==NULL) { //no open file, create one
-			while ( (!(*sdp->list_it).download==true) && (sdp->list_it!=sdp->globalFiles->end())) { //get file
+			while ( (!(*sdp->list_it)->download==true) && (sdp->list_it!=sdp->globalFiles->end())) { //get file
 				sdp->list_it++;
 			}
-			sdp->file_name=fileSystem->getPoolFileName((*sdp->list_it).name.c_str());
+			sdp->file_name=fileSystem->getPoolFileName((*sdp->list_it)->name.c_str());
 			sdp->file_handle=fopen(sdp->file_name.c_str(),"wb");
 //FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);
 			if (sdp->file_handle==NULL) {
-				LOG_ERROR("couldn't open %s",(*sdp->list_it).name.c_str());
+				LOG_ERROR("couldn't open %s",(*sdp->list_it)->name.c_str());
 				return -1;
 			}
 			//here comes the init new file stuff
@@ -149,11 +149,11 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 				sdp->skipped=toskip+sdp->skipped;
 				buf_pos=buf_pos+sdp->skipped;
 				if (sdp->skipped==LENGTH_SIZE) {
-					(*sdp->list_it).compsize=parse_int32(sdp->cursize_buf);
+					(*sdp->list_it)->compsize=parse_int32(sdp->cursize_buf);
 				}
 			}
 			if (sdp->skipped==LENGTH_SIZE) {
-				int towrite=intmin ((*sdp->list_it).compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
+				int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
 						    buf_end-buf_pos);
 //				LOG_DEBUG("%s %d %ld %ld %ld %d %d %d %d %d",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
 				int res=0;
@@ -174,7 +174,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 
 				buf_pos=buf_pos+res;
 				sdp->file_pos+=res;
-				if (sdp->file_pos>=(*sdp->list_it).compsize) { //file finished -> next file
+				if (sdp->file_pos>=(*sdp->list_it)->compsize) { //file finished -> next file
 					fclose(sdp->file_handle);
 					if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())) {
 						LOG_ERROR("File is broken?!: %s",sdp->file_name.c_str());
@@ -207,7 +207,7 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	return 0;
 }
 
-bool CSdp::downloadStream(std::string url,std::list<FileData>& files)
+bool CSdp::downloadStream(std::string url,std::list<FileData*> files)
 {
 	CURL* curl;
 	curl = curl_easy_init();
@@ -218,7 +218,6 @@ bool CSdp::downloadStream(std::string url,std::list<FileData>& files)
 
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
-		std::list<FileData>::iterator it;
 		int  buflen=files.size()/8;
 		if (files.size()%8!=0)
 			buflen++;
@@ -227,8 +226,9 @@ bool CSdp::downloadStream(std::string url,std::list<FileData>& files)
 		int destlen=files.size()*2;
 		LOG_DEBUG("%d %d %d",(int)files.size(),buflen,destlen);
 		int i=0;
+		std::list<FileData*>::iterator it;
 		for (it=files.begin(); it!=files.end(); ++it) {
-			if ((*it).download==true)
+			if ((*it)->download==true)
 				buf[i/8] = buf[i/8] + (1<<(i%8));
 			i++;
 		}
