@@ -43,13 +43,11 @@ bool CSdp::download()
 	int count=0;
 	filename  += this->md5 + ".sdp";
 	FileData tmp=FileData();
-	HashMD5 md5= HashMD5();
-	md5.Set(tmp.md5, sizeof(tmp.md5));
 	std::list<FileData*> files;
 
-	if (!fileSystem->parseSdp(filename,files)) { //file isn't avaiable, download it
+	if (!fileSystem->parseSdp(filename,files)) { //.sdp isn't avaiable, download it
 		IDownload dl(filename);
-		dl.addMirror(url + "/packages/" + md5.toString() + ".sdp");
+		dl.addMirror(url + "/packages/" + this->md5 + ".sdp");
 		httpDownload->download(&dl);
 		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}
@@ -58,6 +56,9 @@ bool CSdp::download()
 	/*	CHttpDownload* tmp=httpDownload; //FIXME: extend interface?
 		tmp->setCount(files.size());
 	*/
+
+	HashMD5 md5= HashMD5();
+	md5.Set(tmp.md5, sizeof(tmp.md5));
 	int i=0;
 	it=files.begin();
 	while (it!=files.end()) {
@@ -127,7 +128,9 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			while ( (!(*sdp->list_it)->download==true) && (sdp->list_it!=sdp->globalFiles->end())) { //get file
 				sdp->list_it++;
 			}
-			sdp->file_name=fileSystem->getPoolFileName((*sdp->list_it)->name.c_str());
+			HashMD5 md5;
+			md5.Set((*sdp->list_it)->md5, sizeof((*sdp->list_it)->md5));
+			sdp->file_name=fileSystem->getPoolFileName(md5.toString());
 			sdp->file_handle=fopen(sdp->file_name.c_str(),"wb");
 //FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);
 			if (sdp->file_handle==NULL) {
@@ -228,8 +231,9 @@ bool CSdp::downloadStream(std::string url,std::list<FileData*> files)
 		int i=0;
 		std::list<FileData*>::iterator it;
 		for (it=files.begin(); it!=files.end(); ++it) {
-			if ((*it)->download==true)
+			if ((*it)->download==true) {
 				buf[i/8] = buf[i/8] + (1<<(i%8));
+			}
 			i++;
 		}
 		char* dest=(char*)malloc(destlen);

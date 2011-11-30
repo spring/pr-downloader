@@ -89,6 +89,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 		files.push_back(f);
 	}
 	gzclose(in);
+	LOG_DEBUG("Parsed %s with %d files\n", filename.c_str(), files.size());
 	return true;
 }
 
