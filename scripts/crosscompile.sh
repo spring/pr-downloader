@@ -1,5 +1,6 @@
 #!/bin/sh
 
+set -e
 
 export PREFIX=$(pwd)/mingwlibs
 export MINGWHOST=i686-w64-mingw32
