@@ -53,7 +53,7 @@ static struct option long_options[] = {
 
 void show_version()
 {
-	LOG("pr-downloader " VERSION "");
+	LOG("pr-downloader " VERSION "\n");
 }
 
 void show_help(const char* cmd)
