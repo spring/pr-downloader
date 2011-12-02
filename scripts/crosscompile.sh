@@ -2,13 +2,14 @@
 
 
 export PREFIX=$(pwd)/mingwlibs
-export MINGWHOST=i586-mingw32msvc
+export MINGWHOST=i686-w64-mingw32
 export MINGW32CXX=${MINGWHOST}-g++
 export MINGW32CC=${MINGWHOST}-gcc
 export MINGW32CPP=${MINGWHOST}-cpp
 export MINGW32RC=${MINGWHOST}-windres
 export MINGW32AR=${MINGWHOST}-ar
 export MINGW32RANLIB=${MINGWHOST}-ranlib
+export MINGW32RC=${MINGWHOST}-windres
 export DOWNLOAD="wget -c"
 export PARALLEL="8"
 
@@ -64,6 +65,17 @@ if [ ! -s ${PREFIX}/lib/libcurl.a ]; then
 fi
 
 rm -f CMakeCache.txt
+
+(
+echo "SET(CMAKE_SYSTEM_NAME Windows)"
+echo "SET(CMAKE_C_COMPILER $MINGW32CC)"
+echo "SET(CMAKE_CXX_COMPILER $MINGW32CXX)"
+echo "SET(CMAKE_FIND_ROOT_PATH /usr/$MINGWHOST)"
+echo "SET(MINGWLIBS ./mingwlibs)"
+echo "SET(CMAKE_INSTALL_PREFIX  ./dist)"
+echo "SET(CMAKE_RC_COMPILER $MINGW32RC)"
+) >win32.cmake
+
 cmake . "-DCMAKE_TOOLCHAIN_FILE=./win32.cmake"
 make install -j ${PARALELL}
 
