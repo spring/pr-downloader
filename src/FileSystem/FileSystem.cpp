@@ -324,6 +324,10 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 //#ifdef DEBUG
 //	be_dump(node);
 //#endif
+	if(node==NULL) {
+		LOG_ERROR("couldn't parse torrent");
+		return false;
+	}
 	if (node->type!=BE_DICT) {
 		LOG_ERROR("Error in torrent data");
 		be_free(node);
