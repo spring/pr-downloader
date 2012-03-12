@@ -89,7 +89,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 		files.push_back(f);
 	}
 	gzclose(in);
-	LOG_DEBUG("Parsed %s with %d files\n", filename.c_str(), files.size());
+	LOG_DEBUG("Parsed %s with %d files\n", filename.c_str(), (int)files.size());
 	return true;
 }
 
@@ -351,10 +351,9 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 		datanode=infonode->val.d[i].val;
 		switch(datanode->type) {
 		case BE_STR: //current value is a string
-//			if ((strcmp("name",infonode->val.d[i].key)==0) && (dl.name.empty())) { //set filename if not already set
-//					dl.name=datanode->val.s;
-//			} else
-			if (!strcmp("pieces", infonode->val.d[i].key)) { //hash sum of a piece
+			if ((strcmp("name",infonode->val.d[i].key)==0) && (dl->name.empty())) { //set filename if not already set
+				dl->name=datanode->val.s;
+			} else if (!strcmp("pieces", infonode->val.d[i].key)) { //hash sum of a piece
 				const int count = be_str_len(datanode)/20; //one sha1 sum is 5 * 4 bytes long
 				for (int i=0; i<count; i++) {
 					struct IDownload::piece piece;
