@@ -9,7 +9,7 @@
 #define VERSION QUOTEME(PR_DOWNLOADER_VERSION)
 #define USER_AGENT "pr-downloader/" VERSION
 #define XMLRPC_METHOD "springfiles.search"
-#define XMLRPC_HOST "springfiles.com"
+#define XMLRPC_HOST "api.springfiles.com"
 #define XMLRPC_PORT 80
 #define XMLRPC_URI "/xmlrpc.php"
 #define MAX_PARALLEL_DOWNLOADS 10
