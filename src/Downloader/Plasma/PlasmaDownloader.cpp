@@ -62,6 +62,10 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 	IDownload* dl = new IDownload();
 	//parse torrent data and fill set values inside dl
 	fileSystem->parseTorrent((char*)fileResponse.torrent->__ptr, fileResponse.torrent->__size, dl);
+	if (dl->name == "") {
+		LOG_ERROR("Couldn't parse torrent filename");
+		return false;
+	}
 
 	//set full path name
 	fileName.append(dl->name);
