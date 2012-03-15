@@ -314,7 +314,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 
 			//piece finished / failed, try a new one
 			if (!setupDownload(file, data, download)) {
-				LOG_INFO("No piece found, all pieces finished / currently downloading");
+				LOG_DEBUG("No piece found, all pieces finished / currently downloading");
 				break;
 			}
 			int ret=curl_multi_add_handle(curlm, data->easy_handle);
