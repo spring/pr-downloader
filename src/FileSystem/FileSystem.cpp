@@ -63,6 +63,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 	unsigned char c_md5[16];
 	unsigned char c_crc32[4];
 	unsigned char c_size[4];
+	unsigned char length;
 
 	gzFile in=gzopen(filename.c_str(), "r");
 	if (in==Z_NULL) {
@@ -70,9 +71,20 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 		return NULL;
 	}
 	files.clear();
-	while (!gzeof(in)) {
-		int length = gzgetc(in);
-		if (length == -1) break;
+	while (true) {
+		if (!gzread(in, &length, 1)) {
+			if (gzeof(in)) {
+				break;
+			}
+			LOG_ERROR("Unexpected eof in %s", filename.c_str());
+			gzclose(in);
+			return false;
+		}
+		if (length < 0) {
+			LOG_ERROR("Invalid length read in %s", filename.c_str());
+			gzclose(in);
+			return false;
+		}
 		if (!((gzread(in, &c_name, length)) &&
 		      (gzread(in, &c_md5, 16)) &&
 		      (gzread(in, &c_crc32, 4)) &&
