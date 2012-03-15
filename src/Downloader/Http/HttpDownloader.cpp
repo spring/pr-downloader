@@ -159,8 +159,9 @@ void CHttpDownloader::showProcess(IDownload* download, CFile& file)
 		}
 	}
 	int size=download->size;
-	if ((size<0) && (download->state==IDownload::STATE_FINISHED))
+	if ((size<0) && (download->state==IDownload::STATE_FINISHED)) {
 		size=done;
+	}
 	LOG_PROGRESS(done, size);
 }
 
@@ -377,12 +378,26 @@ bool CHttpDownloader::download(IDownload* download)
 			aborted=true;
 		}
 	}
+	if (!aborted) { // if download didn't fail, get file size reported in http-header
+		double size=-1;
+		for (unsigned i=0; i<downloads.size(); i++) {
+			double tmp;
+			curl_easy_getinfo(downloads[i]->easy_handle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &tmp);
+			if (tmp>size) {
+				size=tmp;
+			}
+		}
+		//set download size if isn't set and we have a valid number
+		if ((size>0) && (download->size<0)) {
+			download->size = size;
+		}
 
+	}
 	lastprogress=0; //force progressbar to show 100%
 	showProcess(download, file);
 	LOG("\n");
 
-	if (download->state==IDownload::STATE_FINISHED) {
+	if (!aborted) {
 		LOG_INFO("download complete");
 	}
 
