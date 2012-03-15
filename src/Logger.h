@@ -28,7 +28,7 @@ void LOG_PROGRESS(long done, long total);
 #ifdef DEBUG
 #define LOG_DEBUG(fmt, ...) \
 		printf( "%s:%d:%s(): " fmt "\n", __FILE__, \
-									__LINE__, __FUNCTION__, __VA_ARGS__);
+									__LINE__, __FUNCTION__, ##__VA_ARGS__);
 #else
 #define	LOG_DEBUG(fmt, ...)
 #endif
