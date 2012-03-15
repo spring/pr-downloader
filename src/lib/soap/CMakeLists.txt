@@ -1,3 +1,5 @@
+remove_definitions(-DDEBUG)
+
 add_library(soap
 	soapC.cpp
 	soapContentServiceSoap12Proxy.cpp
