@@ -1,6 +1,6 @@
 all:
 	wsdl2h -o plasma.h -nPlasma -NPlasma http://zero-k.info/ContentService.asmx?WSDL
-	soapcpp2 -i -C -I/usr/include/gsoap/ plasma.h
+	soapcpp2 -i -C -I/usr/include/gsoap/ -I/usr/share/gsoap/import/ plasma.h
 clean:
 	rm -rf \
 	ContentService.asmx?WSDL \
