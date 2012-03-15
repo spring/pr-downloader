@@ -3,7 +3,7 @@
 set -e
 
 export PREFIX=$(pwd)/mingwlibs
-export MINGWHOST=i686-w64-mingw32
+export MINGWHOST=i586-mingw32msvc
 export MINGW32CXX=${MINGWHOST}-g++
 export MINGW32CC=${MINGWHOST}-gcc
 export MINGW32CPP=${MINGWHOST}-cpp
@@ -16,7 +16,7 @@ export PARALLEL="8"
 
 echo "Using ${PREFIX} for mingwlibs"
 if [ ! -s "$(pwd)/src/Downloader/IDownloader.h" ]; then
-	echo "Please run this script from the root directory with tools/crosscompile.sh."
+	echo "Please run this script from the root directory with scripts/crosscompile.sh."
 	exit
 fi
 
@@ -36,9 +36,9 @@ mkdir -p ${PREFIX}/include
 mkdir -p ${PREFIX}/lib
 
 if [ ! -s ${PREFIX}/lib/libz.a ]; then
-	${DOWNLOAD} "http://prdownloads.sourceforge.net/libpng/zlib-1.2.5.tar.gz?download" -O zlib-1.2.5.tar.gz
-	tar xifz zlib-1.2.5.tar.gz
-	cd zlib-1.2.5
+	${DOWNLOAD} "http://prdownloads.sourceforge.net/libpng/zlib-1.2.6.tar.gz?download" -O zlib-1.2.6.tar.gz
+	tar xifz zlib-1.2.6.tar.gz
+	cd zlib-1.2.6
 	export CC=${MINGW32CC}
 	export CPP=${MINGW32CPP}
 	export LDSHARED=${MINGW32CC}
@@ -54,9 +54,9 @@ fi
 if [ ! -s ${PREFIX}/lib/libcurl.a ]; then
 	export CC=${MINGW32CC}
 	export CXX=${MINGW32CXX}
-	wget -c http://curl.haxx.se/download/curl-7.21.1.tar.bz2
-	tar xifj curl-7.21.1.tar.bz2
-	cd curl-7.21.1
+	wget -c http://curl.haxx.se/download/curl-7.24.0.tar.bz2
+	tar xifj curl-7.24.0.tar.bz2
+	cd curl-7.24.0
 	./configure --host=${MINGWHOST} --prefix=${PREFIX} \
 		--disable-ftp --disable-dict --disable-imap --disable-pop3 \
 		--disable-smtp --disable-telnet --disable-tftp --disable-ldap \

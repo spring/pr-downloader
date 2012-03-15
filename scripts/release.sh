@@ -10,8 +10,8 @@ cd dist
 FILES=`ls *.dll *.exe`
 for i in $FILES; do
 	echo Strip $i
-	i686-w64-mingw32-objcopy --only-keep-debug $i $i.dbg
-	i686-w64-mingw32-strip --strip-unneeded $i
+	i586-mingw32msvc-objcopy --only-keep-debug $i $i.dbg
+	i586-mingw32msvc-strip --strip-unneeded $i
 done
 FILESDBG=`ls *.dbg`
 ZIP="7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on"
