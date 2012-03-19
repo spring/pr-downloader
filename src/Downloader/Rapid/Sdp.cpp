@@ -26,7 +26,7 @@ CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::stri
 	this->file_handle=NULL;
 	this->downlooadInitialized=false;
 	this->cursize=0;
-	memset(this->cursize_buf,LENGTH_SIZE,0);
+	memset(this->cursize_buf,0, LENGTH_SIZE);
 	this->skipped=false;
 	this->file_pos=0;
 }
