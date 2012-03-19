@@ -114,6 +114,14 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 		if (resfile["size"].getType()==XmlRpc::XmlRpcValue::TypeInt) {
 			dl->size=resfile["size"];
 		}
+		if (resfile["depends"].getType() == XmlRpc::XmlRpcValue::TypeArray) {
+			for(int i=0; i<resfile["depends"].size(); i++) {
+				if (resfile["depends"][i].getType() == XmlRpc::XmlRpcValue::TypeString) {
+					const std::string &dep = resfile["depends"][i];
+					dl->addDepend(dep);
+				}
+			}
+		}
 		res.push_back(dl);
 	}
 	return true;
