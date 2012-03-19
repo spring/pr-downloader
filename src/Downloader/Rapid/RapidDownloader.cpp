@@ -118,16 +118,18 @@ bool CRapidDownloader::match_download_name(const std::string &str1,const std::st
 	if (str2=="") return true;
 	if (str1==str2) return true;
 	if (str2=="*")	 return true;
-//FIXME: add regex support for win32
-#ifndef WIN32
-	regex_t regex;
-	if (regcomp(&regex, str2.c_str(), 0)==0) {
-		int res=regexec(&regex, str1.c_str(),0, NULL, 0 );
-		regfree(&regex);
-		if (res==0) {
-			return true;
+	//FIXME: add regex support for win32
+	/*
+	#ifndef WIN32
+		regex_t regex;
+		if (regcomp(&regex, str2.c_str(), 0)==0) {
+			int res=regexec(&regex, str1.c_str(),0, NULL, 0 );
+			regfree(&regex);
+			if (res==0) {
+				return true;
+			}
 		}
-	}
-#endif
+	#endif
+	*/
 	return false;
 }
