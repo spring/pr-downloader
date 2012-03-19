@@ -346,7 +346,7 @@ bool CHttpDownloader::download(IDownload* download)
 		LOG_ERROR("No mirrors found");
 		return false;
 	}
-	LOG_INFO("Using %d parallel downloads", count);
+	LOG_DEBUG("Using %d parallel downloads", count);
 	CFile file=CFile();
 	if(!file.Open(download->name, download->size, download->piecesize)) {
 		return false;

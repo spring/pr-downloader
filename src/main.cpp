@@ -86,8 +86,23 @@ bool download(const std::string& name, IDownload::category cat)
 			return true;
 	}
 	httpDownload->search(res, name, cat);
-	if ((!res.empty()))
+	if ((!res.empty())) {
+		std::list<IDownload*>::iterator dlit;
+		for(dlit=res.begin(); dlit!=res.end(); ++dlit) { //download depends, too. we handle this here, because then we can use all dl-systems
+			if (!(*dlit)->depend.empty()) {
+				std::list<std::string>::iterator it;
+				for(it=(*dlit)->depend.begin(); it!=(*dlit)->depend.end(); ++it) {
+					const std::string& depend = (*it);
+					LOG_INFO("found depends: %s", depend.c_str());
+					if (!download(depend, cat)) {
+						LOG_ERROR("downloading the depend %s for %s failed", depend.c_str(), name.c_str());
+						return false;
+					}
+				}
+			}
+		}
 		return httpDownload->download(res);
+	}
 	plasmaDownload->search(res, name, cat);
 	if ((!res.empty()))
 		return plasmaDownload->download(res);
@@ -98,7 +113,9 @@ void show_results(std::list<IDownload*>& list)
 {
 	std::list<IDownload*>::iterator it;
 	for (it=list.begin(); it!=list.end(); ++it) {
-		LOG_INFO("Filename: %s Size: %d",(*it)->name.c_str(), (*it)->size);
+		const int size = (*it)->size;
+		const char* name = (*it)->name.c_str();
+		LOG_INFO("Filename: %s Size: %d",name, size);
 		int count=(*it)->getMirrorCount();
 		for(int i=0; i<count; i++) {
 			LOG_INFO("Download url: %s",(*it)->getMirror(i)->url.c_str());

@@ -70,7 +70,7 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 	std::list<CSdp>::iterator it;
 	if (reccounter>10)
 		return false;
-	LOG_INFO("Using rapid");
+	LOG_DEBUG("Using rapid");
 	for (it=sdps.begin(); it!=sdps.end(); ++it) {
 		if (match_download_name((*it).getName(),longname)) {
 
