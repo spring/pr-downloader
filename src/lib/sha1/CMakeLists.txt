@@ -1,3 +1,3 @@
-add_library(sha1
+add_library(pr-sha1
 	sha1.cpp
 )

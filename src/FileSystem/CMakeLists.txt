@@ -9,8 +9,8 @@ add_library(FileSystem
 )
 target_link_libraries(FileSystem
 	${ZLIB_LIBRARIES}
-	md5
-	sha1
+	pr-md5
+	pr-sha1
 	bencode
 )
 
