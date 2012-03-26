@@ -80,11 +80,6 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 			gzclose(in);
 			return false;
 		}
-		if (length < 0) {
-			LOG_ERROR("Invalid length read in %s", filename.c_str());
-			gzclose(in);
-			return false;
-		}
 		if (!((gzread(in, &c_name, length)) &&
 		      (gzread(in, &c_md5, 16)) &&
 		      (gzread(in, &c_crc32, 4)) &&
