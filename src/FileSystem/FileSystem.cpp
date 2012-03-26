@@ -308,6 +308,7 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 #else
 	time(&t);
 #endif
+	LOG_DEBUG("%s is %d seconds old, redownloading at %d",filename.c_str(), t - sb.st_ctime, secs);
 	return (t<sb.st_ctime+secs);
 }
 
