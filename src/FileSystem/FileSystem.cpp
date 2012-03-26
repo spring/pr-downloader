@@ -304,10 +304,7 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 
 	date.HighPart = pFTime.dwHighDateTime;
 	date.LowPart = pFTime.dwLowDateTime;
-
-	date.QuadPart -= 11644473600000 * 10000;
-
-	t = date.QuadPart / 10000000;
+	t =  (date.QuadPart / 10000000) - 11644473600LL;
 #else
 	time(&t);
 #endif
