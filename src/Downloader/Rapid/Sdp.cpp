@@ -181,6 +181,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 					fclose(sdp->file_handle);
 					if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())) {
 						LOG_ERROR("File is broken?!: %s",sdp->file_name.c_str());
+						remove(sdp->file_name.c_str());
 						return -1;
 					}
 					sdp->file_handle=NULL;
