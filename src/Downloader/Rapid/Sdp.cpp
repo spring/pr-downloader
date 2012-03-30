@@ -145,7 +145,6 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			if ((sdp->skipped>0)&&(sdp->skipped<4)) {
 				LOG_DEBUG("difficulty %d",sdp->skipped);
 			}
-			if (sdp->skipped<4) { // check if we skipped all 4 bytes, if not so, skip them
 			if (sdp->skipped<LENGTH_SIZE) { // check if we skipped all 4 bytes, if not so, skip them
 				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
 				for (int i=0; i<toskip; i++) { //copy bufs avaiable
