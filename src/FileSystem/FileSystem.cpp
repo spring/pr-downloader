@@ -50,6 +50,7 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 		}
 //		filesize=filesize+bytes;
 	}
+
 	md5hash.Final();
 	gzclose (inFile);
 	/*	if (filesize!=mod->size){
@@ -315,7 +316,7 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 #else
 	time(&t);
 #endif
-	LOG_DEBUG("%s is %d seconds old, redownloading at %d",filename.c_str(), t - sb.st_ctime, secs);
+	LOG_DEBUG("%s is %d seconds old, redownloading at %d",filename.c_str(), (int)(t - sb.st_ctime), secs);
 	return (t<sb.st_ctime+secs);
 }
 
