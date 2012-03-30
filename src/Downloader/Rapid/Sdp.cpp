@@ -45,12 +45,13 @@ bool CSdp::download()
 	FileData tmp=FileData();
 	std::list<FileData*> files;
 
-	if (!fileSystem->parseSdp(filename,files)) { //.sdp isn't avaiable, download it
+
+	if (!fileSystem->fileExists(filename)) { //.sdp isn't avaiable, download it
 		IDownload dl(filename);
 		dl.addMirror(url + "/packages/" + this->md5 + ".sdp");
 		httpDownload->download(&dl);
-		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}
+	fileSystem->parseSdp(filename,files); //parse downloaded file
 
 	std::list<FileData*>::iterator it;
 	/*	CHttpDownload* tmp=httpDownload; //FIXME: extend interface?
