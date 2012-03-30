@@ -146,14 +146,16 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 				LOG_DEBUG("difficulty %d",sdp->skipped);
 			}
 			if (sdp->skipped<4) { // check if we skipped all 4 bytes, if not so, skip them
+			if (sdp->skipped<LENGTH_SIZE) { // check if we skipped all 4 bytes, if not so, skip them
 				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
-				for (int i=0; i<toskip; i++) //copy bufs avaiable
-					sdp->cursize_buf[i]=buf_pos[i];
-				LOG_DEBUG("toskip: %d skipped: %d",toskip,sdp->skipped);
+				for (int i=0; i<toskip; i++) { //copy bufs avaiable
+					sdp->cursize_buf[sdp->skipped+i]=buf_pos[i];
+				}
 				sdp->skipped=toskip+sdp->skipped;
-				buf_pos=buf_pos+sdp->skipped;
+				buf_pos=buf_pos+toskip;
 				if (sdp->skipped==LENGTH_SIZE) {
 					(*sdp->list_it)->compsize=parse_int32(sdp->cursize_buf);
+					assert((*sdp->list_it)->size+1000 >= (*sdp->list_it)->compsize);
 				}
 			}
 			if (sdp->skipped==LENGTH_SIZE) {
@@ -172,7 +174,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 						return -1;
 					}
 				} else if (towrite<0) {
-					LOG_DEBUG("%s","Fatal, something went wrong here!");
+					LOG_DEBUG("Fatal, something went wrong here! %d", towrite);
 					return -1;
 				}
 
