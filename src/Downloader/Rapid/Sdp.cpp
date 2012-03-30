@@ -133,6 +133,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			md5.Set((*sdp->list_it)->md5, sizeof((*sdp->list_it)->md5));
 			sdp->file_name=fileSystem->getPoolFileName(md5.toString());
 			sdp->file_handle=fopen(sdp->file_name.c_str(),"wb");
+//			LOG_DEBUG("opened %s, size: %d", sdp->file_name.c_str(), (*sdp->list_it)->size);
 //FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);
 			if (sdp->file_handle==NULL) {
 				LOG_ERROR("couldn't open %s",(*sdp->list_it)->name.c_str());
@@ -142,18 +143,21 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			sdp->file_pos=0;
 		}
 		if (sdp->file_handle!=NULL) {
-			if ((sdp->skipped>0)&&(sdp->skipped<4)) {
-				LOG_DEBUG("difficulty %d",sdp->skipped);
-			}
 			if (sdp->skipped<LENGTH_SIZE) { // check if we skipped all 4 bytes, if not so, skip them
 				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
 				for (int i=0; i<toskip; i++) { //copy bufs avaiable
 					sdp->cursize_buf[sdp->skipped+i]=buf_pos[i];
+//					if (sdp->skipped>0) {
+//						LOG_DEBUG("copy %d to %d ", i, sdp->skipped+i);
+//					}
 				}
+//				LOG_DEBUG("toskip: %d skipped: %d",toskip,sdp->skipped);
 				sdp->skipped=toskip+sdp->skipped;
 				buf_pos=buf_pos+toskip;
 				if (sdp->skipped==LENGTH_SIZE) {
 					(*sdp->list_it)->compsize=parse_int32(sdp->cursize_buf);
+//					LOG_DEBUG("%s %hhu %hhu %hhu %hhu", sdp->file_name.c_str(), sdp->cursize_buf[0], sdp->cursize_buf[1], sdp->cursize_buf[2], sdp->cursize_buf[3]);
+//					LOG_DEBUG("(data read from sdp)uncompressed size: %d  (data read from net)compressed size: %d", (*sdp->list_it)->size, (*sdp->list_it)->compsize);
 					assert((*sdp->list_it)->size+1000 >= (*sdp->list_it)->compsize);
 				}
 			}
