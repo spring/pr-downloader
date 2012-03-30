@@ -224,6 +224,17 @@ int main(int argc, char **argv)
 		}
 		}
 	}
+
+	if (optind < argc) {
+		while (optind < argc) {
+			std::string tmp = argv[optind];
+			if (!download(tmp, IDownload::CAT_MODS)) {
+				LOG_ERROR("No file found for %s",optarg);
+			}
+			optind++;
+		}
+	}
+
 	IDownloader::Shutdown();
 	CFileSystem::Shutdown();
 
