@@ -8,6 +8,7 @@
 #include "FileSystem/FileSystem.h"
 #include "FileSystem/FileData.h"
 #include "FileSystem/HashMD5.h"
+#include "FileSystem/AtomicFile.h"
 
 #include <string>
 #include <string.h>
@@ -29,6 +30,13 @@ CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::stri
 	memset(this->cursize_buf,0, LENGTH_SIZE);
 	this->skipped=false;
 	this->file_pos=0;
+}
+
+CSdp::~CSdp()
+{
+	if (file_handle!=NULL) {
+		delete file_handle;
+	}
 }
 
 bool CSdp::download()
@@ -132,7 +140,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			HashMD5 md5;
 			md5.Set((*sdp->list_it)->md5, sizeof((*sdp->list_it)->md5));
 			sdp->file_name=fileSystem->getPoolFileName(md5.toString());
-			sdp->file_handle=fopen(sdp->file_name.c_str(),"wb");
+			sdp->file_handle=new AtomicFile(sdp->file_name);
 //			LOG_DEBUG("opened %s, size: %d", sdp->file_name.c_str(), (*sdp->list_it)->size);
 //FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);
 			if (sdp->file_handle==NULL) {
@@ -167,7 +175,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 //				LOG_DEBUG("%s %d %ld %ld %ld %d %d %d %d %d",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
 				int res=0;
 				if (towrite>0) {
-					res=fwrite(buf_pos,1,towrite,sdp->file_handle);
+					res=sdp->file_handle->write(buf_pos,towrite);
 					if (res!=towrite) {
 						LOG_ERROR("fwrite error");
 						return -1;
@@ -184,7 +192,9 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 				buf_pos=buf_pos+res;
 				sdp->file_pos+=res;
 				if (sdp->file_pos>=(*sdp->list_it)->compsize) { //file finished -> next file
-					fclose(sdp->file_handle);
+					sdp->file_handle->close();
+					delete sdp->file_handle;
+					sdp->file_handle = NULL;
 					if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())) {
 						LOG_ERROR("File is broken?!: %s",sdp->file_name.c_str());
 						remove(sdp->file_name.c_str());

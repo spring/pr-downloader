@@ -1,4 +1,5 @@
 add_library(FileSystem
+		"AtomicFile.cpp"
 		"FileData.cpp"
 		"FileSystem.cpp"
 		"File.cpp"

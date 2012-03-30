@@ -9,11 +9,13 @@
 #define LENGTH_SIZE 4
 
 class FileData;
+class AtomicFile;
 
 class CSdp
 {
 public:
 	CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url);
+	~CSdp();
 	/**
 		download a mod, we already know the host where to download from + the md5 of the sdp file
 		we have to download the sdp + parse it + download associated files
@@ -47,7 +49,7 @@ public:
 	bool downloadInitialized;
 	std::list<FileData*>::iterator list_it;
 	std::list<FileData*>* globalFiles; //list with all files of an sdp
-	FILE* file_handle;
+	AtomicFile* file_handle;
 	std::string file_name;
 
 	unsigned int file_pos;
