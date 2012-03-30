@@ -41,6 +41,13 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 //	unsigned long filesize=0;
 	while ((bytes = gzread (inFile, data, IO_BUF_SIZE)) > 0) {
 		md5hash.Update((char*)data, bytes);
+		int err;
+		const char* error = gzerror(inFile, &err);
+		if (err!=Z_OK) {
+			gzclose(inFile);
+			LOG_ERROR("Error occured %s", error);
+			return false;
+		}
 //		filesize=filesize+bytes;
 	}
 	md5hash.Final();
