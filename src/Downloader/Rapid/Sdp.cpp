@@ -24,7 +24,7 @@ CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::stri
 	this->downloaded=false;
 	this->depends=depends;
 	this->file_handle=NULL;
-	this->downlooadInitialized=false;
+	this->downloadInitialized=false;
 	this->cursize=0;
 	memset(this->cursize_buf,0, LENGTH_SIZE);
 	this->skipped=false;
@@ -112,9 +112,9 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 {
 	char buf[CURL_MAX_WRITE_SIZE];
 	memcpy(&buf,tmp,CURL_MAX_WRITE_SIZE);
-	if (!sdp->downlooadInitialized) {
+	if (!sdp->downloadInitialized) {
 		sdp->list_it=sdp->globalFiles->begin();
-		sdp->downlooadInitialized=true;
+		sdp->downloadInitialized=true;
 		sdp->file_handle=NULL;
 		sdp->file_name="";
 		sdp->skipped=0;

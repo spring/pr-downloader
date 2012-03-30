@@ -44,9 +44,9 @@ public:
 		return depends;
 	}
 
-	bool downlooadInitialized;
+	bool downloadInitialized;
 	std::list<FileData*>::iterator list_it;
-	std::list<FileData*>* globalFiles;
+	std::list<FileData*>* globalFiles; //list with all files of an sdp
 	FILE* file_handle;
 	std::string file_name;
 
