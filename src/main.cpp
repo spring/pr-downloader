@@ -150,7 +150,7 @@ int main(int argc, char **argv)
 			break;
 		}
 		case RAPID_VALIDATE: {
-			int res=fileSystem->validatePool(fileSystem->getSpringDir() + PATH_DELIMITER + "pool" + PATH_DELIMITER);
+			int res=fileSystem->validatePool(fileSystem->getSpringDir() + PATH_DELIMITER + "pool");
 			LOG_INFO("Validated %d files",res);
 			break;
 		}
