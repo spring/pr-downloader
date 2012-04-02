@@ -56,7 +56,7 @@ else (MINGW)
 endif (MINGW)
 
 #FIXME: set this compile flag only for one file
-add_definitions(-DPR_DOWNLOADER_VERSION=\"${PR_DOWNLOADER_VERSION}\")
+add_definitions(-DPR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION})
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS}")
 
 find_package(CURL REQUIRED)

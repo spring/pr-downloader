@@ -58,7 +58,7 @@ ELSE()
 		LIBRARY DESTINATION ${LIBDIR}
 		ARCHIVE DESTINATION ${LIBDIR} )
 
-	SET( VERSION "${PR_DOWNLOADER_VERSION}" )
+	SET(VERSION ${PR_DOWNLOADER_VERSION})
 	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
 	               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
 	install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${LIBDIR}/pkgconfig")
