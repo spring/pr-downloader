@@ -285,10 +285,10 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			case CURLE_HTTP_RETURNED_ERROR: //some 4* HTTP-Error (file not found, access denied,...)
 			default:
 				LOG_ERROR("CURL error(%d): %s (%s)",msg->msg, curl_easy_strerror(msg->data.result), data->mirror->url.c_str());
+				download->pieces[data->piece].state=IDownload::STATE_NONE;
 				data->mirror->status=Mirror::STATUS_BROKEN;
-				break;
+				//FIXME: cleanup curl handle here + process next dl
 			}
-
 			if (data==NULL) {
 				LOG_ERROR("Couldn't find download in download list");
 				return false;
@@ -306,7 +306,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 				} else { //piece download broken, mark mirror as broken (for this file)
 					download->pieces[data->piece].state=IDownload::STATE_NONE;
 					data->mirror->status=Mirror::STATUS_BROKEN;
-					break;
+					//FIXME: cleanup curl handle here + process next dl
 				}
 			} else {
 				LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d", data->piece);
