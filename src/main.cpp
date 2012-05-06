@@ -131,6 +131,7 @@ int main(int argc, char **argv)
 	CFileSystem::Initialize();
 	IDownloader::Initialize();
 
+	bool res=true;
 	while (true) {
 		int option_index = 0;
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
@@ -142,9 +143,11 @@ int main(int argc, char **argv)
 		case RAPID_DOWNLOAD: {
 			rapidDownload->search(list, optarg);
 			if (list.empty()) {
-				LOG_ERROR("Coulnd't find %s",optarg);
+				LOG_ERROR("Couldn't find %s",optarg);
+				res=false;
 			} else if (!rapidDownload->download(list)) {
 				LOG_ERROR("Error downloading %s",optarg);
+				res=false;
 			}
 			IDownloader::freeResult(list);
 			break;
@@ -170,8 +173,10 @@ int main(int argc, char **argv)
 		}
 		case PLASMA_DOWNLOAD: {
 			plasmaDownload->search(list, optarg);
-			if (!list.empty())
-				plasmaDownload->download(list);
+			if (!list.empty()) {
+				if (!plasmaDownload->download(list))
+					res=false;
+			}
 			IDownloader::freeResult(list);
 			break;
 		}
@@ -198,19 +203,22 @@ int main(int argc, char **argv)
 		}
 		case HTTP_DOWNLOAD: {
 			httpDownload->search(list, optarg);
-			httpDownload->download(list);
+			if (!httpDownload->download(list))
+				res=false;
 			IDownloader::freeResult(list);
 			break;
 		}
 		case DOWNLOAD_MAP: {
 			if (!download(optarg, IDownload::CAT_MAPS)) {
 				LOG_ERROR("No map found for %s",optarg);
+				res=false;
 			}
 			break;
 		}
 		case DOWNLOAD_GAME: {
 			if (!download(optarg, IDownload::CAT_MODS)) {
 				LOG_ERROR("No game found for %s",optarg);
+				res=false;
 			}
 			break;
 		}
@@ -230,6 +238,7 @@ int main(int argc, char **argv)
 			std::string tmp = argv[optind];
 			if (!download(tmp, IDownload::CAT_MODS)) {
 				LOG_ERROR("No file found for %s",optarg);
+				res=false;
 			}
 			optind++;
 		}
@@ -237,6 +246,7 @@ int main(int argc, char **argv)
 
 	IDownloader::Shutdown();
 	CFileSystem::Shutdown();
-
-	return 0;
+	if (res)
+		return 0;
+	return 1;
 }
