@@ -11,7 +11,11 @@
 #include "Downloader/Mirror.h"
 #include "lib/xmlrpc++/src/XmlRpc.h"
 
+#ifdef WIN32
+#include <winsock2.h>
+#else
 #include <sys/select.h>
+#endif
 #include <stdio.h>
 #include <curl/curl.h>
 #include <unistd.h>
