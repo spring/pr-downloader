@@ -11,6 +11,7 @@
 #include "Downloader/Mirror.h"
 #include "lib/xmlrpc++/src/XmlRpc.h"
 
+#include <sys/select.h>
 #include <stdio.h>
 #include <curl/curl.h>
 #include <unistd.h>
@@ -20,6 +21,8 @@
 #include <time.h>
 #include <iostream>
 #include <sstream>
+
+
 #ifdef __APPLE__
 #include <malloc/malloc.h>
 #else
@@ -371,21 +374,35 @@ bool CHttpDownloader::download(IDownload* download)
 	bool aborted=false;
 	int running=1, last=-1;
 	while((running>0)&&(!aborted)) {
-		CURLMcode ret=curl_multi_perform(curlm, &running);
-		showProcess(download, file);
-		switch(ret) {
-		case CURLM_CALL_MULTI_PERFORM:
-			break;
-		case CURLM_OK:
+		CURLMcode ret = CURLM_CALL_MULTI_PERFORM;
+		while(ret == CURLM_CALL_MULTI_PERFORM) {
+			ret=curl_multi_perform(curlm, &running);
+		}
+		if ( ret == CURLM_OK ) {
+			showProcess(download, file);
 			if (last!=running) { //count of running downloads changed
 				aborted=processMessages(curlm, downloads, download, file);
 				last=running++;
 			}
-			break;
-		default:
+		} else {
 			LOG_ERROR("curl_multi_perform_error: %d", ret);
 			aborted=true;
 		}
+
+		fd_set rSet;
+		fd_set wSet;
+		fd_set eSet;
+
+		FD_ZERO(&rSet);
+		FD_ZERO(&wSet);
+		FD_ZERO(&eSet);
+		int count=0;
+		struct timeval t;
+		t.tv_sec = 1;
+		t.tv_usec = 0;
+		curl_multi_fdset(curlm, &rSet, &wSet, &eSet, &count);
+		//sleep for one sec / until something happened
+		select(count+1, &rSet, &wSet, &eSet, &t);
 	}
 	if (!aborted) { // if download didn't fail, get file size reported in http-header
 		double size=-1;
