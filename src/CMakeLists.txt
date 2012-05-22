@@ -15,7 +15,7 @@ set (RAPID "pr-downloader")
 set (RAPID_LIB "unitsync-ext")
 IF (WIN32)
 	SET(WIN32LIBS ws2_32)
-	LIST(APPEND WIN32LIBS  mswsock)
+	LIST(APPEND WIN32LIBS mswsock)
 ENDIF ()
 
 
