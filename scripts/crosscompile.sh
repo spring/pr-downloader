@@ -20,18 +20,6 @@ if [ ! -s "$(pwd)/src/Downloader/IDownloader.h" ]; then
 	exit
 fi
 
-
-if [ ! -s win32.cmake ]; then
-	cat > win32.cmake <<EOF
-SET(CMAKE_SYSTEM_NAME Windows)
-SET(CMAKE_C_COMPILER i586-mingw32msvc-gcc)
-SET(CMAKE_CXX_COMPILER i586-mingw32msvc-g++)
-SET(CMAKE_FIND_ROOT_PATH /usr/i586-mingw32msvc)
-SET(MINGWLIBS ./mingwlibs)
-SET(CMAKE_INSTALL_PREFIX  ./dist)
-EOF
-fi
-
 mkdir -p ${PREFIX}/include
 mkdir -p ${PREFIX}/lib
 
@@ -67,16 +55,17 @@ fi
 
 rm -f CMakeCache.txt
 
+if [ ! -s win32.cmake ]; then
 (
 echo "SET(CMAKE_SYSTEM_NAME Windows)"
 echo "SET(CMAKE_C_COMPILER $MINGW32CC)"
 echo "SET(CMAKE_CXX_COMPILER $MINGW32CXX)"
 echo "SET(CMAKE_FIND_ROOT_PATH /usr/$MINGWHOST)"
 echo "SET(MINGWLIBS ./mingwlibs)"
-echo "SET(CMAKE_INSTALL_PREFIX  ./dist)"
 echo "SET(CMAKE_RC_COMPILER $MINGW32RC)"
 ) >win32.cmake
+fi
 
-cmake . "-DCMAKE_TOOLCHAIN_FILE=./win32.cmake"
+cmake . -DCMAKE_TOOLCHAIN_FILE=win32.cmake -DCMAKE_INSTALL_PREFIX=dist
 make install -j ${PARALELL}
 
