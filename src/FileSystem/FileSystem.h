@@ -9,7 +9,7 @@
 class SRepository;
 class CRepo;
 class FileData;
-struct IDownload;
+class IDownload;
 
 #define IO_BUF_SIZE 4096
 

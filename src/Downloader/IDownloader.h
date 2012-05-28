@@ -27,7 +27,7 @@ public:
 		Shutdown all Downloaders
 	*/
 	static void Shutdown();
-	virtual ~IDownloader() {};
+    virtual ~IDownloader() {}
 
 	/**
 		download specificed download
