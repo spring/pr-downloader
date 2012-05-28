@@ -1,6 +1,6 @@
 remove_definitions(-DDEBUG)
 
-add_library(soap
+add_library(soap STATIC
 	soapC.cpp
 	soapContentServiceSoap12Proxy.cpp
 	stdsoap2.cpp

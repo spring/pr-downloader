@@ -1,4 +1,4 @@
-add_library(xmlrpc
+add_library(xmlrpc STATIC
 	src/XmlRpcSource.h
 	src/XmlRpcUtil.cpp
 	src/XmlRpcSocket.cpp

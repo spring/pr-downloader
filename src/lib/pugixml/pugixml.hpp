@@ -619,7 +619,7 @@ namespace pugi
 		 * Cast attribute value as unsigned int.
 		 *
 		 * \return attribute value as unsigned int, or 0 if conversion did not succeed or attribute is empty
-		 * \note values out of non-negative int range (usually [0, 2^31-1]) get clamped to range boundaries
+		 * \note values out of non-negative int range (usually [0, 2^31-1]) get LSL::Util::Clamped to range boundaries
 		 */
 		unsigned int as_uint() const;
 
