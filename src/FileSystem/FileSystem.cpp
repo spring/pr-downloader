@@ -309,13 +309,8 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 
 bool CFileSystem::fileExists(const std::string& filename)
 {
-	FILE* fp = NULL;
-	fp = fopen(filename.c_str(), "r");
-	if (fp == NULL) {
-		return false;
-	}
-	fclose(fp);
-	return true;
+	struct stat buffer;
+	return stat(filename.c_str(), &buffer) == 0;
 }
 
 bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
