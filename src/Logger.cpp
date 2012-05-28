@@ -28,9 +28,9 @@ void LOG_ERROR(const char* format, ...)
 {
 	va_list args;
 	va_start(args,format);
-	printf("[Error] ");
+	fprintf(stderr, "[Error] ");
 	vprintf(format,args);
-	printf("\n");
+	fprintf(stderr, "\n");
 	va_end(args);
 }
 
