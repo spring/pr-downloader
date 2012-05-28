@@ -324,7 +324,8 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			double dlSpeed;
 			curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
 			data->mirror->UpdateSpeed(dlSpeed);
-			data->mirror->status=Mirror::STATUS_OK;
+			if (data->mirror->status == Mirror::STATUS_UNKNOWN) //set mirror status only when unset
+				data->mirror->status=Mirror::STATUS_OK;
 
 			//remove easy handle, as its finished
 			curl_multi_remove_handle(curlm, data->easy_handle);
