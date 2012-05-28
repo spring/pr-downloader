@@ -65,9 +65,11 @@ Mirror* IDownload::getFastestMirror()
 			max=mirrors[i]->maxspeed;
 			pos=i;
 		}
+		LOG_DEBUG("Mirror %d: (%d): %s", i, mirrors[i]->maxspeed, mirrors[i]->url.c_str());
 	}
 	if (pos<0)
 		return NULL;
+	LOG_DEBUG("Fastest mirror (%d): %s", mirrors[pos]->maxspeed, mirrors[pos]->url.c_str());
 	return mirrors[pos];
 }
 
