@@ -4,7 +4,7 @@
 #include "Widget.h"
 #include "FileSystem/FileSystem.h"
 
-bool CWidgetDownloader::download(IDownload* download)
+bool CWidgetDownloader::download(IDownload* /*download*/)
 {
 	return true;
 }
@@ -39,7 +39,7 @@ bool CWidgetDownloader::download(IDownload* download)
 
 */
 
-bool CWidgetDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category cat)
+bool CWidgetDownloader::search(std::list<IDownload*>& result, const std::string& /*name*/, IDownload::category /*cat*/)
 {
 	std::string path=fileSystem->getSpringDir();
 	path=path+PATH_DELIMITER + "rapid" + PATH_DELIMITER + "Widgets.xml";
