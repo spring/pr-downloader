@@ -45,7 +45,7 @@ CHttpDownloader::~CHttpDownloader()
 	curl_global_cleanup();
 }
 
-bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
+bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category /*cat*/)
 {
 	LOG_DEBUG("%s", name.c_str()  );
 

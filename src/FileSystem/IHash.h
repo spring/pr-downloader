@@ -13,6 +13,10 @@ public:
 	*	Init Hash
 	*/
 	virtual void Init()=0;
+    /**
+    * abstract base classes should always have virtual dtors
+    */
+    virtual ~IHash(){}
 	/**
 	*	Finalize Hash
 	*/
