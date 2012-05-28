@@ -176,8 +176,10 @@ void CHttpDownloader::showProcess(IDownload* download, CFile& file)
 	int size=download->size;
 	if ((size<0) && (download->state==IDownload::STATE_FINISHED)) {
 		size=done;
+		LOG_PROGRESS(done, size, true);
+	} else {
+		LOG_PROGRESS(done, size);
 	}
-	LOG_PROGRESS(done, size);
 }
 
 int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)

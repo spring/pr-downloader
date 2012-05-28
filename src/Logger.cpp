@@ -1,6 +1,7 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "Logger.h"
+#include "Util.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -38,8 +39,17 @@ void LOG_DOWNLOAD(const char* filename)
 	printf("[Download] %s\n",filename);
 }
 
-void LOG_PROGRESS(long done, long total)
+static unsigned long lastlogtime=0;
+
+void LOG_PROGRESS(long done, long total, bool forceOutput)
 {
+	unsigned long now=getTime();
+	if (lastlogtime<now) {
+		lastlogtime=now;
+	} else {
+		if (!forceOutput)
+			return;
+	}
 	if (total<0) //if total bytes are unknown set to 50%
 		total=done*2;
 	float percentage = 0;

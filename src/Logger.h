@@ -18,12 +18,15 @@ void LOG_INFO(const char* format, ...);
 */
 void LOG_ERROR(const char* format, ...);
 
-/**
-*	output progress bar
-*/
 void LOG_DOWNLOAD(const char* filename);
 
-void LOG_PROGRESS(long done, long total);
+/**
+*	output progress bar
+*	@param done bytes already downloaded
+*	@param total total bytes to download
+*	@param forceOutput force output
+*/
+void LOG_PROGRESS(long done, long total, bool forceOutput=false);
 
 #ifdef DEBUG
 #define LOG_DEBUG(fmt, ...) \

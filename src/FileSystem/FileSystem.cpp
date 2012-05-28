@@ -222,7 +222,6 @@ int CFileSystem::validatePool(const std::string& path)
 		LOG_ERROR("Pool directory doesn't exist: %s", path.c_str());
 		return 0;
 	}
-	unsigned long time=0;
 	int res=0;
 	std::list <std::string*>dirs;
 	dirs.push_back(new std::string(path));
@@ -236,12 +235,7 @@ int CFileSystem::validatePool(const std::string& path)
 		dirs.pop_front();
 		d=opendir(dir->c_str());
 		while ( (dentry=readdir(d))!=NULL) {
-			unsigned long now=getTime();
-			if (time<now) {
-				LOG_PROGRESS(finished, maxdirs);
-				fflush(stdout);
-				time=now;
-			}
+			LOG_PROGRESS(finished, maxdirs);
 			std::string absname=dir->c_str();
 			absname += PATH_DELIMITER;
 			absname += dentry->d_name;
@@ -283,7 +277,7 @@ int CFileSystem::validatePool(const std::string& path)
 		closedir(d);
 	}
 	delete md5;
-	LOG_PROGRESS(finished, maxdirs);
+	LOG_PROGRESS(finished, maxdirs, true);
 	LOG("");
 	return res;
 }

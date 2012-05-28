@@ -218,8 +218,10 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	(void)csdp;
 	(void)TotalToUpload;
 	(void)NowUploaded; //remove unused warning
-
-	LOG_PROGRESS(NowDownloaded,TotalToDownload);
+	if (TotalToDownload == NowDownloaded) //force output when download is finished
+		LOG_PROGRESS(NowDownloaded,TotalToDownload, true);
+	else
+		LOG_PROGRESS(NowDownloaded,TotalToDownload);
 	return 0;
 }
 
