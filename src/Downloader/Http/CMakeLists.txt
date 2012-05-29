@@ -1,5 +1,5 @@
 
-add_library(Http
+add_library(Http STATIC
 	HttpDownloader.cpp
 	DownloadData.cpp
 )

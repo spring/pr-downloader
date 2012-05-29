@@ -1,4 +1,4 @@
-add_library(Plasma
+add_library(Plasma STATIC
 	PlasmaDownloader.cpp
 )
 

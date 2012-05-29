@@ -64,7 +64,6 @@ private:
 #define httpDownload IDownloader::GetHttpInstance()
 #define plasmaDownload IDownloader::GetPlasmaInstance()
 #define rapidDownload IDownloader::GetRapidInstance()
-#define torrentDownload IDownloader::GetTorrentInstance()
 #define widgetDownload IDownloader::GetWidgetInstance()
 
 
