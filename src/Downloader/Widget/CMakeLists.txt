@@ -1,4 +1,4 @@
-add_library(Widget
+add_library(Widget  STATIC
 	"WidgetDownloader.cpp"
 	"Widget.cpp"
 )
