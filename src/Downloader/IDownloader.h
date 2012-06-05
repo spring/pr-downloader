@@ -14,8 +14,7 @@ class IDownloader
 public:
 	static IDownloader* GetHttpInstance();
 	static IDownloader* GetRapidInstance();
-	static IDownloader* GetPlasmaInstance();
-	static IDownloader* GetTorrentInstance();
+    static IDownloader* GetPlasmaInstance();
 	static IDownloader* GetWidgetInstance();
 
 	/**

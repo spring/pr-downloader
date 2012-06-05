@@ -6,3 +6,4 @@ obj-*
 *\.cmake
 /debian/*\.log
 /html
+build/
