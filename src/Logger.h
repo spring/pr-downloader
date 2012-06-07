@@ -5,6 +5,9 @@
 
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /**
 *	plain log output
 */
@@ -24,6 +27,10 @@ void LOG_ERROR(const char* format, ...);
 void LOG_DOWNLOAD(const char* filename);
 
 void LOG_PROGRESS(long done, long total);
+
+#ifdef __cplusplus
+}
+#endif
 
 #ifdef DEBUG
 #define LOG_DEBUG(fmt, ...) \
