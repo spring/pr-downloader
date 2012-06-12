@@ -70,9 +70,13 @@ bool CRepo::parse()
 			rapid->addRemoteDsp(sdptmp);
 		}
 	}
-	int errnum=0;
+	int errnum=Z_OK;
 	const char* errstr = gzerror(fp, &errnum);
-	if(errnum!=0) {
+	switch(errnum) {
+	case Z_OK:
+	case Z_STREAM_END:
+		break;
+	default:
 		LOG_ERROR("%d %s\n", errnum, errstr);
 	}
 	gzclose(fp);
