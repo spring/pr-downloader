@@ -13,6 +13,7 @@ export MINGW32RANLIB=${MINGWHOST}-ranlib
 export MINGW32RC=${MINGWHOST}-windres
 export DOWNLOAD="wget -c"
 export PARALLEL="8"
+export ZLIBVER=1.2.7
 
 echo "Using ${PREFIX} for mingwlibs"
 if [ ! -s "$(pwd)/src/Downloader/IDownloader.h" ]; then
@@ -24,9 +25,11 @@ mkdir -p ${PREFIX}/include
 mkdir -p ${PREFIX}/lib
 
 if [ ! -s ${PREFIX}/lib/libz.a ]; then
-	${DOWNLOAD} "http://prdownloads.sourceforge.net/libpng/zlib-1.2.6.tar.gz?download" -O zlib-1.2.6.tar.gz
-	tar xifz zlib-1.2.6.tar.gz
-	cd zlib-1.2.6
+	if [ ! -s zlib-${ZLIBVER}.tar.gz ]; then
+		${DOWNLOAD} "http://prdownloads.sourceforge.net/libpng/zlib-${ZLIBVER}.tar.gz?download" -O zlib-${ZLIBVER}.tar.gz
+	fi
+	tar xifz zlib-${ZLIBVER}.tar.gz
+	cd zlib-${ZLIBVER}
 	export CC=${MINGW32CC}
 	export CPP=${MINGW32CPP}
 	export LDSHARED=${MINGW32CC}
@@ -34,6 +37,8 @@ if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	export RANLIB=${MINGW32RANLIB}
 	./configure --prefix=${PREFIX}
 	make install -j ${PARALLEL}
+	#${CC} -shared -o zlib1.dll -Wl,--out-implib=libz.dll.a [!em]*.o
+	#cp zlib1.dll ../mingwlibs/dll
 	cp zlib.h ../mingwlibs/include
 	cp zconf.h ../mingwlibs/include
 	cd ..
