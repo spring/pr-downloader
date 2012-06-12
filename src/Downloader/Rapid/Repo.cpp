@@ -51,7 +51,7 @@ bool CRepo::parse()
 	}
 
 	char buf[IO_BUF_SIZE];
-	sdps.empty();
+	sdps.clear();
 	while ((gzgets(fp, buf, sizeof(buf)))!=Z_NULL) {
 		for (unsigned int i=0; i<sizeof(buf); i++) {
 			if (buf[i]=='\n') {
@@ -69,6 +69,11 @@ bool CRepo::parse()
 			CSdp sdptmp=CSdp(shortname, md5, name, depends, repourl);
 			rapid->addRemoteDsp(sdptmp);
 		}
+	}
+	int errnum=0;
+	const char* errstr = gzerror(fp, &errnum);
+	if(errnum!=0) {
+		LOG_ERROR("%d %s\n", errnum, errstr);
 	}
 	gzclose(fp);
 	return true;
