@@ -38,6 +38,7 @@ if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	./configure --prefix=${PREFIX}
 	make install -j ${PARALLEL}
 	#${CC} -shared -o zlib1.dll -Wl,--out-implib=libz.dll.a [!em]*.o
+	#mkdir -p ../mingwlibs/dll
 	#cp zlib1.dll ../mingwlibs/dll
 	cp zlib.h ../mingwlibs/include
 	cp zconf.h ../mingwlibs/include

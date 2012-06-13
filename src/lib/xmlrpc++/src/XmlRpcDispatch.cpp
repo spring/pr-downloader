@@ -90,10 +90,10 @@ XmlRpcDispatch::work(double timeout)
     int maxFd = -1;     // Not used on windows
     SourceList::iterator it;
     for (it=_sources.begin(); it!=_sources.end(); ++it) {
-      int fd = it->getSource()->getfd();
-      if (it->getMask() & ReadableEvent) FD_SET(fd, &inFd);
-      if (it->getMask() & WritableEvent) FD_SET(fd, &outFd);
-      if (it->getMask() & Exception)     FD_SET(fd, &excFd);
+      const int fd = it->getSource()->getfd();
+      if (it->getMask() & (unsigned int)ReadableEvent) FD_SET(fd, &inFd);
+      if (it->getMask() & (unsigned int)WritableEvent) FD_SET(fd, &outFd);
+      if (it->getMask() & (unsigned int)Exception)     FD_SET(fd, &excFd);
       if (it->getMask() && fd > maxFd)   maxFd = fd;
     }
 
