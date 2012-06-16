@@ -239,6 +239,7 @@ bool CHttpDownloader::setupDownload(CFile& file, DownloadData* piece, IDownload*
 	} else {
 		curl_easy_reset(piece->easy_handle);
 	}
+	curl_easy_setopt(piece->easy_handle, CURLOPT_CONNECTTIMEOUT, 10);
 	CURL* curle= piece->easy_handle;
 	piece->mirror=download->getFastestMirror();
 	if (piece->mirror==NULL) {
