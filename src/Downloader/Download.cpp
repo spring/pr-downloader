@@ -59,17 +59,22 @@ Mirror* IDownload::getFastestMirror()
 	int max=-1;
 	int pos=-1;
 	for(unsigned i=0; i<mirrors.size(); i++) {
-		if(mirrors[i]->status==Mirror::STATUS_UNKNOWN) //prefer mirrors with unknown status
+		if(mirrors[i]->status==Mirror::STATUS_UNKNOWN) { //prefer mirrors with unknown status
+			mirrors[i]->status=Mirror::STATUS_OK; //set status to ok, to not use it again
+			LOG_DEBUG("Mirror %d: status unknown", i);
 			return mirrors[i];
+		}
 		if ((mirrors[i]->status!=Mirror::STATUS_BROKEN) && (mirrors[i]->maxspeed>max)) {
 			max=mirrors[i]->maxspeed;
 			pos=i;
 		}
 		LOG_DEBUG("Mirror %d: (%d): %s", i, mirrors[i]->maxspeed, mirrors[i]->url.c_str());
 	}
-	if (pos<0)
+	if (pos<0) {
+		LOG_DEBUG("no mirror selected");
 		return NULL;
-	LOG_DEBUG("Fastest mirror (%d): %s", mirrors[pos]->maxspeed, mirrors[pos]->url.c_str());
+	}
+	LOG_DEBUG("Fastest mirror %d: (%d): %s", pos, mirrors[pos]->maxspeed, mirrors[pos]->url.c_str());
 	return mirrors[pos];
 }
 
