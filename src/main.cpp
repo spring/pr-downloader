@@ -58,7 +58,6 @@ void show_version()
 
 void show_help(const char* cmd)
 {
-	show_version();
 	int i=0;
 	LOG("Usage: %s \n", cmd);
 	bool append=false;
@@ -125,6 +124,7 @@ void show_results(std::list<IDownload*>& list)
 
 int main(int argc, char **argv)
 {
+	show_version();
 	if (argc<2)
 		show_help(argv[0]);
 
