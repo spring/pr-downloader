@@ -31,9 +31,9 @@ void CRepo::download()
 	LOG_DEBUG("%s",tmp.c_str());
 	this->tmpFile = fileSystem->getSpringDir() + PATH_DELIMITER + "rapid" + PATH_DELIMITER +tmp + PATH_DELIMITER +"versions.gz";
 	fileSystem->createSubdirs(tmpFile);
-	if (fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME))
-		if (parse()) //first try already downloaded file, as repo master file rarely changes
-			return;
+	//first try already downloaded file, as repo master file rarely changes
+	if ((fileSystem->fileExists(tmpFile)) && fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME) && parse())
+		return;
 	fileSystem->createSubdirs(tmpFile);
 	IDownload dl(tmpFile);
 	dl.addMirror(repourl + "/versions.gz");

@@ -18,8 +18,9 @@ void CRepoMaster::download(const std::string& name)
 	this->path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
 	fileSystem->createSubdirs(path);
 	LOG_DEBUG("%s",name.c_str());
-	if (fileSystem->isOlder(path,REPO_MASTER_RECHECK_TIME)) //first try already downloaded file, as repo master file rarely changes
-		if (parse()) return;
+	//first try already downloaded file, as repo master file rarely changes
+	if ((fileSystem->fileExists(path)) && (fileSystem->isOlder(path,REPO_MASTER_RECHECK_TIME)) && parse())
+		return;
 	IDownload dl(path);
 	dl.addMirror(name);
 	httpDownload->download(&dl);

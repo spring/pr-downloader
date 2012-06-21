@@ -177,7 +177,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 						return -1;
 					}
 					if (res<=0) {
-						LOG_ERROR("\nwrote error: %d", res);
+						LOG_ERROR("wrote error: %d", res);
 						return -1;
 					}
 				} else if (towrite<0) {
@@ -271,7 +271,7 @@ bool CSdp::downloadStream(std::string url,std::list<FileData*> files)
 		/* always cleanup */
 		curl_easy_cleanup(curl);
 		if (res!=CURLE_OK) {
-			LOG_ERROR("%s",curl_easy_strerror(res));
+			LOG_ERROR("Curl cleanup error: %s",curl_easy_strerror(res));
 			return false;
 		}
 	}
