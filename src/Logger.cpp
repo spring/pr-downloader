@@ -12,7 +12,7 @@ void L_LOG(L_LEVEL level, const char* format ...)
 	va_list args;
 	va_start(args,format);
 	switch(level) {
-	case L_WARN:
+	case L_RAW:
 		vprintf(format, args);
 		fflush(stdout);
 		break;
@@ -38,7 +38,7 @@ void L_LOG(L_LEVEL level, const char* format ...)
 
 void LOG_DOWNLOAD(const char* filename)
 {
-	L_LOG(L_WARN, "[Download] %s\n",filename);
+	L_LOG(L_RAW, "[Download] %s\n",filename);
 }
 
 static unsigned long lastlogtime=0;
@@ -58,7 +58,7 @@ void LOG_PROGRESS(long done, long total, bool forceOutput)
 	if (total>0) {
 		percentage = (float)done / total;
 	}
-	L_LOG(L_WARN, "[Progress] %3.0f%% [",percentage * 100.0f);
+	L_LOG(L_RAW, "[Progress] %3.0f%% [",percentage * 100.0f);
 	int totaldotz = 30;                           // how wide you want the progress meter to be
 	int dotz = percentage * totaldotz;
 	for (int i=0; i < totaldotz; i++) {
@@ -68,7 +68,7 @@ void LOG_PROGRESS(long done, long total, bool forceOutput)
 			printf("=");    //full
 	}
 	// and back to line begin - do not forget the fflush to avoid output buffering problems!
-	L_LOG(L_WARN,"] %ld/%ld ", done, total);
-	L_LOG(L_WARN,"\r");
+	L_LOG(L_RAW,"] %ld/%ld ", done, total);
+	L_LOG(L_RAW,"\r");
 }
 

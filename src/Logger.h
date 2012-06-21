@@ -12,7 +12,7 @@ extern "C" {
 
 	enum L_LEVEL {
 		L_ERROR = 1,
-		L_WARN = 2,
+		L_RAW = 2,
 		L_INFO = 3,
 		L_DEBUG = 4
 	};
@@ -23,7 +23,7 @@ extern "C" {
 	void L_LOG(L_LEVEL level, const char* format ...);
 
 #define LOG(...) \
-	L_LOG(L_WARN, __VA_ARGS__)
+	L_LOG(L_RAW, __VA_ARGS__)
 
 #define LOG_ERROR(...) \
 	L_LOG(L_ERROR, __VA_ARGS__)
