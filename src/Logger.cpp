@@ -6,37 +6,39 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-void LOG(const char* format, ...)
-{
-	va_list args;
-	va_start(args, format);
-	vprintf(format, args);
-	va_end(args);
-}
 
-void LOG_INFO(const char* format, ...)
-{
-	va_list args;
-	va_start(args, format);
-	printf("[Info] ");
-	vprintf(format, args);
-	printf("\n");
-	va_end(args);
-}
-
-void LOG_ERROR(const char* format, ...)
+void L_LOG(L_LEVEL level, const char* format ...)
 {
 	va_list args;
 	va_start(args,format);
-	fprintf(stderr, "[Error] ");
-	vfprintf(stderr, format,args);
-	fprintf(stderr, "\n");
+	switch(level) {
+	case L_WARN:
+		vprintf(format, args);
+		fflush(stdout);
+		break;
+	default:
+	case L_ERROR:
+		fprintf(stderr, "[Error]");
+		vfprintf(stderr, format,args);
+		fprintf(stderr, "\n");
+		break;
+	case L_INFO:
+		printf("[Info] ");
+		vprintf(format, args);
+		printf("\n");
+		break;
+	case L_DEBUG:
+		printf("[Debug] ");
+		vprintf(format, args);
+		printf("\n");
+		break;
+	}
 	va_end(args);
 }
 
 void LOG_DOWNLOAD(const char* filename)
 {
-	printf("[Download] %s\n",filename);
+	L_LOG(L_WARN, "[Download] %s\n",filename);
 }
 
 static unsigned long lastlogtime=0;
@@ -56,7 +58,7 @@ void LOG_PROGRESS(long done, long total, bool forceOutput)
 	if (total>0) {
 		percentage = (float)done / total;
 	}
-	printf("[Progress] %3.0f%% [",percentage * 100.0f);
+	L_LOG(L_WARN, "[Progress] %3.0f%% [",percentage * 100.0f);
 	int totaldotz = 30;                           // how wide you want the progress meter to be
 	int dotz = percentage * totaldotz;
 	for (int i=0; i < totaldotz; i++) {
@@ -66,8 +68,7 @@ void LOG_PROGRESS(long done, long total, bool forceOutput)
 			printf("=");    //full
 	}
 	// and back to line begin - do not forget the fflush to avoid output buffering problems!
-	printf("] %ld/%ld ", done, total);
-	printf("\r");
-	fflush(stdout);
+	L_LOG(L_WARN,"] %ld/%ld ", done, total);
+	L_LOG(L_WARN,"\r");
 }
 

@@ -8,32 +8,28 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/**
-*	plain log output
-*/
-void LOG(const char* format, ...);
-/**
-*	output log level info
-*/
-void LOG_INFO(const char* format, ...);
-/**
-*	output log level error
-*/
-void LOG_ERROR(const char* format, ...);
 
-void LOG_DOWNLOAD(const char* filename);
 
-/**
-*	output progress bar
-*	@param done bytes already downloaded
-*	@param total total bytes to download
-*	@param forceOutput force output
-*/
-void LOG_PROGRESS(long done, long total, bool forceOutput=false);
+	enum L_LEVEL {
+		L_ERROR = 1,
+		L_WARN = 2,
+		L_INFO = 3,
+		L_DEBUG = 4
+	};
 
-#ifdef __cplusplus
-}
-#endif
+	/**
+	*	plain log output
+	*/
+	void L_LOG(L_LEVEL level, const char* format ...);
+
+#define LOG(...) \
+	L_LOG(L_WARN, __VA_ARGS__)
+
+#define LOG_ERROR(...) \
+	L_LOG(L_ERROR, __VA_ARGS__)
+
+#define LOG_INFO(...) \
+	L_LOG(L_INFO, __VA_ARGS__)
 
 #ifdef DEBUG
 #define LOG_DEBUG(fmt, ...) \
@@ -42,5 +38,20 @@ void LOG_PROGRESS(long done, long total, bool forceOutput=false);
 #else
 #define	LOG_DEBUG(fmt, ...)
 #endif
+
+	void LOG_DOWNLOAD(const char* filename);
+
+	/**
+	*	output progress bar
+	*	@param done bytes already downloaded
+	*	@param total total bytes to download
+	*	@param forceOutput force output
+	*/
+	void LOG_PROGRESS(long done, long total, bool forceOutput=false);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif
