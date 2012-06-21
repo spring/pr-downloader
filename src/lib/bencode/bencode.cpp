@@ -31,7 +31,7 @@
 
 static be_node *be_alloc(be_type type)
 {
-	be_node *ret = malloc(sizeof(*ret));
+	be_node *ret = (be_node*)malloc(sizeof(*ret));
 	if (ret) {
 		memset(ret, 0x00, sizeof(*ret));
 		ret->type = type;
@@ -82,7 +82,7 @@ static char *_be_decode_str(const char **data, long long *data_len)
 	len = slen;
 
 	if (**data == ':') {
-		char *_ret = malloc(sizeof(sllen) + len + 1);
+		char *_ret = (char*)malloc(sizeof(sllen) + len + 1);
 		memcpy(_ret, &sllen, sizeof(sllen));
 		ret = _ret + sizeof(sllen);
 		memcpy(ret, *data + 1, len);
@@ -110,7 +110,7 @@ static be_node *_be_decode(const char **data, long long *data_len)
 		--(*data_len);
 		++(*data);
 		while (**data != 'e') {
-			ret->val.l = realloc(ret->val.l, (i + 2) * sizeof(*ret->val.l));
+			ret->val.l = (be_node**)realloc(ret->val.l, (i + 2) * sizeof(*ret->val.l));
 			ret->val.l[i] = _be_decode(data, data_len);
 			if (!ret->val.l[i])
 				break;
@@ -133,7 +133,7 @@ static be_node *_be_decode(const char **data, long long *data_len)
 		--(*data_len);
 		++(*data);
 		while (**data != 'e') {
-			ret->val.d = realloc(ret->val.d, (i + 2) * sizeof(*ret->val.d));
+			ret->val.d = (be_dict*)realloc(ret->val.d, (i + 2) * sizeof(*ret->val.d));
 			ret->val.d[i].key = _be_decode_str(data, data_len);
 			ret->val.d[i].val = _be_decode(data, data_len);
 			if (!ret->val.l[i])
@@ -227,13 +227,13 @@ void be_free(be_node *node)
 }
 
 #ifdef BE_DEBUG
-#include <stdio.h>
+#include "Logger.h"
 #include <stdint.h>
 
 static void _be_dump_indent(ssize_t indent)
 {
 	while (indent-- > 0)
-		printf("    ");
+		LOG("    ");
 }
 static void _be_dump(be_node *node, ssize_t indent)
 {
@@ -244,34 +244,34 @@ static void _be_dump(be_node *node, ssize_t indent)
 
 	switch (node->type) {
 	case BE_STR:
-		printf("str = %s (len = %lli)\n", node->val.s, be_str_len(node));
+		LOG("str = %s (len = %lli)\n", node->val.s, be_str_len(node));
 		break;
 
 	case BE_INT:
-		printf("int = %lli\n", node->val.i);
+		LOG("int = %lli\n", node->val.i);
 		break;
 
 	case BE_LIST:
-		puts("list [");
+		LOG("list [");
 
 		for (i = 0; node->val.l[i]; ++i)
 			_be_dump(node->val.l[i], indent + 1);
 
 		_be_dump_indent(indent);
-		puts("]");
+		LOG("]");
 		break;
 
 	case BE_DICT:
-		puts("dict {");
+		LOG("dict {");
 
 		for (i = 0; node->val.d[i].val; ++i) {
 			_be_dump_indent(indent + 1);
-			printf("%s => ", node->val.d[i].key);
+			LOG("%s => ", node->val.d[i].key);
 			_be_dump(node->val.d[i].val, -(indent + 1));
 		}
 
 		_be_dump_indent(indent);
-		puts("}");
+		LOG("}");
 		break;
 	}
 }

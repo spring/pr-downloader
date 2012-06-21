@@ -20,7 +20,7 @@ extern "C" {
 	/**
 	*	plain log output
 	*/
-	void L_LOG(L_LEVEL level, const char* format ...);
+	void L_LOG(L_LEVEL level, const char* format, ...);
 
 #define LOG(...) \
 	L_LOG(L_RAW, __VA_ARGS__)
@@ -33,8 +33,7 @@ extern "C" {
 
 #ifdef DEBUG
 #define LOG_DEBUG(fmt, ...) \
-		printf( "%s:%d:%s(): " fmt "\n", __FILE__, \
-									__LINE__, __FUNCTION__, ##__VA_ARGS__);
+	L_LOG(L_DEBUG, "%s:%d:%s(): " fmt "\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__);
 #else
 #define	LOG_DEBUG(fmt, ...)
 #endif
