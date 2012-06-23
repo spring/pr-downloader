@@ -20,7 +20,7 @@ ENDIF ()
 
 
 
-add_library(${RAPID_LIB} SHARED
+add_library(${RAPID_LIB} STATIC
 	${myRapidFiles}
 	pr-downloader.cpp
 )
