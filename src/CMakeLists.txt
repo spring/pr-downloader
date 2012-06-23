@@ -3,7 +3,7 @@ subdirs(lib)
 subdirs(Downloader)
 subdirs(FileSystem)
 
-set(myRapidFiles
+set(PRDOWNLOADER_FILES
 	Util.cpp
 	Logger.cpp
 	Downloader/Download.cpp
@@ -11,8 +11,10 @@ set(myRapidFiles
 	Downloader/Mirror.cpp
 )
 
-set (RAPID "pr-downloader")
-set (RAPID_LIB "unitsync-ext")
+set (PRDOWNLOADER "pr-downloader")
+set (PRDOWNLOADER_SHARED ${PRDOWNLOADER}_shared)
+set (PRDOWNLOADER_STATIC ${PRDOWNLOADER}_static)
+
 IF (WIN32)
 	SET(WIN32LIBS ws2_32)
 	LIST(APPEND WIN32LIBS mswsock)
@@ -20,26 +22,22 @@ ENDIF ()
 
 
 
-add_library(${RAPID_LIB} SHARED
-	${myRapidFiles}
+add_library(${PRDOWNLOADER_SHARED} SHARED
+	${PRDOWNLOADER_FILES}
 	pr-downloader.cpp
 )
 
-target_link_libraries(${RAPID_LIB}
-	Rapid
-	Http
-	Plasma
-	Widget
-	FileSystem
-	${XMLRPC_LIBRARIES}
+add_library(${PRDOWNLOADER_STATIC} STATIC
+	${PRDOWNLOADER_FILES}
+	pr-downloader.cpp
 )
 
-add_executable(${RAPID}
+add_executable(${PRDOWNLOADER}
+	${PRDOWNLOADER_FILES}
 	main.cpp
-	${myRapidFiles}
 )
 
-target_link_libraries(${RAPID}
+target_link_libraries(${PRDOWNLOADER}
 	${WIN32LIBS}
 	Rapid
 	Http
@@ -50,7 +48,7 @@ target_link_libraries(${RAPID}
 
 FILE( GLOB_RECURSE header "*.h" )
 
-INSTALL (TARGETS ${RAPID} ${RAPID_LIB}
+INSTALL (TARGETS ${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_STATIC}
 	RUNTIME DESTINATION ${BINDIR}
 	LIBRARY DESTINATION ${LIBDIR}
 	ARCHIVE DESTINATION ${LIBDIR} )
