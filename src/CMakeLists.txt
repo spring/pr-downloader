@@ -33,7 +33,6 @@ add_library(${PRDOWNLOADER_STATIC} STATIC
 )
 
 add_executable(${PRDOWNLOADER}
-	${PRDOWNLOADER_FILES}
 	main.cpp
 )
 
@@ -48,7 +47,7 @@ set(PRDOWNLOADER_LIBS
 
 target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
 target_link_libraries( ${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} )
-target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
+target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
 
 FILE( GLOB_RECURSE header "*.h" )
 
