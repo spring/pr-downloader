@@ -1001,7 +1001,7 @@ SOAP_FMAC1 std::string * SOAP_FMAC2 soap_instantiate_std__string(struct soap *so
 	return (std::string*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__string(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__string(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying std::string %p -> %p\n", q, p));
@@ -1189,7 +1189,7 @@ SOAP_FMAC1 _Plasma__DownloadFileResponse * SOAP_FMAC2 soap_instantiate__Plasma__
 	return (_Plasma__DownloadFileResponse*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy__Plasma__DownloadFileResponse(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__Plasma__DownloadFileResponse(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying _Plasma__DownloadFileResponse %p -> %p\n", q, p));
@@ -1323,7 +1323,7 @@ SOAP_FMAC1 _Plasma__DownloadFile * SOAP_FMAC2 soap_instantiate__Plasma__Download
 	return (_Plasma__DownloadFile*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy__Plasma__DownloadFile(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy__Plasma__DownloadFile(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying _Plasma__DownloadFile %p -> %p\n", q, p));
@@ -1454,7 +1454,7 @@ SOAP_FMAC1 Plasma__ArrayOfString * SOAP_FMAC2 soap_instantiate_Plasma__ArrayOfSt
 	return (Plasma__ArrayOfString*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy_Plasma__ArrayOfString(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_Plasma__ArrayOfString(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying Plasma__ArrayOfString %p -> %p\n", q, p));
@@ -1591,7 +1591,7 @@ SOAP_FMAC1 xsd__base64Binary * SOAP_FMAC2 soap_instantiate_xsd__base64Binary(str
 	return (xsd__base64Binary*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy_xsd__base64Binary(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_xsd__base64Binary(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying xsd__base64Binary %p -> %p\n", q, p));
@@ -1779,7 +1779,7 @@ SOAP_FMAC1 struct SOAP_ENV__Fault * SOAP_FMAC2 soap_instantiate_SOAP_ENV__Fault(
 	return (struct SOAP_ENV__Fault*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Fault(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Fault(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct SOAP_ENV__Fault %p -> %p\n", q, p));
@@ -1890,7 +1890,7 @@ SOAP_FMAC1 struct SOAP_ENV__Reason * SOAP_FMAC2 soap_instantiate_SOAP_ENV__Reaso
 	return (struct SOAP_ENV__Reason*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Reason(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Reason(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct SOAP_ENV__Reason %p -> %p\n", q, p));
@@ -2008,7 +2008,7 @@ SOAP_FMAC1 struct SOAP_ENV__Detail * SOAP_FMAC2 soap_instantiate_SOAP_ENV__Detai
 	return (struct SOAP_ENV__Detail*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Detail(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Detail(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct SOAP_ENV__Detail %p -> %p\n", q, p));
@@ -2128,7 +2128,7 @@ SOAP_FMAC1 struct SOAP_ENV__Code * SOAP_FMAC2 soap_instantiate_SOAP_ENV__Code(st
 	return (struct SOAP_ENV__Code*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Code(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Code(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct SOAP_ENV__Code %p -> %p\n", q, p));
@@ -2227,7 +2227,7 @@ SOAP_FMAC1 struct SOAP_ENV__Header * SOAP_FMAC2 soap_instantiate_SOAP_ENV__Heade
 	return (struct SOAP_ENV__Header*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Header(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_SOAP_ENV__Header(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct SOAP_ENV__Header %p -> %p\n", q, p));
@@ -2248,14 +2248,14 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize___Plasma__DownloadFile(struct soap *so
 	soap_serialize_PointerTo_Plasma__DownloadFile(soap, &a->Plasma__DownloadFile);
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out___Plasma__DownloadFile(struct soap *soap, const char *tag, int id, const struct __Plasma__DownloadFile *a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out___Plasma__DownloadFile(struct soap *soap, const char */*tag*/, int /*id*/, const struct __Plasma__DownloadFile *a, const char */*type*/)
 {
 	if (soap_out_PointerTo_Plasma__DownloadFile(soap, "Plasma:DownloadFile", -1, &a->Plasma__DownloadFile, ""))
 		return soap->error;
 	return SOAP_OK;
 }
 
-SOAP_FMAC3 struct __Plasma__DownloadFile * SOAP_FMAC4 soap_in___Plasma__DownloadFile(struct soap *soap, const char *tag, struct __Plasma__DownloadFile *a, const char *type)
+SOAP_FMAC3 struct __Plasma__DownloadFile * SOAP_FMAC4 soap_in___Plasma__DownloadFile(struct soap *soap, const char */*tag*/, struct __Plasma__DownloadFile *a, const char */*type*/)
 {
 	size_t soap_flag_Plasma__DownloadFile = 1;
 	short soap_flag;
@@ -2324,7 +2324,7 @@ SOAP_FMAC1 struct __Plasma__DownloadFile * SOAP_FMAC2 soap_instantiate___Plasma_
 	return (struct __Plasma__DownloadFile*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy___Plasma__DownloadFile(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy___Plasma__DownloadFile(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying struct __Plasma__DownloadFile %p -> %p\n", q, p));
@@ -2510,7 +2510,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_Plasma__DownloadFileResponse(struct
 	return (*a)->soap_out(soap, tag, id, type);
 }
 
-SOAP_FMAC3 _Plasma__DownloadFileResponse ** SOAP_FMAC4 soap_in_PointerTo_Plasma__DownloadFileResponse(struct soap *soap, const char *tag, _Plasma__DownloadFileResponse **a, const char *type)
+SOAP_FMAC3 _Plasma__DownloadFileResponse ** SOAP_FMAC4 soap_in_PointerTo_Plasma__DownloadFileResponse(struct soap *soap, const char *tag, _Plasma__DownloadFileResponse **a, const char */*type*/)
 {
 	if (soap_element_begin_in(soap, tag, 1, NULL))
 		return NULL;
@@ -2565,7 +2565,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerTo_Plasma__DownloadFile(struct soap *s
 	return (*a)->soap_out(soap, tag, id, type);
 }
 
-SOAP_FMAC3 _Plasma__DownloadFile ** SOAP_FMAC4 soap_in_PointerTo_Plasma__DownloadFile(struct soap *soap, const char *tag, _Plasma__DownloadFile **a, const char *type)
+SOAP_FMAC3 _Plasma__DownloadFile ** SOAP_FMAC4 soap_in_PointerTo_Plasma__DownloadFile(struct soap *soap, const char *tag, _Plasma__DownloadFile **a, const char */*type*/)
 {
 	if (soap_element_begin_in(soap, tag, 1, NULL))
 		return NULL;
@@ -2620,7 +2620,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToxsd__base64Binary(struct soap *soap,
 	return (*a)->soap_out(soap, tag, id, type);
 }
 
-SOAP_FMAC3 xsd__base64Binary ** SOAP_FMAC4 soap_in_PointerToxsd__base64Binary(struct soap *soap, const char *tag, xsd__base64Binary **a, const char *type)
+SOAP_FMAC3 xsd__base64Binary ** SOAP_FMAC4 soap_in_PointerToxsd__base64Binary(struct soap *soap, const char *tag, xsd__base64Binary **a, const char */*type*/)
 {
 	if (soap_element_begin_in(soap, tag, 1, NULL))
 		return NULL;
@@ -2675,7 +2675,7 @@ SOAP_FMAC3 int SOAP_FMAC4 soap_out_PointerToPlasma__ArrayOfString(struct soap *s
 	return (*a)->soap_out(soap, tag, id, type);
 }
 
-SOAP_FMAC3 Plasma__ArrayOfString ** SOAP_FMAC4 soap_in_PointerToPlasma__ArrayOfString(struct soap *soap, const char *tag, Plasma__ArrayOfString **a, const char *type)
+SOAP_FMAC3 Plasma__ArrayOfString ** SOAP_FMAC4 soap_in_PointerToPlasma__ArrayOfString(struct soap *soap, const char *tag, Plasma__ArrayOfString **a, const char */*type*/)
 {
 	if (soap_element_begin_in(soap, tag, 1, NULL))
 		return NULL;
@@ -2886,7 +2886,7 @@ SOAP_FMAC3 char ** SOAP_FMAC4 soap_get_string(struct soap *soap, char **p, const
 	return p;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOfstd__string(struct soap *soap, std::vector<std::string >*p)
+SOAP_FMAC3 void SOAP_FMAC4 soap_default_std__vectorTemplateOfstd__string(struct soap */*soap*/, std::vector<std::string >*p)
 {
 	p->clear();
 }
@@ -2897,7 +2897,7 @@ SOAP_FMAC3 void SOAP_FMAC4 soap_serialize_std__vectorTemplateOfstd__string(struc
 		soap_serialize_std__string(soap, &(*i));
 }
 
-SOAP_FMAC3 int SOAP_FMAC4 soap_out_std__vectorTemplateOfstd__string(struct soap *soap, const char *tag, int id, const std::vector<std::string >*a, const char *type)
+SOAP_FMAC3 int SOAP_FMAC4 soap_out_std__vectorTemplateOfstd__string(struct soap *soap, const char *tag, int id, const std::vector<std::string >*a, const char */*type*/)
 {
 	for (std::vector<std::string >::const_iterator i = a->begin(); i != a->end(); ++i)
 	{
@@ -2967,7 +2967,7 @@ SOAP_FMAC1 std::vector<std::string > * SOAP_FMAC2 soap_instantiate_std__vectorTe
 	return (std::vector<std::string >*)cp->ptr;
 }
 
-SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOfstd__string(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+SOAP_FMAC3 void SOAP_FMAC4 soap_copy_std__vectorTemplateOfstd__string(struct soap *soap, int st, int /*tt*/, void *p, size_t len, const void *q, size_t n)
 {
 	(void)soap; (void)st; (void)len; (void)n; /* appease -Wall -Werror */
 	DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Copying std::vector<std::string > %p -> %p\n", q, p));
