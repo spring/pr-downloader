@@ -1895,7 +1895,7 @@ soap_putbase64(struct soap *soap, const unsigned char *s, int n)
 SOAP_FMAC1
 unsigned char*
 SOAP_FMAC2
-soap_getbase64(struct soap *soap, int *n, int malloc_flag)
+soap_getbase64(struct soap *soap, int *n, int /*malloc_flag*/)
 {
 #ifdef WITH_DOM
   if ((soap->mode & SOAP_XML_DOM) && soap->dom)
@@ -4420,7 +4420,7 @@ tcp_select(struct soap *soap, SOAP_SOCKET s, int flags, int timeout)
 #ifndef WITH_NOIO
 #ifndef PALM_1
 static SOAP_SOCKET
-tcp_accept(struct soap *soap, SOAP_SOCKET s, struct sockaddr *a, int *n)
+tcp_accept(struct soap */*soap*/, SOAP_SOCKET s, struct sockaddr *a, int *n)
 { SOAP_SOCKET fd;
   fd = accept(s, a, (SOAP_SOCKLEN_T*)n); /* portability note: see SOAP_SOCKLEN_T definition in stdsoap2.h */
 #ifdef SOCKET_CLOSE_ON_EXEC
@@ -4533,7 +4533,7 @@ tcp_disconnect(struct soap *soap)
 #ifndef WITH_NOIO
 #ifndef PALM_1
 static int
-tcp_closesocket(struct soap *soap, SOAP_SOCKET fd)
+tcp_closesocket(struct soap */*soap*/, SOAP_SOCKET fd)
 { DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Close socket %d\n", (int)fd));
   return soap_closesocket(fd);
 }
@@ -4544,7 +4544,7 @@ tcp_closesocket(struct soap *soap, SOAP_SOCKET fd)
 #ifndef WITH_NOIO
 #ifndef PALM_1
 static int
-tcp_shutdownsocket(struct soap *soap, SOAP_SOCKET fd, int how)
+tcp_shutdownsocket(struct soap */*soap*/, SOAP_SOCKET fd, int how)
 { DBGLOG(TEST, SOAP_MESSAGE(fdebug, "Shutdown socket %d how=%d\n", (int)fd, how));
   return shutdown(fd, how);
 }
@@ -5520,7 +5520,7 @@ soap_decode(char *buf, size_t len, const char *val, const char *sep)
 #ifndef WITH_NOHTTP
 #ifndef PALM_1
 static const char*
-http_error(struct soap *soap, int status)
+http_error(struct soap */*soap*/, int status)
 { register const char *msg = SOAP_STR_EOS;
 #ifndef WITH_LEAN
   msg = soap_code_str(h_http_error_codes, status);
@@ -5546,7 +5546,7 @@ http_put(struct soap *soap)
 #ifndef WITH_NOHTTP
 #ifndef PALM_1
 static int
-http_get(struct soap *soap)
+http_get(struct soap */*soap*/)
 { return SOAP_GET_METHOD;
 }
 #endif
@@ -5556,7 +5556,7 @@ http_get(struct soap *soap)
 #ifndef WITH_NOHTTP
 #ifndef PALM_1
 static int
-http_405(struct soap *soap)
+http_405(struct soap */*soap*/)
 { return 405;
 }
 #endif
@@ -6581,7 +6581,7 @@ soap_free_pht(struct soap *soap)
 SOAP_FMAC1
 int
 SOAP_FMAC2
-soap_embed(struct soap *soap, const void *p, const struct soap_array *a, int n, const char *tag, int type)
+soap_embed(struct soap *soap, const void *p, const struct soap_array *a, int n, const char */*tag*/, int type)
 { register int i;
   struct soap_plist *pp;
   if (soap->version == 2)
@@ -6631,7 +6631,7 @@ soap_pointer_lookup(struct soap *soap, const void *p, int type, struct soap_plis
 SOAP_FMAC1
 int
 SOAP_FMAC2
-soap_pointer_enter(struct soap *soap, const void *p, const struct soap_array *a, int n, int type, struct soap_plist **ppp)
+soap_pointer_enter(struct soap *soap, const void *p, const struct soap_array *a, int /*n*/, int type, struct soap_plist **ppp)
 { register size_t h;
   register struct soap_plist *pp;
   if (!soap->pblk || soap->pidx >= SOAP_PTRBLK)
@@ -7799,7 +7799,7 @@ soap_id_enter(struct soap *soap, const char *id, void *p, int t, size_t n, unsig
 SOAP_FMAC1
 void
 SOAP_FMAC2
-soap_fcopy(struct soap *soap, int st, int tt, void *p, size_t len, const void *q, size_t n)
+soap_fcopy(struct soap */*soap*/, int /*st*/, int /*tt*/, void *p, size_t /*len*/, const void *q, size_t n)
 { DBGLOG(TEST,SOAP_MESSAGE(fdebug, "Copying data type=%d (target type=%d) %p -> %p (%lu bytes)\n", st, tt, q, p, (unsigned long)n));
   memcpy(p, q, n);
 }
@@ -9633,7 +9633,7 @@ soap_element_result(struct soap *soap, const char *tag)
 SOAP_FMAC1
 void
 SOAP_FMAC2
-soap_check_result(struct soap *soap, const char *tag)
+soap_check_result(struct soap *soap, const char */*tag*/)
 { if (soap->version == 2 && soap->encodingStyle)
   { soap_instring(soap, ":result", NULL, NULL, 0, 2, -1, -1);
     /* just ignore content for compliance reasons, but should compare tag to element's QName value? */
@@ -12696,7 +12696,7 @@ soap_outstring(struct soap *soap, const char *tag, int id, char *const*p, const 
 SOAP_FMAC1
 char **
 SOAP_FMAC2
-soap_instring(struct soap *soap, const char *tag, char **p, const char *type, int t, int flag, long minlen, long maxlen)
+soap_instring(struct soap *soap, const char *tag, char **p, const char */*type*/, int t, int flag, long minlen, long maxlen)
 { if (soap_element_begin_in(soap, tag, 1, NULL))
   { if (!tag || *tag != '-' || soap->error != SOAP_NO_TAG)
       return NULL;
@@ -12762,7 +12762,7 @@ soap_outwstring(struct soap *soap, const char *tag, int id, wchar_t *const*p, co
 SOAP_FMAC1
 wchar_t **
 SOAP_FMAC2
-soap_inwstring(struct soap *soap, const char *tag, wchar_t **p, const char *type, int t, long minlen, long maxlen)
+soap_inwstring(struct soap *soap, const char *tag, wchar_t **p, const char */*type*/, int t, long minlen, long maxlen)
 { if (soap_element_begin_in(soap, tag, 1, NULL))
   { if (!tag || *tag != '-' || soap->error != SOAP_NO_TAG)
       return NULL;
