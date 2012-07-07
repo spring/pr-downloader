@@ -210,7 +210,6 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 				}
 			}
 			return i;
-			break;
 		}
 	}
 	if (download->pieces.size()>0) {

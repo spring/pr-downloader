@@ -5,6 +5,7 @@
 #include "HashCRC32.h"
 #include "HashMD5.h"
 #include "Logger.h"
+#include <string.h>
 
 FileData::FileData()
 {
@@ -12,6 +13,9 @@ FileData::FileData()
 	size=0;
 	compsize=0;
 	download=false;
+	memset(md5, 0, sizeof(md5));
+	memset(crc32, 0, sizeof(crc32));
+
 }
 
 FileData::~FileData()

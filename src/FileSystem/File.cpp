@@ -18,6 +18,7 @@ CFile::CFile()
 	this->size=-1;
 	this->piecesize=-1;
 	this->curpos=0;
+	isnewfile=true;
 }
 
 CFile::~CFile()
