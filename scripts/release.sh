@@ -7,7 +7,7 @@ if [ ! -d src ]; then
 fi
 make -j8 install
 cd dist
-FILES=`ls *.dll *.exe`
+FILES=`ls *.dll *.exe *.a`
 for i in $FILES; do
 	echo Strip $i
 	i586-mingw32msvc-objcopy --only-keep-debug $i $i.dbg
