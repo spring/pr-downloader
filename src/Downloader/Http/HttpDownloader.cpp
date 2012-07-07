@@ -45,16 +45,27 @@ CHttpDownloader::~CHttpDownloader()
 	curl_global_cleanup();
 }
 
-bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category /*cat*/)
+bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
 {
 	LOG_DEBUG("%s", name.c_str()  );
 
 	const std::string method(XMLRPC_METHOD);
-	std::string category;
+	//std::string category;
 	XmlRpc::XmlRpcClient client(XMLRPC_HOST,XMLRPC_PORT, XMLRPC_URI);
 	XmlRpc::XmlRpcValue arg;
 	arg["springname"]=name;
 	arg["torrent"]=true;
+	switch(cat) {
+	case IDownload::CAT_MAPS:
+		arg["category"]="maps";
+		break;
+	case IDownload::CAT_GAMES:
+		arg["category"]="games";
+		break;
+	default:
+		break;
+	}
+
 	XmlRpc::XmlRpcValue result;
 	client.execute(method.c_str(),arg, result);
 
