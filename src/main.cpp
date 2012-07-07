@@ -187,8 +187,8 @@ int main(int argc, char **argv)
 			break;
 		}
 		case FILESYSTEM_WRITEPATH: {
-			std::string tmp=optarg;
-			CFileSystem::Initialize(optarg);
+			const std::string tmp=optarg;
+			CFileSystem::Initialize(tmp);
 			break;
 		}
 		case FILESYSTEM_DUMPSDP: {

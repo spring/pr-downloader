@@ -212,7 +212,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 			return i;
 		}
 	}
-	if (download->pieces.size()>0) {
+	if (!download->pieces.empty()) {
 		download->state=IDownload::STATE_FINISHED;
 	}
 	return -1;
