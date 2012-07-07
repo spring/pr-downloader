@@ -57,10 +57,10 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 	arg["torrent"]=true;
 	switch(cat) {
 	case IDownload::CAT_MAPS:
-		arg["category"]="maps";
+		arg["category"]="map";
 		break;
 	case IDownload::CAT_GAMES:
-		arg["category"]="games";
+		arg["category"]="game";
 		break;
 	default:
 		break;
