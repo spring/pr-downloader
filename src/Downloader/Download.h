@@ -9,6 +9,7 @@
 
 class IHash;
 class Mirror;
+class CFile;
 
 class IDownload
 {
@@ -73,6 +74,10 @@ public:
 	 */
 	int size;
 	PIECE_STATE state;
+	/**
+	 *	returns number of bytes downloaded
+	 */
+	unsigned int getProgress(const CFile& file) const; //FIXME: move to CFile/use CFile everywhere ?!
 private:
 	std::vector <Mirror*> mirrors;
 
@@ -80,3 +85,4 @@ private:
 };
 
 #endif
+

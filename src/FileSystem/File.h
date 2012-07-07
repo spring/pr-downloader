@@ -60,11 +60,11 @@ public:
 	*	gets the size of the given pice, returns file size when piece<0. hint: first piece=0
 	*	@return the size of a peace
 	*/
-	int GetPieceSize(int piece=-1);
+	int GetPieceSize(int piece=-1) const;
 	/**
 	*	gets the read/write position of piece
 	*/
-	long GetPiecePos(int piece=-1);
+	long GetPiecePos(int piece=-1) const;
 	bool IsNewFile();
 private:
 	/**
@@ -84,7 +84,7 @@ private:
 	/**
 	* retrieves the size of the file handle
 	*/
-	long GetSizeFromHandle();
+	long GetSizeFromHandle() const;
 	std::string filename;
 	FILE* handle; //file handle
 	int piecesize; //size of a piece

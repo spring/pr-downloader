@@ -155,25 +155,8 @@ void CHttpDownloader::showProcess(IDownload* download, CFile& file)
 		lastprogress=now;
 	} else
 		return;
-	int done=0;
-
-	if(download->pieces.size()<=0) {
-		done=file.GetPieceSize();
-	} else {
-		for(unsigned i=0; i<download->pieces.size(); i++) {
-			switch(download->pieces[i].state) {
-			case IDownload::STATE_FINISHED:
-				done+=file.GetPieceSize(i);
-				break;
-			case IDownload::STATE_DOWNLOADING:
-				done+=file.GetPiecePos(i);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	int size=download->size;
+	int done = download->getProgress(file);
+	int size = download->size;
 	if ((size<0) && (download->state==IDownload::STATE_FINISHED)) {
 		size=done;
 		LOG_PROGRESS(done, size, true);

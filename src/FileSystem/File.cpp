@@ -202,7 +202,7 @@ bool CFile::SetPieceSize(int pieceSize)
 	return true;
 }
 
-int CFile::GetPieceSize(int piece)
+int CFile::GetPieceSize(int piece) const
 {
 	if (piece>=0) {
 		assert(piece<=(int)pieces.size());
@@ -217,7 +217,7 @@ int CFile::GetPieceSize(int piece)
 	return size;
 }
 
-long CFile::GetPiecePos(int piece)
+long CFile::GetPiecePos(int piece) const
 {
 	assert(piece<=(int)pieces.size());
 	if (piece>=0)
@@ -225,7 +225,7 @@ long CFile::GetPiecePos(int piece)
 	return curpos;
 }
 
-long CFile::GetSizeFromHandle()
+long CFile::GetSizeFromHandle() const
 {
 	if(handle==NULL) {
 		LOG_ERROR("GetSize(): file isn't opened!");
