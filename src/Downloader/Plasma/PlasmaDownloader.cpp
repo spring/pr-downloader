@@ -43,7 +43,7 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 		fileName.append("maps");
 		break;
 	case Plasma__ResourceType__Mod:
-		cat=IDownload::CAT_MODS;
+		cat=IDownload::CAT_GAMES;
 		fileName.append("games");
 		break;
 	default:

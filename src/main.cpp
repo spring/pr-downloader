@@ -79,7 +79,7 @@ bool download(const std::string& name, IDownload::category cat)
 {
 	std::list<IDownload*> res;
 	//only games can be (currently) downloaded by rapid
-	if (cat==IDownload::CAT_MODS) {
+	if (cat==IDownload::CAT_GAMES) {
 		rapidDownload->search(res, name, cat);
 		if ((!res.empty()) && (rapidDownload->download(res)))
 			return true;
@@ -216,7 +216,7 @@ int main(int argc, char **argv)
 			break;
 		}
 		case DOWNLOAD_GAME: {
-			if (!download(optarg, IDownload::CAT_MODS)) {
+			if (!download(optarg, IDownload::CAT_GAMES)) {
 				LOG_ERROR("No game found for %s",optarg);
 				res=false;
 			}
@@ -236,7 +236,7 @@ int main(int argc, char **argv)
 	if (optind < argc) {
 		while (optind < argc) {
 			std::string tmp = argv[optind];
-			if (!download(tmp, IDownload::CAT_MODS)) {
+			if (!download(tmp, IDownload::CAT_GAMES)) {
 				LOG_ERROR("No file found for %s",optarg);
 				res=false;
 			}

@@ -17,7 +17,7 @@ public:
 	enum category {
 		CAT_NONE=0,
 		CAT_MAPS,
-		CAT_MODS,
+		CAT_GAMES,
 		CAT_LUAWIDGETS,
 		CAT_AIBOTS,
 		CAT_LOBBYCLIENTS,
