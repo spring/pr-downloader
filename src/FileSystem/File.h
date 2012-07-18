@@ -5,8 +5,9 @@
 
 #include <string>
 #include <vector>
-#include <list>
 #include <map>
+
+#include "IFile.h"
 
 class IHash;
 
@@ -22,7 +23,8 @@ public:
 	int pos; //current relative read/write pos
 };
 
-class CFile
+
+class CFile: public IFile
 {
 public:
 	/**

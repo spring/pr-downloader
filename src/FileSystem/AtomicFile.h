@@ -2,15 +2,16 @@
 
 #include <stdio.h>
 #include <string>
+#include "IFile.h"
 
-class AtomicFile
+class AtomicFile: public IFile
 {
 public:
 	AtomicFile(std::string filename);
 	~AtomicFile();
-	bool open(std::string filename);
-	int write(char* buf, int size);
-	void close();
+	bool Open(std::string filename);
+	int Write(char* buf, int size);
+	void Close();
 private:
 	FILE* handle;
 	std::string filename;

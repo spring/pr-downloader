@@ -4,34 +4,43 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "Logger.h"
+#include "FileSystem.h"
 
 AtomicFile::AtomicFile(std::string filename)
 {
-	this->open(filename);
+	this->Open(filename);
 }
 
-bool AtomicFile::open(std::string filename)
+bool AtomicFile::Open(std::string filename)
 {
-	struct stat buf;
-	if (stat(filename.c_str(), &buf) == 0) {
-		if (remove(filename.c_str())!=0)
-			return false;
-	}
 	tmpname = filename + ".tmp";
 	this->filename=filename;
-	handle = fopen(tmpname.c_str(), "wb+");
+	const bool tmpexists = fileSystem->fileExists(tmpname);
+	const bool fileexists = fileSystem->fileExists(filename);
+
+	if (fileexists) {
+		if (tmpexists) { //remove existing tempfile
+			remove(tmpname.c_str());
+		}
+		//rename destination file to temp file
+		if (rename(filename.c_str(), tmpname.c_str())<0) {
+			LOG_ERROR("error renaming temp file %s", filename.c_str());
+			return false;
+		}
+	}
 	LOG_DEBUG("opened %s", filename.c_str());
-	return true;
+	handle = fopen(tmpname.c_str(), "wb+");
+	return (handle != NULL);
 }
 
-int AtomicFile::write(char* buf, int size)
+int AtomicFile::Write(char* buf, int size)
 {
 	int res = fwrite(buf, size, 1, handle);
 	LOG_DEBUG("writing %d %d\n", size, res);
 	return res*size;
 }
 
-void AtomicFile::close()
+void AtomicFile::Close()
 {
 	LOG_DEBUG("closing %s\n", filename.c_str() );
 #ifndef WIN32

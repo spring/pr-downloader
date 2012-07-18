@@ -171,7 +171,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 //				LOG_DEBUG("%s %d %ld %ld %ld %d %d %d %d %d",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
 				int res=0;
 				if (towrite>0) {
-					res=sdp->file_handle->write(buf_pos,towrite);
+					res=sdp->file_handle->Write(buf_pos,towrite);
 					if (res!=towrite) {
 						LOG_ERROR("fwrite error");
 						return -1;
@@ -188,7 +188,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 				buf_pos=buf_pos+res;
 				sdp->file_pos+=res;
 				if (sdp->file_pos>=(*sdp->list_it)->compsize) { //file finished -> next file
-					sdp->file_handle->close();
+					sdp->file_handle->Close();
 					delete sdp->file_handle;
 					sdp->file_handle = NULL;
 					if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())) {
