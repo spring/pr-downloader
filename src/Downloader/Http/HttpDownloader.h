@@ -26,7 +26,7 @@ public:
 	/**
 		downloads a file from Url to filename
 	*/
-    //! this hides diff signature from IDownloader
+	//FIXME: this hides diff signature from IDownloader
 	bool download(const std::string& Url, const std::string& filename, int pos=1);
 	void setCount(unsigned int count);
 	void setStatsPos(unsigned int pos);
@@ -35,11 +35,9 @@ public:
 	const std::string& getCacheFile(const std::string &url);
 	void downloadStream(const std::string& url,std::list<FileData*>& files);
 	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
-	virtual bool download(IDownload* download);
-
+	virtual bool download(std::list<IDownload*>& download);
 private:
 	bool parallelDownload(IDownload& download);
-	unsigned long lastprogress; //last time progress bar was shown
 	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);
 	std::string escapeUrl(const std::string& url);
 	/**
@@ -51,7 +49,7 @@ private:
 	*	gets next piece that can be downloaded, mark it as downloading
 	*	@return true when DownloadData is correctly set
 	*/
-	bool setupDownload(CFile& file, DownloadData* piece, IDownload* download);
+	bool setupDownload(DownloadData* piece);
 	bool getRange(std::string& range, int piece, int piecesize);
 	/**
 	* returns piecenum for file, which isn't already downloaded
@@ -68,7 +66,7 @@ private:
 	*		- keep some stats (mark broken mirrors, downloadspeed)
 	*	@returns false, when some fatal error occured -> abort
 	*/
-	bool processMessages(CURLM* curlm, std::vector <DownloadData*>& downloads, IDownload* download, CFile& file);
+	bool processMessages(CURLM* curlm, std::vector <DownloadData*>& downloads);
 	DownloadData* getDataByHandle(const std::vector <DownloadData*>& downloads, const CURL* easy_handle) const;
 };
 

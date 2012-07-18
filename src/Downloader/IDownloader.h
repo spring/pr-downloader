@@ -14,7 +14,7 @@ class IDownloader
 public:
 	static IDownloader* GetHttpInstance();
 	static IDownloader* GetRapidInstance();
-    static IDownloader* GetPlasmaInstance();
+	static IDownloader* GetPlasmaInstance();
 	static IDownloader* GetWidgetInstance();
 
 	/**
@@ -26,15 +26,16 @@ public:
 		Shutdown all Downloaders
 	*/
 	static void Shutdown();
-    virtual ~IDownloader() {}
+	virtual ~IDownloader() {}
 
 	/**
 		download specificed download
 		@return returns true, when download was successfull
 	*/
-	virtual bool download(IDownload* dl)=0;
+	virtual bool download(IDownload* dl);
 	/**
 		download all downloads in list
+		NOTE: either download(IDownload* dl) or download(std::list<IDownload*>& download) has to be implemented!
 		@return returns true, when all downloads were successfull
 	*/
 	virtual bool download(std::list<IDownload*>& download);

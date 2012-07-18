@@ -70,6 +70,13 @@ bool IDownloader::download(std::list<IDownload*>& download)
 	return res;
 }
 
+bool IDownloader::download(IDownload* dl)
+{
+	std::list<IDownload*> dls;
+	dls.push_back(dl);
+	return download(dls);
+}
+
 void IDownloader::freeResult(std::list<IDownload*>& list)
 {
 	std::list<IDownload*>::iterator it;

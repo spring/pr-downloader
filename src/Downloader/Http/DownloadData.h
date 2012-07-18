@@ -6,6 +6,7 @@
 #include <string>
 class CFile;
 class Mirror;
+class IDownload;
 typedef void CURL;
 
 class DownloadData
@@ -17,6 +18,7 @@ public:
 	int piece;
 	CURL* easy_handle; //curl_easy_handle
 	Mirror* mirror; //mirror used
+	IDownload *download;
 };
 
 #endif
