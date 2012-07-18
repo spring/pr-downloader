@@ -4,7 +4,7 @@
 #
 
 # Check for existence of astyle, and error out if not present.
-if [ ! -x $(which astyle) ]; then
+if [ ! -x "$(which astyle)" ]; then
 	echo "git pre-commit hook:"
 	echo "Did not find astyle, please install it before continuing."
 	exit 1
