@@ -236,7 +236,7 @@ int main(int argc, char **argv)
 	if (optind < argc) {
 		while (optind < argc) {
 			std::string tmp = argv[optind];
-			if (!download(tmp, IDownload::CAT_GAMES)) {
+			if (!download(tmp, IDownload::CAT_NONE)) {
 				LOG_ERROR("No file found for %s",optarg);
 				res=false;
 			}
