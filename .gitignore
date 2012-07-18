@@ -7,3 +7,12 @@ obj-*
 /debian/*\.log
 /html
 build/
+CMakeFiles
+/curl*
+/zlib*
+/mingwlibs
+/dist
+*.a
+*.so
+Makefile
+CMakeCache.txt
