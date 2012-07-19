@@ -9,6 +9,7 @@
 
 class CSdp;
 class CRapidDownloader;
+class IDownload;
 
 class CRepo
 {
@@ -21,7 +22,7 @@ public:
 	/**
 		downloads a repo
 	*/
-	void download();
+	void getDownload(IDownload& dl);
 
 	/**
 	parse a repo file (versions.gz)
@@ -30,8 +31,8 @@ public:
 
 	<tag>,<md5>,<depends on (descriptive name)>,<descriptive name>
 	*/
-private:
 	bool parse();
+private:
 	std::list<CSdp*> sdps;
 	std::string tmpFile;
 };

@@ -366,7 +366,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 				}
 			} else {
 				downloads.push_back(dlData);
-				curl_multi_add_handle(curlm, downloads[i]->easy_handle);
+				curl_multi_add_handle(curlm, dlData->easy_handle);
 			}
 		}
 	}
@@ -436,7 +436,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 			(*it)->file->Close();
 		}
 	*/
-	return true;
+	return aborted;
 }
 
 

@@ -24,7 +24,7 @@ CRepo::~CRepo()
 
 }
 
-void CRepo::download()
+void CRepo::getDownload(IDownload& dl)
 {
 	std::string tmp;
 	urlToPath(repourl,tmp);
@@ -35,10 +35,8 @@ void CRepo::download()
 	if ((fileSystem->fileExists(tmpFile)) && fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME) && parse())
 		return;
 	fileSystem->createSubdirs(tmpFile);
-	IDownload dl(tmpFile);
+	dl = IDownload(tmpFile);
 	dl.addMirror(repourl + "/versions.gz");
-	httpDownload->download(&dl);
-	parse();
 }
 
 bool CRepo::parse()

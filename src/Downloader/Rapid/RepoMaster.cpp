@@ -6,6 +6,7 @@
 #include "Util.h"
 #include "Repo.h"
 #include "Logger.h"
+#include "Downloader/IDownloader.h"
 
 #include <string>
 #include <stdio.h>
@@ -66,8 +67,15 @@ void CRepoMaster::updateRepos()
 	LOG_DEBUG("%s","Updating repos...");
 	download(url);
 	std::list<CRepo>::iterator it;
+	std::list<IDownload*> dls;
 	for (it = repos.begin(); it != repos.end(); ++it) {
-		(*it).download();
+		IDownload* dl = new IDownload();
+		(*it).getDownload(*dl);
+		dls.push_back(dl);
+	}
+	httpDownload->download(dls);
+	for (it = repos.begin(); it != repos.end(); ++it) {
+		(*it).parse();
 	}
 }
 

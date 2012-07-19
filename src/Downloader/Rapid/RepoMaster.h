@@ -20,6 +20,7 @@ public:
 		parses a rep master-file
 	*/
 	void updateRepos();
+	void downloadRepo(const std::string& url);
 private:
 	bool parse();
 	void download(const std::string& name);
