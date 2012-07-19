@@ -24,7 +24,7 @@ CRepo::~CRepo()
 
 }
 
-void CRepo::getDownload(IDownload& dl)
+bool CRepo::getDownload(IDownload& dl)
 {
 	std::string tmp;
 	urlToPath(repourl,tmp);
@@ -32,11 +32,12 @@ void CRepo::getDownload(IDownload& dl)
 	this->tmpFile = fileSystem->getSpringDir() + PATH_DELIMITER + "rapid" + PATH_DELIMITER +tmp + PATH_DELIMITER +"versions.gz";
 	fileSystem->createSubdirs(tmpFile);
 	//first try already downloaded file, as repo master file rarely changes
-	if ((fileSystem->fileExists(tmpFile)) && fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME) && parse())
-		return;
+	if ((fileSystem->fileExists(tmpFile)) && fileSystem->isOlder(tmpFile,REPO_RECHECK_TIME))
+		return false;
 	fileSystem->createSubdirs(tmpFile);
 	dl = IDownload(tmpFile);
 	dl.addMirror(repourl + "/versions.gz");
+	return true;
 }
 
 bool CRepo::parse()

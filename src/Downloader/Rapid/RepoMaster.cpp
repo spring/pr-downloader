@@ -70,8 +70,11 @@ void CRepoMaster::updateRepos()
 	std::list<IDownload*> dls;
 	for (it = repos.begin(); it != repos.end(); ++it) {
 		IDownload* dl = new IDownload();
-		(*it).getDownload(*dl);
-		dls.push_back(dl);
+		if ((*it).getDownload(*dl)) {
+			dls.push_back(dl);
+		} else {
+			delete dl;
+		}
 	}
 	httpDownload->download(dls);
 	for (it = repos.begin(); it != repos.end(); ++it) {

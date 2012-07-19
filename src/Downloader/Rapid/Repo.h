@@ -20,9 +20,10 @@ public:
 	~CRepo();
 
 	/**
-		downloads a repo
+		returns download for a repo file
+			returns true if file needs to be downloaded
 	*/
-	void getDownload(IDownload& dl);
+	bool getDownload(IDownload& dl);
 
 	/**
 	parse a repo file (versions.gz)
