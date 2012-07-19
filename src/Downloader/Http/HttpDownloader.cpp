@@ -436,7 +436,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 			(*it)->file->Close();
 		}
 	*/
-	return aborted;
+	return !aborted;
 }
 
 
