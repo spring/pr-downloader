@@ -79,7 +79,7 @@ bool download(const std::string& name, IDownload::category cat)
 {
 	std::list<IDownload*> res;
 	//only games can be (currently) downloaded by rapid
-	if (cat==IDownload::CAT_GAMES) {
+	if ((cat==IDownload::CAT_GAMES) || (cat == IDownload::CAT_NONE)) {
 		rapidDownload->search(res, name, cat);
 		if ((!res.empty()) && (rapidDownload->download(res)))
 			return true;
