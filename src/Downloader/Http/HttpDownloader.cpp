@@ -217,7 +217,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	int pieceNum=verifyAndGetNextPiece(*(piece->file), piece->download);
 	if (piece->download->state==IDownload::STATE_FINISHED)
 		return false;
-	assert(download->pieces.size()<=0 || pieceNum>=0);
+    assert(piece->download->pieces.size()<=0 || pieceNum>=0);
 
 	piece->piece=pieceNum;
 	if (piece->easy_handle==NULL) {
@@ -293,7 +293,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 				return false;
 			}
 			assert(data->file!=NULL);
-			assert(data->piece<(int)download->pieces.size());
+            assert(data->piece< (int)data->download->pieces.size());
 			if (data->download->pieces[data->piece].sha->isSet()) {
 				data->file->Hash(sha1, data->piece);
 				if (sha1.compare(data->download->pieces[data->piece].sha)) { //piece valid
