@@ -101,7 +101,7 @@ bool CFile::Hash(IHash& hash, int piece)
 	return true;
 }
 
-int CFile::Read(const char*buf, int bufsize, int piece)
+int CFile::Read(char *buf, int bufsize, int piece)
 {
 	SetPos(GetPiecePos(piece), piece);
 //	LOG("Read(%d) bufsize: %d GetPiecePos(): %d GetPieceSize() %d",piece, bufsize, GetPiecePos(piece), GetPieceSize(piece));

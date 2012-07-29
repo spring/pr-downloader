@@ -55,7 +55,7 @@ public:
 	*	read buf from file, starting at restored piece pos, if piece>=0
     *   @todo hides IFile::Read
 	*/
-    int Read(const char* buf, int bufsize, int piece=-1);
+    int Read(char* buf, int bufsize, int piece=-1);
 	/**
 	*	write buf to file, starting at last pos restored from piece, if piece>=0
     *   @todo hides IFile::Write
