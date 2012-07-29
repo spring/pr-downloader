@@ -14,7 +14,7 @@ public:
 	*	create a new file
 	*	@param filename filename of the file
 	*/
-	virtual bool Open(const std::string& filename){return false;}
+    virtual bool Open(const std::string& /*filename*/){return false;}
 	/**
 	*	close file
 	*/
@@ -22,11 +22,11 @@ public:
 	/**
 	*	read buf from file, starting at restored piece pos, if piece>=0
 	*/
-	virtual int Read(char* buf, int bufsize){return 0;}
+    virtual int Read(char* /*buf*/, int /*bufsize*/){return 0;}
 	/**
 	*	write buf to file, starting at last pos restored from piece, if piece>=0
 	*/
-	virtual int Write(const char* buf, int bufsize){return 0;}
+    virtual int Write(const char* /*buf*/, int /*bufsize*/){return 0;}
 };
 
 #endif

@@ -11,7 +11,7 @@ AtomicFile::AtomicFile(std::string filename)
 	this->Open(filename);
 }
 
-bool AtomicFile::Open(std::string filename)
+bool AtomicFile::Open(const std::string& filename)
 {
 	tmpname = filename + ".tmp";
 	this->filename=filename;
@@ -33,7 +33,7 @@ bool AtomicFile::Open(std::string filename)
 	return (handle != NULL);
 }
 
-int AtomicFile::Write(char* buf, int size)
+int AtomicFile::Write(const char *buf, int size)
 {
 	int res = fwrite(buf, size, 1, handle);
 	LOG_DEBUG("writing %d %d\n", size, res);
