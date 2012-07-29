@@ -44,6 +44,7 @@ public:
 	bool Hash(IHash& hash, int piece=-1);
 	/**
 	*	open file
+    *   @todo hides IFile::Open
 	*/
 	bool Open(const std::string& filename, long size=-1, int piecesize=-1);
 	/**
@@ -52,10 +53,12 @@ public:
 	void Close();
 	/**
 	*	read buf from file, starting at restored piece pos, if piece>=0
+    *   @todo hides IFile::Read
 	*/
-	int Read(char* buf, int bufsize, int piece=-1);
+    int Read(char* buf, int bufsize, int piece=-1);
 	/**
 	*	write buf to file, starting at last pos restored from piece, if piece>=0
+    *   @todo hides IFile::Write
 	*/
 	int Write(const char* buf, int bufsize, int piece=-1);
 	/**
