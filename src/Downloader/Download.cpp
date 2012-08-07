@@ -101,7 +101,7 @@ bool IDownload::addDepend(const std::string& depend)
 unsigned int IDownload::getProgress(const CFile& file) const
 {
 	int res = 0;
-	if(pieces.size()<=0) {
+	if(pieces.empty()) {
 		res=file.GetPieceSize();
 	} else {
 		for(unsigned i=0; i<pieces.size(); i++) {

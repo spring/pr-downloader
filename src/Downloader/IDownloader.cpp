@@ -55,7 +55,7 @@ IDownloader* IDownloader::GetWidgetInstance()
 bool IDownloader::download(std::list<IDownload*>& download)
 {
 	std::list<IDownload*>::iterator it;
-	if (download.size()<=0) {
+	if (download.empty()) {
 		LOG_ERROR("download list empty");
 		return false;
 	}

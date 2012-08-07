@@ -173,7 +173,7 @@ void CHttpDownloader::showProcess(IDownload* download, CFile& file)
 int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 {
 	//verify file by md5 if pieces.size == 0
-	if((download->pieces.size()<=0) && (download->hash!=NULL) && (download->hash->isSet())) {
+	if((download->pieces.empty()) && (download->hash!=NULL) && (download->hash->isSet())) {
 		HashMD5 md5=HashMD5();
 		file.Hash(md5);
 		if (md5.compare(download->hash)) {

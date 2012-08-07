@@ -190,8 +190,8 @@ bool CFile::SetPieceSize(int pieceSize)
 	pieces.clear();
 	if(this->size%pieceSize>0)
 		count++;
-	if(count<=0) {
-		LOG_ERROR("SetPieceSize(): count<0");
+	if(count==0) {
+		LOG_ERROR("SetPieceSize(): count==0");
 		return false;
 	}
 	for(unsigned i=0; i<count; i++) {
