@@ -31,7 +31,7 @@ extern "C" {
 #define LOG_INFO(...) \
 	L_LOG(L_INFO, __VA_ARGS__)
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #define LOG_DEBUG(fmt, ...) \
 	L_LOG(L_DEBUG, "%s:%d:%s(): " fmt "\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__);
 #else

@@ -184,6 +184,10 @@ bool CFile::SetPieceSize(int pieceSize)
 		LOG_DEBUG("SetPieceSize(): FileSize:%ld PieceSize: %d", size, pieceSize);
 		return false;
 	}
+	if (size<pieceSize) {
+		pieceSize = size;
+		LOG_DEBUG("SetPieceSize(): forcing lower pieceSize: %d", pieceSize);
+	}
 	unsigned count=this->size/pieceSize;
 	if (count==pieces.size()) //check if size is already correct
 		return true;
@@ -208,7 +212,7 @@ int CFile::GetPieceSize(int piece) const
 	if (piece>=0) {
 		assert(piece<=(int)pieces.size());
 		if ((int)pieces.size()-1==piece) //last piece
-			return size%piecesize;
+			return size-(piecesize*((int)pieces.size()-1));
 //		LOG("GetPieceSize piece %d, pieces.size() %d piecesize: %d size %d ", piece, pieces.size(),piecesize, size);
 		return piecesize;
 	}
