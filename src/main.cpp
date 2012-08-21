@@ -30,7 +30,9 @@ enum {
 	DOWNLOAD_MAP,
 	DOWNLOAD_GAME,
 	HELP,
-	SHOW_VERSION
+	SHOW_VERSION,
+	EXTRACT_SEVENZIP,
+	EXTRACT_DIRECTORY
 };
 
 static struct option long_options[] = {
@@ -48,6 +50,8 @@ static struct option long_options[] = {
 	{"filesystem-dumpsdp"      , 1, 0, FILESYSTEM_DUMPSDP},
 	{"help"                    , 0, 0, HELP},
 	{"version"                 , 0, 0, SHOW_VERSION},
+	{"extract7z"               , 1, 0, EXTRACT_SEVENZIP},
+	{"extractdir"              , 1, 0, EXTRACT_DIRECTORY},
 	{0                         , 0, 0, 0}
 };
 
@@ -130,6 +134,7 @@ int main(int argc, char **argv)
 
 	CFileSystem::Initialize();
 	IDownloader::Initialize();
+	std::string dir="";
 
 	bool res=true;
 	while (true) {
@@ -225,6 +230,14 @@ int main(int argc, char **argv)
 		case SHOW_VERSION:
 			show_version();
 			break;
+		case EXTRACT_SEVENZIP: {
+			fileSystem->extract7z(optarg, dir);
+			break;
+		}
+		case EXTRACT_DIRECTORY: {
+			dir = optarg;
+			break;
+		}
 		case HELP:
 		default: {
 			show_help(argv[0]);

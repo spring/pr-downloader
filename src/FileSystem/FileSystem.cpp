@@ -7,6 +7,7 @@
 #include "HashSHA1.h"
 #include "FileData.h"
 #include "Logger.h"
+#include "SevenZipArchive.h"
 #include "lib/bencode/bencode.h"
 
 #include <zlib.h>
@@ -394,3 +395,29 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	return true;
 }
 
+bool CFileSystem::extract7z(const std::string& filename, const std::string& dstdir)
+{
+	LOG_INFO("%s %s", filename.c_str(), dstdir.c_str());
+	CSevenZipArchive* archive = new CSevenZipArchive(filename);
+	const unsigned int num = archive->NumFiles();
+	for (unsigned int i=0; i<num; i++) {
+		std::vector<unsigned char> buf;
+		std::string name;
+		int size;
+		archive->FileInfo(i,name, size);
+		if (!archive->GetFile(i, buf)) {
+			LOG_ERROR("Error extracting %s from %s", name.c_str(), filename.c_str());
+			delete archive;
+			return false;
+		}
+		const std::string tmp = dstdir + PATH_DELIMITER + name;
+		createSubdirs(tmp);
+		LOG_INFO("extracting: %s", tmp.c_str());
+		FILE* f=fopen(tmp.c_str(), "wb+");
+		fwrite(&buf[0], buf.size(), 1,f);
+		fclose(f);
+	}
+	delete archive;
+	LOG_INFO("done");
+	return true;
+}

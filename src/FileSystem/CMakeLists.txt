@@ -1,12 +1,13 @@
 add_library(FileSystem
-		"AtomicFile.cpp"
-		"FileData.cpp"
-		"FileSystem.cpp"
-		"File.cpp"
-		"HashMD5.cpp"
-		"HashSHA1.cpp"
-		"HashCRC32.cpp"
-		"IHash.cpp"
+		AtomicFile.cpp
+		FileData.cpp
+		FileSystem.cpp
+		File.cpp
+		HashMD5.cpp
+		HashSHA1.cpp
+		HashCRC32.cpp
+		IHash.cpp
+		SevenZipArchive.cpp
 )
 target_link_libraries(FileSystem
 	${ZLIB_LIBRARIES}

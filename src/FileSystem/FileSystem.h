@@ -83,6 +83,11 @@ public:
 	*	dumps info about the given .sdp
 	*/
 	bool dumpSDP(const std::string& filename);
+	/**
+	*	extracts a 7z file to dstdir
+	*/
+	bool extract7z(const std::string& filename, const std::string& dstdir);
+
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;
