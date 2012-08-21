@@ -12,6 +12,7 @@ target_link_libraries(FileSystem
 	${ZLIB_LIBRARIES}
 	pr-md5
 	pr-sha1
+	pr-7z
 	bencode
 )
 

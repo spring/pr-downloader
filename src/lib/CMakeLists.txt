@@ -1,3 +1,4 @@
+subdirs(7z)
 subdirs(pugixml)
 subdirs(xmlrpc++)
 subdirs(md5)
