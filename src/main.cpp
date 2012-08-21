@@ -128,6 +128,30 @@ void show_results(std::list<IDownload*>& list)
 	}
 }
 
+bool download_engine(std::string& version)
+{
+	IDownload::category cat;
+#ifdef WIN32
+	cat=IDownload::CAT_ENGINE_WINDOWS;
+#elif __APPLE__
+	cat=IDownload::CAT_ENGINE_MACOSX;
+#else
+	cat=IDownload::CAT_ENGINE_LINUX;
+#endif
+
+	std::list<IDownload*> res;
+	httpDownload->search(res, version, cat);
+	if (res.empty()) {
+		return false;
+	}
+	std::list<IDownload*>::iterator it;
+	it = res.begin();
+	if (!httpDownload->download(*it)) {
+		return false;
+	}
+	return fileSystem->extract7z((*it)->name, fileSystem->getSpringDir());
+}
+
 int main(int argc, char **argv)
 {
 	show_version();
@@ -241,16 +265,9 @@ int main(int argc, char **argv)
 			break;
 		}
 		case DOWNLOAD_ENGINE: {
-			IDownload::category cat;
-#ifdef WIN32
-			cat=IDownload::CAT_ENGINE_WINDOWS;
-#elif __APPLE__
-			cat=IDownload::CAT_ENGINE_MACOSX;
-#else
-			cat=IDownload::CAT_ENGINE_LINUX;
-#endif
-			if (!download(optarg, cat)) {
-				LOG_ERROR("No engine version found for %s",optarg);
+			std::string tmp=optarg;
+			if (!download_engine(tmp)) {
+				LOG_ERROR("No engine version found for %s",tmp.c_str());
 				res=false;
 			}
 			break;
