@@ -16,14 +16,10 @@
 #else
 #include <sys/select.h>
 #endif
+
 #include <stdio.h>
 #include <curl/curl.h>
-#include <unistd.h>
 #include <string>
-#include <string.h>
-#include <zlib.h>
-#include <time.h>
-#include <iostream>
 #include <sstream>
 
 
@@ -61,6 +57,15 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 	case IDownload::CAT_GAMES:
 		arg["category"]="game";
 		break;
+	case IDownload::CAT_ENGINE_LINUX:
+		arg["category"]="engine_linux";
+		break;
+	case IDownload::CAT_ENGINE_WINDOWS:
+		arg["category"]="engine_windows";
+		break;
+	case IDownload::CAT_ENGINE_MACOSX:
+		arg["category"]="engine_macosx";
+		break;
 	default:
 		break;
 	}
@@ -90,6 +95,8 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 			filename+="maps";
 		else if (category=="game")
 			filename+="games";
+		else if (category.find("engine")==0) // engine_windows, engine_linux, engine_macosx
+			filename+="engine";
 		else
 			LOG_ERROR("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
@@ -217,7 +224,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	int pieceNum=verifyAndGetNextPiece(*(piece->file), piece->download);
 	if (piece->download->state==IDownload::STATE_FINISHED)
 		return false;
-    assert(piece->download->pieces.size()<=0 || pieceNum>=0);
+	assert(piece->download->pieces.size()<=0 || pieceNum>=0);
 
 	piece->piece=pieceNum;
 	if (piece->easy_handle==NULL) {
@@ -293,7 +300,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 				return false;
 			}
 			assert(data->file!=NULL);
-            assert(data->piece< (int)data->download->pieces.size());
+			assert(data->piece< (int)data->download->pieces.size());
 			if (data->download->pieces[data->piece].sha->isSet()) {
 				data->file->Hash(sha1, data->piece);
 				if (sha1.compare(data->download->pieces[data->piece].sha)) { //piece valid
@@ -352,6 +359,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 		LOG_DEBUG("Using %d parallel downloads", count);
 		CFile* file=new CFile();
 		if(!file->Open((*it)->name, (*it)->size, (*it)->piecesize)) {
+			delete file;
 			return false;
 		}
 		for(int i=0; i<count; i++) {

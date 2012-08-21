@@ -25,7 +25,10 @@ public:
 		CAT_OTHER,
 		CAT_REPLAYS,
 		CAT_SPRINGINSTALLERS,
-		CAT_TOOLS
+		CAT_TOOLS,
+		CAT_ENGINE_LINUX,
+		CAT_ENGINE_WINDOWS,
+		CAT_ENGINE_MACOSX,
 	} cat;
 
 	IDownload(const std::string& filename="", category cat=CAT_NONE);

@@ -29,6 +29,7 @@ enum {
 	FILESYSTEM_DUMPSDP,
 	DOWNLOAD_MAP,
 	DOWNLOAD_GAME,
+	DOWNLOAD_ENGINE,
 	HELP,
 	SHOW_VERSION,
 	EXTRACT_SEVENZIP,
@@ -45,6 +46,7 @@ static struct option long_options[] = {
 	{"http-search"             , 1, 0, HTTP_SEARCH},
 	{"download-map"            , 1, 0, DOWNLOAD_MAP},
 	{"download-game"           , 1, 0, DOWNLOAD_GAME},
+	{"download-engine"         , 1, 0, DOWNLOAD_ENGINE},
 	{"widget-search"           , 1, 0, WIDGET_SEARCH},
 	{"filesystem-writepath"    , 1, 0, FILESYSTEM_WRITEPATH},
 	{"filesystem-dumpsdp"      , 1, 0, FILESYSTEM_DUMPSDP},
@@ -236,6 +238,21 @@ int main(int argc, char **argv)
 		}
 		case EXTRACT_DIRECTORY: {
 			dir = optarg;
+			break;
+		}
+		case DOWNLOAD_ENGINE: {
+			IDownload::category cat;
+#ifdef WIN32
+			cat=IDownload::CAT_ENGINE_WINDOWS;
+#elif __APPLE__
+			cat=IDownload::CAT_ENGINE_MACOSX;
+#else
+			cat=IDownload::CAT_ENGINE_LINUX;
+#endif
+			if (!download(optarg, cat)) {
+				LOG_ERROR("No engine version found for %s",optarg);
+				res=false;
+			}
 			break;
 		}
 		case HELP:
