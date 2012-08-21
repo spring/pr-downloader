@@ -414,7 +414,18 @@ bool CFileSystem::extract7z(const std::string& filename, const std::string& dstd
 		createSubdirs(tmp);
 		LOG_INFO("extracting: %s", tmp.c_str());
 		FILE* f=fopen(tmp.c_str(), "wb+");
+		if (f == NULL) {
+			LOG_ERROR("Error creating %s", tmp.c_str());
+			delete archive;
+			return false;
+		}
 		fwrite(&buf[0], buf.size(), 1,f);
+		const int err=ferror(f);
+		if (err) {
+			fclose(f);
+			delete archive;
+			return false;
+		}
 		fclose(f);
 	}
 	delete archive;
