@@ -410,6 +410,12 @@ bool CFileSystem::extract7z(const std::string& filename, const std::string& dstd
 			delete archive;
 			return false;
 		}
+#ifdef WIN32
+		for(unsigned int i=0; i<name.length(); i++) {
+			if (name[i] == '/')
+				name[i]=PATH_DELIMITER;
+		}
+#endif
 		const std::string tmp = dstdir + PATH_DELIMITER + name;
 		createSubdirs(tmp);
 		LOG_INFO("extracting: %s", tmp.c_str());
