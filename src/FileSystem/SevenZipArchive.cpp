@@ -88,7 +88,7 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name) :
 	// Get contents of archive and store name->int mapping
 	for (unsigned int i = 0; i < db.db.NumFiles; ++i) {
 		CSzFileItem* f = db.db.Files + i;
-		if ((f->Size >= 0) && !f->IsDir) {
+		if (!f->IsDir) {
 			std::string fileName = f->Name;
 
 			FileData fd;
