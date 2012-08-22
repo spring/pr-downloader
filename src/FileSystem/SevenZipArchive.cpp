@@ -33,7 +33,7 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name) :
 
 	WRes wres = InFile_Open(&archiveStream.file, name.c_str());
 	if (wres) {
-		LOG_ERROR("Error opening %s", name.c_str());
+		LOG_ERROR("Error opening %s %s", name.c_str(), strerror(wres));
 		return;
 	}
 
