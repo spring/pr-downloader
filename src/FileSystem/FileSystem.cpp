@@ -421,6 +421,9 @@ bool CFileSystem::extract7z(const std::string& filename, const std::string& dstd
 		}
 		fwrite(&buf[0], buf.size(), 1,f);
 		const int err=ferror(f);
+#ifndef WIN32
+		fchmod(fileno(f), S_IXUSR|S_IXGRP|S_IXOTH); //FIXME: use attributes from 7z archive
+#endif
 		if (err) {
 			fclose(f);
 			delete archive;
