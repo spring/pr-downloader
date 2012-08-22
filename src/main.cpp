@@ -140,7 +140,7 @@ bool download_engine(std::string& version)
 #endif
 
 	std::list<IDownload*> res;
-	httpDownload->search(res, version, cat);
+	httpDownload->search(res, "spring " + version, cat);
 	if (res.empty()) {
 		return false;
 	}
@@ -149,7 +149,8 @@ bool download_engine(std::string& version)
 	if (!httpDownload->download(*it)) {
 		return false;
 	}
-	return fileSystem->extract7z((*it)->name, fileSystem->getSpringDir());
+	const std::string output = fileSystem->getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + version;
+	return fileSystem->extract7z((*it)->name, output);
 }
 
 int main(int argc, char **argv)
