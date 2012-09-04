@@ -32,7 +32,7 @@ enum {
 	DOWNLOAD_ENGINE,
 	HELP,
 	SHOW_VERSION,
-	EXTRACT_SEVENZIP,
+	EXTRACT_FILE,
 	EXTRACT_DIRECTORY
 };
 
@@ -52,7 +52,7 @@ static struct option long_options[] = {
 	{"filesystem-dumpsdp"      , 1, 0, FILESYSTEM_DUMPSDP},
 	{"help"                    , 0, 0, HELP},
 	{"version"                 , 0, 0, SHOW_VERSION},
-	{"extract7z"               , 1, 0, EXTRACT_SEVENZIP},
+	{"extract"                 , 1, 0, EXTRACT_FILE},
 	{"extractdir"              , 1, 0, EXTRACT_DIRECTORY},
 	{0                         , 0, 0, 0}
 };
@@ -150,7 +150,7 @@ bool download_engine(std::string& version)
 		return false;
 	}
 	const std::string output = fileSystem->getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + version;
-	return fileSystem->extract7z((*it)->name, output);
+	return fileSystem->extract((*it)->name, output);
 }
 
 int main(int argc, char **argv)
@@ -257,8 +257,8 @@ int main(int argc, char **argv)
 		case SHOW_VERSION:
 			show_version();
 			break;
-		case EXTRACT_SEVENZIP: {
-			fileSystem->extract7z(optarg, dir);
+		case EXTRACT_FILE: {
+			fileSystem->extract(optarg, dir);
 			break;
 		}
 		case EXTRACT_DIRECTORY: {

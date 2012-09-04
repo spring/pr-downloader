@@ -8,6 +8,7 @@
 #include "FileData.h"
 #include "Logger.h"
 #include "SevenZipArchive.h"
+#include "ZipArchive.h"
 #include "lib/bencode/bencode.h"
 
 #include <zlib.h>
@@ -395,10 +396,17 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	return true;
 }
 
-bool CFileSystem::extract7z(const std::string& filename, const std::string& dstdir)
+bool CFileSystem::extract(const std::string& filename, const std::string& dstdir)
 {
 	LOG_INFO("%s %s", filename.c_str(), dstdir.c_str());
-	CSevenZipArchive* archive = new CSevenZipArchive(filename);
+	const int len = filename.length();
+	IArchive* archive;
+	if ((len>4) && (filename.compare(len-3, 3,".7z") == 0 ) ) {
+		archive = new CSevenZipArchive(filename);
+	} else {
+		archive = new CZipArchive(filename);
+	}
+
 	const unsigned int num = archive->NumFiles();
 	for (unsigned int i=0; i<num; i++) {
 		std::vector<unsigned char> buf;

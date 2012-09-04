@@ -16,8 +16,8 @@ extern "C" {
 #include "Logger.h"
 
 
-CSevenZipArchive::CSevenZipArchive(const std::string& name) :
-	isOpen(false)
+CSevenZipArchive::CSevenZipArchive(const std::string& name)
+	: IArchive(name)
 {
 	blockIndex = 0xFFFFFFFF;
 	outBuffer = NULL;
@@ -114,6 +114,7 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name) :
 
 	delete [] folderUnpackSizes;
 }
+
 
 CSevenZipArchive::~CSevenZipArchive()
 {

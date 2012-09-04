@@ -10,11 +10,12 @@ extern "C" {
 
 #include <vector>
 #include <string>
+#include "IArchive.h"
 
 /**
  * An LZMA/7zip compressed, single-file archive.
  */
-class CSevenZipArchive
+class CSevenZipArchive: public IArchive
 {
 public:
 	CSevenZipArchive(const std::string& name);
