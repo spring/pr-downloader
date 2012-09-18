@@ -7,9 +7,10 @@
 #include "HashSHA1.h"
 #include "FileData.h"
 #include "Logger.h"
-#include "SevenZipArchive.h"
-#include "ZipArchive.h"
 #include "lib/bencode/bencode.h"
+
+#include <archive.h>
+#include <archive_entry.h>
 
 #include <zlib.h>
 #include <string.h>
@@ -396,56 +397,98 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	return true;
 }
 
+int copy_data(struct archive *ar, struct archive *aw)
+{
+	int r;
+	const void *buff;
+	size_t size;
+#if ARCHIVE_VERSION >= 3000000
+	int64_t offset;
+#else
+	off_t offset;
+#endif
+
+	for (;;) {
+		r = archive_read_data_block(ar, &buff, &size, &offset);
+		if (r == ARCHIVE_EOF)
+			return (ARCHIVE_OK);
+		if (r != ARCHIVE_OK)
+			return (r);
+		r = archive_write_data_block(aw, buff, size, offset);
+		if (r != ARCHIVE_OK) {
+			LOG("archive_write_data_block() %s", archive_error_string(aw));
+			return (r);
+		}
+	}
+}
+
+
 bool CFileSystem::extract(const std::string& filename, const std::string& dstdir)
 {
 	LOG_INFO("%s %s", filename.c_str(), dstdir.c_str());
-	const int len = filename.length();
-	IArchive* archive;
-	if ((len>4) && (filename.compare(len-3, 3,".7z") == 0 ) ) {
-		archive = new CSevenZipArchive(filename);
-	} else {
-		archive = new CZipArchive(filename);
-	}
+//	const int len = filename.length();
 
-	const unsigned int num = archive->NumFiles();
-	for (unsigned int i=0; i<num; i++) {
-		std::vector<unsigned char> buf;
-		std::string name;
-		int size;
-		archive->FileInfo(i,name, size);
-		if (!archive->GetFile(i, buf)) {
-			LOG_ERROR("Error extracting %s from %s", name.c_str(), filename.c_str());
-			delete archive;
-			return false;
-		}
-#ifdef WIN32
-		for(unsigned int i=0; i<name.length(); i++) {
-			if (name[i] == '/')
-				name[i]=PATH_DELIMITER;
-		}
-#endif
-		const std::string tmp = dstdir + PATH_DELIMITER + name;
-		createSubdirs(tmp);
-		LOG_INFO("extracting: %s", tmp.c_str());
-		FILE* f=fopen(tmp.c_str(), "wb+");
-		if (f == NULL) {
-			LOG_ERROR("Error creating %s", tmp.c_str());
-			delete archive;
-			return false;
-		}
-		fwrite(&buf[0], buf.size(), 1,f);
-		const int err=ferror(f);
-#ifndef WIN32
-		fchmod(fileno(f), S_IXUSR|S_IWUSR|S_IRUSR|S_IXGRP|S_IRGRP|S_IXOTH|S_IROTH); //FIXME: use attributes from 7z archive
-#endif
-		if (err) {
-			fclose(f);
-			delete archive;
-			return false;
-		}
-		fclose(f);
+	struct archive *a;
+	struct archive *ext;
+	struct archive_entry *entry;
+	int flags = 0;
+	int r;
+
+	a = archive_read_new();
+	archive_read_support_format_7zip(a);
+	archive_read_support_format_zip(a);
+//	archive_read_support_format_all(a);
+
+	ext = archive_write_disk_new();
+	archive_write_disk_set_options(ext, flags);
+	/*
+	* Note: archive_write_disk_set_standard_lookup() is useful
+	* here, but it requires library routines that can add 500k or
+	* more to a static executable.
+	*/
+//	archive_read_support_format_tar(a);
+	/*
+	* On my system, enabling other archive formats adds 20k-30k
+	* each. Enabling gzip decompression adds about 20k.
+	* Enabling bzip2 is more expensive because the libbz2 library
+	* isn't very well factored.
+	*/
+	/*	if (filename.c_str() != NULL && strcmp(filename.c_str(), "-") == 0)
+			filename = "";*/
+	if ((r = archive_read_open_file(a, filename.c_str(), 10240))) {
+		LOG_ERROR("archive_read_open_file() %s %d", archive_error_string(a), r);
+		return false;
 	}
-	delete archive;
+	for (;;) {
+		r = archive_read_next_header(a, &entry);
+		if (r == ARCHIVE_EOF)
+			break;
+		if (r != ARCHIVE_OK) {
+			LOG_ERROR("archive_read_next_header() %s %d", archive_error_string(a), 1);
+			return false;
+		}
+		LOG_INFO("%s%c%s",dstdir.c_str(), PATH_DELIMITER, archive_entry_pathname(entry));
+		if (dstdir.size()>0) {
+			const char* path = archive_entry_pathname( entry );
+			char newPath[PATH_MAX + 1];
+			snprintf( newPath, PATH_MAX,"%s%c%s", dstdir.c_str(),PATH_DELIMITER, path );
+			archive_entry_set_pathname( entry, newPath );
+		}
+
+		r = archive_write_header(ext, entry);
+		if (r != ARCHIVE_OK) {
+			LOG_ERROR("archive_write_header() %s", archive_error_string(ext));
+			return false;
+		} else {
+			copy_data(a, ext);
+			r = archive_write_finish_entry(ext);
+			if (r != ARCHIVE_OK)
+				LOG_ERROR("archive_write_finish_entry() %s %d", archive_error_string(ext), 1);
+		}
+	}
+	archive_read_close(a);
+	archive_read_free(a);
 	LOG_INFO("done");
 	return true;
 }
+

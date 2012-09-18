@@ -7,15 +7,15 @@ add_library(FileSystem
 		HashSHA1.cpp
 		HashCRC32.cpp
 		IHash.cpp
-		SevenZipArchive.cpp
-		ZipArchive.cpp
 )
+
+FIND_PACKAGE(LibArchive REQUIRED)
+
 target_link_libraries(FileSystem
 	${ZLIB_LIBRARIES}
+	${LibArchive_LIBRARIES}
 	pr-md5
 	pr-sha1
-	pr-7z
-	pr-minizip
 	bencode
 )
 
