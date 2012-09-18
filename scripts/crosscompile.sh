@@ -14,6 +14,7 @@ export MINGW32RC=${MINGWHOST}-windres
 export DOWNLOAD="wget -c"
 export PARALLEL="8"
 export ZLIBVER=1.2.7
+export LIBARCHIVEVER=3.0.4
 
 echo "Using ${PREFIX} for mingwlibs"
 if [ ! -s "$(pwd)/src/Downloader/IDownloader.h" ]; then
@@ -23,6 +24,22 @@ fi
 
 mkdir -p ${PREFIX}/include
 mkdir -p ${PREFIX}/lib
+
+if [ ! -s ${PREFIX}/lib/libarchive.a ]; then
+	if [ ! -s libarchive-${LIBARCHIVEVER}.tar.gz ]; then
+	${DOWNLOAD} "https://github.com/downloads/libarchive/libarchive/libarchive-3.0.4.tar.gz" -O libarchive-3.0.4.tar.gz
+	fi
+	tar xifz libarchive-${LIBARCHIVEVER}.tar.gz
+	cd libarchive-${LIBARCHIVEVER}
+	export CC=${MINGW32CC}
+	export CPP=${MINGW32CPP}
+	export RANLIB=${MINGW32RANLIB}
+	#cmake -DCMAKE_TOOLCHAIN_FILE=../win32.cmake .
+	./configure --prefix=${PREFIX} --without-xml2 --enable-shared=no --disable-bsdcpio --disable-bsdtar --disable-largefile --without-iconv
+	make install -j ${PARALLEL}
+	cd ..
+fi
+
 
 if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	if [ ! -s zlib-${ZLIBVER}.tar.gz ]; then
