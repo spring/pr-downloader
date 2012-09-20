@@ -25,21 +25,27 @@ fi
 mkdir -p ${PREFIX}/include
 mkdir -p ${PREFIX}/lib
 
-if [ ! -s ${PREFIX}/lib/libarchive.a ]; then
-	if [ ! -s libarchive-${LIBARCHIVEVER}.tar.gz ]; then
-	${DOWNLOAD} "https://github.com/downloads/libarchive/libarchive/libarchive-3.0.4.tar.gz" -O libarchive-3.0.4.tar.gz
-	fi
-	tar xifz libarchive-${LIBARCHIVEVER}.tar.gz
-	cd libarchive-${LIBARCHIVEVER}
-	export CC=${MINGW32CC}
-	export CPP=${MINGW32CPP}
-	export RANLIB=${MINGW32RANLIB}
-	#cmake -DCMAKE_TOOLCHAIN_FILE=../win32.cmake .
-	./configure --prefix=${PREFIX} --without-xml2 --enable-shared=no --disable-bsdcpio --disable-bsdtar --disable-largefile --without-iconv
-	make install -j ${PARALLEL}
-	cd ..
-fi
+if [ ! -s win32.cmake ]; then
+(
+echo "SET(CMAKE_SYSTEM_NAME Windows)"
+echo "SET(CMAKE_C_COMPILER $MINGW32CC)"
+echo "SET(CMAKE_CXX_COMPILER $MINGW32CXX)"
+echo "SET(CMAKE_FIND_ROOT_PATH /usr/$MINGWHOST)"
+echo "SET(MINGWLIBS ./mingwlibs)"
+echo "SET(CMAKE_RC_COMPILER $MINGW32RC)"
+echo "SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)"
+echo "SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)"
+echo "SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)"
 
+# settings for libarchive
+for i in ENABLE_NETTLE ENABLE_OPENSSL ENABLE_TAR ENABLE_TAR_SHARED ENABLE_CPIO ENABLE_CPIO_SHARED ENABLE_XATTR ENABLE_ACL ENABLE_ICONV ENABLE_TEST; do
+	echo "SET($i FALSE)"
+done
+echo "SET(WITHOUT_LIBXML_STATIC TRUE)"
+
+) >win32.cmake
+
+fi
 
 if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	if [ ! -s zlib-${ZLIBVER}.tar.gz ]; then
@@ -62,6 +68,24 @@ if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	cd ..
 fi
 
+if [ ! -s ${PREFIX}/lib/libarchive_static.a ]; then
+	if [ ! -s libarchive-${LIBARCHIVEVER}.tar.gz ]; then
+	${DOWNLOAD} "https://github.com/downloads/libarchive/libarchive/libarchive-3.0.4.tar.gz" -O libarchive-3.0.4.tar.gz
+	fi
+	tar xifz libarchive-${LIBARCHIVEVER}.tar.gz
+	cd libarchive-${LIBARCHIVEVER}
+	export CC=${MINGW32CC}
+	export CPP=${MINGW32CPP}
+	export RANLIB=${MINGW32RANLIB}
+	rm -f CMakeCache.txt
+	cmake -DCMAKE_TOOLCHAIN_FILE=../win32.cmake .
+	#./configure --host=${MINGWHOST} --prefix=${PREFIX} --without-xml2 --enable-static --disable-shared --disable-bsdcpio --disable-bsdtar --disable-largefile --without-iconv
+	make archive_static -j ${PARALLEL}
+	cp libarchive.la ../mingwlibs/lib/
+	cp libarchive/archive.h libarchive/archive_entry.h ../mingwlibs/include/
+	cd ..
+fi
+
 if [ ! -s ${PREFIX}/lib/libcurl.a ]; then
 	export CC=${MINGW32CC}
 	export CXX=${MINGW32CXX}
@@ -78,16 +102,6 @@ fi
 
 rm -f CMakeCache.txt
 
-if [ ! -s win32.cmake ]; then
-(
-echo "SET(CMAKE_SYSTEM_NAME Windows)"
-echo "SET(CMAKE_C_COMPILER $MINGW32CC)"
-echo "SET(CMAKE_CXX_COMPILER $MINGW32CXX)"
-echo "SET(CMAKE_FIND_ROOT_PATH /usr/$MINGWHOST)"
-echo "SET(MINGWLIBS ./mingwlibs)"
-echo "SET(CMAKE_RC_COMPILER $MINGW32RC)"
-) >win32.cmake
-fi
 
 cmake . -DCMAKE_TOOLCHAIN_FILE=win32.cmake -DCMAKE_INSTALL_PREFIX=dist
 make install -j ${PARALELL}
