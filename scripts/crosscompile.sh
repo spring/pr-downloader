@@ -68,7 +68,7 @@ if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	cd ..
 fi
 
-if [ ! -s ${PREFIX}/lib/libarchive_static.a ]; then
+if [ ! -s ${PREFIX}/lib/libarchive.a ]; then
 	if [ ! -s libarchive-${LIBARCHIVEVER}.tar.gz ]; then
 	${DOWNLOAD} "https://github.com/downloads/libarchive/libarchive/libarchive-3.0.4.tar.gz" -O libarchive-3.0.4.tar.gz
 	fi
@@ -81,7 +81,7 @@ if [ ! -s ${PREFIX}/lib/libarchive_static.a ]; then
 	cmake -DCMAKE_TOOLCHAIN_FILE=../win32.cmake .
 	#./configure --host=${MINGWHOST} --prefix=${PREFIX} --without-xml2 --enable-static --disable-shared --disable-bsdcpio --disable-bsdtar --disable-largefile --without-iconv
 	make archive_static -j ${PARALLEL}
-	cp libarchive/libarchive_static.a ../mingwlibs/lib/libarchive_static.a
+	cp libarchive/libarchive_static.a ../mingwlibs/lib/libarchive.a
 	cp libarchive/archive.h libarchive/archive_entry.h ../mingwlibs/include/
 	cd ..
 fi
