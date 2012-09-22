@@ -3,7 +3,7 @@
 #ifndef _ZIP_ARCHIVE_H
 #define _ZIP_ARCHIVE_H
 
-#include "lib/minizip/unzip.h"
+#include "minizip/unzip.h"
 
 #ifdef _WIN32
 // This is specified in the build config,
