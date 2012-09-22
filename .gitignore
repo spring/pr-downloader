@@ -3,7 +3,6 @@
 \.pc*
 \.*swp
 obj-*
-*\.cmake
 /debian/*\.log
 /html
 build/
@@ -18,3 +17,5 @@ CMakeFiles
 *.so
 Makefile
 CMakeCache.txt
+CTestTestfile.cmake
+
