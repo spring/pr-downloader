@@ -15,7 +15,12 @@ target_link_libraries(FileSystem
 	pr-md5
 	pr-sha1
 	pr-7z
-	pr-minizip
 	bencode
 )
+
+if (MINIZIP_FOUND)
+	target_link_libraries(FileSystem ${MINIZIP_LIBRARIES})
+else()
+	target_link_libraries(FileSystem pr-minizip)
+endif()
 

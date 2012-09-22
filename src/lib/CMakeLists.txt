@@ -1,5 +1,7 @@
 subdirs(7z)
-subdirs(minizip)
+if (NOT MINIZIP_FOUND)
+	subdirs(minizip)
+endif()
 subdirs(pugixml)
 subdirs(xmlrpc++)
 subdirs(md5)

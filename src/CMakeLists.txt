@@ -1,3 +1,5 @@
+# MINIZIP_FOUND are used in lib & FileSystem
+FIND_PACKAGE(MiniZip)
 
 subdirs(lib)
 subdirs(Downloader)
