@@ -30,7 +30,7 @@ if [ ! -s win32.cmake ]; then
 echo "SET(CMAKE_SYSTEM_NAME Windows)"
 echo "SET(CMAKE_C_COMPILER $MINGW32CC)"
 echo "SET(CMAKE_CXX_COMPILER $MINGW32CXX)"
-echo "SET(CMAKE_FIND_ROOT_PATH /usr/$MINGWHOST)"
+echo "SET(CMAKE_FIND_ROOT_PATH ${PREFIX})"
 echo "SET(MINGWLIBS ./mingwlibs)"
 echo "SET(CMAKE_RC_COMPILER $MINGW32RC)"
 echo "SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)"
@@ -68,6 +68,23 @@ if [ ! -s ${PREFIX}/lib/libz.a ]; then
 	cd ..
 fi
 
+if [ ! -s ${PREFIX}/lib/liblzma.a ]; then
+	if [ ! -s xz-5.0.4.tar.gz ]; then
+		${DOWNLOAD} http://tukaani.org/xz/xz-5.0.4.tar.gz
+	fi
+	tar xifz xz-5.0.4.tar.gz
+	cd xz-5.0.4
+	export CC=${MINGW32CC}
+	export CPP=${MINGW32CPP}
+	export LDSHARED=${MINGW32CC}
+	export AR="${MINGW32AR}"
+	export RANLIB=${MINGW32RANLIB}
+	./configure --prefix=${PREFIX} --host=${MINGWHOST} --enable-static --disable-shared
+	make -j ${PARALLEL} install
+	cd ..
+
+fi
+
 if [ ! -s ${PREFIX}/lib/libarchive.a ]; then
 	if [ ! -s libarchive-${LIBARCHIVEVER}.tar.gz ]; then
 	${DOWNLOAD} "https://github.com/downloads/libarchive/libarchive/libarchive-3.0.4.tar.gz" -O libarchive-3.0.4.tar.gz
@@ -75,6 +92,7 @@ if [ ! -s ${PREFIX}/lib/libarchive.a ]; then
 	tar xifz libarchive-${LIBARCHIVEVER}.tar.gz
 	cd libarchive-${LIBARCHIVEVER}
 	export CC=${MINGW32CC}
+	export CXX=${MINGW32CXX}
 	export CPP=${MINGW32CPP}
 	export RANLIB=${MINGW32RANLIB}
 	rm -f CMakeCache.txt
@@ -89,7 +107,9 @@ fi
 if [ ! -s ${PREFIX}/lib/libcurl.a ]; then
 	export CC=${MINGW32CC}
 	export CXX=${MINGW32CXX}
-	wget -c http://curl.haxx.se/download/curl-7.24.0.tar.bz2
+	if [ ! -s curl-7.24.0.tar.bz2 ]; then
+		${DOWNLOAD} http://curl.haxx.se/download/curl-7.24.0.tar.bz2
+	fi
 	tar xifj curl-7.24.0.tar.bz2
 	cd curl-7.24.0
 	./configure --host=${MINGWHOST} --prefix=${PREFIX} \

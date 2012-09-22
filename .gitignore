@@ -10,6 +10,7 @@ build/
 CMakeFiles
 /curl*
 /zlib*
+/xz*
 /libarchive*
 /mingwlibs
 /dist
