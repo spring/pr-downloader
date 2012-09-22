@@ -61,6 +61,7 @@ set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS}")
 
 find_package(CURL REQUIRED)
 find_package(ZLIB REQUIRED)
+find_package(LZMA REQUIRED)
 
 #compile fix for soap (springlobby defines this)
 remove_definitions(-DHAVE_CONFIG_H)
