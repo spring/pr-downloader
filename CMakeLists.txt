@@ -62,16 +62,12 @@ set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS}")
 find_package(CURL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(LZMA REQUIRED)
+find_package(LibArchive REQUIRED)
 
 #compile fix for soap (springlobby defines this)
 remove_definitions(-DHAVE_CONFIG_H)
 
-include_directories(SYSTEM ${CURL_INCLUDE_DIR})
-include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
-
-
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
-
 subdirs(src)
 
 ENABLE_TESTING()

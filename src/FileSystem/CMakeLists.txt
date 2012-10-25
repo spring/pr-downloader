@@ -9,8 +9,6 @@ add_library(FileSystem
 		IHash.cpp
 )
 
-FIND_PACKAGE(LibArchive REQUIRED)
-
 target_link_libraries(FileSystem
 	${ZLIB_LIBRARIES}
 	${LibArchive_LIBRARIES}
