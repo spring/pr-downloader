@@ -64,6 +64,10 @@ find_package(ZLIB REQUIRED)
 find_package(LZMA REQUIRED)
 find_package(LibArchive REQUIRED)
 
+if (${LibArchive_VERSION} VERSION_LESS 3.0.2)
+	message(SEND_WARNING "LibArchive version >= 3.0.2 required for 7-Zip support, found ${LibArchive_VERSION}")
+endif()
+
 #compile fix for soap (springlobby defines this)
 remove_definitions(-DHAVE_CONFIG_H)
 
