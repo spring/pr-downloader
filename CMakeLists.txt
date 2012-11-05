@@ -23,7 +23,7 @@ else()
 	SET(PR_DOWNLOAD_VERSION "dev")
 endif()
 
-MESSAGE(INFO "Version ${PR_DOWNLOADER_VERSION}")
+MESSAGE(STATUS "Version ${PR_DOWNLOADER_VERSION}")
 if   (MINGW)
 	if(NOT DEFINED ${MINGWLIBS})
 		set(MINGWLIBS "${CMAKE_SOURCE_DIR}/mingwlibs" CACHE PATH "Location of the mingwlibs package")
