@@ -1,10 +1,11 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
-#include "Downloader/IDownloader.h"
-#include "Downloader/Mirror.h"
-#include "FileSystem/FileSystem.h"
+//#include "Downloader/IDownloader.h"
+//#include "Downloader/Mirror.h"
+//#include "FileSystem/FileSystem.h"
 #include "Util.h"
 #include "Logger.h"
+#include "pr-downloader.h"
 
 #include <stdbool.h>
 #include <stdlib.h>
@@ -81,77 +82,51 @@ void show_help(const char* cmd)
 	exit(1);
 }
 
-bool download(const std::string& name, IDownload::category cat)
+void show_results(int count)
 {
-	std::list<IDownload*> res;
-	//only games can be (currently) downloaded by rapid
-	if ((cat==IDownload::CAT_GAMES) || (cat == IDownload::CAT_NONE)) {
-		rapidDownload->search(res, name, cat);
-		if ((!res.empty()) && (rapidDownload->download(res)))
-			return true;
+	for(int i=0; i<count; i++) {
+		downloadInfo dl;
+		DownloadGetSearchInfo(i, dl);
+		LOG_INFO("Download url: %s", dl.filename);
 	}
-	httpDownload->search(res, name, cat);
-	if ((!res.empty())) {
-		std::list<IDownload*>::iterator dlit;
-		for(dlit=res.begin(); dlit!=res.end(); ++dlit) { //download depends, too. we handle this here, because then we can use all dl-systems
-			if (!(*dlit)->depend.empty()) {
-				std::list<std::string>::iterator it;
-				for(it=(*dlit)->depend.begin(); it!=(*dlit)->depend.end(); ++it) {
-					const std::string& depend = (*it);
-					LOG_INFO("found depends: %s", depend.c_str());
-					if (!download(depend, cat)) {
-						LOG_ERROR("downloading the depend %s for %s failed", depend.c_str(), name.c_str());
-						return false;
-					}
-				}
-			}
-		}
-		return httpDownload->download(res);
+}
+
+
+bool download(category cat, const char* name)
+{
+	int count = DownloadSearch(DL_ANY, cat, name);
+	if (count<=0) {
+		LOG_ERROR("Couldn't find %s",name);
+		return false;
 	}
-	plasmaDownload->search(res, name, cat);
-	if ((!res.empty()))
-		return plasmaDownload->download(res);
+	for (int i=0; i<count; i++) {
+		DownloadAdd(i);
+	}
+	show_results(count);
+	return true;
+}
+
+bool search(category cat, const char* name)
+{
+	int count = DownloadSearch(DL_ANY, cat, name);
+	if (count<=0) {
+		LOG_ERROR("Couldn't find %s",name);
+		return false;
+	}
+	downloadInfo dl;
+	for (int i=0; i<count; i++) {
+		DownloadGetSearchInfo(i, dl);
+		LOG("%s", dl.filename);
+	}
+	return true;
+}
+
+bool download_engine(const char* name)
+{
+	LOG_ERROR("%s: implement me", __FUNCTION__);
 	return false;
 }
 
-void show_results(std::list<IDownload*>& list)
-{
-	std::list<IDownload*>::iterator it;
-	for (it=list.begin(); it!=list.end(); ++it) {
-		const int size = (*it)->size;
-		const char* name = (*it)->name.c_str();
-		LOG_INFO("Filename: %s Size: %d",name, size);
-		int count=(*it)->getMirrorCount();
-		for(int i=0; i<count; i++) {
-			LOG_INFO("Download url: %s",(*it)->getMirror(i)->url.c_str());
-		}
-	}
-}
-
-bool download_engine(std::string& version)
-{
-	IDownload::category cat;
-#ifdef WIN32
-	cat=IDownload::CAT_ENGINE_WINDOWS;
-#elif __APPLE__
-	cat=IDownload::CAT_ENGINE_MACOSX;
-#else
-	cat=IDownload::CAT_ENGINE_LINUX;
-#endif
-
-	std::list<IDownload*> res;
-	httpDownload->search(res, "spring " + version, cat);
-	if (res.empty()) {
-		return false;
-	}
-	std::list<IDownload*>::iterator it;
-	it = res.begin();
-	if (!httpDownload->download(*it)) {
-		return false;
-	}
-	const std::string output = fileSystem->getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + version;
-	return fileSystem->extract((*it)->name, output);
-}
 
 int main(int argc, char **argv)
 {
@@ -159,8 +134,9 @@ int main(int argc, char **argv)
 	if (argc<2)
 		show_help(argv[0]);
 
-	CFileSystem::Initialize();
-	IDownloader::Initialize();
+//	CFileSystem::Initialize();
+//	IDownloader::Initialize();
+	DownloadInit();
 	std::string dir="";
 
 	bool res=true;
@@ -169,86 +145,46 @@ int main(int argc, char **argv)
 		int c = getopt_long(argc, argv, "",long_options, &option_index);
 		if (c == -1)
 			break;
-		std::list<IDownload*> list;
-		list.clear();
 		switch (c) {
 		case RAPID_DOWNLOAD: {
-			rapidDownload->search(list, optarg);
-			if (list.empty()) {
-				LOG_ERROR("Couldn't find %s",optarg);
-				res=false;
-			} else if (!rapidDownload->download(list)) {
-				LOG_ERROR("Error downloading %s",optarg);
-				res=false;
-			}
-			IDownloader::freeResult(list);
+			download(CAT_GAME, optarg);
 			break;
 		}
+		/*
 		case RAPID_VALIDATE: {
 			int res=fileSystem->validatePool(fileSystem->getSpringDir() + PATH_DELIMITER + "pool");
 			LOG_INFO("Validated %d files",res);
 			break;
 		}
-		case RAPID_SEARCH: {
-			std::string tmp=optarg;
-			rapidDownload->search(list, tmp);
-			show_results(list);
-			IDownloader::freeResult(list);
-			break;
-		}
-		case PLASMA_SEARCH: {
-			std::string tmp=optarg;
-			plasmaDownload->search(list, tmp);
-			show_results(list);
-			IDownloader::freeResult(list);
-			break;
-		}
-		case PLASMA_DOWNLOAD: {
-			plasmaDownload->search(list, optarg);
-			if (!list.empty()) {
-				if (!plasmaDownload->download(list))
-					res=false;
-			}
-			IDownloader::freeResult(list);
-			break;
-		}
-		case WIDGET_SEARCH: {
-			std::string tmp=optarg;
-			widgetDownload->search(list, tmp);
-			IDownloader::freeResult(list);
-			break;
-		}
+		*/
 		case FILESYSTEM_WRITEPATH: {
-			const std::string tmp=optarg;
-			CFileSystem::Initialize(tmp);
+			DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, optarg);
 			break;
 		}
+		/*
 		case FILESYSTEM_DUMPSDP: {
 			fileSystem->dumpSDP(optarg);
 			break;
 		}
+		*/
 		case HTTP_SEARCH: {
-			httpDownload->search(list, optarg);
-			show_results(list);
-			IDownloader::freeResult(list);
+			search(CAT_ANY, optarg);
 			break;
 		}
 		case HTTP_DOWNLOAD: {
-			httpDownload->search(list, optarg);
-			if (!httpDownload->download(list))
-				res=false;
-			IDownloader::freeResult(list);
+			if (!download(CAT_ANY, optarg))
+				res = false;
 			break;
 		}
 		case DOWNLOAD_MAP: {
-			if (!download(optarg, IDownload::CAT_MAPS)) {
+			if (!download(CAT_MAP, optarg)) {
 				LOG_ERROR("No map found for %s",optarg);
 				res=false;
 			}
 			break;
 		}
 		case DOWNLOAD_GAME: {
-			if (!download(optarg, IDownload::CAT_GAMES)) {
+			if (!download(CAT_GAME, optarg)) {
 				LOG_ERROR("No game found for %s",optarg);
 				res=false;
 			}
@@ -257,18 +193,19 @@ int main(int argc, char **argv)
 		case SHOW_VERSION:
 			show_version();
 			break;
-		case EXTRACT_FILE: {
-			fileSystem->extract(optarg, dir);
-			break;
-		}
-		case EXTRACT_DIRECTORY: {
-			dir = optarg;
-			break;
-		}
+			/*
+				case EXTRACT_FILE: {
+					fileSystem->extract(optarg, dir);
+					break;
+				}
+				case EXTRACT_DIRECTORY: {
+					dir = optarg;
+					break;
+				}
+			*/
 		case DOWNLOAD_ENGINE: {
-			std::string tmp=optarg;
-			if (!download_engine(tmp)) {
-				LOG_ERROR("No engine version found for %s",tmp.c_str());
+			if (!download_engine(optarg)) {
+				LOG_ERROR("No engine version found for %s",optarg);
 				res=false;
 			}
 			break;
@@ -280,20 +217,17 @@ int main(int argc, char **argv)
 		}
 		}
 	}
-
 	if (optind < argc) {
 		while (optind < argc) {
-			std::string tmp = argv[optind];
-			if (!download(tmp, IDownload::CAT_NONE)) {
-				LOG_ERROR("No file found for %s",optarg);
+			if (!download(CAT_ANY, argv[optind])) {
+				LOG_ERROR("No file found for %s",argv[optind]);
 				res=false;
 			}
 			optind++;
 		}
 	}
-
-	IDownloader::Shutdown();
-	CFileSystem::Shutdown();
+	DownloadStart();
+	DownloadShutdown();
 	if (res)
 		return 0;
 	return 1;
