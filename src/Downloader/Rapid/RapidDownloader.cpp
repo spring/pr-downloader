@@ -4,29 +4,30 @@
 #include "FileSystem/FileSystem.h"
 #include "Util.h"
 #include "Logger.h"
-#include "RepoMaster.h"
+#include "Repo.h"
 #include "Sdp.h"
 
 #include <stdio.h>
 #include <string>
 #include <string.h>
 #include <list>
+#include <zlib.h>
+
 #ifndef WIN32
 #include <regex.h>
 #endif
 
 
-CRapidDownloader::CRapidDownloader(const std::string& url)
+CRapidDownloader::CRapidDownloader()
 {
-	repoMaster=new CRepoMaster(url, this);
 	reposLoaded = false;
 	sdps.clear();
+	setMasterUrl(REPO_MASTER);
 }
 
 CRapidDownloader::~CRapidDownloader()
 {
 	sdps.clear();
-	delete repoMaster;
 }
 
 
@@ -58,7 +59,7 @@ bool CRapidDownloader::reloadRepos()
 {
 	if (reposLoaded)
 		return true;
-	repoMaster->updateRepos();
+	updateRepos();
 	reposLoaded=true;
 	return true;
 }
@@ -133,3 +134,75 @@ bool CRapidDownloader::match_download_name(const std::string &str1,const std::st
 	*/
 	return false;
 }
+
+void CRapidDownloader::setMasterUrl(const std::string& url)
+{
+	this->url=url;
+	reposLoaded = false;
+}
+
+
+void CRapidDownloader::download(const std::string& name)
+{
+	std::string tmp;
+	urlToPath(name,tmp);
+	this->path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
+	fileSystem->createSubdirs(path);
+	LOG_DEBUG("%s",name.c_str());
+	//first try already downloaded file, as repo master file rarely changes
+	if ((fileSystem->fileExists(path)) && (fileSystem->isOlder(path,REPO_MASTER_RECHECK_TIME)) && parse())
+		return;
+	IDownload dl(path);
+	dl.addMirror(name);
+	httpDownload->download(&dl);
+	parse();
+}
+
+bool CRapidDownloader::parse()
+{
+	gzFile fp=gzopen(path.c_str(), "r");
+	if (fp==Z_NULL) {
+		LOG_ERROR("Could not open %s",path.c_str());
+		return false;
+	}
+	char buf[IO_BUF_SIZE];
+	repos.clear();
+	int i=0;
+	while (gzgets(fp, buf, sizeof(buf))!=Z_NULL) {
+		std::string tmp=buf;
+		std::string url=getStrByIdx(tmp,',',1);
+		i++;
+		if (url.size()>0) { //create new repo from url
+			CRepo repotmp=CRepo(url, this);
+			repos.push_back(repotmp);
+		} else {
+			LOG_ERROR("Parse Error %s, Line %d: %s",path.c_str(),i,buf);
+			return false;
+		}
+	}
+	gzclose(fp);
+	LOG_INFO("Found %d repos in %s",repos.size(),path.c_str());
+	return true;
+}
+
+void CRapidDownloader::updateRepos()
+{
+	LOG_DEBUG("%s","Updating repos...");
+	download(url);
+	std::list<CRepo>::iterator it;
+	std::list<IDownload*> dls;
+	for (it = repos.begin(); it != repos.end(); ++it) {
+		IDownload* dl = new IDownload();
+		if ((*it).getDownload(*dl)) {
+			dls.push_back(dl);
+		} else {
+			delete dl;
+		}
+	}
+	httpDownload->download(dls);
+	for (it = repos.begin(); it != repos.end(); ++it) {
+		(*it).parse();
+	}
+	IDownloader::freeResult(dls);
+}
+

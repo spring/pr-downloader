@@ -1,7 +1,6 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "Repo.h"
-#include "RepoMaster.h"
 #include "FileSystem/FileSystem.h"
 #include "Downloader/IDownloader.h"
 #include "RapidDownloader.h"

@@ -8,20 +8,19 @@
 #include <string>
 #include <list>
 #include <stdio.h>
-//FIXME: read from config / use this as default
-#define REPO_MASTER "http://repos.springrts.com/repos.gz"
 #define REPO_MASTER_RECHECK_TIME 86400 //how long to cache the repo-master file in secs without rechecking
 #define REPO_RECHECK_TIME 600
+#define REPO_MASTER "http://repos.springrts.com/repos.gz"
 
 class CSdp;
 class CHttpDownload;
 class CFileSystem;
-class CRepoMaster;
+class CRepo;
 
 class CRapidDownloader: public IDownloader
 {
 public:
-	CRapidDownloader(const std::string& masterurl=REPO_MASTER);
+	CRapidDownloader();
 	~CRapidDownloader();
 
 	/**
@@ -45,7 +44,20 @@ public:
 	*/
 	virtual bool download(IDownload* download);
 
+	void setMasterUrl(const std::string& url);
+	/**
+		parses a rep master-file
+	*/
+	void updateRepos();
+	void downloadRepo(const std::string& url);
+
 private:
+	bool parse();
+	void download(const std::string& name);
+	std::string path;
+	std::string url;
+	std::list<CRepo> repos;
+
 	/**
 		download by name, for example "Complete Annihilation revision 1234"
 	*/
@@ -66,7 +78,6 @@ private:
 	static bool match_download_name(const std::string &str1,const std::string& str2);
 
 	static bool list_compare(CSdp& first ,CSdp& second);
-	CRepoMaster* repoMaster;
 	std::list<CSdp> sdps;
 };
 

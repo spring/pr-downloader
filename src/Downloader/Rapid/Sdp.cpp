@@ -2,7 +2,6 @@
 
 #include "Sdp.h"
 #include "RapidDownloader.h"
-#include "RepoMaster.h"
 #include "Util.h"
 #include "Logger.h"
 #include "FileSystem/FileSystem.h"
@@ -56,7 +55,7 @@ bool CSdp::download()
 
 	if (!fileSystem->fileExists(filename)) { //.sdp isn't avaiable, download it
 		IDownload dl(filename);
-		dl.addMirror(url + "/packages/" + this->md5 + ".sdp");
+		dl.addMirror(url + PATH_DELIMITER + "packages"+ PATH_DELIMITER + this->md5 + ".sdp");
 		httpDownload->download(&dl);
 	}
 	fileSystem->parseSdp(filename,files); //parse downloaded file
@@ -66,7 +65,7 @@ bool CSdp::download()
 	HashMD5 md5= HashMD5();
 	md5.Set(tmp.md5, sizeof(tmp.md5));
 	int i=0;
-	for(it = files.begin(); it!=files.end(); ++it) {
+	for(it = files.begin(); it!=files.end(); ++it) { //check which file are available on local disk -> create list of files to download
 		i++;
 		md5.Set((*it)->md5, sizeof((*it)->md5));
 		std::string file;
@@ -89,7 +88,8 @@ bool CSdp::download()
 		LOG_DEBUG("Already downloaded: %s", shortname.c_str());
 		downloaded=true;
 	}
-	for(it = files.begin(); it!=files.end(); ++it) {
+
+	for(it = files.begin(); it!=files.end(); ++it) { //free memory
 		delete *it;
 	}
 	return downloaded;
