@@ -124,8 +124,13 @@ bool CFileSystem::setWritePath(const std::string path)
 #ifndef WIN32
 		char* buf;
 		buf=getenv("HOME");
-		springdir=buf;
-		springdir.append("/.spring");
+		if (buf!=NULL) {
+			springdir=buf;
+			springdir.append("/.spring");
+		} else { //no home: use cwd
+			LOG_INFO("HOME isn't set, using CWD./spring");
+			springdir=".spring";
+		}
 #else
 		TCHAR pathMyDocs[MAX_PATH];
 		SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
