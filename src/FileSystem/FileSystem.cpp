@@ -176,32 +176,36 @@ bool CFileSystem::directoryExists(const std::string& path) const
 	return (res==0);
 }
 
-void CFileSystem::createSubdirs (const std::string& path) const
+#ifdef WIN32
+#define MKDIR(path) \
+	mkdir(path)
+#else
+#define MKDIR(path) \
+	mkdir(path, 0755)
+#endif
+
+bool CFileSystem::createSubdirs (const std::string& path) const
 {
 	std::string tmp=path;
 	if (path[path.length()]!=PATH_DELIMITER) {
 		tmp=tmp.substr(0,tmp.rfind(PATH_DELIMITER));
 	}
-
-	for (unsigned int i=0; i<tmp.size(); i++) {
+	for (unsigned int i=2; i<tmp.size(); i++) {
 		char c=tmp.at(i);
 		if (c==PATH_DELIMITER) {
 			const std::string tocreate=tmp.substr(0,i);
 			if (!fileSystem->directoryExists(tocreate)) {
-#ifdef WIN32
-				mkdir(tmp.substr(0,i).c_str());
-#else
-				mkdir(tmp.substr(0,i).c_str(),0755);
-#endif
+				if (MKDIR(tmp.substr(0,i).c_str())!=0)
+					return false;
 			}
 		}
 	}
-#ifdef WIN32
-	mkdir(tmp.c_str());
-#else
-	mkdir(tmp.c_str(),0755);
-#endif
+
+	if ((!directoryExists(tmp.c_str())) && (MKDIR(tmp.c_str()))!=0)
+		return false;
+	return true;
 }
+#undef MKDIR
 
 
 void CFileSystem::getPoolFilename(const std::string& md5str, std::string& path)
@@ -212,8 +216,6 @@ void CFileSystem::getPoolFilename(const std::string& md5str, std::string& path)
 	path += PATH_DELIMITER;
 	path += md5str.at(0);
 	path += md5str.at(1);
-	if (!directoryExists(path)) //FIXME: create all directories on filesystem init !?
-		createSubdirs(path);
 	path += PATH_DELIMITER;
 	path +=	md5str.substr(2);
 	path += ".gz";

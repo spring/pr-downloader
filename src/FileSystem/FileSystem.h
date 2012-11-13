@@ -47,7 +47,7 @@ public:
 		creates directory if it doesn't exist, expects PATH_DELIMETER at the end of the path
 		creates a directory with all subdirectorys (doesn't handle c:\ ...)
 	*/
-	void createSubdirs(const std::string& path) const;
+	bool createSubdirs(const std::string& path) const;
 
 	/**
 		Validate all files in /pool/ (check md5)

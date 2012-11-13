@@ -38,6 +38,22 @@ CSdp::~CSdp()
 	}
 }
 
+bool createPoolDirs(const std::string root)
+{
+	char buf[1024];
+	const int pos = snprintf(buf, sizeof(buf), "%s", root.c_str());
+	for (int i=0; i<256; i++) {
+		snprintf( buf + pos, 4, "%02x%c", i, PATH_DELIMITER);
+		std::string tmp(buf, pos+3);
+		if ((!fileSystem->directoryExists(tmp)) && (!fileSystem->createSubdirs(tmp))) {
+			LOG_ERROR("Couldn't create %s", tmp.c_str());
+			return false;
+		}
+	}
+	return true;
+}
+
+
 bool CSdp::download()
 {
 	if (downloaded) //allow download only once of the same sdp
@@ -49,7 +65,6 @@ bool CSdp::download()
 	}
 	int count=0;
 	filename  += this->md5 + ".sdp";
-	FileData tmp=FileData();
 	std::list<FileData*> files;
 
 
@@ -63,6 +78,7 @@ bool CSdp::download()
 	std::list<FileData*>::iterator it;
 
 	HashMD5 md5= HashMD5();
+	FileData tmp=FileData();
 	md5.Set(tmp.md5, sizeof(tmp.md5));
 	int i=0;
 	for(it = files.begin(); it!=files.end(); ++it) { //check which file are available on local disk -> create list of files to download
@@ -81,6 +97,13 @@ bool CSdp::download()
 		}
 	}
 	LOG_DEBUG("\r%d/%d need to download %d files",i,(unsigned int)files.size(),count);
+
+	std::string root = fileSystem->getSpringDir();
+	root += PATH_DELIMITER;
+	root += "pool";
+	root += PATH_DELIMITER;
+	if (!createPoolDirs(root))
+		count = 0;
 	if (count>0) {
 		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		LOG_DEBUG("Sucessfully downloaded %d files: %s %s",count,shortname.c_str(),name.c_str());
