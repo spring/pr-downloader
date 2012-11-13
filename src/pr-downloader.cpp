@@ -155,6 +155,15 @@ bool DownloadSetConfig(CONFIG type, const void* value)
 	return false;
 }
 
+const char* DownloadGetConfig(CONFIG type)
+{
+	switch(type) {
+	case CONFIG_FILESYSTEM_WRITEPATH:
+		return fileSystem->getSpringDir().c_str();
+	}
+	return NULL;
+}
+
 std::list<int> downloads;
 
 bool DownloadAdd(int id)
