@@ -247,5 +247,5 @@ bool DownloadRapidValidate()
 
 bool DownloadDumpSDP(const char* path)
 {
-	fileSystem->dumpSDP(path);
+	return fileSystem->dumpSDP(path);
 }
