@@ -156,7 +156,6 @@ bool DownloadGetSearchInfo(int id, downloadInfo& info)
 
 void DownloadInit()
 {
-	CFileSystem::Initialize();
 	IDownloader::Initialize();
 }
 
@@ -175,7 +174,7 @@ bool DownloadSetConfig(CONFIG type, const void* value)
 {
 	switch(type) {
 	case CONFIG_FILESYSTEM_WRITEPATH:
-		fileSystem->Initialize((const char*)value);
+		fileSystem->setWritePath((const char*)value);
 		return true;
 	}
 	return false;

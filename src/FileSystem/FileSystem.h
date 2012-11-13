@@ -20,7 +20,6 @@ class CFileSystem
 
 public:
 	static CFileSystem* GetInstance();
-	static void Initialize(const std::string& writepath="");
 	static void Shutdown();
 
 	CFileSystem(const std::string& writepath="");

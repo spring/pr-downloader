@@ -114,6 +114,8 @@ CFileSystem::~CFileSystem()
 
 bool CFileSystem::setWritePath(const std::string path)
 {
+	if (path == springdir) //do nothing if path didn't change
+		return true;
 	if (path.size()>0) {
 		if(!directoryExists(path)) {
 			LOG_ERROR("filesystem-writepath doesn't exist: %s", path.c_str());
@@ -149,18 +151,10 @@ CFileSystem::CFileSystem(const std::string& writepath)
 	setWritePath(writepath);
 }
 
-static std::string fileWritePath;
-
-void CFileSystem::Initialize(const std::string& writepath)
-{
-	fileWritePath=writepath;
-	fileSystem->setWritePath(writepath);
-}
-
 CFileSystem* CFileSystem::GetInstance()
 {
 	if (singleton==NULL)
-		singleton=new CFileSystem(fileWritePath);
+		singleton=new CFileSystem();
 	return singleton;
 }
 
