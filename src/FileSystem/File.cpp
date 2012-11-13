@@ -52,7 +52,7 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	} else {
 		handle=fopen(filename.c_str(), "rb+");
 	}
-	if (handle<=0) {
+	if (handle==0) {
 		LOG_ERROR("open(%s): %s",filename.c_str(), strerror(errno));
 		return false;
 	}

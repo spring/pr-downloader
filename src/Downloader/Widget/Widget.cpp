@@ -17,7 +17,7 @@ CWidget::CWidget(const std::string& filename)
 	LOG_INFO("Parsing %s", filename.c_str());
 	pugi::xml_node widget=doc.child("root");
 
-	std::list<CWidget> widgets;
+//	std::list<CWidget> widgets;
 	int count=0;
 	for (widget = widget.first_child(); widget; widget = widget.next_sibling()) {
 		name = widget.child_value("Name");

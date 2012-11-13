@@ -13,15 +13,14 @@
 #include <stdio.h>
 
 
-CRepo::CRepo(const std::string& repourl, CRapidDownloader* rapid)
+CRepo::CRepo(const std::string& repourl, CRapidDownloader* rapid):
+	repourl(repourl),
+	rapid(rapid)
 {
-	this->repourl=repourl;
-	this->rapid=rapid;
 }
 
 CRepo::~CRepo()
 {
-
 }
 
 bool CRepo::getDownload(IDownload& dl)

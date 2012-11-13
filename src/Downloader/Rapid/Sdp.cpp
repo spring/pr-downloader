@@ -16,20 +16,20 @@
 #include <curl/curl.h>
 #include <stdlib.h>
 
-CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url)
+CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url):
+	downloadInitialized(false),
+	file_handle(NULL),
+	file_pos(0),
+	skipped(false),
+	cursize(0),
+	name(name),
+	md5(md5),
+	shortname(shortname),
+	url(url),
+	depends(depends),
+	downloaded(false)
 {
-	this->shortname=shortname;
-	this->name=name;
-	this->md5=md5;
-	this->url=url;
-	this->downloaded=false;
-	this->depends=depends;
-	this->file_handle=NULL;
-	this->downloadInitialized=false;
-	this->cursize=0;
 	memset(this->cursize_buf,0, LENGTH_SIZE);
-	this->skipped=false;
-	this->file_pos=0;
 }
 
 CSdp::~CSdp()

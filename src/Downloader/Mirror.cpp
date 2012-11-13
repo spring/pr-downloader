@@ -4,9 +4,9 @@
 
 #include <limits.h>
 
-Mirror::Mirror(const std::string& url)
+Mirror::Mirror(const std::string& url):
+	url(url)
 {
-	this->url=url;
 	status=STATUS_UNKNOWN;
 	maxspeed=-1;
 }

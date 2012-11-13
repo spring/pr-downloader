@@ -9,9 +9,9 @@
 #include "lib/soap/ContentServiceSoap.nsmap"
 
 
-CPlasmaDownloader::CPlasmaDownloader()
+CPlasmaDownloader::CPlasmaDownloader():
+	torrentPath(fileSystem->getSpringDir()+PATH_DELIMITER +  "torrent" + PATH_DELIMITER)
 {
-	this->torrentPath=fileSystem->getSpringDir()+PATH_DELIMITER +  "torrent" + PATH_DELIMITER;
 	fileSystem->createSubdirs(this->torrentPath);
 }
 
