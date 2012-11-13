@@ -61,7 +61,8 @@ fi
 
 rm -f CMakeCache.txt
 
-if [ ! -s win32.cmake ]; then
+if [ ! -s win32.cmake ]  ||  [ win32.cmake -ot $0 ]; then
+echo Wrote win32.cmake
 (
 echo "SET(CMAKE_SYSTEM_NAME Windows)"
 echo "SET(CMAKE_C_COMPILER $MINGW32CC)"
