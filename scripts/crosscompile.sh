@@ -3,7 +3,7 @@
 set -e
 
 export PREFIX=$(pwd)/mingwlibs
-export MINGWHOST=i586-mingw32msvc
+export MINGWHOST=i686-w64-mingw32
 export MINGW32CXX=${MINGWHOST}-g++
 export MINGW32CC=${MINGWHOST}-gcc
 export MINGW32CPP=${MINGWHOST}-cpp
@@ -72,6 +72,6 @@ echo "SET(CMAKE_RC_COMPILER $MINGW32RC)"
 ) >win32.cmake
 fi
 
-cmake . -DCMAKE_TOOLCHAIN_FILE=win32.cmake -DCMAKE_INSTALL_PREFIX=dist
-make install -j ${PARALELL}
+cmake . -DCMAKE_TOOLCHAIN_FILE=win32.cmake -DCMAKE_INSTALL_PREFIX=dist -G Ninja
+ninja install
 
