@@ -114,8 +114,6 @@ CFileSystem::~CFileSystem()
 
 bool CFileSystem::setWritePath(const std::string& path)
 {
-	if (path == springdir) //do nothing if path didn't change
-		return true;
 	if (!path.empty()) {
 		if(!directoryExists(path)) {
 			LOG_ERROR("filesystem-writepath doesn't exist: %s", path.c_str());
@@ -140,7 +138,7 @@ bool CFileSystem::setWritePath(const std::string& path)
 		springdir.append("\\My Games\\Spring");
 #endif
 	}
-	LOG_INFO("Using filesystem-writepath: %s", path.c_str());
+	LOG_INFO("Using filesystem-writepath: %s", springdir.c_str());
 	return true;
 
 }
