@@ -80,6 +80,7 @@ void CRepoMaster::updateRepos()
 	for (it = repos.begin(); it != repos.end(); ++it) {
 		(*it).parse();
 	}
+	IDownloader::freeResult(dls);
 }
 
 CRepoMaster::~CRepoMaster()

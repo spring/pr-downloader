@@ -6,7 +6,6 @@
 
 DownloadData::DownloadData()
 {
-	file=NULL;
 	piece=0;
 	mirror=NULL;
 	download=NULL;

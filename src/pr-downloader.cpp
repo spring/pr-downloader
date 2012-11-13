@@ -182,5 +182,7 @@ bool DownloadStart()
 		LOG_ERROR("%s():%d  Invalid type specified: %d %d", __FUNCTION__, __LINE__, typ, downloads.size());
 		return false;
 	}
+	IDownloader::freeResult(searchres);
+	IDownloader::freeResult(dls);
 	return false;
 }

@@ -14,7 +14,6 @@ class DownloadData
 public:
 	DownloadData();
 	~DownloadData();
-	CFile* file;
 	int piece;
 	CURL* easy_handle; //curl_easy_handle
 	Mirror* mirror; //mirror used

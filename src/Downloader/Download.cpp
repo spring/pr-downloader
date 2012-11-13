@@ -18,6 +18,7 @@ IDownload::IDownload(const std::string& name, category cat)
 	this->hash=NULL;
 	this->size=-1;
 	this->state=IDownload::STATE_NONE;
+	this->file=NULL;
 	piecesize=0;
 }
 
@@ -33,6 +34,10 @@ IDownload::~IDownload()
 	if (hash!=NULL)
 		delete hash;
 	hash=NULL;
+	if (file!=NULL) {
+		delete file;
+		file = NULL;
+	}
 }
 
 const std::string IDownload::getCat(category cat)

@@ -71,6 +71,7 @@ public:
 	 */
 	std::vector<struct piece> pieces; //FIXME: make private
 	IHash* hash;
+	CFile* file;
 
 	/**
 	 *	file size
