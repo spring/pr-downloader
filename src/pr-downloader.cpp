@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-
 bool download(const std::string& name, IDownload::category cat)
 {
 	std::list<IDownload*> res;
@@ -41,29 +40,17 @@ bool download(const std::string& name, IDownload::category cat)
 	return false;
 }
 
-bool download_engine(std::string& version)
+bool download_engine(std::list<IDownload*>& dllist)
 {
-	IDownload::category cat;
-#ifdef WIN32
-	cat=IDownload::CAT_ENGINE_WINDOWS;
-#elif __APPLE__
-	cat=IDownload::CAT_ENGINE_MACOSX;
-#else
-	cat=IDownload::CAT_ENGINE_LINUX;
-#endif
-
-	std::list<IDownload*> res;
-	httpDownload->search(res, "spring " + version, cat);
-	if (res.empty()) {
-		return false;
-	}
+	httpDownload->download(dllist);
+	bool res = true;
 	std::list<IDownload*>::iterator it;
-	it = res.begin();
-	if (!httpDownload->download(*it)) {
-		return false;
+	for (it = dllist.begin(); it!=dllist.end(); ++it) {
+		const std::string output = fileSystem->getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + (*it)->name ;
+		if (!fileSystem->extract((*it)->name, output))
+			res = false;
 	}
-	const std::string output = fileSystem->getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + version;
-	return fileSystem->extract((*it)->name, output);
+	return res;
 }
 
 //helper function
@@ -81,36 +68,75 @@ IDownload* GetIDownloadByID(std::list<IDownload*>& dllist, int id)
 	return NULL;
 }
 
+IDownload::category getCat(category cat) //FIXME: unify enums, see IDownload::category
+{
+	switch (cat) {
+	case CAT_MAP:
+		return IDownload::CAT_MAPS;
+	case CAT_GAME:
+		return IDownload::CAT_GAMES;
+	case CAT_ENGINE:
+#ifdef WIN32
+		return IDownload::CAT_ENGINE_WINDOWS;
+#elif defined(MACOSX)
+		return IDownload::CAT_ENGINE_MACOSX;
+#else
+		return IDownload::CAT_ENGINE_LINUX;
+#endif
+
+	case CAT_ANY:
+		return IDownload::CAT_NONE;
+	default:
+		LOG_ERROR("Invalid category: %d", cat);
+	}
+	return IDownload::CAT_NONE;
+}
+
+bool isEngineDownload(IDownload::category cat)
+{
+	return (cat == IDownload::CAT_ENGINE_LINUX) ||
+	       (cat == IDownload::CAT_ENGINE_MACOSX) ||
+	       (cat == IDownload::CAT_ENGINE_WINDOWS);
+}
+
+
 std::list<IDownload*> searchres;
 downloadtype typ;
 int DownloadSearch(downloadtype type, category cat, const char* name)
 {
 	IDownloader::freeResult(searchres);
+	IDownload::category icat = getCat(cat);
+	if (isEngineDownload(icat)) { //engine downloads only work with http
+		type = DL_ENGINE;
+		LOG_ERROR("engine dl");
+	}
 	typ = type;
+	std::string searchname = name;
 
 	switch(type) {
 	case DL_RAPID:
-		rapidDownload->search(searchres, name);
+		rapidDownload->search(searchres, searchname.c_str(), icat);
 		break;
 	case DL_HTTP:
-		httpDownload->search(searchres, name);
+	case DL_ENGINE:
+		httpDownload->search(searchres, searchname.c_str(), icat);
 		break;
 	case DL_PLASMA:
-		plasmaDownload->search(searchres, name);
+		plasmaDownload->search(searchres, searchname.c_str(), icat);
 		break;
 	case DL_ANY:
-		rapidDownload->search(searchres, name);
+		rapidDownload->search(searchres, searchname.c_str(), icat);
 		if (!searchres.empty()) {
 			typ = DL_RAPID;
 			break;
 		}
 		typ = DL_HTTP;
-		httpDownload->search(searchres, name);
+		httpDownload->search(searchres, searchname.c_str(), icat);
 		if (!searchres.empty()) {
 			break;
 		}
 		//last try, use plasma
-		plasmaDownload->search(searchres, name);
+		plasmaDownload->search(searchres, searchname.c_str(), icat);
 		break;
 	default:
 		LOG_ERROR("%s: type invalid", __FUNCTION__);
@@ -166,32 +192,52 @@ const char* DownloadGetConfig(CONFIG type)
 
 std::list<int> downloads;
 
-bool DownloadAdd(int id)
+bool DownloadAdd(unsigned int id)
 {
+	if ((id>searchres.size())) {
+		LOG_ERROR("%s Invalid id %d", __FUNCTION__, id);
+		return false;
+	}
 	downloads.push_back(id);
 	return true;
 }
 
 bool DownloadStart()
 {
+	bool res = true;
 	std::list<IDownload*> dls;
 	std::list<int>::iterator it;
 	for (it = downloads.begin(); it != downloads.end(); ++it) {
 		IDownload* dl = GetIDownloadByID(searchres, *it);
-		if (dl == NULL)
+		if (dl == NULL) {
 			continue;
+		}
 		dls.push_back(dl);
 	}
+
+	if (dls.empty()) {
+		LOG_ERROR("Nothing to do, did you forget to call DownloadAdd()?");
+		return res;
+	}
+
 	switch (typ) {
 	case DL_RAPID:
-		return rapidDownload->download(dls);
+		if(!rapidDownload->download(dls))
+			res = false;
+		break;
 	case DL_HTTP:
-		return httpDownload->download(dls);
+		if (!httpDownload->download(dls))
+			res = false;
+		break;
+	case DL_ENGINE:
+		if (!download_engine(dls))
+			res = false;
+		break;
 	default:
 		LOG_ERROR("%s():%d  Invalid type specified: %d %d", __FUNCTION__, __LINE__, typ, downloads.size());
-		return false;
+		res = false;
 	}
 	IDownloader::freeResult(searchres);
-	IDownloader::freeResult(dls);
-	return false;
+	dls.clear();
+	return res;
 }

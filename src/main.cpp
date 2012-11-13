@@ -87,7 +87,7 @@ void show_results(int count)
 	for(int i=0; i<count; i++) {
 		downloadInfo dl;
 		DownloadGetSearchInfo(i, dl);
-		LOG_INFO("Download url: %s", dl.filename);
+		LOG_INFO("Download path: %s", dl.filename);
 	}
 }
 
@@ -120,13 +120,6 @@ bool search(category cat, const char* name)
 	}
 	return true;
 }
-
-bool download_engine(const char* name)
-{
-	LOG_ERROR("%s: implement me", __FUNCTION__);
-	return false;
-}
-
 
 int main(int argc, char **argv)
 {
@@ -204,7 +197,9 @@ int main(int argc, char **argv)
 				}
 			*/
 		case DOWNLOAD_ENGINE: {
-			if (!download_engine(optarg)) {
+			char buf[1024];
+			snprintf(buf, sizeof(buf), "spring %s", optarg);
+			if (!download(CAT_ENGINE, buf)) {
 				LOG_ERROR("No engine version found for %s",optarg);
 				res=false;
 			}

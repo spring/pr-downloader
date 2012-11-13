@@ -17,6 +17,7 @@ enum downloadtype {
 	DL_RAPID,
 	DL_HTTP,
 	DL_PLASMA,
+	DL_ENGINE, //FIXME: also in category
 	DL_ANY
 };
 
@@ -37,7 +38,7 @@ extern bool DownloadStart();
 /**
 	adds a download, see @DownloadSearch & @DownloadGetSearchInfo
 */
-extern bool DownloadAdd(int id);
+extern bool DownloadAdd(unsigned int id);
 /**
 * search for name
 * calling this will overwrite results from the last call
