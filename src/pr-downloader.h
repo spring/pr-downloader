@@ -75,5 +75,15 @@ extern bool DownloadSetConfig(CONFIG type, const void* value);
 */
 extern const char* DownloadGetConfig(CONFIG type);
 
+/**
+* validate rapid pool
+*/
+extern bool DownloadRapidValidate();
+
+/**
+* dump contents of a sdp
+*/
+extern bool DownloadDumpSDP(const char* path);
+
 #endif
 

@@ -79,7 +79,6 @@ bool CSdp::download()
 
 	HashMD5 md5= HashMD5();
 	FileData tmp=FileData();
-	md5.Set(tmp.md5, sizeof(tmp.md5));
 	int i=0;
 	for(it = files.begin(); it!=files.end(); ++it) { //check which file are available on local disk -> create list of files to download
 		i++;
@@ -102,8 +101,10 @@ bool CSdp::download()
 	root += PATH_DELIMITER;
 	root += "pool";
 	root += PATH_DELIMITER;
-	if (!createPoolDirs(root))
+	if (!createPoolDirs(root)) {
+		LOG_ERROR("Creating pool directories failed");
 		count = 0;
+	}
 	if (count>0) {
 		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		LOG_DEBUG("Sucessfully downloaded %d files: %s %s",count,shortname.c_str(),name.c_str());

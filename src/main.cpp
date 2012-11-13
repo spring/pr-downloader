@@ -39,6 +39,8 @@ enum {
 
 static struct option long_options[] = {
 	{"rapid-download"          , 1, 0, RAPID_DOWNLOAD},
+	{"rapid-validate"          , 0, 0, RAPID_VALIDATE},
+	{"dump-sdp"                , 1, 0, FILESYSTEM_DUMPSDP},
 	{"plasma-download"         , 1, 0, PLASMA_DOWNLOAD},
 	{"http-download"           , 1, 0, HTTP_DOWNLOAD},
 	{"http-search"             , 1, 0, HTTP_SEARCH},
@@ -84,7 +86,6 @@ void show_results(int count)
 	}
 }
 
-
 bool download(category cat, const char* name)
 {
 	int count = DownloadSearch(DL_ANY, cat, name);
@@ -119,18 +120,25 @@ int main(int argc, char **argv)
 	show_version();
 	if (argc<2)
 		show_help(argv[0]);
-
 	DownloadInit();
 
 	bool res=true;
 	while (true) {
 		int option_index = 0;
-		int c = getopt_long(argc, argv, "",long_options, &option_index);
+		int c = getopt_long(argc, argv, "", long_options, &option_index);
 		if (c == -1)
 			break;
 		switch (c) {
 		case RAPID_DOWNLOAD: {
 			download(CAT_GAME, optarg);
+			break;
+		}
+		case RAPID_VALIDATE: {
+			DownloadRapidValidate();
+			break;
+		}
+		case FILESYSTEM_DUMPSDP: {
+			DownloadDumpSDP(optarg);
 			break;
 		}
 		case FILESYSTEM_WRITEPATH: {

@@ -236,3 +236,16 @@ bool DownloadStart()
 	dls.clear();
 	return res;
 }
+
+bool DownloadRapidValidate()
+{
+	std::string path = fileSystem->getSpringDir();
+	path += PATH_DELIMITER;
+	path += "pool";
+	return fileSystem->validatePool(path);
+}
+
+bool DownloadDumpSDP(const char* path)
+{
+	fileSystem->dumpSDP(path);
+}
