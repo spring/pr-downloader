@@ -232,7 +232,7 @@ bool CSdp::downloadStream(std::string url,std::list<FileData*> files)
 	if (curl) {
 		CURLcode res;
 		LOG_INFO("Using rapid");
-		LOG_DOWNLOAD(url.c_str());
+		LOG_INFO(url.c_str());
 
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
