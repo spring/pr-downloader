@@ -18,6 +18,7 @@ IDownload::IDownload(const std::string& name, category cat)
 	this->hash=NULL;
 	this->size=-1;
 	this->state=IDownload::STATE_NONE;
+	this->file=NULL;
 	piecesize=0;
 }
 
@@ -33,6 +34,10 @@ IDownload::~IDownload()
 	if (hash!=NULL)
 		delete hash;
 	hash=NULL;
+	if (file!=NULL) {
+		delete file;
+		file = NULL;
+	}
 }
 
 const std::string IDownload::getCat(category cat)
@@ -98,19 +103,21 @@ bool IDownload::addDepend(const std::string& depend)
 	return true;
 }
 
-unsigned int IDownload::getProgress(const CFile& file) const
+unsigned int IDownload::getProgress() const
 {
+	if (file==NULL)
+		return -1;
 	int res = 0;
 	if(pieces.empty()) {
-		res=file.GetPieceSize();
+		res=file->GetPieceSize();
 	} else {
 		for(unsigned i=0; i<pieces.size(); i++) {
 			switch(pieces[i].state) {
 			case IDownload::STATE_FINISHED:
-				res += file.GetPieceSize(i);
+				res += file->GetPieceSize(i);
 				break;
 			case IDownload::STATE_DOWNLOADING:
-				res += file.GetPiecePos(i);
+				res += file->GetPiecePos(i);
 				break;
 			default:
 				break;

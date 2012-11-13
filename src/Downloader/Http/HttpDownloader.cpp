@@ -116,6 +116,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 
 			dl->addMirror(mirrors[j]);
 		}
+
 		//torrent data avaiable
 		if (resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeString) { //FIXME: this is a bug in the xml-rpc interface, it should return <base64> but returns <string>
 			std::string base64=resfile["torrent"];
@@ -153,7 +154,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 
 size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data)
 {
-	return data->file->Write((const char*)ptr, size*nmemb, data->piece);
+	return data->download->file->Write((const char*)ptr, size*nmemb, data->piece);
 }
 
 bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize)
@@ -165,9 +166,9 @@ bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize)
 	return true;
 }
 
-void CHttpDownloader::showProcess(IDownload* download, CFile& file)
+void CHttpDownloader::showProcess(IDownload* download)
 {
-	int done = download->getProgress(file);
+	int done = download->getProgress();
 	int size = download->size;
 	if ((size<0) && (download->state==IDownload::STATE_FINISHED)) {
 		size=done;
@@ -195,7 +196,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 	HashSHA1 sha1=HashSHA1();
 	unsigned alreadyDl=0;
 	for(unsigned i=0; i<download->pieces.size(); i++ ) { //find first not downloaded piece
-		showProcess(download, file);
+		showProcess(download);
 		if (download->pieces[i].state==IDownload::STATE_FINISHED) {
 			alreadyDl++;
 			continue;
@@ -221,7 +222,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 
 bool CHttpDownloader::setupDownload(DownloadData* piece)
 {
-	int pieceNum=verifyAndGetNextPiece(*(piece->file), piece->download);
+	int pieceNum=verifyAndGetNextPiece(*(piece->download->file), piece->download);
 	if (piece->download->state==IDownload::STATE_FINISHED)
 		return false;
 	assert(piece->download->pieces.size()<=0 || pieceNum>=0);
@@ -302,7 +303,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			assert(data->file!=NULL);
 			assert(data->piece< (int)data->download->pieces.size());
 			if (data->download->pieces[data->piece].sha->isSet()) {
-				data->file->Hash(sha1, data->piece);
+				data->download->file->Hash(sha1, data->piece);
 				if (sha1.compare(data->download->pieces[data->piece].sha)) { //piece valid
 					data->download->pieces[data->piece].state=IDownload::STATE_FINISHED;
 //					LOG("piece %d verified!", data->piece);
@@ -362,9 +363,9 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 			delete file;
 			return false;
 		}
+		(*it)->file = file;
 		for(int i=0; i<count; i++) {
 			DownloadData* dlData=new DownloadData();
-			dlData->file=file;
 			dlData->download=*it;
 			if (!setupDownload(dlData)) { //no piece found (all pieces already downloaded), skip
 				delete dlData;
