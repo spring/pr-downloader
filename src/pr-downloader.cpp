@@ -161,10 +161,6 @@ void DownloadInit()
 
 void DownloadShutdown()
 {
-	/*	if (!downloads.empty()) {
-			LOG_ERROR("downloads !empty");
-		}
-		IDownloader::freeResult(downloads);*/
 	IDownloader::freeResult(searchres);
 	IDownloader::Shutdown();
 	CFileSystem::Shutdown();

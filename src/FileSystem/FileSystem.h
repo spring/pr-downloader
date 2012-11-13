@@ -22,7 +22,7 @@ public:
 	static CFileSystem* GetInstance();
 	static void Shutdown();
 
-	CFileSystem(const std::string& writepath="");
+	CFileSystem();
 	~CFileSystem();
 	/**
 		parses the file for a mod and creates

@@ -143,10 +143,8 @@ bool CFileSystem::setWritePath(const std::string& path)
 
 }
 
-CFileSystem::CFileSystem(const std::string& writepath)
+CFileSystem::CFileSystem()
 {
-	tmpfiles.clear();
-	setWritePath(writepath);
 }
 
 CFileSystem* CFileSystem::GetInstance()

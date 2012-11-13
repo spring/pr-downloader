@@ -29,8 +29,8 @@ void CRepoMaster::download(const std::string& name)
 }
 
 CRepoMaster::CRepoMaster(const std::string& url, CRapidDownloader* rapid):
-	url(url),
-	rapid(rapid)
+	rapid(rapid),
+	url(url)
 {
 	LOG_DEBUG("Added master repo %s", url.c_str());
 }
