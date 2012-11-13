@@ -62,9 +62,6 @@ bool CSdp::download()
 	fileSystem->parseSdp(filename,files); //parse downloaded file
 
 	std::list<FileData*>::iterator it;
-	/*	CHttpDownload* tmp=httpDownload; //FIXME: extend interface?
-		tmp->setCount(files.size());
-	*/
 
 	HashMD5 md5= HashMD5();
 	md5.Set(tmp.md5, sizeof(tmp.md5));
@@ -72,16 +69,8 @@ bool CSdp::download()
 	for(it = files.begin(); it!=files.end(); ++it) {
 		i++;
 		md5.Set((*it)->md5, sizeof((*it)->md5));
-		std::string md5str=md5.toString();
-		std::string filename=md5str.substr(2);
-		filename.append(".gz");
-		std::string path("/pool/");
-		path += md5str.at(0);
-		path += md5str.at(1);
-		path += "/";
-
-		std::string file=fileSystem->getSpringDir() + path + filename; //absolute filename
-
+		std::string file;
+		fileSystem->getPoolFilename(md5.toString(), file);
 		if (!fileSystem->fileExists(file)) { //add non-existing files to download list
 			count++;
 			(*it)->download=true;
@@ -94,7 +83,6 @@ bool CSdp::download()
 	}
 	LOG_DEBUG("\r%d/%d need to download %d files",i,(unsigned int)files.size(),count);
 	if (count>0) {
-//FIXME	httpDownload->setCount(count);
 		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		LOG_DEBUG("Sucessfully downloaded %d files: %s %s",count,shortname.c_str(),name.c_str());
 	} else {
@@ -135,7 +123,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			}
 			HashMD5 md5;
 			md5.Set((*sdp->list_it)->md5, sizeof((*sdp->list_it)->md5));
-			sdp->file_name=fileSystem->getPoolFileName(md5.toString());
+			fileSystem->getPoolFilename(md5.toString(), sdp->file_name);
 			sdp->file_handle=new AtomicFile(sdp->file_name);
 //			LOG_DEBUG("opened %s, size: %d", sdp->file_name.c_str(), (*sdp->list_it)->size);
 //FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);

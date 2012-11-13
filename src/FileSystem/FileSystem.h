@@ -49,7 +49,6 @@ public:
 	*/
 	void createSubdirs(const std::string& path) const;
 
-	const std::string getPoolFileName(const std::string& md5) const;
 	/**
 		Validate all files in /pool/ (check md5)
 		@return count of valid files found
@@ -88,6 +87,11 @@ public:
 	bool extract(const std::string& filename, const std::string& dstdir);
 
 	bool setWritePath(const std::string& path);
+
+	/**
+	*	returns full filename for pool file from md5
+	*/
+	void getPoolFilename(const std::string& md5str, std::string& path);
 
 private:
 	std::list<std::string> tmpfiles;

@@ -6,7 +6,6 @@
 #include <string>
 
 class IHash;
-//FIXME: maybe not portable?
 class FileData
 {
 public:

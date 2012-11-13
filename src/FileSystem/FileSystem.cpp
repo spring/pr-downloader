@@ -189,7 +189,7 @@ void CFileSystem::createSubdirs (const std::string& path) const
 #ifdef WIN32
 				mkdir(tmp.substr(0,i).c_str());
 #else
-				mkdir(tmp.substr(0,i).c_str(),0777);
+				mkdir(tmp.substr(0,i).c_str(),0755);
 #endif
 			}
 		}
@@ -197,29 +197,26 @@ void CFileSystem::createSubdirs (const std::string& path) const
 #ifdef WIN32
 	mkdir(tmp.c_str());
 #else
-	mkdir(tmp.c_str(),0777);
+	mkdir(tmp.c_str(),0755);
 #endif
 }
 
 
-const std::string CFileSystem::getPoolFileName(const std::string& md5) const
+void CFileSystem::getPoolFilename(const std::string& md5str, std::string& path)
 {
-	std::string name;
-
-	name=getSpringDir();
-	name += PATH_DELIMITER;
-	name += "pool";
-	name += PATH_DELIMITER;
-	name += md5.at(0);
-	name += md5.at(1);
-	name += PATH_DELIMITER;
-	if (!directoryExists(name)) {
-		createSubdirs(name);
-	}
-	name += md5.substr(2);
-	name += ".gz";
-	return name;
+	path = fileSystem->getSpringDir();
+	path += PATH_DELIMITER;
+	path += "pool";
+	path += PATH_DELIMITER;
+	path += md5str.at(0);
+	path += md5str.at(1);
+	if (!directoryExists(path)) //FIXME: create all directories on filesystem init !?
+		createSubdirs(path);
+	path += PATH_DELIMITER;
+	path +=	md5str.substr(2);
+	path += ".gz";
 }
+
 
 int CFileSystem::validatePool(const std::string& path)
 {
