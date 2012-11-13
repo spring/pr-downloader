@@ -23,6 +23,8 @@ else()
 	SET(PR_DOWNLOAD_VERSION "dev")
 endif()
 
+set(BUILD_STATIC TRUE CACHE BOOLEAN "link pr-downloader.exe static or dynamic")
+
 MESSAGE(INFO "Version ${PR_DOWNLOADER_VERSION}")
 if   (MINGW)
 	if(NOT DEFINED ${MINGWLIBS})
@@ -34,7 +36,6 @@ if   (MINGW)
 	include_directories(${MINGWLIBS}/include)
 	include_directories("${CMAKE_FIND_ROOT_PATH}/include")
 
-	set(BUILD_STATIC TRUE CACHE BOOLEAN "link pr-downloader.exe static or dynamic")
 
 	if (BUILD_STATIC)
 		Set(LD_FLAGS "-static-libstdc++ -static-libgcc")
