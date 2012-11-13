@@ -69,7 +69,7 @@ bool CSdp::download()
 
 
 	if (!fileSystem->fileExists(filename)) { //.sdp isn't avaiable, download it
-		IDownload dl(filename);
+		IDownload dl(filename + ".tmp");
 		dl.addMirror(url + PATH_DELIMITER + "packages"+ PATH_DELIMITER + this->md5 + ".sdp");
 		httpDownload->download(&dl);
 	}
@@ -116,6 +116,7 @@ bool CSdp::download()
 	for(it = files.begin(); it!=files.end(); ++it) { //free memory
 		delete *it;
 	}
+	fileSystem->Rename(filename + ".tmp", filename);
 	return downloaded;
 }
 

@@ -93,6 +93,11 @@ public:
 	*/
 	void getPoolFilename(const std::string& md5str, std::string& path);
 
+	/**
+	*	tries to rename a file, copies if rename fails
+	*/
+	bool Rename(const std::string& source, const std::string& destination);
+
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;
