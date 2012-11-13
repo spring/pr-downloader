@@ -36,7 +36,7 @@ public:
 	/**
 		returns the spring writeable directory
 	*/
-	const std::string& getSpringDir() const;
+	const std::string& getSpringDir();
 
 	/**
 		checks if a directory exists

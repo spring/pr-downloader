@@ -162,8 +162,10 @@ void CFileSystem::Shutdown()
 	tmpFileSystem=NULL;
 }
 
-const std::string& CFileSystem::getSpringDir() const
+const std::string& CFileSystem::getSpringDir()
 {
+	if (springdir.empty())
+		(setWritePath(""));
 	return springdir;
 }
 
