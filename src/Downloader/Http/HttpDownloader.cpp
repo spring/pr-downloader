@@ -300,7 +300,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			if (data->piece<0) { //download without pieces
 				return false;
 			}
-			assert(data->file!=NULL);
+			assert(data->download->file!=NULL);
 			assert(data->piece< (int)data->download->pieces.size());
 			if (data->download->pieces[data->piece].sha->isSet()) {
 				data->download->file->Hash(sha1, data->piece);
