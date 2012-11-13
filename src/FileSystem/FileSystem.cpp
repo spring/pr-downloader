@@ -112,15 +112,14 @@ CFileSystem::~CFileSystem()
 	tmpfiles.clear();
 }
 
-
-CFileSystem::CFileSystem(const std::string& writepath)
+bool CFileSystem::setWritePath(const std::string path)
 {
-	tmpfiles.clear();
-	if (writepath.size()>0) {
-		if(!directoryExists(writepath)) {
-			LOG_ERROR("filesystem-writepath doesn't exist: %s", writepath.c_str());
+	if (path.size()>0) {
+		if(!directoryExists(path)) {
+			LOG_ERROR("filesystem-writepath doesn't exist: %s", path.c_str());
+			return false;
 		}
-		springdir=writepath;
+		springdir=path;
 	} else {
 #ifndef WIN32
 		char* buf;
@@ -134,7 +133,15 @@ CFileSystem::CFileSystem(const std::string& writepath)
 		springdir.append("\\My Games\\Spring");
 #endif
 	}
-	LOG_INFO("Using filesystem-writepath: %s", springdir.c_str());
+	LOG_INFO("Using filesystem-writepath: %s", path.c_str());
+	return true;
+
+}
+
+CFileSystem::CFileSystem(const std::string& writepath)
+{
+	tmpfiles.clear();
+	setWritePath(writepath);
 }
 
 static std::string fileWritePath;
@@ -142,6 +149,7 @@ static std::string fileWritePath;
 void CFileSystem::Initialize(const std::string& writepath)
 {
 	fileWritePath=writepath;
+	fileSystem->setWritePath(writepath);
 }
 
 CFileSystem* CFileSystem::GetInstance()

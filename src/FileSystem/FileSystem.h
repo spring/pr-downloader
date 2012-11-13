@@ -88,6 +88,8 @@ public:
 	*/
 	bool extract(const std::string& filename, const std::string& dstdir);
 
+	bool setWritePath(const std::string path);
+
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;
