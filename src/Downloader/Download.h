@@ -81,7 +81,7 @@ public:
 	/**
 	 *	returns number of bytes downloaded
 	 */
-	unsigned int getProgress(const CFile& file) const; //FIXME: move to CFile/use CFile everywhere ?!
+	unsigned int getProgress() const;
 private:
 	std::vector <Mirror*> mirrors;
 

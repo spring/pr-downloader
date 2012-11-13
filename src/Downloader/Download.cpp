@@ -103,19 +103,21 @@ bool IDownload::addDepend(const std::string& depend)
 	return true;
 }
 
-unsigned int IDownload::getProgress(const CFile& file) const
+unsigned int IDownload::getProgress() const
 {
+	if (file==NULL)
+		return -1;
 	int res = 0;
 	if(pieces.empty()) {
-		res=file.GetPieceSize();
+		res=file->GetPieceSize();
 	} else {
 		for(unsigned i=0; i<pieces.size(); i++) {
 			switch(pieces[i].state) {
 			case IDownload::STATE_FINISHED:
-				res += file.GetPieceSize(i);
+				res += file->GetPieceSize(i);
 				break;
 			case IDownload::STATE_DOWNLOADING:
-				res += file.GetPiecePos(i);
+				res += file->GetPiecePos(i);
 				break;
 			default:
 				break;

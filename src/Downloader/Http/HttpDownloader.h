@@ -43,7 +43,7 @@ private:
 	/**
 	* show progress bar
 	*/
-	void showProcess(IDownload* download, CFile& file);
+	void showProcess(IDownload* download);
 
 	/**
 	*	gets next piece that can be downloaded, mark it as downloading

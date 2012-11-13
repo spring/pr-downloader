@@ -166,9 +166,9 @@ bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize)
 	return true;
 }
 
-void CHttpDownloader::showProcess(IDownload* download, CFile& file)
+void CHttpDownloader::showProcess(IDownload* download)
 {
-	int done = download->getProgress(file);
+	int done = download->getProgress();
 	int size = download->size;
 	if ((size<0) && (download->state==IDownload::STATE_FINISHED)) {
 		size=done;
@@ -196,7 +196,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 	HashSHA1 sha1=HashSHA1();
 	unsigned alreadyDl=0;
 	for(unsigned i=0; i<download->pieces.size(); i++ ) { //find first not downloaded piece
-		showProcess(download, file);
+		showProcess(download);
 		if (download->pieces[i].state==IDownload::STATE_FINISHED) {
 			alreadyDl++;
 			continue;
