@@ -39,22 +39,15 @@ enum {
 
 static struct option long_options[] = {
 	{"rapid-download"          , 1, 0, RAPID_DOWNLOAD},
-	{"rapid-validate"          , 0, 0, RAPID_VALIDATE},
-	{"rapid-search"            , 1, 0, RAPID_SEARCH},
 	{"plasma-download"         , 1, 0, PLASMA_DOWNLOAD},
-	{"plasma-search"           , 1, 0, PLASMA_SEARCH},
 	{"http-download"           , 1, 0, HTTP_DOWNLOAD},
 	{"http-search"             , 1, 0, HTTP_SEARCH},
 	{"download-map"            , 1, 0, DOWNLOAD_MAP},
 	{"download-game"           , 1, 0, DOWNLOAD_GAME},
 	{"download-engine"         , 1, 0, DOWNLOAD_ENGINE},
-	{"widget-search"           , 1, 0, WIDGET_SEARCH},
 	{"filesystem-writepath"    , 1, 0, FILESYSTEM_WRITEPATH},
-	{"filesystem-dumpsdp"      , 1, 0, FILESYSTEM_DUMPSDP},
 	{"help"                    , 0, 0, HELP},
 	{"version"                 , 0, 0, SHOW_VERSION},
-	{"extract"                 , 1, 0, EXTRACT_FILE},
-	{"extractdir"              , 1, 0, EXTRACT_DIRECTORY},
 	{0                         , 0, 0, 0}
 };
 
@@ -127,8 +120,6 @@ int main(int argc, char **argv)
 	if (argc<2)
 		show_help(argv[0]);
 
-//	CFileSystem::Initialize();
-//	IDownloader::Initialize();
 	DownloadInit();
 	std::string dir="";
 
@@ -143,23 +134,10 @@ int main(int argc, char **argv)
 			download(CAT_GAME, optarg);
 			break;
 		}
-		/*
-		case RAPID_VALIDATE: {
-			int res=fileSystem->validatePool(fileSystem->getSpringDir() + PATH_DELIMITER + "pool");
-			LOG_INFO("Validated %d files",res);
-			break;
-		}
-		*/
 		case FILESYSTEM_WRITEPATH: {
 			DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, optarg);
 			break;
 		}
-		/*
-		case FILESYSTEM_DUMPSDP: {
-			fileSystem->dumpSDP(optarg);
-			break;
-		}
-		*/
 		case HTTP_SEARCH: {
 			search(CAT_ANY, optarg);
 			break;
@@ -186,16 +164,6 @@ int main(int argc, char **argv)
 		case SHOW_VERSION:
 			show_version();
 			break;
-			/*
-				case EXTRACT_FILE: {
-					fileSystem->extract(optarg, dir);
-					break;
-				}
-				case EXTRACT_DIRECTORY: {
-					dir = optarg;
-					break;
-				}
-			*/
 		case DOWNLOAD_ENGINE: {
 			char buf[1024];
 			snprintf(buf, sizeof(buf), "spring %s", optarg);
