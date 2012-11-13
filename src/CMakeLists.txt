@@ -46,7 +46,11 @@ set(PRDOWNLOADER_LIBS
 
 target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
 target_link_libraries( ${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} )
-target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
+if (BUILD_STATIC)
+	target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
+else  ()
+	target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
+endif ()
 
 FILE( GLOB_RECURSE header "*.h" )
 
