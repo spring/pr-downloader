@@ -69,8 +69,7 @@ bool CSdp::download()
 	HashMD5 md5= HashMD5();
 	md5.Set(tmp.md5, sizeof(tmp.md5));
 	int i=0;
-	it=files.begin();
-	while (it!=files.end()) {
+	for(it = files.begin(); it!=files.end(); ++it) {
 		i++;
 		md5.Set((*it)->md5, sizeof((*it)->md5));
 		std::string md5str=md5.toString();
@@ -92,17 +91,18 @@ bool CSdp::download()
 		if (i%10==0) {
 			LOG_DEBUG("\r%d/%d checked",i,(int)files.size());
 		}
-		++it;
 	}
 	LOG_DEBUG("\r%d/%d need to download %d files",i,(unsigned int)files.size(),count);
 	if (count>0) {
 //FIXME	httpDownload->setCount(count);
 		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
-		files.clear();
 		LOG_DEBUG("Sucessfully downloaded %d files: %s %s",count,shortname.c_str(),name.c_str());
 	} else {
 		LOG_DEBUG("Already downloaded: %s", shortname.c_str());
 		downloaded=true;
+	}
+	for(it = files.begin(); it!=files.end(); ++it) {
+		delete *it;
 	}
 	return downloaded;
 }
