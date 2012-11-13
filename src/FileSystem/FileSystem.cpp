@@ -112,11 +112,11 @@ CFileSystem::~CFileSystem()
 	tmpfiles.clear();
 }
 
-bool CFileSystem::setWritePath(const std::string path)
+bool CFileSystem::setWritePath(const std::string& path)
 {
 	if (path == springdir) //do nothing if path didn't change
 		return true;
-	if (path.size()>0) {
+	if (!path.empty()) {
 		if(!directoryExists(path)) {
 			LOG_ERROR("filesystem-writepath doesn't exist: %s", path.c_str());
 			return false;

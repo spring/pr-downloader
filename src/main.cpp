@@ -121,7 +121,6 @@ int main(int argc, char **argv)
 		show_help(argv[0]);
 
 	DownloadInit();
-	std::string dir="";
 
 	bool res=true;
 	while (true) {
