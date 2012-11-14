@@ -70,7 +70,7 @@ bool CSdp::download()
 
 	if (!fileSystem->fileExists(filename)) { //.sdp isn't avaiable, download it
 		IDownload dl(filename + ".tmp");
-		dl.addMirror(url + PATH_DELIMITER + "packages"+ PATH_DELIMITER + this->md5 + ".sdp");
+		dl.addMirror(url + "/packages/" + this->md5 + ".sdp");
 		httpDownload->download(&dl);
 	}
 	fileSystem->parseSdp(filename,files); //parse downloaded file
