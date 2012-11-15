@@ -10,16 +10,16 @@
 #include <list>
 #include <stdio.h>
 
-IDownload::IDownload(const std::string& name, category cat)
+IDownload::IDownload(const std::string& name, category cat):
+	cat(IDownload::CAT_NONE),
+	name(name),
+	downloaded(false),
+	piecesize(0),
+	hash(NULL),
+	file(NULL),
+	size(-1),
+	state(IDownload::STATE_NONE)
 {
-	this->name=name;
-	this->cat=cat;
-	this->downloaded=false;
-	this->hash=NULL;
-	this->size=-1;
-	this->state=IDownload::STATE_NONE;
-	this->file=NULL;
-	piecesize=0;
 }
 
 IDownload::~IDownload()

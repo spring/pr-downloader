@@ -65,15 +65,19 @@ bool CSdp::download()
 	}
 	int count=0;
 	filename  += this->md5 + ".sdp";
+	const std::string tmpFile = filename + ".tmp";
 	std::list<FileData*> files;
 
-
+	bool rename = false;
 	if (!fileSystem->fileExists(filename)) { //.sdp isn't avaiable, download it
-		IDownload dl(filename + ".tmp");
+		IDownload dl(tmpFile);
 		dl.addMirror(url + "/packages/" + this->md5 + ".sdp");
 		httpDownload->download(&dl);
+		fileSystem->parseSdp(tmpFile,files); //parse downloaded file
+		rename = true;
+	} else {
+		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}
-	fileSystem->parseSdp(filename,files); //parse downloaded file
 
 	std::list<FileData*>::iterator it;
 
@@ -116,7 +120,9 @@ bool CSdp::download()
 	for(it = files.begin(); it!=files.end(); ++it) { //free memory
 		delete *it;
 	}
-	fileSystem->Rename(filename + ".tmp", filename);
+	if ((rename) && (!fileSystem->Rename(tmpFile, filename))) {
+		LOG_ERROR("Couldn't rename %s to %s", tmpFile.c_str(), filename.c_str());
+	}
 	return downloaded;
 }
 

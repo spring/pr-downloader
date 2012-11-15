@@ -25,8 +25,8 @@ extern "C" {
 #define LOG(...) \
 	L_LOG(L_RAW, __VA_ARGS__)
 
-#define LOG_ERROR(...) \
-	L_LOG(L_ERROR, __VA_ARGS__)
+#define LOG_ERROR(fmt, ...) \
+	L_LOG(L_ERROR, "%s:%d:%s(): " fmt, __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
 
 #define LOG_INFO(...) \
 	L_LOG(L_INFO, __VA_ARGS__)

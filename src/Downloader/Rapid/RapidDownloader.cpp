@@ -162,7 +162,7 @@ bool CRapidDownloader::parse()
 {
 	gzFile fp=gzopen(path.c_str(), "r");
 	if (fp==Z_NULL) {
-		LOG_ERROR("Could not open %s",path.c_str());
+		LOG_ERROR("Could not open %s", path.c_str());
 		return false;
 	}
 	char buf[IO_BUF_SIZE];

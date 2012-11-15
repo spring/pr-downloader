@@ -18,7 +18,7 @@ void L_LOG(L_LEVEL level, const char* format ...)
 		break;
 	default:
 	case L_ERROR:
-		fprintf(stderr, "[Error]");
+		fprintf(stderr, "[Error] ");
 		vfprintf(stderr, format,args);
 		fprintf(stderr, "\n");
 		break;
