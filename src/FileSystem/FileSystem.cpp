@@ -171,9 +171,10 @@ const std::string& CFileSystem::getSpringDir()
 
 bool CFileSystem::directoryExists(const std::string& path) const
 {
+	LOG_ERROR("%s", path.c_str());
 	struct stat fileinfo;
 	int res=stat(path.c_str(),&fileinfo);
-	return (res==0);
+	return ((res == 0) && ((fileinfo.st_mode & S_IFDIR) != 0));
 }
 
 #ifdef WIN32
@@ -192,6 +193,10 @@ bool CFileSystem::createSubdirs (const std::string& path) const
 	}
 	for (unsigned int i=2; i<tmp.size(); i++) {
 		char c=tmp.at(i);
+		#ifdef WIN32
+		if ((i==2) && (c == '\\'))
+			continue;
+		#endif
 		if (c==PATH_DELIMITER) {
 			const std::string tocreate=tmp.substr(0,i);
 			if (!fileSystem->directoryExists(tocreate)) {
