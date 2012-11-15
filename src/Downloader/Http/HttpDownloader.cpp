@@ -289,7 +289,9 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			case CURLE_HTTP_RETURNED_ERROR: //some 4* HTTP-Error (file not found, access denied,...)
 			default:
 				LOG_ERROR("CURL error(%d): %s (%s)",msg->msg, curl_easy_strerror(msg->data.result), data->mirror->url.c_str());
-				data->download->pieces[data->piece].state=IDownload::STATE_NONE;
+				if (data->piece>=0) {
+					data->download->pieces[data->piece].state=IDownload::STATE_NONE;
+				}
 				data->mirror->status=Mirror::STATUS_BROKEN;
 				//FIXME: cleanup curl handle here + process next dl
 			}
