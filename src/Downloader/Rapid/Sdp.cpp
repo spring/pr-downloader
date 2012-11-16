@@ -181,7 +181,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 					(*sdp->list_it)->compsize=parse_int32(sdp->cursize_buf);
 //					LOG_DEBUG("%s %hhu %hhu %hhu %hhu", sdp->file_name.c_str(), sdp->cursize_buf[0], sdp->cursize_buf[1], sdp->cursize_buf[2], sdp->cursize_buf[3]);
 //					LOG_DEBUG("(data read from sdp)uncompressed size: %d  (data read from net)compressed size: %d", (*sdp->list_it)->size, (*sdp->list_it)->compsize);
-					assert((*sdp->list_it)->size+1000 >= (*sdp->list_it)->compsize);
+					assert((*sdp->list_it)->size+2000 >= (*sdp->list_it)->compsize);
 				}
 			}
 			if (sdp->skipped==LENGTH_SIZE) {
