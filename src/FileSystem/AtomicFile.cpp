@@ -36,13 +36,13 @@ bool AtomicFile::Open(const std::string& filename)
 int AtomicFile::Write(const char *buf, int size)
 {
 	int res = fwrite(buf, size, 1, handle);
-	LOG_DEBUG("writing %d %d\n", size, res);
+	LOG_DEBUG("writing %d %d", size, res);
 	return res*size;
 }
 
 void AtomicFile::Close()
 {
-	LOG_DEBUG("closing %s\n", filename.c_str() );
+	LOG_DEBUG("closing %s", filename.c_str() );
 #ifndef WIN32
 	fsync(fileno(handle));
 #endif
