@@ -33,7 +33,7 @@ extern "C" {
 
 #ifndef NDEBUG
 #define LOG_DEBUG(fmt, ...) \
-	L_LOG(L_DEBUG, "%s:%d:%s(): " fmt "\n", __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__);
+	L_LOG(L_DEBUG, "%s:%d:%s(): " fmt, __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__);
 #else
 #define	LOG_DEBUG(fmt, ...)
 #endif
