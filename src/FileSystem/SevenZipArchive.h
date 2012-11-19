@@ -64,6 +64,8 @@ private:
 		int mode;
 	};
 	int GetFileName(const CSzArEx* db, int i);
+	const char* GetErrorStr(int res);
+
 	std::vector<FileData> fileData;
 	UInt16 *tempBuf;
 	int tempBufSize;

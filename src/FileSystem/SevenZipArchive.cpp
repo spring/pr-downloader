@@ -31,19 +31,36 @@ int CSevenZipArchive::GetFileName(const CSzArEx* db, int i)
 	return SzArEx_GetFileNameUtf16(db, i, tempBuf);
 }
 
+const char* CSevenZipArchive::GetErrorStr(int res)
+{
+	switch (res) {
+	case SZ_ERROR_FAIL:
+		return "Extracting failed";
+	case SZ_ERROR_CRC:
+		return "CRC error (archive corrupted?)";
+	case SZ_ERROR_INPUT_EOF:
+		return "Unexpected end of file (truncated?)";
+	case SZ_ERROR_MEM:
+		return "Out of memory";
+	case SZ_ERROR_UNSUPPORTED:
+		return "Unsupported archive";
+	case SZ_ERROR_NO_ARCHIVE:
+		return "Archive not found";
+	}
+	return "Unknown error";
+}
+
 
 CSevenZipArchive::CSevenZipArchive(const std::string& name):
 	IArchive(name),
+	blockIndex(0xFFFFFFFF),
+	outBuffer(NULL),
+	outBufferSize(0),
 	tempBuf(NULL),
 	tempBufSize(0)
 {
-	blockIndex = 0xFFFFFFFF;
-	outBuffer = NULL;
-	outBufferSize = 0;
-
 	allocImp.Alloc = SzAlloc;
 	allocImp.Free = SzFree;
-
 	allocTempImp.Alloc = SzAllocTemp;
 	allocTempImp.Free = SzFreeTemp;
 
@@ -68,31 +85,7 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name):
 		isOpen = true;
 	} else {
 		isOpen = false;
-		std::string error;
-		switch (res) {
-		case SZ_ERROR_FAIL:
-			error = "Extracting failed";
-			break;
-		case SZ_ERROR_CRC:
-			error = "CRC error (archive corrupted?)";
-			break;
-		case SZ_ERROR_INPUT_EOF:
-			error = "Unexpected end of file (truncated?)";
-			break;
-		case SZ_ERROR_MEM:
-			error = "Out of memory";
-			break;
-		case SZ_ERROR_UNSUPPORTED:
-			error = "Unsupported archive";
-			break;
-		case SZ_ERROR_NO_ARCHIVE:
-			error = "Archive not found";
-			break;
-		default:
-			error = "Unknown error";
-			break;
-		}
-		LOG_ERROR("Error opening %s: %s", name.c_str(), error.c_str());
+		LOG_ERROR("Error opening %s: %s", name.c_str(), GetErrorStr(res));
 		return;
 	}
 
@@ -107,8 +100,9 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name):
 	for (unsigned int i = 0; i < db.db.NumFiles; ++i) {
 		CSzFileItem* f = db.db.Files + i;
 		if (!f->IsDir) {
-			if (GetFileName(&db, i)!=0) {
-				LOG_ERROR("Error reading filename in Archive");
+			int res = GetFileName(&db, i);
+			if (res!=SZ_OK) {
+				LOG_ERROR("Error getting filename in Archive: %s", GetErrorStr(res));
 			}
 
 			FileData fd;
