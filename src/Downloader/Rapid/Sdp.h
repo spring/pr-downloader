@@ -86,7 +86,7 @@ private:
 	T 192.168.1.2:33202 -> 94.23.170.70:80 [AP]
 	......zL..c`..`d.....K.n/....
 	*/
-	bool downloadStream(std::string url,std::list<FileData*> files);
+	bool downloadStream(const std::string& url,std::list<FileData*> files);
 	std::string name;
 	std::string md5;
 	std::string shortname;

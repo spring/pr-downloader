@@ -244,7 +244,7 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	return 0;
 }
 
-bool CSdp::downloadStream(std::string url,std::list<FileData*> files)
+bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 {
 	CURL* curl;
 	curl = curl_easy_init();
