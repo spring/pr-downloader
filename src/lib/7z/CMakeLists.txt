@@ -1,19 +1,20 @@
 add_library(pr-7z
+	7zAlloc.c
+	7zBuf.c
 	7zBuf2.c
 	7zCrc.c
+	7zCrcOpt.c
+	7zDec.c
+	7zIn.c
+	CpuArch.c
 	LzmaDec.c
-	Bra86.c
-	7zBuf.c
+	Lzma2Dec.c
 	Bra.c
+	Bra86.c
+	Bcj2.c
+	Ppmd7.c
+	Ppmd7Dec.c
 	7zFile.c
 	7zStream.c
-	Bcj2.c
-	Archive/7z/7zIn.c
-	Archive/7z/7zExtract.c
-	Archive/7z/7zDecode.c
-	Archive/7z/7zAlloc.c
-	Archive/7z/7zHeader.c
-	Archive/7z/7zItem.c
 )
-
 

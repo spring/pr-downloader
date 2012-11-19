@@ -8,16 +8,34 @@
 
 extern "C" {
 #include "lib/7z/Types.h"
-#include "lib/7z/Archive/7z/7zAlloc.h"
-#include "lib/7z/Archive/7z/7zExtract.h"
+#include "lib/7z/7zAlloc.h"
 #include "lib/7z/7zCrc.h"
 }
 
 #include "Logger.h"
 
 
-CSevenZipArchive::CSevenZipArchive(const std::string& name)
-	: IArchive(name)
+
+int CSevenZipArchive::GetFileName(const CSzArEx* db, int i)
+{
+	int len = SzArEx_GetFileNameUtf16(db, i, NULL);
+
+	if (len > tempBufSize) {
+		SzFree(NULL, tempBuf);
+		tempBufSize = len;
+		tempBuf = (UInt16 *)SzAlloc(NULL, tempBufSize * sizeof(UInt16));
+		if (tempBuf == 0) {
+			return SZ_ERROR_MEM;
+		}
+	}
+	return SzArEx_GetFileNameUtf16(db, i, tempBuf);
+}
+
+
+CSevenZipArchive::CSevenZipArchive(const std::string& name):
+	IArchive(name),
+	tempBuf(NULL),
+	tempBufSize(0)
 {
 	blockIndex = 0xFFFFFFFF;
 	outBuffer = NULL;
@@ -89,13 +107,16 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name)
 	for (unsigned int i = 0; i < db.db.NumFiles; ++i) {
 		CSzFileItem* f = db.db.Files + i;
 		if (!f->IsDir) {
-			std::string fileName = f->Name;
+			if (GetFileName(&db, i)!=0) {
+				LOG_ERROR("Error reading filename in Archive");
+			}
 
 			FileData fd;
-			fd.origName = fileName;
+			fd.origName = *tempBuf;
 			fd.fp = i;
 			fd.size = f->Size;
-			fd.crc = (f->Size > 0) ? f->FileCRC : 0;
+			fd.crc = (f->Size > 0) ? f->Crc: 0;
+			fd.mode = f->Attrib;
 			const UInt32 folderIndex = db.FileIndexToFolderIndexMap[i];
 			if (folderIndex == ((UInt32)-1)) {
 				// file has no folder assigned
@@ -140,7 +161,7 @@ bool CSevenZipArchive::GetFile(unsigned int fid, std::vector<unsigned char>& buf
 	size_t outSizeProcessed;
 	SRes res;
 
-	res = SzAr_Extract(&db, &lookStream.s, fileData[fid].fp, &blockIndex, &outBuffer, &outBufferSize, &offset, &outSizeProcessed, &allocImp, &allocTempImp);
+	res = SzArEx_Extract(&db, &lookStream.s, fileData[fid].fp, &blockIndex, &outBuffer, &outBufferSize, &offset, &outSizeProcessed, &allocImp, &allocTempImp);
 	if (res == SZ_OK) {
 		buffer.resize(outSizeProcessed);
 		memcpy(&buffer[0], (char*)outBuffer+offset, outSizeProcessed);

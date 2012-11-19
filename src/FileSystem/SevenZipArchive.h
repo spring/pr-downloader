@@ -5,7 +5,7 @@
 
 extern "C" {
 #include "lib/7z/7zFile.h"
-#include "lib/7z/Archive/7z/7zIn.h"
+#include "lib/7z/7z.h"
 };
 
 #include <vector>
@@ -58,8 +58,15 @@ private:
 		 * @see #unpackedSize
 		 */
 		int packedSize;
+		/**
+		 * file mode
+		 */
+		int mode;
 	};
+	int GetFileName(const CSzArEx* db, int i);
 	std::vector<FileData> fileData;
+	UInt16 *tempBuf;
+	int tempBufSize;
 
 	CFileInStream archiveStream;
 	CSzArEx db;

@@ -18,6 +18,7 @@ public:
 	unsigned int size;
 	unsigned int compsize; //compressed size
 	bool download;
+	int mode; //chmod
 };
 
 #endif
