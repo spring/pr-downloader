@@ -82,6 +82,8 @@ public:
 	 *	returns number of bytes downloaded
 	 */
 	unsigned int getProgress() const;
+	std::string version;
+
 private:
 	std::vector <Mirror*> mirrors;
 

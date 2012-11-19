@@ -68,7 +68,7 @@ private:
 
 	std::vector<FileData> fileData;
 	UInt16 *tempBuf;
-	int tempBufSize;
+	size_t tempBufSize;
 
 	CFileInStream archiveStream;
 	CSzArEx db;

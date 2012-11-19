@@ -46,7 +46,7 @@ bool download_engine(std::list<IDownload*>& dllist)
 	bool res = true;
 	std::list<IDownload*>::iterator it;
 	for (it = dllist.begin(); it!=dllist.end(); ++it) {
-		const std::string output = fileSystem->getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + (*it)->name ;
+		const std::string output = fileSystem->getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + fileSystem->EscapePath((*it)->version);
 		if (!fileSystem->extract((*it)->name, output))
 			res = false;
 	}

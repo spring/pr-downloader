@@ -427,14 +427,15 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 			return false;
 		}
 #ifdef WIN32
-		for(unsigned int i=0; i<name.length(); i++) {
+		for(unsigned int i=0; i<name.length(); i++) { //replace / with \ on win32
 			if (name[i] == '/')
 				name[i]=PATH_DELIMITER;
 		}
 #endif
-		const std::string tmp = dstdir + PATH_DELIMITER + name;
+		std::string tmp = dstdir + PATH_DELIMITER;
+		tmp += name.c_str(); //FIXME: concating UTF-16
 		createSubdirs(tmp);
-		LOG_INFO("extracting: %s", tmp.c_str());
+		LOG_INFO("extracting (%s)", tmp.c_str());
 		FILE* f=fopen(tmp.c_str(), "wb+");
 		if (f == NULL) {
 			LOG_ERROR("Error creating %s", tmp.c_str());
@@ -462,4 +463,17 @@ bool CFileSystem::Rename(const std::string& source, const std::string& destinati
 {
 	int res = rename(source.c_str(), destination.c_str());
 	return (res==0);
+}
+
+
+std::string CFileSystem::EscapePath(const std::string& path)
+{
+	std::string tmp;
+	for (unsigned int i=0; i<path.size(); i++) {
+		if ( (path[i] != '/')
+		     && (path[i] != '\\')
+		     && (path[i] != '.'))
+			tmp += path[i];
+	}
+	return tmp;
 }

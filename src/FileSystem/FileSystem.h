@@ -98,6 +98,9 @@ public:
 	*/
 	bool Rename(const std::string& source, const std::string& destination);
 
+
+	std::string EscapePath(const std::string& path);
+
 private:
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;

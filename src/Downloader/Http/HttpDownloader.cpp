@@ -132,6 +132,10 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 			fileSystem->parseTorrent(mem, tmp.size(), dl);
 			free(mem);
 		}
+		if (resfile["version"].getType()==XmlRpc::XmlRpcValue::TypeString) {
+			const std::string& tmp = resfile["version"];
+			dl->version = tmp;
+		}
 		if (resfile["md5"].getType()==XmlRpc::XmlRpcValue::TypeString) {
 			dl->hash=new HashMD5();
 			dl->hash->Set(resfile["md5"]);
