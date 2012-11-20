@@ -419,8 +419,8 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 	for (unsigned int i=0; i<num; i++) {
 		std::vector<unsigned char> buf;
 		std::string name;
-		int size;
-		archive->FileInfo(i,name, size);
+		int size, mode;
+		archive->FileInfo(i,name, size, mode);
 		if (!archive->GetFile(i, buf)) {
 			LOG_ERROR("Error extracting %s from %s", name.c_str(), filename.c_str());
 			delete archive;
@@ -445,7 +445,7 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 		fwrite(&buf[0], buf.size(), 1,f);
 		const int err=ferror(f);
 #ifndef WIN32
-		fchmod(fileno(f), S_IXUSR|S_IWUSR|S_IRUSR|S_IXGRP|S_IRGRP|S_IXOTH|S_IROTH); //FIXME: use attributes from 7z archive
+		fchmod(fileno(f), mode);
 #endif
 		if (err) {
 			fclose(f);

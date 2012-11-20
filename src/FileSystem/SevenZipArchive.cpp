@@ -162,8 +162,12 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name):
 			fd.fp = i;
 			fd.size = f->Size;
 			fd.crc = (f->Size > 0) ? f->Crc: 0;
-			fd.mode = f->Attrib;
-
+			if (f->AttribDefined) { //FIXME: this is incomplete
+				if (f->Attrib & 1 << 16)
+					fd.mode = 755;
+				else
+					fd.mode = 644;
+			}
 			const UInt32 folderIndex = db.FileIndexToFolderIndexMap[i];
 			if (folderIndex == ((UInt32)-1)) {
 				// file has no folder assigned
@@ -221,10 +225,11 @@ bool CSevenZipArchive::GetFile(unsigned int fid, std::vector<unsigned char>& buf
 	}
 }
 
-void CSevenZipArchive::FileInfo(unsigned int fid, std::string& name, int& size) const
+void CSevenZipArchive::FileInfo(unsigned int fid, std::string& name, int& size, int& mode) const
 {
 	name = fileData[fid].origName;
 	size = fileData[fid].size;
+	mode = fileData[fid].mode;
 }
 
 unsigned int CSevenZipArchive::GetCrc32(unsigned int fid)

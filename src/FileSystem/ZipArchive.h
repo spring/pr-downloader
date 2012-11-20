@@ -30,7 +30,7 @@ public:
 	virtual bool IsOpen();
 
 	virtual unsigned int NumFiles() const;
-	virtual void FileInfo(unsigned int fid, std::string& name, int& size) const;
+	virtual void FileInfo(unsigned int fid, std::string& name, int& size, int& mode) const;
 	virtual unsigned int GetCrc32(unsigned int fid);
 	bool GetFile(unsigned int fid, std::vector<unsigned char>& buffer);
 protected:
@@ -41,6 +41,7 @@ protected:
 		int size;
 		std::string origName;
 		unsigned int crc;
+		int mode;
 	};
 	std::vector<FileData> fileData;
 

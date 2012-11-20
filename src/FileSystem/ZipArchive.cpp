@@ -45,6 +45,7 @@ CZipArchive::CZipArchive(const std::string& archiveName)
 		fd.size = info.uncompressed_size;
 		fd.origName = fName;
 		fd.crc = info.crc;
+		fd.mode = 755; //FIXME: use info from zip file
 		fileData.push_back(fd);
 //		lcNameIndex[fLowerName] = fileData.size() - 1;
 	}
@@ -67,12 +68,13 @@ unsigned int CZipArchive::NumFiles() const
 	return fileData.size();
 }
 
-void CZipArchive::FileInfo(unsigned int fid, std::string& name, int& size) const
+void CZipArchive::FileInfo(unsigned int fid, std::string& name, int& size, int& mode) const
 {
 //	assert(IsFileId(fid));
 
 	name = fileData[fid].origName;
 	size = fileData[fid].size;
+	mode = fileData[fid].mode;
 }
 
 unsigned int CZipArchive::GetCrc32(unsigned int fid)

@@ -23,7 +23,7 @@ public:
 
 	virtual unsigned int NumFiles() const;
 	virtual bool GetFile(unsigned int fid, std::vector<unsigned char>& buffer);
-	virtual void FileInfo(unsigned int fid, std::string& name, int& size) const;
+	virtual void FileInfo(unsigned int fid, std::string& name, int& size, int& mode) const;
 	virtual unsigned GetCrc32(unsigned int fid);
 
 private:

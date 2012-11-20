@@ -74,7 +74,7 @@ public:
 	/**
 	 * Fetches the name and size in bytes of a file by its ID.
 	 */
-	virtual void FileInfo(unsigned int fid, std::string& name, int& size) const = 0;
+	virtual void FileInfo(unsigned int fid, std::string& name, int& size, int& mode) const = 0;
 	/**
 	 * Returns true if the cost of reading the file is qualitatively relative
 	 * to its file-size.
