@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 IDownload::IDownload(const std::string& name, category cat):
-	cat(IDownload::CAT_NONE),
+	cat(cat),
 	name(name),
 	downloaded(false),
 	piecesize(0),
