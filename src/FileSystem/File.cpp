@@ -28,12 +28,14 @@ CFile::~CFile()
 }
 void CFile::Close()
 {
-	if (handle!=0)
+	if (handle!=0) {
 		fclose(handle);
-	handle=0;
-	if (IsNewFile()) {
-		unlink(filename.c_str()); //delete possible existing destination file
-		rename(tmpfile.c_str(), filename.c_str());
+		if (IsNewFile()) {
+			unlink(filename.c_str()); //delete possible existing destination file
+			rename(tmpfile.c_str(), filename.c_str());
+			isnewfile = false;
+		}
+		handle=0;
 	}
 }
 
