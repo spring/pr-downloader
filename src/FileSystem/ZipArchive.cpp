@@ -109,7 +109,7 @@ bool CZipArchive::GetFile(unsigned int fid, std::vector<unsigned char>& buffer)
 	buffer.resize(fi.uncompressed_size);
 
 	bool ret = true;
-	if (!buffer.empty() && unzReadCurrentFile(zip, &buffer[0], fi.uncompressed_size) != fi.uncompressed_size) {
+	if (!buffer.empty() && unzReadCurrentFile(zip, &buffer[0], fi.uncompressed_size) != (int)fi.uncompressed_size) {
 		ret = false;
 	}
 
