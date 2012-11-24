@@ -442,12 +442,15 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 			delete archive;
 			return false;
 		}
-		fwrite(&buf[0], buf.size(), 1,f);
-		const int err=ferror(f);
+		int res=1;
+		if (buf.size()>0)
+			res = fwrite(&buf[0], buf.size(), 1,f);
 #ifndef WIN32
 		fchmod(fileno(f), mode);
 #endif
-		if (err) {
+		if (res<=0) {
+			const int err=ferror(f);
+			LOG_ERROR("fwrite(%s): %d %s",name.c_str(), err, strerror(err));
 			fclose(f);
 			delete archive;
 			return false;
