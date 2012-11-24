@@ -172,9 +172,7 @@ int main(int argc, char **argv)
 			show_version();
 			break;
 		case DOWNLOAD_ENGINE: {
-			char buf[1024];
-			snprintf(buf, sizeof(buf), "spring %s", optarg);
-			if (!download(CAT_ENGINE, buf)) {
+			if (!download(CAT_ENGINE, optarg)) {
 				LOG_ERROR("No engine version found for %s",optarg);
 				res=false;
 			}
