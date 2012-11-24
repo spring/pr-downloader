@@ -164,9 +164,9 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name):
 			fd.crc = (f->Size > 0) ? f->Crc: 0;
 			if (f->AttribDefined) { //FIXME: this is incomplete
 				if (f->Attrib & 1 << 16)
-					fd.mode = 755;
+					fd.mode = 0755;
 				else
-					fd.mode = 644;
+					fd.mode = 0644;
 			}
 			const UInt32 folderIndex = db.FileIndexToFolderIndexMap[i];
 			if (folderIndex == ((UInt32)-1)) {

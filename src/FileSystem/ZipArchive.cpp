@@ -45,9 +45,9 @@ CZipArchive::CZipArchive(const std::string& archiveName)
 		fd.size = info.uncompressed_size;
 		fd.origName = fName;
 		fd.crc = info.crc;
-		fd.mode = 755;
+		fd.mode = 0755;
 		if (info.external_fa>0)
-			fd.mode = info.external_fa & 755;
+			fd.mode = info.external_fa & 0755;
 		fileData.push_back(fd);
 //		lcNameIndex[fLowerName] = fileData.size() - 1;
 	}
