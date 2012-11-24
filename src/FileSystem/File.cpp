@@ -31,6 +31,10 @@ void CFile::Close()
 	if (handle!=0)
 		fclose(handle);
 	handle=0;
+	if (IsNewFile()) {
+		unlink(filename.c_str()); //delete possible existing destination file
+		rename(tmpfile.c_str(), filename.c_str());
+	}
 }
 
 bool CFile::Open(const std::string& filename, long size, int piecesize)
@@ -48,7 +52,8 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	int res=stat(filename.c_str(), &sb);
 	isnewfile=res!=0;
 	if (isnewfile) { //if file is new, create it, if not, open the existing one without truncating it
-		handle=fopen(filename.c_str(), "wb+");
+		tmpfile = filename + ".tmp";
+		handle=fopen(tmpfile.c_str(), "wb+");
 	} else {
 		handle=fopen(filename.c_str(), "rb+");
 	}

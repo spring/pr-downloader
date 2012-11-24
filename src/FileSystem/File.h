@@ -90,6 +90,7 @@ private:
 	*/
 	long GetSizeFromHandle() const;
 	std::string filename;
+	std::string tmpfile;
 	FILE* handle; //file handle
 	int piecesize; //size of a piece
 	long size; //file size

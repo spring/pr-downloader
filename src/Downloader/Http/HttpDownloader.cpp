@@ -446,6 +446,11 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 	for (unsigned i=0; i<downloads.size(); i++) {
 		delete downloads[i];
 	}
+	//close all open files
+	for(it=download.begin(); it!=download.end(); ++it) {
+		if ((*it)->file!=NULL)
+			(*it)->file->Close();
+	}
 	downloads.clear();
 	curl_multi_cleanup(curlm);
 	/* FIXME
