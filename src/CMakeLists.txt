@@ -46,6 +46,10 @@ set(PRDOWNLOADER_LIBS
 
 target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
 target_link_libraries( ${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} )
+
+# hack arround "make install" doesn't generate libpr-downloader_shared.so
+add_dependencies(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_SHARED})
+
 if (BUILD_STATIC)
 	target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
 else  ()
