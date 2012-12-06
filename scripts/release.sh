@@ -5,7 +5,7 @@ if [ ! -d src ]; then
 	echo please run from the root source dir
 	exit 1
 fi
-make -j8 install
+ninja install
 cd dist
 FILES=`ls *.dll *.exe *.a`
 for i in $FILES; do
