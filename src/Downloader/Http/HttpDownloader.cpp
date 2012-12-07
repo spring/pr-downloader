@@ -111,30 +111,18 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 		for(int j=0; j<mirrors.size(); j++) {
 			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString) {
 				LOG_ERROR("Invalid type in result");
-				return false;
+			} else {
+				dl->addMirror(mirrors[j]);
 			}
-
-			dl->addMirror(mirrors[j]);
 		}
 
-		//torrent data avaiable
-		if (resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeString) { //FIXME: this is a bug in the xml-rpc interface, it should return <base64> but returns <string>
-			std::string base64=resfile["torrent"];
-			std::string binary;
-			base64_decode(base64, binary);
-			fileSystem->parseTorrent(binary.c_str(),binary.size(), dl);
-		} else if(resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeBase64) {
-			std::vector<char> tmp= resfile["torrent"]; //FIXME: this is stupid code and can surely be done easier (convert to char*)
-			char* mem=(char*)malloc(tmp.size());
-			for(unsigned i=0; i<tmp.size(); i++) {
-				mem[i]=tmp[i];
-			}
-			fileSystem->parseTorrent(mem, tmp.size(), dl);
-			free(mem);
+		if(resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeBase64) {
+			const std::vector<char> torrent = resfile["torrent"];
+			fileSystem->parseTorrent(&torrent[0], torrent.size(), dl);
 		}
 		if (resfile["version"].getType()==XmlRpc::XmlRpcValue::TypeString) {
-			const std::string& tmp = resfile["version"];
-			dl->version = tmp;
+			const std::string& version = resfile["version"];
+			dl->version = version;
 		}
 		if (resfile["md5"].getType()==XmlRpc::XmlRpcValue::TypeString) {
 			dl->hash=new HashMD5();
