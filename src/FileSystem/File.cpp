@@ -41,6 +41,7 @@ void CFile::Close()
 
 bool CFile::Open(const std::string& filename, long size, int piecesize)
 {
+	LOG_DEBUG("%s %d %d", filename.c_str(), size, piecesize);
 	this->filename=filename;
 	this->size=size;
 	fileSystem->createSubdirs(filename);
@@ -134,6 +135,7 @@ void CFile::SetPos(long pos, int piece)
 {
 //	LOG("SetPos() pos %d piece%d", pos, piece);
 	if (piece>=0) {
+		LOG_DEBUG("pos: %d piecesize: %d", pos, piecesize);
 		assert(pieces[piece].pos<=size+pos);
 		assert(pos<=piecesize);
 		pieces[piece].pos =pos;

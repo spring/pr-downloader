@@ -377,6 +377,7 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 				dl->size=datanode->val.i;
 			} else if (!strcmp("piece length",infonode->val.d[i].key)) { //length of a piece
 				dl->piecesize=datanode->val.i;
+				LOG_DEBUG("dl->piecesize: %d", dl->piecesize);
 			}
 			break;
 		default:
