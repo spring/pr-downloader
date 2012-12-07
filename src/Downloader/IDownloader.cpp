@@ -8,6 +8,7 @@
 #include "Util.h"
 #include "Logger.h"
 #include "Mirror.h"
+#include <curl/curl.h>
 
 class IDownloader;
 
@@ -18,6 +19,7 @@ IDownloader* IDownloader::widgetdl=NULL;
 
 void IDownloader::Initialize()
 {
+	curl_global_init(CURL_GLOBAL_ALL);
 }
 
 void IDownloader::Shutdown()
@@ -25,6 +27,7 @@ void IDownloader::Shutdown()
 	delete(httpdl);
 	delete(plasmadl);
 	delete(rapiddl);
+	curl_global_cleanup();
 }
 
 IDownloader* IDownloader::GetHttpInstance()

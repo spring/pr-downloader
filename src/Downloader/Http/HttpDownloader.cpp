@@ -32,12 +32,10 @@
 
 CHttpDownloader::CHttpDownloader()
 {
-	curl_global_init(CURL_GLOBAL_ALL);
 }
 
 CHttpDownloader::~CHttpDownloader()
 {
-	curl_global_cleanup();
 }
 
 bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
