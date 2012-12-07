@@ -176,11 +176,11 @@ bool DownloadSetConfig(CONFIG type, const void* value)
 	return false;
 }
 
-bool DownloadGetConfig(CONFIG type, const void* value)
+bool DownloadGetConfig(CONFIG type, const void** value)
 {
 	switch(type) {
 	case CONFIG_FILESYSTEM_WRITEPATH:
-		value = fileSystem->getSpringDir().c_str();
+		*value = fileSystem->getSpringDir().c_str();
 		return true;
 	}
 	return false;

@@ -73,7 +73,7 @@ extern bool DownloadSetConfig(CONFIG type, const void* value);
 /**
 * returns config value, NULL when failed
 */
-extern bool DownloadGetConfig(CONFIG type, const void* value);
+extern bool DownloadGetConfig(CONFIG type, const void** value);
 
 /**
 * validate rapid pool
