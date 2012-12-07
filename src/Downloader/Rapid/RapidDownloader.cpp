@@ -170,7 +170,8 @@ bool CRapidDownloader::parse()
 	int i=0;
 	while (gzgets(fp, buf, sizeof(buf))!=Z_NULL) {
 		std::string tmp=buf;
-		std::string url=getStrByIdx(tmp,',',1);
+		std::string url;
+		getStrByIdx(tmp,url, ',',1);
 		i++;
 		if (url.size()>0) { //create new repo from url
 			CRepo repotmp=CRepo(url, this);

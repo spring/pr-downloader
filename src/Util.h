@@ -29,7 +29,7 @@ std::string getUrl(const FileData* info, const std::string& path);
 	str is for example "aaa,bbb,ccc"
 	getStrByIdx(str,',',2) returns bbb
 */
-std::string getStrByIdx(std::string& str, char c, int idx);
+void getStrByIdx(const std::string& str, std::string& res, char c, int idx);
 
 void gzip_str(const char* in, const int inlen,  char* out, int *outlen);
 

@@ -10,17 +10,16 @@
 #include <time.h>
 
 
-std::string getStrByIdx(std::string& str, char c, int idx)
+void getStrByIdx(const std::string& str, std::string& res, char c, int idx)
 {
 	unsigned int i=0;
-	std::string tmp;
 	if (idx==0) {
 		for (i=0; i<str.size(); i++) {
 			if (str[i]==c)
 				break;
 		}
-		tmp.assign(str.substr(0,i));
-		return tmp;
+		res.assign(str.substr(0,i));
+		return;
 	}
 	int start=0;
 	int end=0;
@@ -38,8 +37,7 @@ std::string getStrByIdx(std::string& str, char c, int idx)
 			}
 		}
 	}
-	tmp.assign(str.substr(start,end-start));
-	return tmp;
+	res.assign(str.substr(start,end-start));
 }
 
 void gzip_str(const char* in, const int inlen,  char* out, int *outlen)

@@ -58,10 +58,14 @@ bool CRepo::parse()
 		}
 
 		std::string tmp=buf;
-		std::string shortname=getStrByIdx(tmp,',',0);
-		std::string md5=getStrByIdx(tmp,',',1);
-		std::string depends=getStrByIdx(tmp,',',2);
-		std::string name=getStrByIdx(tmp,',',3);
+		std::string shortname;
+		getStrByIdx(tmp,shortname, ',',0);
+		std::string md5;
+		getStrByIdx(tmp, md5, ',',1);
+		std::string depends;
+		getStrByIdx(tmp,depends, ',',2);
+		std::string name;
+		getStrByIdx(tmp,name, ',',3);
 		if (shortname.size()>0) { //create new repo from url
 			CSdp sdptmp=CSdp(shortname, md5, name, depends, repourl);
 			rapid->addRemoteDsp(sdptmp);
