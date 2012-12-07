@@ -31,6 +31,9 @@ std::string getUrl(const FileData* info, const std::string& path);
 */
 void getStrByIdx(const std::string& str, std::string& res, char c, int idx);
 
+/**
+* decompresses in to out
+*/
 void gzip_str(const char* in, const int inlen,  char* out, int *outlen);
 
 /**
