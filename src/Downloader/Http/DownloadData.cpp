@@ -10,6 +10,7 @@ DownloadData::DownloadData()
 	mirror=NULL;
 	download=NULL;
 	easy_handle=curl_easy_init();
+	headersok = false;
 }
 
 DownloadData::~DownloadData()

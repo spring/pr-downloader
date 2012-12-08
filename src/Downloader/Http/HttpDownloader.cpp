@@ -144,7 +144,34 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 
 size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data)
 {
+	//LOG_DEBUG("%d %d",size,  nmemb);
+	if (!data->headersok) {
+		LOG_ERROR("Server returned invalid / to few headers!");
+		return -1;
+	}
 	return data->download->file->Write((const char*)ptr, size*nmemb, data->piece);
+}
+
+size_t multiHeader(void *ptr, size_t size, size_t nmemb, DownloadData *data)
+{
+	if(data->download->pieces.empty()) { //no chunked transfer, don't check headers
+		LOG_DEBUG("Unchunked transfer!");
+		data->headersok = true;
+		return size*nmemb;
+	}
+	const std::string buf((char*)ptr, size*nmemb-1);
+	int start, end, total;
+	int count = sscanf(buf.c_str(), "Content-Range: bytes %d-%d/%d", &start, &end, &total);
+	if(count == 3) {
+		int piecesize = data->download->file->GetPieceSize(data->piece);
+		if (end-start+1!=piecesize) {
+			LOG_DEBUG("piecesize %d doesn't match server size: %d", piecesize, end-start+1);
+			return -1;
+		}
+		data->headersok = true;
+	}
+	LOG_DEBUG("%s", buf.c_str());
+	return size*nmemb;
 }
 
 bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize)
@@ -152,7 +179,7 @@ bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize)
 	std::ostringstream s;
 	s << (int)(piecesize*piece) <<"-"<< (piecesize*piece) + piecesize-1;
 	range=s.str();
-//	LOG("getRange: %s", range.c_str());
+	LOG_DEBUG("%s", range.c_str());
 	return true;
 }
 
@@ -224,6 +251,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 		curl_easy_reset(piece->easy_handle);
 	}
 	curl_easy_setopt(piece->easy_handle, CURLOPT_CONNECTTIMEOUT, 10);
+	curl_easy_setopt(piece->easy_handle, CURLOPT_TIMEOUT, 30);
 	CURL* curle= piece->easy_handle;
 	piece->mirror=piece->download->getFastestMirror();
 	if (piece->mirror==NULL) {
@@ -249,7 +277,12 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 		}
 		//set range for request, format is <start>-<end>
 		curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
+		//parse server response	header as well
+		curl_easy_setopt(curle, CURLOPT_HEADERFUNCTION, multiHeader);
+		curl_easy_setopt(curle, CURLOPT_WRITEHEADER, piece);
 		piece->download->pieces[pieceNum].state=IDownload::STATE_DOWNLOADING;
+	} else {
+		piece->headersok = true;
 	}
 	return true;
 }

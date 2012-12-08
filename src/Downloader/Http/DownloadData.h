@@ -18,6 +18,7 @@ public:
 	CURL* easy_handle; //curl_easy_handle
 	Mirror* mirror; //mirror used
 	IDownload *download;
+	bool headersok; //true if headers received from server are fine
 };
 
 #endif

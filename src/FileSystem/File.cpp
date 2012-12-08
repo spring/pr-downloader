@@ -135,7 +135,7 @@ void CFile::SetPos(long pos, int piece)
 {
 //	LOG("SetPos() pos %d piece%d", pos, piece);
 	if (piece>=0) {
-		LOG_DEBUG("pos: %d piecesize: %d", pos, piecesize);
+		//LOG_DEBUG("pos: %d piecesize: %d", pos, piecesize);
 		assert(pieces[piece].pos<=size+pos);
 		assert(pos<=piecesize);
 		pieces[piece].pos =pos;
