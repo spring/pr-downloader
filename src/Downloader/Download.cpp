@@ -54,7 +54,7 @@ const std::string IDownload::getUrl()
 	return empty;
 }
 
-Mirror* IDownload::getMirror(unsigned i)
+Mirror* IDownload::getMirror(unsigned i) const
 {
 	assert(i<mirrors.size());
 	return mirrors[i];
@@ -84,7 +84,7 @@ Mirror* IDownload::getFastestMirror()
 	return mirrors[pos];
 }
 
-int IDownload::getMirrorCount()
+int IDownload::getMirrorCount() const
 {
 	return mirrors.size();
 }

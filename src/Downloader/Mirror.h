@@ -16,9 +16,8 @@ public:
 		STATUS_BROKEN,
 		STATUS_OK,
 		STATUS_UNKNOWN
-	};
+	} status;
 	std::string url;
-	MIRROR_STATUS status;
 	int maxspeed;
 };
 

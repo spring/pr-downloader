@@ -300,7 +300,7 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 	}
 	time_t t;
 #ifdef WIN32
-	LARGE_INTEGER date;
+	LARGE_INTEGER date, adjust;
 
 	SYSTEMTIME pTime;
 	FILETIME pFTime;
@@ -309,7 +309,10 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 
 	date.HighPart = pFTime.dwHighDateTime;
 	date.LowPart = pFTime.dwLowDateTime;
-	t =  (date.QuadPart / 10000000) - 11644473600LL;
+
+	adjust.QuadPart = 11644473600000 * 10000;
+	date.QuadPart -= adjust.QuadPart;
+	t =  (date.QuadPart / 10000000);
 #else
 	time(&t);
 #endif

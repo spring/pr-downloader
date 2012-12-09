@@ -50,9 +50,9 @@ public:
 	 *	returns first url
 	 */
 	const std::string getUrl();
-	Mirror* getMirror(unsigned i);
+	Mirror* getMirror(unsigned i) const;
 	Mirror* getFastestMirror();
-	int getMirrorCount();
+	int getMirrorCount() const;
 	/**
 	*	size of pieces, last piece size can be different
 	*/
