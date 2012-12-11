@@ -31,11 +31,10 @@ set(PRDOWNLOADER_LIBS
 )
 
 
-set(OPTION_SHAREDLIB
-	TRUE CACHE BOOL
-	"Enables compilation of the shared lib")
+OPTION(SHAREDLIB
+	"Enables compilation of the shared lib" ON)
 
-if (OPTION_SHAREDLIB)
+if (SHAREDLIB)
 	add_library(${PRDOWNLOADER_SHARED} SHARED
 		${PRDOWNLOADER_FILES}
 		pr-downloader.cpp
@@ -47,10 +46,9 @@ if (OPTION_SHAREDLIB)
 	target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
 endif()
 
-set(OPTION_STATICLIB
-	TRUE CACHE BOOL
-	"Enables compilation of the static lib")
-if (OPTION_STATICLIB)
+OPTION(STATICLIB
+	"Enables compilation of the static lib" ON)
+if (STATICLIB)
 	add_library(${PRDOWNLOADER_STATIC} STATIC
 		${PRDOWNLOADER_FILES}
 		pr-downloader.cpp
@@ -62,11 +60,10 @@ if (OPTION_STATICLIB)
 	target_link_libraries( ${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} )
 endif()
 
-SET( OPTION_CONSOLETOOL
-        TRUE CACHE BOOL
-        "Enables compilation and installation of the console tool ${PRDOWNLOADER}" )
+OPTION(CONSOLETOOL
+        "Enables compilation and installation of the console tool ${PRDOWNLOADER}" ON)
 
-if (OPTION_CONSOLETOOL)
+if (CONSOLETOOL)
 	add_executable(${PRDOWNLOADER}
 		main.cpp
 	)
@@ -82,8 +79,7 @@ if (OPTION_CONSOLETOOL)
 		RUNTIME DESTINATION ${BINDIR}
 		LIBRARY DESTINATION ${LIBDIR}
 		ARCHIVE DESTINATION ${LIBDIR} )
-	endif(OPTION_CONSOLETOOL)
-
+endif(CONSOLETOOL)
 
 FILE( GLOB_RECURSE header "*.h" )
 

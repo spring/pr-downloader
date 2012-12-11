@@ -23,7 +23,7 @@ else()
 	SET(PR_DOWNLOAD_VERSION "dev")
 endif()
 
-set(LINK_STATIC TRUE CACHE BOOLEAN "link pr-downloader.exe static or dynamic")
+OPTION(LINK_STATIC "link pr-downloader.exe static or dynamic" ON)
 
 MESSAGE(STATUS "Version ${PR_DOWNLOADER_VERSION}")
 if   (MINGW)
