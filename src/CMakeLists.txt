@@ -30,10 +30,27 @@ add_library(${PRDOWNLOADER_STATIC} STATIC
 	${PRDOWNLOADER_FILES}
 	pr-downloader.cpp
 )
+SET( OPTION_CONSOLETOOL
+        TRUE CACHE BOOL
+        "Enables compilation and installation of the console tool ${PRDOWNLOADER}" )
 
-add_executable(${PRDOWNLOADER}
-	main.cpp
-)
+if (OPTION_CONSOLETOOL)
+	add_executable(${PRDOWNLOADER}
+		main.cpp
+	)
+	# hack arround "make install" doesn't generate libpr-downloader_shared.so
+	add_dependencies(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_SHARED})
+
+	if (BUILD_STATIC)
+		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
+	else  ()
+		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
+	endif ()
+	INSTALL (TARGETS ${PRDOWNLOADER}
+		RUNTIME DESTINATION ${BINDIR}
+		LIBRARY DESTINATION ${LIBDIR}
+		ARCHIVE DESTINATION ${LIBDIR} )
+	endif(OPTION_CONSOLETOOL)
 
 set(PRDOWNLOADER_LIBS
 	${WIN32LIBS}
@@ -47,21 +64,15 @@ set(PRDOWNLOADER_LIBS
 target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
 target_link_libraries( ${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} )
 
-# hack arround "make install" doesn't generate libpr-downloader_shared.so
-add_dependencies(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_SHARED})
-
-if (BUILD_STATIC)
-	target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
-else  ()
-	target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
-endif ()
 
 FILE( GLOB_RECURSE header "*.h" )
 
-INSTALL (TARGETS ${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_STATIC}
+
+INSTALL (TARGETS ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_STATIC}
 	RUNTIME DESTINATION ${BINDIR}
 	LIBRARY DESTINATION ${LIBDIR}
 	ARCHIVE DESTINATION ${LIBDIR} )
+
 IF(NOT WIN32)
 	SET(VERSION ${PR_DOWNLOADER_VERSION})
 	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
