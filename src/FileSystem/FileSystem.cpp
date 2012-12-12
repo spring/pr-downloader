@@ -205,7 +205,7 @@ bool CFileSystem::createSubdirs (const std::string& path) const
 		}
 	}
 
-	if ((!directoryExists(tmp.c_str())) && (MKDIR(tmp.c_str()))!=0)
+	if ((!directoryExists(tmp)) && (MKDIR(tmp.c_str()))!=0)
 		return false;
 	return true;
 }
@@ -447,7 +447,7 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 			return false;
 		}
 		int res=1;
-		if (buf.size()>0)
+		if (!buf.empty())
 			res = fwrite(&buf[0], buf.size(), 1,f);
 #ifndef WIN32
 		fchmod(fileno(f), mode);

@@ -38,7 +38,7 @@ CSdp::~CSdp()
 	}
 }
 
-bool createPoolDirs(const std::string root)
+bool createPoolDirs(const std::string& root)
 {
 	char buf[1024];
 	const int pos = snprintf(buf, sizeof(buf), "%s", root.c_str());
