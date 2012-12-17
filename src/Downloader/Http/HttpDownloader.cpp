@@ -285,6 +285,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 		LOG_DEBUG("single piece transfer");
 		piece->headersok = true;
 
+		//this sets the header If-Modified-Since -> downloads only when remote file is newer than local file
 		const long timestamp = piece->download->file->GetTimestamp();
 		curl_easy_setopt(curle, CURLOPT_TIMECONDITION, CURL_TIMECOND_IFMODSINCE);
 		curl_easy_setopt(curle, CURLOPT_TIMEVALUE, timestamp );
