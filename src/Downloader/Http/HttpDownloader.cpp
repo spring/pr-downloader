@@ -281,8 +281,14 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 		curl_easy_setopt(curle, CURLOPT_HEADERFUNCTION, multiHeader);
 		curl_easy_setopt(curle, CURLOPT_WRITEHEADER, piece);
 		piece->download->pieces[pieceNum].state=IDownload::STATE_DOWNLOADING;
-	} else {
+	} else { //
+		LOG_DEBUG("single piece transfer");
 		piece->headersok = true;
+
+		const long timestamp = piece->download->file->GetTimestamp();
+		curl_easy_setopt(curle, CURLOPT_TIMECONDITION, CURL_TIMECOND_IFMODSINCE);
+		curl_easy_setopt(curle, CURLOPT_TIMEVALUE, timestamp );
+		curl_easy_setopt(curle, CURLOPT_FILETIME, 1);
 	}
 	return true;
 }
@@ -470,6 +476,14 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 		if ((*it)->file!=NULL)
 			(*it)->file->Close();
 	}
+	for (unsigned i=0; i<downloads.size(); i++) {
+		long timestamp;
+		if (curl_easy_getinfo(downloads[i]->easy_handle, CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
+			downloads[i]->download->file->SetTimestamp(timestamp);
+		}
+		delete downloads[i];
+	}
+
 	downloads.clear();
 	curl_multi_cleanup(curlm);
 	return !aborted;

@@ -70,6 +70,10 @@ public:
 	*/
 	long GetPiecePos(int piece=-1) const;
 	bool IsNewFile();
+
+	//FIXME: move to filesystem?!
+	long GetTimestamp();
+	bool SetTimestamp(long timestamp);
 private:
 	/**
 	* seek to the (relative) position in the piece
@@ -98,6 +102,7 @@ private:
 	std::vector <CFilePiece> pieces; //pieces of the file
 	std::map <std::string, IHash*> hashs; //checksums for the complete file
 	bool isnewfile;
+	long timestamp;
 };
 
 #endif

@@ -11,6 +11,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 CFile::CFile()
 {
@@ -53,12 +54,14 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	}
 	struct stat sb;
 	int res=stat(filename.c_str(), &sb);
+	timestamp = 0;
 	isnewfile=res!=0;
 	if (isnewfile) { //if file is new, create it, if not, open the existing one without truncating it
 		tmpfile = filename + ".tmp";
 		handle=fopen(tmpfile.c_str(), "wb+");
 	} else {
 		handle=fopen(filename.c_str(), "rb+");
+		timestamp = sb.st_mtime;
 	}
 	if (handle==0) {
 		LOG_ERROR("open(%s): %s",filename.c_str(), strerror(errno));
@@ -258,4 +261,20 @@ long CFile::GetSizeFromHandle() const
 bool CFile::IsNewFile()
 {
 	return isnewfile;
+}
+
+long CFile::GetTimestamp()
+{
+	return timestamp;
+}
+
+bool CFile::SetTimestamp(long timestamp)
+{
+	struct timeval tv = {0, 0};
+	tv.tv_sec = timestamp;
+	if (handle==NULL) {
+		return lutimes(filename.c_str(), &tv) == 0;
+	} else {
+		return futimes(fileno(handle), &tv) == 0;
+	}
 }
