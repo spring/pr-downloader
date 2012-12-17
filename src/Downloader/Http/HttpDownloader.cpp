@@ -469,9 +469,6 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 		LOG_INFO("download complete");
 	}
 
-	for (unsigned i=0; i<downloads.size(); i++) {
-		delete downloads[i];
-	}
 	//close all open files
 	for(it=download.begin(); it!=download.end(); ++it) {
 		if ((*it)->file!=NULL)
@@ -480,6 +477,8 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 	for (unsigned i=0; i<downloads.size(); i++) {
 		long timestamp;
 		if (curl_easy_getinfo(downloads[i]->easy_handle, CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
+			if (downloads[i]->download->state != IDownload::STATE_FINISHED) //decrease local timestamp if download failed to force redownload next time
+				timestamp--;
 			downloads[i]->download->file->SetTimestamp(timestamp);
 		}
 		delete downloads[i];

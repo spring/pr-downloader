@@ -77,6 +77,10 @@ public:
 	 *	file size
 	 */
 	int size;
+
+	/**
+	 *	state for whole file
+	 */
 	PIECE_STATE state;
 	/**
 	 *	returns number of bytes downloaded
