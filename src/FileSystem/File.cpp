@@ -13,6 +13,10 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 CFile::CFile()
 {
 	handle=NULL;
@@ -270,6 +274,26 @@ long CFile::GetTimestamp()
 
 bool CFile::SetTimestamp(long timestamp)
 {
+#ifdef WIN32
+	FILETIME ftime;
+	HANDLE h;
+	bool close = false;
+	if (handle==NULL) {
+		h = CreateFile(filename.c_str() , GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+		close = true;
+	} else {
+		h = (HANDLE)_get_osfhandle(fileno(handle));
+	}
+	if (h == NULL) {
+		return false;
+	}
+	fileSystem->TimestampToFiletime(timestamp, ftime);
+	bool ret = SetFileTime(h, NULL, NULL, &ftime);
+	if (close) { //close opened file
+		CloseHandle(h);
+	}
+	return ret;
+#else
 	struct timeval tv = {0, 0};
 	tv.tv_sec = timestamp;
 	if (handle==NULL) {
@@ -277,4 +301,5 @@ bool CFile::SetTimestamp(long timestamp)
 	} else {
 		return futimes(fileno(handle), &tv) == 0;
 	}
+#endif
 }

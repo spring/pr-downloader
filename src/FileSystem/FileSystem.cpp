@@ -300,19 +300,11 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 	}
 	time_t t;
 #ifdef WIN32
-	LARGE_INTEGER date, adjust;
-
 	SYSTEMTIME pTime;
 	FILETIME pFTime;
 	GetSystemTime(&pTime);
 	SystemTimeToFileTime(&pTime, &pFTime);
-
-	date.HighPart = pFTime.dwHighDateTime;
-	date.LowPart = pFTime.dwLowDateTime;
-
-	adjust.QuadPart = 11644473600000 * 10000;
-	date.QuadPart -= adjust.QuadPart;
-	t =  (date.QuadPart / 10000000);
+	t =  FiletimeToTimestamp(pFTime);
 #else
 	time(&t);
 #endif
@@ -484,3 +476,24 @@ std::string CFileSystem::EscapePath(const std::string& path)
 	}
 	return tmp;
 }
+
+
+#ifdef WIN32
+long CFileSystem::FiletimeToTimestamp(const _FILETIME& time)
+{
+	LARGE_INTEGER date, adjust;
+	date.HighPart = time.dwHighDateTime;
+	date.LowPart = time.dwLowDateTime;
+	adjust.QuadPart = 11644473600000 * 10000;
+	date.QuadPart -= adjust.QuadPart;
+	return (date.QuadPart / 10000000);
+}
+
+void CFileSystem::TimestampToFiletime(const time_t t, _FILETIME& pft)
+{
+	LONGLONG ll;
+	ll = Int32x32To64(t, 10000000) + 116444736000000000;
+	pft.dwLowDateTime = (DWORD)ll;
+	pft.dwHighDateTime = ll >> 32;
+}
+#endif

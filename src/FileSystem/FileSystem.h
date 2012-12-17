@@ -11,6 +11,10 @@ class CRepo;
 class FileData;
 class IDownload;
 
+#ifdef WIN32
+struct _FILETIME;
+#endif
+
 #define IO_BUF_SIZE 4096
 
 
@@ -100,6 +104,11 @@ public:
 
 
 	std::string EscapePath(const std::string& path);
+
+#ifdef WIN32
+	long FiletimeToTimestamp(const _FILETIME& time);
+	void TimestampToFiletime(const time_t t, _FILETIME& pft);
+#endif
 
 private:
 	std::list<std::string> tmpfiles;
