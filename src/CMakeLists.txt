@@ -85,14 +85,16 @@ FILE( GLOB_RECURSE header "*.h" )
 
 
 
-IF(NOT WIN32)
+if(NOT WIN32 AND DEVELOP_FILES)
 	SET(VERSION ${PR_DOWNLOADER_VERSION})
 	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
 	               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
 	install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${LIBDIR}/pkgconfig")
-ENDIF(NOT WIN32)
+endif()
 
-INSTALL (FILES
-        pr-downloader.h
-        DESTINATION ${INCLUDE_DIR}/Downloader COMPONENT Devel )
+if(DEVELOP_FILES)
+	INSTALL (FILES
+		pr-downloader.h
+	        DESTINATION ${INCLUDE_DIR}/Downloader COMPONENT Devel )
+endif()
 
