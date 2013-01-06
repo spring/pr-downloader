@@ -402,6 +402,7 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 
 bool CFileSystem::extract(const std::string& filename, const std::string& dstdir)
 {
+#ifdef ARCHIVE_SUPPORT
 	LOG_INFO("%s %s", filename.c_str(), dstdir.c_str());
 	const int len = filename.length();
 	IArchive* archive;
@@ -456,6 +457,10 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 	delete archive;
 	LOG_INFO("done");
 	return true;
+#else
+	LOG_ERROR("no archive support!");
+	return false;
+#endif
 }
 
 bool CFileSystem::Rename(const std::string& source, const std::string& destination)

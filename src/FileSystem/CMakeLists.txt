@@ -1,3 +1,9 @@
+if (ARCHIVE_SUPPORT)
+	set(archivessrc SevenZipArchive.cpp ZipArchive.cpp)
+	set(archiveslib pr-7z)
+	add_definitions(-DARCHIVE_SUPPORT)
+endif()
+
 add_library(FileSystem
 		AtomicFile.cpp
 		FileData.cpp
@@ -7,20 +13,19 @@ add_library(FileSystem
 		HashSHA1.cpp
 		HashCRC32.cpp
 		IHash.cpp
-		SevenZipArchive.cpp
-		ZipArchive.cpp
+		${archives}
 )
 target_link_libraries(FileSystem
 	${ZLIB_LIBRARIES}
 	pr-md5
 	pr-sha1
-	pr-7z
 	bencode
 )
-
-if (MINIZIP_FOUND)
-	target_link_libraries(FileSystem ${MINIZIP_LIBRARIES})
-else()
-	target_link_libraries(FileSystem pr-minizip)
+if(ARCHIVE_SUPPORT)
+	if (MINIZIP_FOUND)
+		target_link_libraries(FileSystem ${MINIZIP_LIBRARIES})
+	else()
+		target_link_libraries(FileSystem pr-minizip)
+	endif()
 endif()
 

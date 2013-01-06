@@ -26,6 +26,7 @@ endif()
 OPTION(LINK_STATIC "link pr-downloader.exe static or dynamic" ON)
 OPTION(DEVELOP_FILES "install development files (header, libspringdownloader.pc)" OFF)
 OPTION(DO_INSTALL "install files" ON)
+OPTION(ARCHIVE_SUPPORT "enable archive support" ON)
 
 MESSAGE(STATUS "Version ${PR_DOWNLOADER_VERSION}")
 if   (MINGW)
