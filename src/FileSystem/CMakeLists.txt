@@ -13,7 +13,7 @@ add_library(FileSystem
 		HashSHA1.cpp
 		HashCRC32.cpp
 		IHash.cpp
-		${archives}
+		${archivessrc}
 )
 target_link_libraries(FileSystem
 	${ZLIB_LIBRARIES}
@@ -22,6 +22,7 @@ target_link_libraries(FileSystem
 	bencode
 )
 if(ARCHIVE_SUPPORT)
+	target_link_libraries(FileSystem ${archiveslib})
 	if (MINIZIP_FOUND)
 		target_link_libraries(FileSystem ${MINIZIP_LIBRARIES})
 	else()
