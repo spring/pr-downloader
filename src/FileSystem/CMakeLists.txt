@@ -20,9 +20,9 @@ target_link_libraries(FileSystem
 	pr-md5
 	pr-sha1
 	bencode
+	${archiveslib}
 )
 if(ARCHIVE_SUPPORT)
-	target_link_libraries(FileSystem ${archiveslib})
 	if (MINIZIP_FOUND)
 		target_link_libraries(FileSystem ${MINIZIP_LIBRARIES})
 	else()
