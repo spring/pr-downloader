@@ -21,14 +21,7 @@
 #include <curl/curl.h>
 #include <string>
 #include <sstream>
-
-
-#ifdef __APPLE__
-#include <malloc/malloc.h>
-#else
-#include <malloc.h>
-#endif
-
+#include <stdlib.h>
 
 CHttpDownloader::CHttpDownloader()
 {
