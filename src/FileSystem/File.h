@@ -7,6 +7,8 @@
 #include <vector>
 #include <map>
 
+#include <stdio.h>
+
 #include "IFile.h"
 
 class IHash;
