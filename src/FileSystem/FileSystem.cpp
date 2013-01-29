@@ -17,6 +17,7 @@
 #include <string>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <stdlib.h>
 
 #ifdef WIN32
 #include <windows.h>
