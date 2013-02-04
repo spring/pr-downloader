@@ -7,38 +7,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-bool download(const std::string& name, IDownload::category cat)
-{
-	std::list<IDownload*> res;
-	//only games can be (currently) downloaded by rapid
-	if ((cat==IDownload::CAT_GAMES) || (cat == IDownload::CAT_NONE)) {
-		rapidDownload->search(res, name, cat);
-		if ((!res.empty()) && (rapidDownload->download(res)))
-			return true;
-	}
-	httpDownload->search(res, name, cat);
-	if ((!res.empty())) {
-		std::list<IDownload*>::iterator dlit;
-		for(dlit=res.begin(); dlit!=res.end(); ++dlit) { //download depends, too. we handle this here, because then we can use all dl-systems
-			if (!(*dlit)->depend.empty()) {
-				std::list<std::string>::iterator it;
-				for(it=(*dlit)->depend.begin(); it!=(*dlit)->depend.end(); ++it) {
-					const std::string& depend = (*it);
-					LOG_INFO("found depends: %s", depend.c_str());
-					if (!download(depend, cat)) {
-						LOG_ERROR("downloading the depend %s for %s failed", depend.c_str(), name.c_str());
-						return false;
-					}
-				}
-			}
-		}
-		return httpDownload->download(res);
-	}
-	plasmaDownload->search(res, name, cat);
-	if ((!res.empty()))
-		return plasmaDownload->download(res);
-	return false;
-}
+
+static bool fetchDepends = true;
 
 bool download_engine(std::list<IDownload*>& dllist)
 {
@@ -102,9 +72,9 @@ bool isEngineDownload(IDownload::category cat)
 
 std::list<IDownload*> searchres;
 downloadtype typ;
-int DownloadSearch(downloadtype type, category cat, const char* name)
+
+bool search(downloadtype type, category cat, const char* name, std::list<IDownload*>& searchres)
 {
-	IDownloader::freeResult(searchres);
 	IDownload::category icat = getCat(cat);
 	if (isEngineDownload(icat)) { //engine downloads only work with http
 		type = DL_ENGINE;
@@ -115,14 +85,14 @@ int DownloadSearch(downloadtype type, category cat, const char* name)
 
 	switch(type) {
 	case DL_RAPID:
-		rapidDownload->search(searchres, searchname.c_str(), icat);
+		return rapidDownload->search(searchres, searchname.c_str(), icat);
 		break;
 	case DL_HTTP:
 	case DL_ENGINE:
-		httpDownload->search(searchres, searchname.c_str(), icat);
+		return httpDownload->search(searchres, searchname.c_str(), icat);
 		break;
 	case DL_PLASMA:
-		plasmaDownload->search(searchres, searchname.c_str(), icat);
+		return plasmaDownload->search(searchres, searchname.c_str(), icat);
 		break;
 	case DL_ANY:
 		rapidDownload->search(searchres, searchname.c_str(), icat);
@@ -136,11 +106,19 @@ int DownloadSearch(downloadtype type, category cat, const char* name)
 			break;
 		}
 		//last try, use plasma
-		plasmaDownload->search(searchres, searchname.c_str(), icat);
+		return plasmaDownload->search(searchres, searchname.c_str(), icat);
 		break;
 	default:
 		LOG_ERROR("%s: type invalid", __FUNCTION__);
+		return false;
 	}
+	return true;
+}
+
+int DownloadSearch(downloadtype type, category cat, const char* name)
+{
+	IDownloader::freeResult(searchres);
+	search(type, cat, name, searchres);
 	return searchres.size();
 }
 
@@ -172,6 +150,9 @@ bool DownloadSetConfig(CONFIG type, const void* value)
 	case CONFIG_FILESYSTEM_WRITEPATH:
 		fileSystem->setWritePath((const char*)value);
 		return true;
+	case CONFIG_FETCH_DEPENDS:
+		fetchDepends = (const bool*) value;
+		return true;
 	}
 	return false;
 }
@@ -181,6 +162,9 @@ bool DownloadGetConfig(CONFIG type, const void** value)
 	switch(type) {
 	case CONFIG_FILESYSTEM_WRITEPATH:
 		*value = fileSystem->getSpringDir().c_str();
+		return true;
+	case CONFIG_FETCH_DEPENDS:
+		*value = (const bool*)fetchDepends;
 		return true;
 	}
 	return false;
@@ -198,6 +182,25 @@ bool DownloadAdd(unsigned int id)
 	return true;
 }
 
+bool addDepends(std::list<IDownload*>& dls)
+{
+	std::list<IDownload*>::iterator it;
+	for (it = dls.begin(); it != dls.end(); ++it) {
+		if ((*it)->depend.empty()) {
+			continue;
+		}
+		std::list<std::string>::iterator stit;
+		for (stit = (*it)->depend.begin(); stit != (*it)->depend.end(); ++stit) {
+			std::list<IDownload*> depends;
+			const std::string& depend = (*stit);
+			search(DL_ANY, CAT_ANY, depend.c_str(), depends);
+			LOG_INFO("Adding depend %s", depend.c_str());
+			dls.merge(depends);
+		}
+	}
+	return true;
+}
+
 bool DownloadStart()
 {
 	bool res = true;
@@ -209,6 +212,9 @@ bool DownloadStart()
 			continue;
 		}
 		dls.push_back(dl);
+	}
+	if (fetchDepends) {
+		addDepends(dls);
 	}
 
 	if (dls.empty()) {
@@ -233,6 +239,7 @@ bool DownloadStart()
 		LOG_ERROR("%s():%d  Invalid type specified: %d %d", __FUNCTION__, __LINE__, typ, downloads.size());
 		res = false;
 	}
+
 	IDownloader::freeResult(searchres);
 	dls.clear();
 	return res;
