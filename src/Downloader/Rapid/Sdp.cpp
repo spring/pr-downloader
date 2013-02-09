@@ -254,6 +254,8 @@ bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 		LOG_INFO(url.c_str());
 
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+		curl_easy_setopt(curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
+		curl_easy_setopt(curl, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
 
 		int  buflen=files.size()/8;
 		if (files.size()%8!=0)

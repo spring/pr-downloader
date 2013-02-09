@@ -10,6 +10,8 @@ DownloadData::DownloadData()
 	mirror=NULL;
 	download=NULL;
 	easy_handle=curl_easy_init();
+	curl_easy_setopt(easy_handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
+	curl_easy_setopt(easy_handle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
 	headersok = false;
 }
 

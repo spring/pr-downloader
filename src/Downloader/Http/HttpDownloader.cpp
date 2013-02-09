@@ -245,6 +245,9 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	}
 	curl_easy_setopt(piece->easy_handle, CURLOPT_CONNECTTIMEOUT, 10);
 	curl_easy_setopt(piece->easy_handle, CURLOPT_TIMEOUT, 30);
+	curl_easy_setopt(piece->easy_handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
+	curl_easy_setopt(piece->easy_handle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
+
 	CURL* curle= piece->easy_handle;
 	piece->mirror=piece->download->getFastestMirror();
 	if (piece->mirror==NULL) {
