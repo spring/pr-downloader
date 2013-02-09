@@ -3,15 +3,14 @@
 #include "DownloadData.h"
 
 #include <curl/curl.h>
+#include "Downloader/CurlWrapper.h"
 
 DownloadData::DownloadData()
 {
 	piece=0;
 	mirror=NULL;
 	download=NULL;
-	easy_handle=curl_easy_init();
-	curl_easy_setopt(easy_handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
-	curl_easy_setopt(easy_handle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
+	easy_handle=CurlWrapper::CurlInit();
 	headersok = false;
 }
 

@@ -2,12 +2,16 @@ subdirs(lib)
 subdirs(Downloader)
 subdirs(FileSystem)
 
-set(PRDOWNLOADER_FILES
+add_library(Util STATIC
 	Util.cpp
 	Logger.cpp
 	Downloader/Download.cpp
 	Downloader/IDownloader.cpp
 	Downloader/Mirror.cpp
+)
+
+add_library(CurlWrapper
+	Downloader/CurlWrapper.cpp
 )
 
 set (PRDOWNLOADER "pr-downloader")
@@ -23,8 +27,10 @@ ENDIF ()
 
 set(PRDOWNLOADER_LIBS
 	${WIN32LIBS}
+	Util
 	Rapid
 	Http
+	CurlWrapper
 	Plasma
 	Widget
 	FileSystem
@@ -36,7 +42,6 @@ OPTION(SHAREDLIB
 
 if (SHAREDLIB)
 	add_library(${PRDOWNLOADER_SHARED} SHARED
-		${PRDOWNLOADER_FILES}
 		pr-downloader.cpp
 	)
 	if(DO_INSTALL)
@@ -52,7 +57,6 @@ OPTION(STATICLIB
 	"Enables compilation of the static lib" ON)
 if (STATICLIB)
 	add_library(${PRDOWNLOADER_STATIC} STATIC
-		${PRDOWNLOADER_FILES}
 		pr-downloader.cpp
 	)
 	if(DO_INSTALL)

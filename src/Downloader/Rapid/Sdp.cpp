@@ -8,6 +8,7 @@
 #include "FileSystem/FileData.h"
 #include "FileSystem/HashMD5.h"
 #include "FileSystem/AtomicFile.h"
+#include "Downloader/CurlWrapper.h"
 
 #include <string>
 #include <string.h>
@@ -246,16 +247,13 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 
 bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 {
-	CURL* curl;
-	curl = curl_easy_init();
+	CURL* curl = CurlWrapper::CurlInit();
 	if (curl) {
 		CURLcode res;
 		LOG_INFO("Using rapid");
 		LOG_INFO(url.c_str());
 
 		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-		curl_easy_setopt(curl, CURLOPT_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
-		curl_easy_setopt(curl, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
 
 		int  buflen=files.size()/8;
 		if (files.size()%8!=0)
@@ -278,10 +276,8 @@ bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_streamed_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
-		curl_easy_setopt(curl, CURLOPT_USERAGENT, USER_AGENT);
 
 		globalFiles=&files;
-		curl_easy_setopt(curl, CURLOPT_FAILONERROR, true);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, dest);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE,destlen);
 		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);

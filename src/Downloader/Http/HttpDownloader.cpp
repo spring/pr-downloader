@@ -9,6 +9,7 @@
 #include "Util.h"
 #include "Logger.h"
 #include "Downloader/Mirror.h"
+#include "Downloader/CurlWrapper.h"
 #include "lib/xmlrpc++/src/XmlRpc.h"
 
 #ifdef WIN32
@@ -239,14 +240,11 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 
 	piece->piece=pieceNum;
 	if (piece->easy_handle==NULL) {
-		piece->easy_handle=curl_easy_init();
+		piece->easy_handle=CurlWrapper::CurlInit();
 	} else {
-		curl_easy_reset(piece->easy_handle);
+		curl_easy_cleanup(piece->easy_handle);
+		piece->easy_handle=CurlWrapper::CurlInit();
 	}
-	curl_easy_setopt(piece->easy_handle, CURLOPT_CONNECTTIMEOUT, 10);
-	curl_easy_setopt(piece->easy_handle, CURLOPT_TIMEOUT, 30);
-	curl_easy_setopt(piece->easy_handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
-	curl_easy_setopt(piece->easy_handle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
 
 	CURL* curle= piece->easy_handle;
 	piece->mirror=piece->download->getFastestMirror();
@@ -259,10 +257,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 
 	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
-	curl_easy_setopt(curle, CURLOPT_USERAGENT, USER_AGENT);
-	curl_easy_setopt(curle, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 1L);
-	curl_easy_setopt(curle, CURLOPT_FOLLOWLOCATION, 1);
 	curl_easy_setopt(curle, CURLOPT_URL, escaped.c_str());
 
 	if ((piece->download->size>0) && (pieceNum>=0)) { //don't set range, if size unknown
