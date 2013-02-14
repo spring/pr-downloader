@@ -476,8 +476,7 @@ std::string CFileSystem::EscapePath(const std::string& path)
 	std::string tmp;
 	for (unsigned int i=0; i<path.size(); i++) {
 		if ( (path[i] != '/')
-		     && (path[i] != '\\')
-		     && (path[i] != '.'))
+		     && (path[i] != '\\'))
 			tmp += path[i];
 	}
 	return tmp;
