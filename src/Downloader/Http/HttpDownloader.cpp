@@ -177,16 +177,11 @@ bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize)
 	return true;
 }
 
-void CHttpDownloader::showProcess(IDownload* download)
+void CHttpDownloader::showProcess(IDownload* download, bool force)
 {
 	int done = download->getProgress();
 	int size = download->size;
-	if ((size<0) && (download->state==IDownload::STATE_FINISHED)) {
-		size=done;
-		LOG_PROGRESS(done, size, true);
-	} else {
-		LOG_PROGRESS(done, size);
-	}
+	LOG_PROGRESS(done, size, force);
 }
 
 int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
@@ -198,6 +193,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 		if (md5.compare(download->hash)) {
 			LOG_INFO("md5 correct: %s", md5.toString().c_str());
 			download->state=IDownload::STATE_FINISHED;
+			showProcess(download, true);
 			return -1;
 		} else {
 			LOG_ERROR("md5 sum missmatch %s %s", download->hash->toString().c_str(), md5.toString().c_str());
@@ -207,7 +203,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 	HashSHA1 sha1=HashSHA1();
 	unsigned alreadyDl=0;
 	for(unsigned i=0; i<download->pieces.size(); i++ ) { //find first not downloaded piece
-		showProcess(download);
+		showProcess(download, false);
 		if (download->pieces[i].state==IDownload::STATE_FINISHED) {
 			alreadyDl++;
 			continue;
@@ -218,6 +214,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 				if (sha1.compare(download->pieces[i].sha)) {
 //					LOG_DEBUG("piece %d has already correct checksum, reusing", i);
 					download->pieces[i].state=IDownload::STATE_FINISHED;
+					showProcess(download, true);
 					alreadyDl++;
 					continue;
 				}
@@ -227,6 +224,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 	}
 	if (!download->pieces.empty()) {
 		download->state=IDownload::STATE_FINISHED;
+		showProcess(download, true);
 	}
 	return -1;
 }
@@ -331,6 +329,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 				data->download->file->Hash(sha1, data->piece);
 				if (sha1.compare(data->download->pieces[data->piece].sha)) { //piece valid
 					data->download->pieces[data->piece].state=IDownload::STATE_FINISHED;
+					showProcess(data->download, true);
 //					LOG("piece %d verified!", data->piece);
 				} else { //piece download broken, mark mirror as broken (for this file)
 					data->download->pieces[data->piece].state=IDownload::STATE_NONE;
@@ -457,7 +456,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 	LOG("\n");
 
 	if (!aborted) {
-		LOG_INFO("download complete");
+		LOG_DEBUG("download complete");
 	}
 
 	//close all open files

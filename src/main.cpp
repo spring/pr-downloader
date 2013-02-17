@@ -79,7 +79,7 @@ void show_results(int count)
 	for(int i=0; i<count; i++) {
 		downloadInfo dl;
 		DownloadGetSearchInfo(i, dl);
-		LOG_INFO("Download path: %s", dl.filename);
+		LOG_DEBUG("Download path: %s", dl.filename);
 	}
 }
 
@@ -87,7 +87,7 @@ bool download(category cat, const char* name)
 {
 	int count = DownloadSearch(DL_ANY, cat, name);
 	if (count<=0) {
-		LOG_ERROR("Couldn't find %s",name);
+		LOG_DEBUG("Couldn't find %s",name);
 		return false;
 	}
 	for (int i=0; i<count; i++) {
@@ -191,7 +191,11 @@ int main(int argc, char **argv)
 			optind++;
 		}
 	}
-	DownloadStart();
+	if (!DownloadStart()) {
+		LOG_ERROR("Error occured while downloading");
+	} else {
+		LOG_INFO("Download complete!");
+	}
 	DownloadShutdown();
 	if (res)
 		return 0;

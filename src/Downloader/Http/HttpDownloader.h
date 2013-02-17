@@ -43,7 +43,7 @@ private:
 	/**
 	* show progress bar
 	*/
-	void showProcess(IDownload* download);
+	void showProcess(IDownload* download, bool forceOutput);
 
 	/**
 	*	gets next piece that can be downloaded, mark it as downloading

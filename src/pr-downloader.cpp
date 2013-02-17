@@ -218,7 +218,7 @@ bool DownloadStart()
 	}
 
 	if (dls.empty()) {
-		LOG_ERROR("Nothing to do, did you forget to call DownloadAdd()?");
+		LOG_DEBUG("Nothing to do, did you forget to call DownloadAdd()?");
 		return res;
 	}
 

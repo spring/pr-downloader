@@ -30,7 +30,7 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 		return NULL;
 	}
 	if (!fileResponse.DownloadFileResult) {
-		LOG_ERROR("No file found for criteria %s",name.c_str());
+		LOG_DEBUG("No file found for criteria %s",name.c_str());
 		return NULL;
 	}
 
@@ -53,7 +53,7 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 	}
 	fileName+=PATH_DELIMITER;
 	if (fileResponse.links->string.size()==0) {
-		LOG_ERROR("No mirror in plasma result.");
+		LOG_DEBUG("No mirror in plasma result.");
 		return false;
 	}
 
