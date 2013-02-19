@@ -83,7 +83,9 @@ if (CONSOLETOOL)
 	else  ()
 		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
 	endif ()
-	set_target_properties(${PRDOWNLOADER} PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")
+	if (WIN32)
+		set_target_properties(${PRDOWNLOADER} PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")
+	endif()
 	if (DO_INSTALL)
 		INSTALL (TARGETS ${PRDOWNLOADER}
 			RUNTIME DESTINATION ${BINDIR}
