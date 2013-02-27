@@ -5,6 +5,7 @@ add_library(Http STATIC
 )
 target_link_libraries(Http
 	${CURL_LIBRARIES}
+	${OPENSSL_LIBRARIES}
 	xmlrpc
 )
 

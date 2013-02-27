@@ -69,8 +69,15 @@ endif (MINGW)
 #FIXME: set this compile flag only for one file
 add_definitions(-DPR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION})
 
-find_package(CURL REQUIRED)
-find_package(ZLIB REQUIRED)
+if (PREFER_STATIC_LIBS)
+	#curl dependency
+	FIND_PACKAGE_STATIC(OpenSSL REQUIRED)
+	FIND_PACKAGE_STATIC(CURL REQUIRED)
+	FIND_PACKAGE_STATIC(ZLIB REQUIRED)
+else()
+	find_package(CURL REQUIRED)
+	find_package(ZLIB REQUIRED)
+endif()
 
 #compile fix for soap (springlobby defines this)
 remove_definitions(-DHAVE_CONFIG_H)
