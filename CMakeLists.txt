@@ -17,8 +17,11 @@ LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_MODULES_DOWNLOADER}")
 INCLUDE(UtilGit)
 if (GIT_FOUND)
 	Git_Util_Describe(PR_DOWNLOADER_VERSION "${CMAKE_CURRENT_SOURCE_DIR}/src" "*")
-else()
-	SET(PR_DOWNLOAD_VERSION "dev")
+endif()
+
+# Version couldn't be detected, we guess its compiled from tarball
+if("${PR_DOWNLOADER_VERSION}" STREQUAL "")
+	SET(PR_DOWNLOADER_VERSION "tarball")
 endif()
 
 OPTION(LINK_STATIC "link pr-downloader.exe static or dynamic" ON)
