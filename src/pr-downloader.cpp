@@ -50,6 +50,8 @@ IDownload::category getCat(category cat) //FIXME: unify enums, see IDownload::ca
 		return IDownload::CAT_ENGINE_WINDOWS;
 #elif defined(MACOSX)
 		return IDownload::CAT_ENGINE_MACOSX;
+#elif defined(__x86_64__)
+		return IDownload::CAT_ENGINE_LINUX64;
 #else
 		return IDownload::CAT_ENGINE_LINUX;
 #endif
@@ -64,8 +66,9 @@ IDownload::category getCat(category cat) //FIXME: unify enums, see IDownload::ca
 
 bool isEngineDownload(IDownload::category cat)
 {
-	return (cat == IDownload::CAT_ENGINE_LINUX) ||
-	       (cat == IDownload::CAT_ENGINE_MACOSX) ||
+	return (cat == IDownload::CAT_ENGINE_LINUX)   ||
+	       (cat == IDownload::CAT_ENGINE_LINUX64) ||
+	       (cat == IDownload::CAT_ENGINE_MACOSX)  ||
 	       (cat == IDownload::CAT_ENGINE_WINDOWS);
 }
 

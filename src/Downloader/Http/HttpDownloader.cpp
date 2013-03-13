@@ -52,6 +52,9 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 	case IDownload::CAT_ENGINE_LINUX:
 		arg["category"]="engine_linux";
 		break;
+	case IDownload::CAT_ENGINE_LINUX64:
+		arg["category"]="engine_linux64";
+		break;
 	case IDownload::CAT_ENGINE_WINDOWS:
 		arg["category"]="engine_windows";
 		break;
