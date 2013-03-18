@@ -48,7 +48,7 @@ IDownload::category getCat(category cat) //FIXME: unify enums, see IDownload::ca
 	case CAT_ENGINE:
 #ifdef WIN32
 		return IDownload::CAT_ENGINE_WINDOWS;
-#elif defined(MACOSX)
+#elif defined(__APPLE__)
 		return IDownload::CAT_ENGINE_MACOSX;
 #elif defined(__x86_64__)
 		return IDownload::CAT_ENGINE_LINUX64;
