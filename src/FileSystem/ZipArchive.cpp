@@ -40,8 +40,9 @@ CZipArchive::CZipArchive(const std::string& archiveName)
 		fd.origName = fName;
 		fd.crc = info.crc;
 		fd.mode = 0755;
-		if (info.external_fa>0)
-			fd.mode = info.external_fa & 0755;
+		if (info.external_fa >0) {
+			fd.mode = info.external_fa >> 16;
+		}
 		fileData.push_back(fd);
 //		lcNameIndex[fLowerName] = fileData.size() - 1;
 	}
