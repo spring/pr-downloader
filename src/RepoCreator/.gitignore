@@ -1,0 +1,7 @@
+/build.ninja
+/.ninja_log
+/rules.ninja
+/repocreator
+
+# temp folder
+/xta
