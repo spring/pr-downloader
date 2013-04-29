@@ -2,6 +2,8 @@
 #include <git2.h>
 #include <stdio.h>
 #include <string.h>
+#include <string>
+#include <vector>
 
 bool listfiles(git_repository *repo)
 {
@@ -45,7 +47,7 @@ bool listfiles(git_repository *repo)
 }
 
 
-static void check_error(int error_code, const char *action)
+void check_error(int error_code, const char *action)
 {
 	if (!error_code)
 		return;
@@ -56,15 +58,8 @@ static void check_error(int error_code, const char *action)
 	exit(1);
 }
 
-static int push_commit(git_revwalk *walk, const git_oid *oid, int hide)
-{
-	if (hide)
-		return git_revwalk_hide(walk, oid);
-	else
-		return git_revwalk_push(walk, oid);
-}
 
-static int push_spec(git_repository *repo, git_revwalk *walk, const char *spec, int hide)
+int push_spec(git_repository *repo, git_revwalk *walk, const char *spec)
 {
 	int error;
 	git_object *obj;
@@ -72,12 +67,12 @@ static int push_spec(git_repository *repo, git_revwalk *walk, const char *spec, 
 	if ((error = git_revparse_single(&obj, repo, spec)) < 0)
 		return error;
 
-	error = push_commit(walk, git_object_id(obj), hide);
+	error = git_revwalk_push(walk, git_object_id(obj));
 	git_object_free(obj);
 	return error;
 }
 
-static int push_range(git_repository *repo, git_revwalk *walk, const char *range, int hide)
+int push_range(git_repository *repo, git_revwalk *walk, const char *range)
 {
 	git_revspec revspec;
 	int error = 0;
@@ -90,87 +85,56 @@ static int push_range(git_repository *repo, git_revwalk *walk, const char *range
 		return GIT_EINVALIDSPEC;
 	}
 
-	if ((error = push_commit(walk, git_object_id(revspec.from), !hide)))
-		goto out;
+	error = git_revwalk_push(walk, git_object_id(revspec.from));
 
-	error = push_commit(walk, git_object_id(revspec.to), hide);
+	if (!error)
+		error = git_revwalk_push(walk, git_object_id(revspec.to));
 
-out:
 	git_object_free(revspec.from);
 	git_object_free(revspec.to);
 	return error;
 }
 
-/*
-static int revwalk_parseopts(git_repository *repo, git_revwalk *walk, int nopts, char **opts)
-{
-  int hide, i, error;
-  unsigned int sorting = GIT_SORT_NONE;
 
-  hide = 0;
-  for (i = 0; i < nopts; i++) {
-    if (!strcmp(opts[i], "--topo-order")) {
-      sorting = GIT_SORT_TOPOLOGICAL | (sorting & GIT_SORT_REVERSE);
-      git_revwalk_sorting(walk, sorting);
-    } else if (!strcmp(opts[i], "--date-order")) {
-      sorting = GIT_SORT_TIME | (sorting & GIT_SORT_REVERSE);
-      git_revwalk_sorting(walk, sorting);
-    } else if (!strcmp(opts[i], "--reverse")) {
-      sorting = (sorting & ~GIT_SORT_REVERSE)
-          | ((sorting & GIT_SORT_REVERSE) ? 0 : GIT_SORT_REVERSE);
-      git_revwalk_sorting(walk, sorting);
-    } else if (!strcmp(opts[i], "--not")) {
-      hide = !hide;
-    } else if (opts[i][0] == '^') {
-      if ((error = push_spec(repo, walk, opts[i] + 1, !hide)))
-        return error;
-    } else if (strstr(opts[i], "..")) {
-      if ((error = push_range(repo, walk, opts[i], hide)))
-        return error;
-    } else {
-      if ((error = push_spec(repo, walk, opts[i], hide)))
-        return error;
-    }
-  }
-
-  return 0;
-}
-*/
-
-git_repository *openrepo(const char* path)
+void listrevisions(git_repository *repo, std::vector<git_oid>& oids)
 {
 	int error;
+	const unsigned int sorting = GIT_SORT_TOPOLOGICAL|GIT_SORT_REVERSE;
 	git_revwalk *walk;
+
+	error = git_revwalk_new(&walk, repo);
+	check_error(error, "allocating revwalk");
+
+	git_revwalk_sorting(walk, sorting);
+	push_spec(repo, walk, "HEAD");
+	git_oid oid;
+	while (!git_revwalk_next(&oid, walk)) {
+		oids.push_back(oid);
+	}
+}
+
+
+git_repository *openrepo(const std::string& path)
+{
+	int error;
 	git_oid oid;
 	char buf[41];
 	git_repository *repo;
 
-	error = git_repository_open_ext(&repo, path, 0, NULL);
+	error = git_repository_open_ext(&repo, path.c_str(), 0, NULL);
 	check_error(error, "opening repository");
-
-	error = git_revwalk_new(&walk, repo);
-	check_error(error, "allocating revwalk");
-//	error = revwalk_parseopts(repo, walk, argc-1, argv+1);
-//	check_error(error, "parsing options");
 	return repo;
 
 }
 
-/*
-	params
-	./build-ca "file://$REPO" trunk/mods trunk/mods/zk/modinfo.lua /home/packages/packages $REVISION zk
-*/
-
 /*TODO:
-	1. parse params
-	2. get revision number (=commit hash?!) of packages folder for this repo
-	3. get revision numbers of git repo
 	4. foreach commit (diff of revisions in repo / revisions in packages)
 		get modinfo.lua
 		replace version
 		get all files for commit hash
 		write all files to packages excluding modinfo
 		write modified modinfo to packages
+		calc md5 hash of package
 		write sdp
 		read versions.gz & add created sdp
 		write new last version written
@@ -182,19 +146,68 @@ git_repository *openrepo(const char* path)
 	@param revision revision to create sdp
 	@param tag      tag name of the game
 */
+std::string getCurrentPackageRevision(const std::string& packagespath, const std::string& tag)
+{
+	printf("Using %s, tag %s\n", packagespath.c_str(), tag.c_str());
+	const std::string lastpath = packagespath +"/" + tag;
+	FILE* f=fopen(lastpath.c_str(), "rb");
+	if (f==NULL)
+		return "";
+	char buf[1024];
+	int count = fread(buf,sizeof(buf), 1, f);
+	fclose(f);
+	return std::string(buf, count);
+}
+
+void printoid(git_oid* oid)
+{
+	char buf[41];
+	buf[40]=0;
+	git_oid_fmt(buf, oid);
+	printf("oid: %s\n", buf);
+}
 
 int main (int argc, char** argv)
 {
-	char *dir = ".";
-	if (argc > 1)
-		dir = argv[1];
-	if (!dir || argc > 2) {
-		fprintf(stderr, "usage: showindex [<repo-dir>]\n");
+	if (argc != 7) {
+		printf("Usage: %s /path/to/git/repo repo/log/path repo/path/modinfo.lua /path/to/packages <revision> <tag>\n", argv[0]);
 		return 1;
 	}
-	git_repository* repo;
-	repo = openrepo(dir);
-	listfiles(repo);
+	const std::string repopath = argv[1];
+	const std::string logpath = argv[2];
+	const std::string modinfopath = argv[3];
+	const std::string packagespath = argv[4];
+	const std::string revision = argv[5];
+	const std::string tag = argv[6];
+
+	getCurrentPackageRevision(packagespath, tag);
+
+	git_repository* repo = openrepo(repopath);
+
+	std::vector<git_oid> oids;
+	listrevisions(repo, oids);
+	if (oids.empty()) {
+		printf("no revisions found!\n");
+		return 1;
+	}
+	printoid(&oids[0]);
+
+	int error;
+
+	for (int i=0; i<oids.size(); i++) {
+		printf("revision %d: ", i+1);
+		printoid(&oids[i]);
+
+		git_commit* lastcommit;
+		error = git_commit_lookup(&lastcommit, repo, &oids[i]);
+		check_error(error, "git_commit_lookup");
+		const char *author =  git_commit_message(lastcommit);
+		printf("%s\n", author);
+		git_commit_free(lastcommit);
+	}
+
+
+	//listfiles(repo);
 	return 0;
 }
 
