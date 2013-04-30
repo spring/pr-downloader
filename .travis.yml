@@ -3,7 +3,6 @@ compiler:
   - clang
   - gcc
 before_script:
-  - sudo apt-get install cmake
   - cmake .
 script:
   - make
