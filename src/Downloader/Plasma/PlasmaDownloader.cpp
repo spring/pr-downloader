@@ -27,11 +27,11 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 	res=service.DownloadFile(&file, &fileResponse);
 	if (res != SOAP_OK) {
 		LOG_ERROR("Soap error: %d: %s",res, service.soap_fault_string());
-		return NULL;
+		return false;
 	}
 	if (!fileResponse.DownloadFileResult) {
 		LOG_DEBUG("No file found for criteria %s",name.c_str());
-		return NULL;
+		return false;
 	}
 
 	std::vector<std::string>::iterator it;

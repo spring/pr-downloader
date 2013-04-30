@@ -72,7 +72,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 	gzFile in=gzopen(filename.c_str(), "r");
 	if (in==Z_NULL) {
 		LOG_ERROR("Could not open %s",filename.c_str());
-		return NULL;
+		return false;
 	}
 	files.clear();
 	while (true) {
