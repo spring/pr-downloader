@@ -44,6 +44,7 @@ bool listfiles(git_repository *repo)
 
 	git_index_free(index);
 	git_repository_free(repo);
+	return 0;
 }
 
 
@@ -117,8 +118,6 @@ void listrevisions(git_repository *repo, std::vector<git_oid>& oids)
 git_repository *openrepo(const std::string& path)
 {
 	int error;
-	git_oid oid;
-	char buf[41];
 	git_repository *repo;
 
 	error = git_repository_open_ext(&repo, path.c_str(), 0, NULL);
@@ -194,8 +193,8 @@ int main (int argc, char** argv)
 
 	int error;
 
-	for (int i=0; i<oids.size(); i++) {
-		printf("revision %d: ", i+1);
+	for (size_t i=0; i<oids.size(); i++) {
+		printf("r%d | ", (int)i+1);
 		printoid(&oids[i]);
 
 		git_commit* lastcommit;
