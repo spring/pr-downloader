@@ -17,13 +17,14 @@
 #include <windows.h>
 #endif
 
-CFile::CFile()
+CFile::CFile():
+	handle(NULL),
+	piecesize(-1),
+	size(-1),
+	curpos(0),
+	isnewfile(true),
+	timestamp(0)
 {
-	handle=NULL;
-	this->size=-1;
-	this->piecesize=-1;
-	this->curpos=0;
-	isnewfile=true;
 }
 
 CFile::~CFile()
