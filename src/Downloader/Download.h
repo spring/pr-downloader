@@ -10,6 +10,7 @@
 class IHash;
 class Mirror;
 class CFile;
+class IDownloadsObserver;
 
 class IDownload
 {
@@ -94,6 +95,8 @@ private:
 
 
 };
+
+void SetDownloadsObserver(IDownloadsObserver* ob);
 
 #endif
 

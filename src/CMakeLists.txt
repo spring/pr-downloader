@@ -8,6 +8,7 @@ add_library(Util STATIC
 	Downloader/Download.cpp
 	Downloader/IDownloader.cpp
 	Downloader/Mirror.cpp
+	Downloader/IDownloadsObserver.cpp
 )
 
 add_library(CurlWrapper

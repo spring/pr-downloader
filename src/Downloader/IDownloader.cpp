@@ -1,6 +1,7 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "IDownloader.h"
+#include "Download.h"
 #include "Http/HttpDownloader.h"
 #include "Rapid/RapidDownloader.h"
 #include "Plasma/PlasmaDownloader.h"
@@ -17,9 +18,10 @@ IDownloader* IDownloader::plasmadl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
 IDownloader* IDownloader::widgetdl=NULL;
 
-void IDownloader::Initialize()
+void IDownloader::Initialize(IDownloadsObserver* observer)
 {
 	curl_global_init(CURL_GLOBAL_ALL);
+	SetDownloadsObserver(observer);
 }
 
 void IDownloader::Shutdown()

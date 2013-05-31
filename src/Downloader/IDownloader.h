@@ -9,6 +9,8 @@
 #include <string>
 #include <stdio.h>
 
+class IDownloadsObserver;
+
 class IDownloader
 {
 public:
@@ -20,7 +22,7 @@ public:
 	/**
 		Initialize all Downloaders
 	*/
-	static void Initialize();
+	static void Initialize(IDownloadsObserver* observer=NULL);
 
 	/**
 		Shutdown all Downloaders

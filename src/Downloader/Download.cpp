@@ -5,10 +5,30 @@
 #include "FileSystem/IHash.h"
 #include "FileSystem/File.h"
 #include "Mirror.h"
+#include "IDownloadsObserver.h"
 
 #include <string>
 #include <list>
 #include <stdio.h>
+
+IDownloadsObserver* observer=NULL;
+
+void SetDownloadsObserver(IDownloadsObserver* ob)
+{
+	observer=ob;
+}
+
+void ObserverAdd(IDownload* id)
+{
+	if(observer!=NULL)
+		observer->Add(id);
+}
+
+void ObserverRemove(IDownload* id)
+{
+	if(observer!=NULL)
+		observer->Remove(id);
+}
 
 IDownload::IDownload(const std::string& name, category cat):
 	cat(cat),
@@ -20,10 +40,13 @@ IDownload::IDownload(const std::string& name, category cat):
 	size(-1),
 	state(IDownload::STATE_NONE)
 {
+	ObserverAdd(this);
 }
 
 IDownload::~IDownload()
 {
+	ObserverRemove(this);
+
 	for(unsigned i=0; i<pieces.size(); i++) {
 		delete pieces[i].sha;
 	}
@@ -126,4 +149,5 @@ unsigned int IDownload::getProgress() const
 	}
 	return res;
 }
+
 
