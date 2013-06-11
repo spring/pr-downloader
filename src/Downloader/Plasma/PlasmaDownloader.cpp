@@ -59,7 +59,7 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 
 	std::string torrent;
 	torrent.assign((char*)fileResponse.torrent->__ptr,fileResponse.torrent->__size);
-	IDownload* dl = new IDownload();
+	IDownload* dl = new IDownload("",name);
 	//parse torrent data and fill set values inside dl
 	const bool bres = fileSystem->parseTorrent((char*)fileResponse.torrent->__ptr, fileResponse.torrent->__size, dl);
 	if ( (dl->name == "") || (!bres)) {

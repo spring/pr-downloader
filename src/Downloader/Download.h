@@ -33,7 +33,7 @@ public:
 		CAT_ENGINE_MACOSX,
 	} cat;
 
-	IDownload(const std::string& filename="", category cat=CAT_NONE);
+	IDownload(const std::string& filename="",const std::string& orig_name="", category cat=CAT_NONE);
 	~IDownload();
 	/**
 	 *
@@ -42,6 +42,8 @@ public:
 	bool addMirror(const std::string& url);
 	bool addDepend(const std::string& depend);
 	std::string name; //name, in most cases the filename to save to
+	std::string origin_name; //name of object. Not the filename
+
 	std::list<std::string> depend; //list of all depends
 	bool downloaded; //file was downloaded?
 	/**
