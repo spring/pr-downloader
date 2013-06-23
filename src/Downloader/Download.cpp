@@ -33,7 +33,7 @@ void ObserverRemove(IDownload* id)
 IDownload::IDownload(const std::string& name,const std::string& origin_name, category cat):
 	cat(cat),
 	name(name),
-    origin_name(origin_name),
+	origin_name(origin_name),
 	downloaded(false),
 	piecesize(0),
 	hash(NULL),
