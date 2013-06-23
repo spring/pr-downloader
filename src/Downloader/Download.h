@@ -33,7 +33,12 @@ public:
 		CAT_ENGINE_MACOSX,
 	} cat;
 
-	IDownload(const std::string& filename="",const std::string& orig_name="", category cat=CAT_NONE);
+	enum download_type {
+		TYP_RAPID,
+		TYP_HTTP
+	} dltype;
+
+	IDownload(const std::string& filename="",const std::string& orig_name="", category cat=CAT_NONE, download_type typ = TYP_HTTP);
 	~IDownload();
 	/**
 	 *

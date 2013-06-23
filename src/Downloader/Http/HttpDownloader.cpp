@@ -143,8 +143,7 @@ size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data
 {
 	//LOG_DEBUG("%d %d",size,  nmemb);
 	if (!data->headersok) {
-		LOG_ERROR("Server returned invalid / to few headers!");
-		return -1;
+		LOG_ERROR("Server returned invalid / to few headers, ignoring, (but could lead to broken files!)");
 	}
 	return data->download->file->Write((const char*)ptr, size*nmemb, data->piece);
 }
@@ -379,6 +378,10 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 	std::vector <DownloadData*> downloads;
 	CURLM* curlm=curl_multi_init();
 	for(it=download.begin(); it!=download.end(); ++it) {
+		if ((*it)->dltype != IDownload::TYP_HTTP) {
+			LOG_DEBUG("skipping non http-dl")
+			continue;
+		}
 		const int count=std::min(MAX_PARALLEL_DOWNLOADS, std::max(1, std::min((int)(*it)->pieces.size(), (*it)->getMirrorCount()))); //count of parallel downloads
 		if((*it)->getMirrorCount()<=0) {
 			LOG_ERROR("No mirrors found");

@@ -90,7 +90,7 @@ bool CRapidDownloader::download_name(const std::string& longname, int reccounter
 
 
 
-bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category /*cat*/)
+bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category cat)
 {
 	LOG_DEBUG("%s",name.c_str());
 	reloadRepos();
@@ -99,7 +99,7 @@ bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& 
 	for (it=sdps.begin(); it!=sdps.end(); ++it) {
 		if (match_download_name((*it).getShortName(),name)
 		    || (match_download_name((*it).getName(),name))) {
-			IDownload* dl=new IDownload((*it).getName().c_str(),name);
+			IDownload* dl=new IDownload((*it).getName().c_str(), name, cat, IDownload::TYP_RAPID);
 			dl->addMirror((*it).getShortName().c_str());
 			result.push_back(dl);
 		}
@@ -110,6 +110,10 @@ bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& 
 bool CRapidDownloader::download(IDownload* download)
 {
 	LOG_DEBUG("%s",download->name.c_str());
+	if (download->dltype != IDownload::TYP_RAPID) { //skip non-rapid downloads
+		LOG_DEBUG("skipping non rapid-dl");
+		return true;
+	}
 	reloadRepos();
 	return download_name(download->name,0);
 }

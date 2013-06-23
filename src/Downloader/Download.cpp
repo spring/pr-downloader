@@ -30,8 +30,9 @@ void ObserverRemove(IDownload* id)
 		observer->Remove(id);
 }
 
-IDownload::IDownload(const std::string& name,const std::string& origin_name, category cat):
+IDownload::IDownload(const std::string& name,const std::string& origin_name, category cat, download_type typ ):
 	cat(cat),
+	dltype(typ),
 	name(name),
 	origin_name(origin_name),
 	downloaded(false),

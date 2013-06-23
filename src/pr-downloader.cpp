@@ -227,10 +227,9 @@ bool DownloadStart()
 
 	switch (typ) {
 	case DL_RAPID:
+	case DL_HTTP:
 		if(!rapidDownload->download(dls))
 			res = false;
-		break;
-	case DL_HTTP:
 		if (!httpDownload->download(dls))
 			res = false;
 		break;
