@@ -79,7 +79,7 @@ XmlRpcDispatch::work(double timeout)
   _inWork = true;
 
   // Only work while there is something to monitor
-  while (_sources.size() > 0) {
+  while (!_sources.empty()) {
 
     // Construct the sets of descriptors we are interested in
     fd_set inFd, outFd, excFd;
