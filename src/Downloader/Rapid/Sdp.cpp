@@ -9,7 +9,7 @@
 #include "FileSystem/HashMD5.h"
 #include "FileSystem/AtomicFile.h"
 #include "Downloader/CurlWrapper.h"
-
+#include "Downloader/Download.h"
 #include <string>
 #include <string.h>
 #include <stdio.h>
@@ -27,7 +27,8 @@ CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::stri
 	shortname(shortname),
 	url(url),
 	depends(depends),
-	downloaded(false)
+	downloaded(false),
+	m_download(NULL)
 {
 	memset(this->cursize_buf,0, LENGTH_SIZE);
 }
@@ -55,10 +56,11 @@ bool createPoolDirs(const std::string& root)
 }
 
 
-bool CSdp::download()
+bool CSdp::download(IDownload * download)
 {
 	if (downloaded) //allow download only once of the same sdp
 		return true;
+	m_download = download;
 	filename=fileSystem->getSpringDir() + PATH_DELIMITER+"packages"+PATH_DELIMITER;
 	LOG_DEBUG("%s",filename.c_str());
 	if (!fileSystem->directoryExists(filename)) {
@@ -238,6 +240,20 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	(void)csdp;
 	(void)TotalToUpload;
 	(void)NowUploaded; //remove unused warning
+	csdp.m_download->rapid_size[&csdp] = TotalToDownload;
+	csdp.m_download->map_rapid_progress[&csdp] = NowDownloaded;
+	uint64_t total = 0;
+	for ( std::map<CSdp*,uint64_t>::iterator it = csdp.m_download->rapid_size.begin(); it != csdp.m_download->rapid_size.end(); it++ )
+	{
+		total += (*it).second;
+	}
+	csdp.m_download->size = total;
+	total = 0;
+	for ( std::map<CSdp*,uint64_t>::iterator it = csdp.m_download->map_rapid_progress.begin(); it != csdp.m_download->map_rapid_progress.end(); it++ )
+	{
+		total += (*it).second;
+	}
+	csdp.m_download->rapid_progress = total;
 	if (TotalToDownload == NowDownloaded) //force output when download is finished
 		LOG_PROGRESS(NowDownloaded,TotalToDownload, true);
 	else
@@ -276,12 +292,14 @@ bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_streamed_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
+		
 
 		globalFiles=&files;
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, dest);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE,destlen);
 		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
 		curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
+		curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, this);
 
 		res = curl_easy_perform(curl);
 		free(dest);
