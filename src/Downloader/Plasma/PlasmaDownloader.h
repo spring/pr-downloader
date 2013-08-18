@@ -10,7 +10,7 @@ class CPlasmaDownloader: public IDownloader
 public:
 	CPlasmaDownloader();
 	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category cat=IDownload::CAT_NONE);
-	virtual bool download(IDownload* download);
+	virtual bool download(IDownload* download, int max_parallel = 10);
 
 private:
 	std::string torrentPath;

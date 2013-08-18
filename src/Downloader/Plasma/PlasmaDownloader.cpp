@@ -83,7 +83,7 @@ bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string&
 	return true;
 }
 
-bool CPlasmaDownloader::download(IDownload* download)
+bool CPlasmaDownloader::download(IDownload* download,int max_parallel)
 {
 	LOG_DEBUG("%s",download->name.c_str());
 	return httpDownload->download(download);
