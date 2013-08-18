@@ -153,11 +153,11 @@ size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data
 	else if ( data->download->write_only_from != NULL )
 	{
 	    data->download->http_downloaded_size += size*nmemb;
-	    LOG_DEBUG("Downloaded %d",data->download->http_downloaded_size);
+// 	    LOG_DEBUG("Downloaded %d",data->download->http_downloaded_size);
 	    return data->download->file->Write((const char*)ptr, size*nmemb, 0);
 	}
 	data->download->http_downloaded_size += size*nmemb;
-	LOG_DEBUG("Downloaded %d",data->download->http_downloaded_size);
+// 	LOG_DEBUG("Downloaded %d",data->download->http_downloaded_size);
 	return data->download->file->Write((const char*)ptr, size*nmemb, data->start_piece);
 }
 
