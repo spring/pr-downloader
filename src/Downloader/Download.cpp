@@ -40,7 +40,10 @@ IDownload::IDownload(const std::string& name,const std::string& origin_name, cat
 	hash(NULL),
 	file(NULL),
 	size(-1),
-	state(IDownload::STATE_NONE)
+	rapid_progress(0),
+	state(IDownload::STATE_NONE),
+	write_only_from(0x0),
+	http_downloaded_size(0)
 {
 	ObserverAdd(this);
 }
@@ -130,26 +133,12 @@ bool IDownload::addDepend(const std::string& depend)
 
 unsigned int IDownload::getProgress() const
 {
+	if ( dltype == TYP_RAPID )
+		return rapid_progress;
 	if (file==NULL)
 		return -1;
-	int res = 0;
-	if(pieces.empty()) {
-		res=file->GetPieceSize();
-	} else {
-		for(unsigned i=0; i<pieces.size(); i++) {
-			switch(pieces[i].state) {
-			case IDownload::STATE_FINISHED:
-				res += file->GetPieceSize(i);
-				break;
-			case IDownload::STATE_DOWNLOADING:
-				res += file->GetPiecePos(i);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	return res;
+	return http_downloaded_size;
+
 }
 
 

@@ -145,7 +145,7 @@ void CFile::SetPos(long pos, int piece)
 	if (piece>=0) {
 		//LOG_DEBUG("pos: %d piecesize: %d", pos, piecesize);
 		assert(pieces[piece].pos<=size+pos);
-		assert(pos<=piecesize);
+		//assert(pos<=piecesize); This is no longer needed since we download multiple pieces together
 		pieces[piece].pos =pos;
 	} else {
 		assert(size<=0 || pos<=size);
@@ -222,6 +222,16 @@ bool CFile::SetPieceSize(int pieceSize)
 	curpos=0;
 //	LOG("SetPieceSize piecesize: %d filesize: %ld pieces count:%d", pieceSize, this->size, (int)pieces.size());
 	return true;
+}
+int CFile::GetPiecesSize(std::vector< unsigned int > pieces) const
+{
+  int size = 0;
+  for ( std::vector< unsigned int >::iterator it = pieces.begin(); it != pieces.end(); it++ )
+  {
+    size += GetPieceSize(*it);
+  }
+  return size;
+
 }
 
 int CFile::GetPieceSize(int piece) const

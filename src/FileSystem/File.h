@@ -67,6 +67,7 @@ public:
 	*	@return the size of a peace
 	*/
 	int GetPieceSize(int piece=-1) const;
+	int GetPiecesSize(std::vector<unsigned int> pieces) const;
 	/**
 	*	gets the read/write position of piece
 	*/

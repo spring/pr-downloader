@@ -142,38 +142,51 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data)
 {
 	//LOG_DEBUG("%d %d",size,  nmemb);
-	if (!data->headersok) {
-		LOG_ERROR("Server returned invalid / to few headers, ignoring, (but could lead to broken files!)");
+	if (!data->got_ranges) {
+		LOG_ERROR("Server refused ranges"); // The server refused ranges , download only from this piece , overwrite from 0 , and drop everything else
+	
+		data->download->write_only_from = data;
+		data->got_ranges = true; //Silence the error
 	}
-	return data->download->file->Write((const char*)ptr, size*nmemb, data->piece);
+	if ( data->download->write_only_from != NULL && data->download->write_only_from != data )
+	    return size*nmemb;
+	else if ( data->download->write_only_from != NULL )
+	{
+	    data->download->http_downloaded_size += size*nmemb;
+	    LOG_DEBUG("Downloaded %d",data->download->http_downloaded_size);
+	    return data->download->file->Write((const char*)ptr, size*nmemb, 0);
+	}
+	data->download->http_downloaded_size += size*nmemb;
+	LOG_DEBUG("Downloaded %d",data->download->http_downloaded_size);
+	return data->download->file->Write((const char*)ptr, size*nmemb, data->start_piece);
 }
 
 size_t multiHeader(void *ptr, size_t size, size_t nmemb, DownloadData *data)
 {
 	if(data->download->pieces.empty()) { //no chunked transfer, don't check headers
 		LOG_DEBUG("Unchunked transfer!");
-		data->headersok = true;
+		data->got_ranges = true;
 		return size*nmemb;
 	}
 	const std::string buf((char*)ptr, size*nmemb-1);
 	int start, end, total;
 	int count = sscanf(buf.c_str(), "Content-Range: bytes %d-%d/%d", &start, &end, &total);
 	if(count == 3) {
-		int piecesize = data->download->file->GetPieceSize(data->piece);
-		if (end-start+1!=piecesize) {
+		int piecesize = data->download->file->GetPiecesSize(data->pieces);
+		if (end-start+1!=piecesize ) {
 			LOG_DEBUG("piecesize %d doesn't match server size: %d", piecesize, end-start+1);
 			return -1;
 		}
-		data->headersok = true;
+		data->got_ranges = true;
 	}
 	LOG_DEBUG("%s", buf.c_str());
 	return size*nmemb;
 }
 
-bool CHttpDownloader::getRange(std::string& range, int piece, int piecesize)
+bool CHttpDownloader::getRange(std::string& range, int start_piece, int num_pieces, int piecesize)
 {
 	std::ostringstream s;
-	s << (int)(piecesize*piece) <<"-"<< (piecesize*piece) + piecesize-1;
+	s << (int)(piecesize*start_piece) <<"-"<< (piecesize*start_piece) + piecesize*num_pieces-1;
 	range=s.str();
 	LOG_DEBUG("%s", range.c_str());
 	return true;
@@ -186,8 +199,9 @@ void CHttpDownloader::showProcess(IDownload* download, bool force)
 	LOG_PROGRESS(done, size, force);
 }
 
-int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
+std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file, IDownload* download)
 {
+	std::vector< unsigned int > pieces;
 	//verify file by md5 if pieces.size == 0
 	if((download->pieces.empty()) && (download->hash!=NULL) && (download->hash->isSet())) {
 		HashMD5 md5=HashMD5();
@@ -196,7 +210,7 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 			LOG_INFO("md5 correct: %s", md5.toString().c_str());
 			download->state=IDownload::STATE_FINISHED;
 			showProcess(download, true);
-			return -1;
+			return pieces;
 		} else {
 			LOG_ERROR("md5 sum missmatch %s %s", download->hash->toString().c_str(), md5.toString().c_str());
 		}
@@ -208,37 +222,51 @@ int CHttpDownloader::verifyAndGetNextPiece(CFile& file, IDownload* download)
 		showProcess(download, false);
 		if (download->pieces[i].state==IDownload::STATE_FINISHED) {
 			alreadyDl++;
+			LOG_DEBUG("piece %d marked as downloaded", i);
+			if ( pieces.size() > 0 )
+				break;//Contiguos non-downloaded area finished
 			continue;
 		} else if (download->pieces[i].state==IDownload::STATE_NONE) {
 			if ((download->pieces[i].sha->isSet()) && (!file.IsNewFile())) { //reuse piece, if checksum is fine
 				file.Hash(sha1, i);
 //	LOG("bla %s %s", sha1.toString().c_str(), download.pieces[i].sha->toString().c_str());
 				if (sha1.compare(download->pieces[i].sha)) {
-//					LOG_DEBUG("piece %d has already correct checksum, reusing", i);
+					LOG_DEBUG("piece %d has already correct checksum, reusing", i);
 					download->pieces[i].state=IDownload::STATE_FINISHED;
 					showProcess(download, true);
 					alreadyDl++;
+					if ( pieces.size() > 0 )
+						break;//Contiguos non-downloaded area finished
 					continue;
 				}
 			}
-			return i;
+			pieces.push_back(i);
+			if ( pieces.size() == download->pieces.size()/download->parallel_downloads )
+			      break;
 		}
 	}
-	if (!download->pieces.empty()) {
+	if (pieces.size() == 0) {
+		LOG_DEBUG("Finished\n");
 		download->state=IDownload::STATE_FINISHED;
 		showProcess(download, true);
 	}
-	return -1;
+	LOG_DEBUG("Pieces to download: %d\n",pieces.size());
+	return pieces;
 }
 
 bool CHttpDownloader::setupDownload(DownloadData* piece)
 {
-	int pieceNum=verifyAndGetNextPiece(*(piece->download->file), piece->download);
+	std::vector<unsigned int> pieces = verifyAndGetNextPieces(*(piece->download->file), piece->download);
 	if (piece->download->state==IDownload::STATE_FINISHED)
 		return false;
-	assert(piece->download->pieces.size()<=0 || pieceNum>=0);
-
-	piece->piece=pieceNum;
+	if ( piece->download->file )
+	{
+		piece->download->size = piece->download->file->GetPieceSize(-1);
+		LOG_DEBUG("Size is %d",piece->download->size);
+	}
+	piece->start_piece=pieces.size() > 0 ? pieces[0] : -1;
+	assert(piece->download->pieces.size()<=0 || piece->start_piece >=0);
+	piece->pieces = pieces;
 	if (piece->easy_handle==NULL) {
 		piece->easy_handle=CurlWrapper::CurlInit();
 	} else {
@@ -254,27 +282,28 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	}
 	std::string escaped;
 	piece->mirror->escapeUrl(escaped);
-
 	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
-	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 1L);
+	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 0L);
 	curl_easy_setopt(curle, CURLOPT_URL, escaped.c_str());
 
-	if ((piece->download->size>0) && (pieceNum>=0)) { //don't set range, if size unknown
+	if ((piece->download->size>0) && (piece->start_piece>=0)) { //don't set range, if size unknown
 		std::string range;
-		if (!getRange(range, pieceNum, piece->download->piecesize)) {
+		if (!getRange(range, piece->start_piece, piece->pieces.size() , piece->download->piecesize)) {
 			LOG_ERROR("Error getting range for download");
 			return false;
 		}
 		//set range for request, format is <start>-<end>
-		curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
+		if ( !(piece->start_piece == 0 && piece->pieces.size() == piece->download->pieces.size()) )
+			curl_easy_setopt(curle, CURLOPT_RANGE, range.c_str());
 		//parse server response	header as well
 		curl_easy_setopt(curle, CURLOPT_HEADERFUNCTION, multiHeader);
 		curl_easy_setopt(curle, CURLOPT_WRITEHEADER, piece);
-		piece->download->pieces[pieceNum].state=IDownload::STATE_DOWNLOADING;
+		for ( std::vector<unsigned int>::iterator it = piece->pieces.begin(); it != piece->pieces.end(); it++ )
+			piece->download->pieces[*it].state=IDownload::STATE_DOWNLOADING;
 	} else { //
 		LOG_DEBUG("single piece transfer");
-		piece->headersok = true;
+		piece->got_ranges = true;
 
 		//this sets the header If-Modified-Since -> downloads only when remote file is newer than local file
 		const long timestamp = piece->download->file->GetTimestamp();
@@ -312,8 +341,8 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 				long http_code = 0;
 				curl_easy_getinfo(msg->easy_handle, CURLINFO_RESPONSE_CODE, &http_code);
 				LOG_ERROR("CURL error(%d): %s %d (%s)",msg->msg, curl_easy_strerror(msg->data.result), http_code, data->mirror->url.c_str());
-				if (data->piece>=0) {
-					data->download->pieces[data->piece].state=IDownload::STATE_NONE;
+				if (data->start_piece>=0) {
+					data->download->pieces[data->start_piece].state=IDownload::STATE_NONE;
 				}
 				data->mirror->status=Mirror::STATUS_BROKEN;
 				//FIXME: cleanup curl handle here + process next dl
@@ -322,24 +351,31 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 				LOG_ERROR("Couldn't find download in download list");
 				return false;
 			}
-			if (data->piece<0) { //download without pieces
+			if (data->start_piece<0) { //download without pieces
 				return false;
 			}
 			assert(data->download->file!=NULL);
-			assert(data->piece< (int)data->download->pieces.size());
-			if (data->download->pieces[data->piece].sha->isSet()) {
-				data->download->file->Hash(sha1, data->piece);
-				if (sha1.compare(data->download->pieces[data->piece].sha)) { //piece valid
-					data->download->pieces[data->piece].state=IDownload::STATE_FINISHED;
-					showProcess(data->download, true);
-//					LOG("piece %d verified!", data->piece);
-				} else { //piece download broken, mark mirror as broken (for this file)
-					data->download->pieces[data->piece].state=IDownload::STATE_NONE;
-					data->mirror->status=Mirror::STATUS_BROKEN;
-					//FIXME: cleanup curl handle here + process next dl
+			assert(data->start_piece< (int)data->download->pieces.size());
+			for ( std::vector<unsigned int>::iterator it = data->pieces.begin(); it != data->pieces.end(); it++ )
+			{
+				if (data->download->pieces[*it].sha->isSet()) {
+					data->download->file->Hash(sha1, *it);
+					
+					if (sha1.compare(data->download->pieces[*it].sha)) { //piece valid
+						
+							data->download->pieces[*it].state=IDownload::STATE_FINISHED;
+						showProcess(data->download, true);
+	//					LOG("piece %d verified!", data->piece);
+					} else { //piece download broken, mark mirror as broken (for this file)
+						data->download->pieces[*it].state=IDownload::STATE_NONE;
+						data->download->http_downloaded_size -= data->download->piecesize;
+						data->mirror->status=Mirror::STATUS_BROKEN;
+						//FIXME: cleanup curl handle here + process next dl
+						LOG_ERROR("Piece %d is invalid",*it);
+					}
+				} else {
+					LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d-%d", data->start_piece,data->pieces.size());
 				}
-			} else {
-				LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d", data->piece);
 			}
 			//get speed at which this piece was downloaded + update mirror info
 			double dlSpeed;
@@ -352,7 +388,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			curl_multi_remove_handle(curlm, data->easy_handle);
 			curl_easy_cleanup(data->easy_handle);
 			data->easy_handle=NULL;
-
+			LOG_INFO("piece finished");
 			//piece finished / failed, try a new one
 			if (!setupDownload(data)) {
 				LOG_DEBUG("No piece found, all pieces finished / currently downloading");
@@ -371,7 +407,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 	return aborted;
 }
 
-bool CHttpDownloader::download(std::list<IDownload*>& download)
+bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel)
 {
 
 	std::list<IDownload*>::iterator it;
@@ -382,12 +418,13 @@ bool CHttpDownloader::download(std::list<IDownload*>& download)
 			LOG_DEBUG("skipping non http-dl")
 			continue;
 		}
-		const int count=std::min(MAX_PARALLEL_DOWNLOADS, std::max(1, std::min((int)(*it)->pieces.size(), (*it)->getMirrorCount()))); //count of parallel downloads
+		const int count=std::min(max_parallel, std::max(1, std::min((int)(*it)->pieces.size(), (*it)->getMirrorCount()))); //count of parallel downloads
 		if((*it)->getMirrorCount()<=0) {
 			LOG_ERROR("No mirrors found");
 			return false;
 		}
 		LOG_DEBUG("Using %d parallel downloads", count);
+		(*it)->parallel_downloads = count;
 		CFile* file=new CFile();
 		if(!file->Open((*it)->name, (*it)->size, (*it)->piecesize)) {
 			delete file;

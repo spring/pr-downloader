@@ -35,7 +35,8 @@ public:
 	const std::string& getCacheFile(const std::string &url);
 	void downloadStream(const std::string& url,std::list<FileData*>& files);
 	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
-	virtual bool download(std::list<IDownload*>& download);
+	virtual bool download(std::list< IDownload* >& download, int max_parallel=10);
+	void showProcess(IDownload* download, bool forceOutput);
 private:
 	bool parallelDownload(IDownload& download);
 	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);
@@ -43,21 +44,21 @@ private:
 	/**
 	* show progress bar
 	*/
-	void showProcess(IDownload* download, bool forceOutput);
+	
 
 	/**
 	*	gets next piece that can be downloaded, mark it as downloading
 	*	@return true when DownloadData is correctly set
 	*/
 	bool setupDownload(DownloadData* piece);
-	bool getRange(std::string& range, int piece, int piecesize);
+	bool getRange(std::string& range, int start_piece,int num_pieces, int piecesize);
 	/**
 	* returns piecenum for file, which isn't already downloaded
 	* verifies if parts of a file is already downloaded (if checksums are set in download)
 	* verified parts are marked with STATE_FINISHED
 	* @return number of the piece, -1 if no peaces are avaiable and the whole file needs to be downloaded
 	*/
-	int verifyAndGetNextPiece(CFile& file, IDownload* download);
+	std::vector< unsigned int > verifyAndGetNextPieces(CFile& file, IDownload* download);
 	/**
 	*	process curl messages
 	*		- verify

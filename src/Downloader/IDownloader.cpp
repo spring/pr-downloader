@@ -57,7 +57,7 @@ IDownloader* IDownloader::GetWidgetInstance()
 	return widgetdl;
 }
 
-bool IDownloader::download(std::list<IDownload*>& download)
+bool IDownloader::download(std::list<IDownload*>& download, int max_parallel)
 {
 	std::list<IDownload*>::iterator it;
 	if (download.empty()) {
@@ -67,7 +67,7 @@ bool IDownloader::download(std::list<IDownload*>& download)
 	bool res=true;
 	for (it=download.begin(); it!=download.end(); ++it) {
 		if (!(*it)->downloaded) //don't download twice
-			(*it)->downloaded=this->download(*it);
+			(*it)->downloaded=this->download(*it,max_parallel);
 		if (!(*it)->downloaded) {
 			res=false;
 		}
@@ -75,11 +75,11 @@ bool IDownloader::download(std::list<IDownload*>& download)
 	return res;
 }
 
-bool IDownloader::download(IDownload* dl)
+bool IDownloader::download(IDownload* dl, int max_parallel)
 {
 	std::list<IDownload*> dls;
 	dls.push_back(dl);
-	return download(dls);
+	return download(dls,max_parallel);
 }
 
 void IDownloader::freeResult(std::list<IDownload*>& list)

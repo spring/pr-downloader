@@ -230,7 +230,7 @@ bool DownloadStart()
 	case DL_HTTP:
 		if(!rapidDownload->download(dls))
 			res = false;
-		if (!httpDownload->download(dls))
+		if (!httpDownload->download(dls,1))
 			res = false;
 		break;
 	case DL_ENGINE:

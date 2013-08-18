@@ -42,7 +42,7 @@ public:
 	/**
 		start a download
 	*/
-	virtual bool download(IDownload* download);
+	virtual bool download(IDownload* download,int max_parallel = 10);
 
 	void setMasterUrl(const std::string& url);
 	/**
@@ -50,6 +50,8 @@ public:
 	*/
 	void updateRepos();
 	void downloadRepo(const std::string& url);
+	
+	
 
 private:
 	bool parse();
@@ -61,7 +63,7 @@ private:
 	/**
 		download by name, for example "Complete Annihilation revision 1234"
 	*/
-	bool download_name(const std::string& longname, int reccounter=0);
+	bool download_name(IDownload * download, int reccounter=0, std::string name = "");
 	/**
 		update all repos from the web
 	*/

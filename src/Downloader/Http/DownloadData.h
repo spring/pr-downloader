@@ -4,6 +4,7 @@
 #define _DOWNLOAD_DATA_H
 
 #include <string>
+#include <vector>
 class CFile;
 class Mirror;
 class IDownload;
@@ -14,11 +15,12 @@ class DownloadData
 public:
 	DownloadData();
 	~DownloadData();
-	int piece;
+	int start_piece;
+	std::vector<unsigned int> pieces;
 	CURL* easy_handle; //curl_easy_handle
 	Mirror* mirror; //mirror used
 	IDownload *download;
-	bool headersok; //true if headers received from server are fine
+	bool got_ranges; //true if headers received from server are fine
 };
 
 #endif
