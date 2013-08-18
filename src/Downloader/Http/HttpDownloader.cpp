@@ -153,6 +153,7 @@ size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data
 	else if ( data->download->write_only_from != NULL )
 	{
 	    data->download->http_downloaded_size += size*nmemb;
+	    LOG_DEBUG("Downloaded %d",data->download->http_downloaded_size);
 	    return data->download->file->Write((const char*)ptr, size*nmemb, 0);
 	}
 	data->download->http_downloaded_size += size*nmemb;
@@ -259,7 +260,10 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	if (piece->download->state==IDownload::STATE_FINISHED)
 		return false;
 	if ( piece->download->file )
+	{
 		piece->download->size = piece->download->file->GetPieceSize(-1);
+		LOG_DEBUG("Size is %d",piece->download->size);
+	}
 	piece->start_piece=pieces.size() > 0 ? pieces[0] : -1;
 	assert(piece->download->pieces.size()<=0 || piece->start_piece >=0);
 	piece->pieces = pieces;
