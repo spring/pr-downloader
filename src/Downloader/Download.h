@@ -6,9 +6,6 @@
 #include <string>
 #include <vector>
 #include <list>
-#include <map>
-#include <stdint.h>
-#include "Rapid/Sdp.h"
 
 class IHash;
 class Mirror;
@@ -90,10 +87,6 @@ public:
 	 */
 	int size;
 
-	std::map<CSdp*,uint64_t> rapid_size;
-	std::map<CSdp*,uint64_t> map_rapid_progress;
-	
-	int rapid_progress;
 	/**
 	 *	state for whole file
 	 */

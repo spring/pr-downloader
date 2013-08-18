@@ -8,7 +8,6 @@
 
 #define LENGTH_SIZE 4
 
-class IDownload;
 class FileData;
 class AtomicFile;
 
@@ -21,7 +20,7 @@ public:
 		download a mod, we already know the host where to download from + the md5 of the sdp file
 		we have to download the sdp + parse it + download associated files
 	*/
-	bool download(IDownload * download);
+	bool download();
 	/**
 		returns md5 of a repo
 	*/
@@ -46,7 +45,7 @@ public:
 	const std::string& getDepends() {
 		return depends;
 	}
-	IDownload * m_download;
+
 	bool downloadInitialized;
 	std::list<FileData*>::iterator list_it;
 	std::list<FileData*>* globalFiles; //list with all files of an sdp
@@ -95,7 +94,6 @@ private:
 	std::string filename;
 	std::string depends;
 	bool downloaded;
-	
 };
 
 #endif

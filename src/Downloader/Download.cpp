@@ -40,7 +40,6 @@ IDownload::IDownload(const std::string& name,const std::string& origin_name, cat
 	hash(NULL),
 	file(NULL),
 	size(-1),
-	rapid_progress(0),
 	state(IDownload::STATE_NONE)
 {
 	ObserverAdd(this);
@@ -131,8 +130,6 @@ bool IDownload::addDepend(const std::string& depend)
 
 unsigned int IDownload::getProgress() const
 {
-	if ( dltype == TYP_RAPID )
-		return rapid_progress;
 	if (file==NULL)
 		return -1;
 	int res = 0;
