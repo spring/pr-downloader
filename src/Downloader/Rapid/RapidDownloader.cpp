@@ -107,7 +107,7 @@ bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& 
 	return true;
 }
 
-bool CRapidDownloader::download(IDownload* download)
+bool CRapidDownloader::download(IDownload* download,int max_parallel)
 {
 	LOG_DEBUG("%s",download->name.c_str());
 	if (download->dltype != IDownload::TYP_RAPID) { //skip non-rapid downloads

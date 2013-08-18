@@ -35,7 +35,8 @@ public:
 	const std::string& getCacheFile(const std::string &url);
 	void downloadStream(const std::string& url,std::list<FileData*>& files);
 	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
-	virtual bool download(std::list<IDownload*>& download);
+	virtual bool download(std::list< IDownload* >& download, int max_parallel=10);
+	void showProcess(IDownload* download, bool forceOutput);
 private:
 	bool parallelDownload(IDownload& download);
 	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);
@@ -43,7 +44,7 @@ private:
 	/**
 	* show progress bar
 	*/
-	void showProcess(IDownload* download, bool forceOutput);
+	
 
 	/**
 	*	gets next piece that can be downloaded, mark it as downloading

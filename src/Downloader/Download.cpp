@@ -136,24 +136,8 @@ unsigned int IDownload::getProgress() const
 		return rapid_progress;
 	if (file==NULL)
 		return -1;
-	int res = 0;
-	if(pieces.empty()) {
-		res=file->GetPieceSize();
-	} else {
-		for(unsigned i=0; i<pieces.size(); i++) {
-			switch(pieces[i].state) {
-			case IDownload::STATE_FINISHED:
-				res += file->GetPieceSize(i);
-				break;
-			case IDownload::STATE_DOWNLOADING:
-				res += file->GetPiecePos(i);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	return res;
+	return http_downloaded_size;
+
 }
 
 

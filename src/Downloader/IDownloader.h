@@ -34,13 +34,13 @@ public:
 		download specificed download
 		@return returns true, when download was successfull
 	*/
-	virtual bool download(IDownload* dl);
+	virtual bool download(IDownload* dl, int max_parallel=10);
 	/**
 		download all downloads in list
 		NOTE: either download(IDownload* dl) or download(std::list<IDownload*>& download) has to be implemented!
 		@return returns true, when all downloads were successfull
 	*/
-	virtual bool download(std::list<IDownload*>& download);
+	virtual bool download(std::list<IDownload*>& download, int max_parallel=10);
 
 
 	/**

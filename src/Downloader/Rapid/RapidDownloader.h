@@ -42,7 +42,7 @@ public:
 	/**
 		start a download
 	*/
-	virtual bool download(IDownload* download);
+	virtual bool download(IDownload* download,int max_parallel = 10);
 
 	void setMasterUrl(const std::string& url);
 	/**
@@ -50,6 +50,8 @@ public:
 	*/
 	void updateRepos();
 	void downloadRepo(const std::string& url);
+	
+	
 
 private:
 	bool parse();
