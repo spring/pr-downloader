@@ -7,11 +7,11 @@
 
 DownloadData::DownloadData()
 {
-	piece=0;
+	start_piece=0;
 	mirror=NULL;
 	download=NULL;
 	easy_handle=CurlWrapper::CurlInit();
-	headersok = false;
+	got_ranges = false;
 }
 
 DownloadData::~DownloadData()

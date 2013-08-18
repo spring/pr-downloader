@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include "Rapid/Sdp.h"
 
+class DownloadData;
 class IHash;
 class Mirror;
 class CFile;
@@ -103,6 +104,9 @@ public:
 	 */
 	unsigned int getProgress() const;
 	std::string version;
+	
+	unsigned int parallel_downloads;
+	DownloadData * write_only_from;
 
 private:
 	std::vector <Mirror*> mirrors;

@@ -41,7 +41,8 @@ IDownload::IDownload(const std::string& name,const std::string& origin_name, cat
 	file(NULL),
 	size(-1),
 	rapid_progress(0),
-	state(IDownload::STATE_NONE)
+	state(IDownload::STATE_NONE),
+	write_only_from(0x0)
 {
 	ObserverAdd(this);
 }

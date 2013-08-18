@@ -50,14 +50,14 @@ private:
 	*	@return true when DownloadData is correctly set
 	*/
 	bool setupDownload(DownloadData* piece);
-	bool getRange(std::string& range, int piece, int piecesize);
+	bool getRange(std::string& range, int start_piece,int num_pieces, int piecesize);
 	/**
 	* returns piecenum for file, which isn't already downloaded
 	* verifies if parts of a file is already downloaded (if checksums are set in download)
 	* verified parts are marked with STATE_FINISHED
 	* @return number of the piece, -1 if no peaces are avaiable and the whole file needs to be downloaded
 	*/
-	int verifyAndGetNextPiece(CFile& file, IDownload* download);
+	std::vector< unsigned int > verifyAndGetNextPieces(CFile& file, IDownload* download);
 	/**
 	*	process curl messages
 	*		- verify
