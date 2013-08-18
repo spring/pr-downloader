@@ -17,7 +17,6 @@
 #include <stdlib.h>
 
 CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url):
-	m_download(NULL),
 	downloadInitialized(false),
 	file_handle(NULL),
 	file_pos(0),
@@ -28,7 +27,8 @@ CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::stri
 	shortname(shortname),
 	url(url),
 	depends(depends),
-	downloaded(false)
+	downloaded(false),
+	m_download(NULL)
 {
 	memset(this->cursize_buf,0, LENGTH_SIZE);
 }
@@ -243,12 +243,14 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	csdp.m_download->rapid_size[&csdp] = TotalToDownload;
 	csdp.m_download->map_rapid_progress[&csdp] = NowDownloaded;
 	uint64_t total = 0;
-	for ( std::map<CSdp*,uint64_t>::iterator it = csdp.m_download->rapid_size.begin(); it != csdp.m_download->rapid_size.end(); it++ ) {
+	for ( std::map<CSdp*,uint64_t>::iterator it = csdp.m_download->rapid_size.begin(); it != csdp.m_download->rapid_size.end(); it++ )
+	{
 		total += (*it).second;
 	}
 	csdp.m_download->size = total;
 	total = 0;
-	for ( std::map<CSdp*,uint64_t>::iterator it = csdp.m_download->map_rapid_progress.begin(); it != csdp.m_download->map_rapid_progress.end(); it++ ) {
+	for ( std::map<CSdp*,uint64_t>::iterator it = csdp.m_download->map_rapid_progress.begin(); it != csdp.m_download->map_rapid_progress.end(); it++ )
+	{
 		total += (*it).second;
 	}
 	csdp.m_download->rapid_progress = total;
@@ -290,7 +292,7 @@ bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_streamed_data);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
-
+		
 
 		globalFiles=&files;
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, dest);
