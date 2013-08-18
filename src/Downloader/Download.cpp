@@ -40,10 +40,11 @@ IDownload::IDownload(const std::string& name,const std::string& origin_name, cat
 	hash(NULL),
 	file(NULL),
 	size(-1),
+	http_downloaded_size(0),
 	rapid_progress(0),
 	state(IDownload::STATE_NONE),
-	write_only_from(0x0),
-	http_downloaded_size(0)
+	parallel_downloads(0),
+	write_only_from(NULL)
 {
 	ObserverAdd(this);
 }
