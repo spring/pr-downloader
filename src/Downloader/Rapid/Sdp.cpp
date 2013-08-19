@@ -98,7 +98,7 @@ bool CSdp::download(IDownload * download)
 		} else {
 			(*it)->download=false;
 		}
-		if (i%10==0) {
+		if (i%30==0) {
 			LOG_DEBUG("\r%d/%d checked",i,(int)files.size());
 		}
 	}

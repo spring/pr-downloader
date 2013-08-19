@@ -144,17 +144,16 @@ size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data
 	//LOG_DEBUG("%d %d",size,  nmemb);
 	if (!data->got_ranges) {
 		LOG_ERROR("Server refused ranges"); // The server refused ranges , download only from this piece , overwrite from 0 , and drop everything else
-	
+
 		data->download->write_only_from = data;
 		data->got_ranges = true; //Silence the error
 	}
 	if ( data->download->write_only_from != NULL && data->download->write_only_from != data )
-	    return size*nmemb;
-	else if ( data->download->write_only_from != NULL )
-	{
-	    data->download->http_downloaded_size += size*nmemb;
+		return size*nmemb;
+	else if ( data->download->write_only_from != NULL ) {
+		data->download->http_downloaded_size += size*nmemb;
 // 	    LOG_DEBUG("Downloaded %d",data->download->http_downloaded_size);
-	    return data->download->file->Write((const char*)ptr, size*nmemb, 0);
+		return data->download->file->Write((const char*)ptr, size*nmemb, 0);
 	}
 	data->download->http_downloaded_size += size*nmemb;
 // 	LOG_DEBUG("Downloaded %d",data->download->http_downloaded_size);
@@ -242,7 +241,7 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 			}
 			pieces.push_back(i);
 			if ( pieces.size() == download->pieces.size()/download->parallel_downloads )
-			      break;
+				break;
 		}
 	}
 	if (pieces.size() == 0 && download->pieces.size() != 0) {
@@ -259,8 +258,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	std::vector<unsigned int> pieces = verifyAndGetNextPieces(*(piece->download->file), piece->download);
 	if (piece->download->state==IDownload::STATE_FINISHED)
 		return false;
-	if ( piece->download->file )
-	{
+	if ( piece->download->file ) {
 		piece->download->size = piece->download->file->GetPieceSize(-1);
 		LOG_DEBUG("Size is %d",piece->download->size);
 	}
@@ -284,7 +282,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	piece->mirror->escapeUrl(escaped);
 	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
-	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 0L);
+	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 1L);
 	curl_easy_setopt(curle, CURLOPT_URL, escaped.c_str());
 
 	if ((piece->download->size>0) && (piece->start_piece>=0) && piece->download->pieces.size() > 0) { //don't set range, if size unknown
@@ -356,17 +354,16 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			}
 			assert(data->download->file!=NULL);
 			assert(data->start_piece< (int)data->download->pieces.size());
-			for ( std::vector<unsigned int>::iterator it = data->pieces.begin(); it != data->pieces.end(); it++ )
-			{
+			for ( std::vector<unsigned int>::iterator it = data->pieces.begin(); it != data->pieces.end(); it++ ) {
 				if (data->download->pieces[*it].sha->isSet()) {
 					data->download->file->Hash(sha1, *it);
-					
+
 					if (sha1.compare(data->download->pieces[*it].sha)) { //piece valid
-						
-							data->download->pieces[*it].state=IDownload::STATE_FINISHED;
+
+						data->download->pieces[*it].state=IDownload::STATE_FINISHED;
 						showProcess(data->download, true);
-	//					LOG("piece %d verified!", data->piece);
-					} else { //piece download broken, mark mirror as broken (for this file)
+						// LOG("piece %d verified!", data->piece);
+					} else { // piece download broken, mark mirror as broken (for this file)
 						data->download->pieces[*it].state=IDownload::STATE_NONE;
 						data->download->http_downloaded_size -= data->download->piecesize;
 						data->mirror->status=Mirror::STATUS_BROKEN;
