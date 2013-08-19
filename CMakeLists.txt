@@ -79,8 +79,6 @@ else (MINGW)
 	#set(CMAKE_INSTALL_RPATH "${LIBDIR}")
 endif (MINGW)
 
-#FIXME: set this compile flag only for one file
-add_definitions(-DPR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION})
 
 if (PREFER_STATIC_LIBS)
 	#curl dependency

@@ -9,7 +9,6 @@
 #include <zlib.h>
 #include <time.h>
 
-
 void getStrByIdx(const std::string& str, std::string& res, char c, int idx)
 {
 	unsigned int i=0;

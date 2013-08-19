@@ -2,6 +2,10 @@ subdirs(lib)
 subdirs(Downloader)
 subdirs(FileSystem)
 
+add_library(Version STATIC Version.cpp)
+set_target_properties(Version PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
+
+
 add_library(Util STATIC
 	Util.cpp
 	Logger.cpp
@@ -14,6 +18,7 @@ add_library(Util STATIC
 add_library(CurlWrapper
 	Downloader/CurlWrapper.cpp
 )
+target_link_libraries(CurlWrapper Version)
 
 set (PRDOWNLOADER "pr-downloader")
 set (PRDOWNLOADER_SHARED ${PRDOWNLOADER}_shared)
@@ -76,13 +81,13 @@ if (CONSOLETOOL)
 	add_executable(${PRDOWNLOADER}
 		main.cpp
 	)
-	# hack arround "make install" doesn't generate libpr-downloader_shared.so
-	add_dependencies(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_SHARED})
 
 	if (LINK_STATIC)
 		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
 	else  ()
-		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
+		# hack arround "make install" doesn't generate libpr-downloader_shared.so
+		add_dependencies(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED})
+		target_link_libraries(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
 	endif ()
 	if (WIN32)
 		set_target_properties(${PRDOWNLOADER} PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")

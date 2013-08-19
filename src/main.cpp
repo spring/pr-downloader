@@ -1,9 +1,7 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
-//#include "Downloader/IDownloader.h"
-//#include "Downloader/Mirror.h"
-//#include "FileSystem/FileSystem.h"
 #include "Util.h"
+#include "Version.h"
 #include "Logger.h"
 #include "pr-downloader.h"
 
@@ -52,7 +50,7 @@ static struct option long_options[] = {
 
 void show_version()
 {
-	LOG("pr-downloader " VERSION "\n");
+	LOG("pr-downloader %s\n", getVersion());
 }
 
 void show_help(const char* cmd)
