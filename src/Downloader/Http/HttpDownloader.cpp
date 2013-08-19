@@ -245,7 +245,7 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 			      break;
 		}
 	}
-	if (pieces.size() == 0) {
+	if (pieces.size() == 0 && download->pieces.size() != 0) {
 		LOG_DEBUG("Finished\n");
 		download->state=IDownload::STATE_FINISHED;
 		showProcess(download, true);
@@ -287,7 +287,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 0L);
 	curl_easy_setopt(curle, CURLOPT_URL, escaped.c_str());
 
-	if ((piece->download->size>0) && (piece->start_piece>=0)) { //don't set range, if size unknown
+	if ((piece->download->size>0) && (piece->start_piece>=0) && piece->download->pieces.size() > 0) { //don't set range, if size unknown
 		std::string range;
 		if (!getRange(range, piece->start_piece, piece->pieces.size() , piece->download->piecesize)) {
 			LOG_ERROR("Error getting range for download");
