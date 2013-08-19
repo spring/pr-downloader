@@ -65,7 +65,8 @@ namespace XmlRpc {
     struct MonitoredSource {
       MonitoredSource(XmlRpcSource* src, unsigned mask) : _src(src), _mask(mask) {}
       XmlRpcSource* getSource() const { return _src; }
-      unsigned& getMask() { return _mask; }
+      unsigned getMask() { return _mask; }
+	void setMask(unsigned newmask) { _mask = newmask; }
       XmlRpcSource* _src;
       unsigned _mask;
     };

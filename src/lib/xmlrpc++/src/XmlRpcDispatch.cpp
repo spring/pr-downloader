@@ -62,7 +62,7 @@ XmlRpcDispatch::setSourceEvents(XmlRpcSource* source, unsigned eventMask)
   for (SourceList::iterator it=_sources.begin(); it!=_sources.end(); ++it)
     if (it->getSource() == source)
     {
-      it->getMask() = eventMask;
+      it->setMask(eventMask);
       break;
     }
 }
@@ -91,9 +91,9 @@ XmlRpcDispatch::work(double timeout)
     SourceList::iterator it;
     for (it=_sources.begin(); it!=_sources.end(); ++it) {
       const int fd = it->getSource()->getfd();
-      if (it->getMask() & (unsigned int)ReadableEvent) FD_SET(fd, &inFd);
-      if (it->getMask() & (unsigned int)WritableEvent) FD_SET(fd, &outFd);
-      if (it->getMask() & (unsigned int)Exception)     FD_SET(fd, &excFd);
+      if (it->getMask() & ReadableEvent) FD_SET(fd, &inFd);
+      if (it->getMask() & WritableEvent) FD_SET(fd, &outFd);
+      if (it->getMask() & Exception)     FD_SET(fd, &excFd);
       if (it->getMask() && fd > maxFd)   maxFd = fd;
     }
 
@@ -137,7 +137,7 @@ XmlRpcDispatch::work(double timeout)
           if ( ! src->getKeepOpen())
             src->close();
         } else if (newMask != (unsigned) -1) {
-          thisIt->getMask() = newMask;
+          thisIt->setMask(newMask);
         }
       }
     }
