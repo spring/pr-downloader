@@ -68,21 +68,14 @@ namespace XmlRpc {
     //! Handle server responses. Called by the event dispatcher during execute.
     //!  @param eventType The type of event that occurred.
     //!  @see XmlRpcDispatch::EventType
-    virtual unsigned handleEvent(unsigned eventType);
+    virtual unsigned handleEvent(unsigned eventType) {return true;}
 
   protected:
     // Execution processing helpers
-    virtual bool doConnect();
+    virtual bool doConnect() { return true; }
     virtual bool generateRequest(const char* method, XmlRpcValue const& params);
-    virtual std::string generateHeader(std::string const& body);
-    virtual bool writeRequest();
-    virtual bool readHeader();
     static size_t readResponse(void *ptr, size_t size, size_t nmemb, XmlRpcCurlClient *userdata);
     virtual bool parseResponse(XmlRpcValue& result);
-
-    // Possible IO states for the connection
-    enum ClientConnectionState { NO_CONNECTION, CONNECTING, WRITE_REQUEST, READ_HEADER, READ_RESPONSE, IDLE };
-    ClientConnectionState _connectionState;
 
     std::string _uri;
 
@@ -91,24 +84,9 @@ namespace XmlRpc {
     std::string _header;
     std::string _response;
 
-    // Number of times the client has attempted to send the request
-    int _sendAttempts;
-
-    // Number of bytes of the request that have been written to the socket so far
-    int _bytesWritten;
-
-    // True if we are currently executing a request. If you want to multithread,
-    // each thread should have its own client.
-    bool _executing;
-
-    // True if the server closed the connection
-    bool _eof;
-
     // True if a fault response was returned by the server
     bool _isFault;
 
-    // Number of bytes expected in the response body (parsed from response header)
-    int _contentLength;
 
     // curl handle
     CURL* _curl;

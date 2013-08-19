@@ -38,10 +38,6 @@ XmlRpcCurlClient::XmlRpcCurlClient(CURL* curl, const char* host, int port, const
 		_uri += uri;
 	else
 		_uri += "/RPC2";
-  _connectionState = NO_CONNECTION;
-  _executing = false;
-  _eof = false;
-
   // Default to keeping the connection open until an explicit close is done
   setKeepOpen();
 }
@@ -56,17 +52,8 @@ void
 XmlRpcCurlClient::close()
 {
   XmlRpcUtil::log(4, "XmlRpcCurlClient::close: fd %d.", getfd());
-  _connectionState = NO_CONNECTION;
   XmlRpcSource::close();
 }
-
-
-// Clear the referenced flag even if exceptions or errors occur.
-struct ClearFlagOnExit {
-  ClearFlagOnExit(bool& flag) : _flag(flag) {}
-  ~ClearFlagOnExit() { _flag = false; }
-  bool& _flag;
-};
 
 // Execute the named procedure on the remote server.
 // Params should be an array of the arguments for the method.
@@ -82,29 +69,13 @@ XmlRpcCurlClient::execute(const char* method, XmlRpcValue const& params, XmlRpcV
 	curl_easy_setopt(_curl, CURLOPT_WRITEDATA, this);
 	curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, XmlRpcCurlClient::readResponse);
 	CURLcode res = curl_easy_perform(_curl);
-	XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: method %s (_connectionState %d).", method, _connectionState);
+	XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: method %s.", method);
 	if(res != CURLE_OK)
 		return false;
 	if(!parseResponse(result))
 		return false;
 	XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: method %s completed.", method);
 	_response = "";
-	return true;
-}
-
-// XmlRpcSource interface implementation
-// Handle server responses. Called by the event dispatcher during execute.
-unsigned
-XmlRpcCurlClient::handleEvent(unsigned eventType)
-{
-	return true;
-}
-
-
-// Connect to the xmlrpc server
-bool
-XmlRpcCurlClient::doConnect()
-{
 	return true;
 }
 
@@ -138,35 +109,9 @@ XmlRpcCurlClient::generateRequest(const char* methodName, XmlRpcValue const& par
   }
   body += REQUEST_END;
 
-  std::string header = generateHeader(body);
-  XmlRpcUtil::log(4, "XmlRpcCurlClient::generateRequest: header is %d bytes, content-length is %d.",
-                  header.length(), body.length());
-
-  _request = header + body;
+  _request = body;
   return true;
 }
-
-// Prepend http headers
-std::string
-XmlRpcCurlClient::generateHeader(std::string const& body)
-{
-	return "";
-}
-
-bool
-XmlRpcCurlClient::writeRequest()
-{
-	return true;
-}
-
-
-// Read the header from the response
-bool
-XmlRpcCurlClient::readHeader()
-{
-	return true; // Continue monitoring this source
-}
-
 
 size_t
 XmlRpcCurlClient::readResponse(void *ptr, size_t size, size_t nmemb, XmlRpcCurlClient *xmlclient)
