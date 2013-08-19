@@ -34,7 +34,6 @@ XmlRpcCurlClient::XmlRpcCurlClient(CURL* curl, const char* host, int port, const
 	_uri += host;
 	_uri += ":";
 	_uri += port;
-	_uri += "/";
 	if (uri)
 		_uri += uri;
 	else
