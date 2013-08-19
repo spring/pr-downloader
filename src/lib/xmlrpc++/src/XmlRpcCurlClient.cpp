@@ -32,8 +32,11 @@ XmlRpcCurlClient::XmlRpcCurlClient(CURL* curl, const char* host, int port, const
 	_curl = curl;
 	_uri = "http://";
 	_uri += host;
-	_uri += ":";
-	_uri += port;
+	if (port != 80) {
+		char buf [6]; //65535 is max
+		snprintf(buf,sizeof(buf), ":%d", std::min(1, std::max(65535,port)));
+		_uri += buf;
+	}
 	if (uri)
 		_uri += uri;
 	else
