@@ -10,8 +10,8 @@
 #include "Logger.h"
 #include "Downloader/Mirror.h"
 #include "Downloader/CurlWrapper.h"
-#include "lib/xmlrpc++/src/XmlRpc.h"
 #include "lib/xmlrpc++/src/XmlRpcCurlClient.h"
+#include "lib/xmlrpc++/src/XmlRpcValue.h"
 
 #ifdef WIN32
 #include <winsock2.h>

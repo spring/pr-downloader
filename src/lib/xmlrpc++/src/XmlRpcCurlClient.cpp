@@ -38,8 +38,6 @@ XmlRpcCurlClient::XmlRpcCurlClient(CURL* curl, const char* host, int port, const
 		_uri += uri;
 	else
 		_uri += "/RPC2";
-  // Default to keeping the connection open until an explicit close is done
-  setKeepOpen();
 }
 
 
@@ -51,8 +49,7 @@ XmlRpcCurlClient::~XmlRpcCurlClient()
 void
 XmlRpcCurlClient::close()
 {
-  XmlRpcUtil::log(4, "XmlRpcCurlClient::close: fd %d.", getfd());
-  XmlRpcSource::close();
+  XmlRpcUtil::log(4, "XmlRpcCurlClient::close: fd.");
 }
 
 // Execute the named procedure on the remote server.

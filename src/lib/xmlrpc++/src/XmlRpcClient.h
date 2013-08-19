@@ -13,16 +13,13 @@
 # include <string>
 #endif
 
-#include "XmlRpcDispatch.h"
-#include "XmlRpcSource.h"
-
 namespace XmlRpc {
 
   // Arguments and results are represented by XmlRpcValues
   class XmlRpcValue;
 
   //! A class to send XML RPC requests to a server and return the results.
-  class XmlRpcClient : public XmlRpcSource {
+  class XmlRpcClient {
   public:
     // Static data
     static const char REQUEST_BEGIN[];
@@ -116,7 +113,7 @@ namespace XmlRpc {
     int _contentLength;
 
     // Event dispatcher
-    XmlRpcDispatch _disp;
+//    XmlRpcDispatch _disp;
 
   };	// class XmlRpcClient
 

@@ -13,7 +13,6 @@
 # include <string>
 #endif
 
-#include "XmlRpcSource.h"
 #include <curl/curl.h>
 
 namespace XmlRpc {
@@ -22,7 +21,7 @@ namespace XmlRpc {
   class XmlRpcValue;
 
   //! A class to send XML RPC requests to a server and return the results.
-  class XmlRpcCurlClient : public XmlRpcSource {
+  class XmlRpcCurlClient {
   public:
     // Static data
     static const char REQUEST_BEGIN[];
