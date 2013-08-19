@@ -11,6 +11,7 @@
 #include "Downloader/Mirror.h"
 #include "Downloader/CurlWrapper.h"
 #include "lib/xmlrpc++/src/XmlRpc.h"
+#include "lib/xmlrpc++/src/XmlRpcCurlClient.h"
 
 #ifdef WIN32
 #include <winsock2.h>
@@ -34,11 +35,12 @@ CHttpDownloader::~CHttpDownloader()
 
 bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
 {
+	CURL* curl = CurlWrapper::CurlInit();
 	LOG_DEBUG("%s", name.c_str()  );
 
 	const std::string method(XMLRPC_METHOD);
 	//std::string category;
-	XmlRpc::XmlRpcClient client(XMLRPC_HOST,XMLRPC_PORT, XMLRPC_URI);
+	XmlRpc::XmlRpcCurlClient client(curl, XMLRPC_HOST,XMLRPC_PORT, XMLRPC_URI);
 	XmlRpc::XmlRpcValue arg;
 	arg["springname"]=name;
 	arg["torrent"]=true;
