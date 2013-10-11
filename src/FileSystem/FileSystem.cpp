@@ -401,10 +401,22 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	return true;
 }
 
+bool CFileSystem::extractEngine(const std::string& filename, const std::string& version)
+{
+#ifdef ARCHIVE_SUPPORT
+	const std::string output = getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + EscapePath(version);
+	LOG_ERROR("blabla: %s", output.c_str());
+	return extract(filename, output);
+#else
+	LOG_ERROR("no archive support!");
+	return false;
+#endif
+}
+
 bool CFileSystem::extract(const std::string& filename, const std::string& dstdir)
 {
 #ifdef ARCHIVE_SUPPORT
-	LOG_INFO("%s %s", filename.c_str(), dstdir.c_str());
+	LOG_INFO("Extracting %s to %s", filename.c_str(), dstdir.c_str());
 	const int len = filename.length();
 	IArchive* archive;
 	if ((len>4) && (filename.compare(len-3, 3,".7z") == 0 ) ) {

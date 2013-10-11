@@ -103,7 +103,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 			return false;
 		}
 		filename.append(resfile["filename"]);
-		IDownload* dl=new IDownload(filename,name);
+		IDownload* dl=new IDownload(filename,name, cat);
 		XmlRpc::XmlRpcValue mirrors = resfile["mirrors"];
 		for(int j=0; j<mirrors.size(); j++) {
 			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString) {
