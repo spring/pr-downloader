@@ -445,6 +445,10 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 		std::string tmp = dstdir + PATH_DELIMITER;
 		tmp += name.c_str(); //FIXME: concating UTF-16
 		createSubdirs(tmp);
+		if (fileSystem->fileExists(tmp)) {
+			LOG_ERROR("File already exists: %s", tmp.c_str());
+			continue;
+		}
 		LOG_INFO("extracting (%s)", tmp.c_str());
 		FILE* f=fopen(tmp.c_str(), "wb+");
 		if (f == NULL) {
