@@ -145,7 +145,7 @@ size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data
 {
 	//LOG_DEBUG("%d %d",size,  nmemb);
 	if (!data->got_ranges) {
-		LOG_ERROR("Server refused ranges"); // The server refused ranges , download only from this piece , overwrite from 0 , and drop everything else
+		LOG_INFO("Server refused ranges"); // The server refused ranges , download only from this piece , overwrite from 0 , and drop everything else
 
 		data->download->write_only_from = data;
 		data->got_ranges = true; //Silence the error
