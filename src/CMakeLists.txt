@@ -100,10 +100,6 @@ if (CONSOLETOOL)
 	endif()
 endif(CONSOLETOOL)
 
-if (REPOCREATOR)
-	add_subdirectory(RepoCreator)
-endif(REPOCREATOR)
-
 FILE( GLOB_RECURSE header "*.h" )
 
 

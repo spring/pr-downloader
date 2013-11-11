@@ -28,7 +28,6 @@ OPTION(LINK_STATIC "link pr-downloader.exe static or dynamic" ON)
 OPTION(DEVELOP_FILES "install development files (header, libspringdownloader.pc)" OFF)
 OPTION(DO_INSTALL "install files" ON)
 OPTION(ARCHIVE_SUPPORT "enable archive support" ON)
-OPTION(REPOCREATOR "build repocreator, tool to create a server repo" OFF)
 OPTION(CLEAR_COMPILER_FLAGS "clear all compiler flags" OFF)
 
 if(CLEAR_COMPILER_FLAGS)
