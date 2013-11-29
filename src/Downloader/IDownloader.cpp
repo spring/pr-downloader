@@ -5,7 +5,6 @@
 #include "Http/HttpDownloader.h"
 #include "Rapid/RapidDownloader.h"
 #include "Plasma/PlasmaDownloader.h"
-#include "Widget/WidgetDownloader.h"
 #include "Util.h"
 #include "Logger.h"
 #include "Mirror.h"
@@ -16,7 +15,6 @@ class IDownloader;
 IDownloader* IDownloader::httpdl=NULL;
 IDownloader* IDownloader::plasmadl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
-IDownloader* IDownloader::widgetdl=NULL;
 
 void IDownloader::Initialize(IDownloadsObserver* observer)
 {
@@ -49,12 +47,6 @@ IDownloader* IDownloader::GetPlasmaInstance()
 	if (plasmadl==NULL)
 		plasmadl=new CPlasmaDownloader();
 	return plasmadl;
-}
-IDownloader* IDownloader::GetWidgetInstance()
-{
-	if (widgetdl==NULL)
-		widgetdl=new CWidgetDownloader();
-	return widgetdl;
 }
 
 bool IDownloader::download(std::list<IDownload*>& download, int max_parallel)

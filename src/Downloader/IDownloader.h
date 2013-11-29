@@ -17,7 +17,6 @@ public:
 	static IDownloader* GetHttpInstance();
 	static IDownloader* GetRapidInstance();
 	static IDownloader* GetPlasmaInstance();
-	static IDownloader* GetWidgetInstance();
 
 	/**
 		Initialize all Downloaders
@@ -66,7 +65,6 @@ private:
 #define httpDownload IDownloader::GetHttpInstance()
 #define plasmaDownload IDownloader::GetPlasmaInstance()
 #define rapidDownload IDownloader::GetRapidInstance()
-#define widgetDownload IDownloader::GetWidgetInstance()
 
 
 #endif

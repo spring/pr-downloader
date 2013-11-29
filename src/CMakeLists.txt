@@ -38,7 +38,6 @@ set(PRDOWNLOADER_LIBS
 	Http
 	CurlWrapper
 	Plasma
-	Widget
 	FileSystem
 )
 
