@@ -6,13 +6,13 @@
 #include "Logger.h"
 #include "FileSystem.h"
 
-AtomicFile::AtomicFile(std::string filename)
+AtomicFile::AtomicFile(std::string filename):
+	handle(NULL)
 {
 	this->Open(filename);
 }
 
-bool AtomicFile::Open(const std::string& filename):
-	handle(NULL)
+bool AtomicFile::Open(const std::string& filename)
 {
 	tmpname = filename + ".tmp";
 	this->filename=filename;
