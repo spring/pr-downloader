@@ -128,7 +128,7 @@ bool DownloadGetSearchInfo(int id, downloadInfo& info)
 {
 	IDownload* dl = GetIDownloadByID(searchres, id);
 	if (dl!=NULL) {
-		strncpy(info.filename, dl->name.c_str(), NAME_LEN);
+		strncpy(info.filename, dl->name.c_str(), NAME_LEN-1); // -1 because of 0 termination
 		return true;
 	}
 	return false;

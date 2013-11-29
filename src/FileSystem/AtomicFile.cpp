@@ -11,7 +11,8 @@ AtomicFile::AtomicFile(std::string filename)
 	this->Open(filename);
 }
 
-bool AtomicFile::Open(const std::string& filename)
+bool AtomicFile::Open(const std::string& filename):
+	handle(NULL)
 {
 	tmpname = filename + ".tmp";
 	this->filename=filename;

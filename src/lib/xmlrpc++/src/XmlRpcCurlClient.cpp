@@ -26,7 +26,8 @@ const char XmlRpcCurlClient::FAULT_TAG[] = "<fault>";
 
 
 
-XmlRpcCurlClient::XmlRpcCurlClient(CURL* curl, const char* host, int port, const char* uri/*=0*/)
+XmlRpcCurlClient::XmlRpcCurlClient(CURL* curl, const char* host, int port, const char* uri/*=0*/):
+	_isFault(false)
 {
 	XmlRpcUtil::log(1, "XmlRpcCurlClient new client: host %s, port %d.", host, port);
 	_curl = curl;
@@ -136,7 +137,7 @@ XmlRpcCurlClient::parseResponse(XmlRpcValue& result)
   // Expect either <params><param>... or <fault>...
   if ((XmlRpcUtil::nextTagIs(PARAMS_TAG,_response,&offset) &&
        XmlRpcUtil::nextTagIs(PARAM_TAG,_response,&offset)) ||
-      (XmlRpcUtil::nextTagIs(FAULT_TAG,_response,&offset) && (_isFault = true)))
+      (XmlRpcUtil::nextTagIs(FAULT_TAG,_response,&offset) && (_isFault == true)))
   {
     if ( ! result.fromXml(_response, &offset)) {
       XmlRpcUtil::error("Error in XmlRpcCurlClient::parseResponse: Invalid response value. Response:\n%s", _response.c_str());

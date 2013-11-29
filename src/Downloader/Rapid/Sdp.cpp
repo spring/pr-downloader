@@ -19,6 +19,7 @@
 CSdp::CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url):
 	m_download(NULL),
 	downloadInitialized(false),
+	globalFiles(NULL),
 	file_handle(NULL),
 	file_pos(0),
 	skipped(false),

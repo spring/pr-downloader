@@ -155,8 +155,10 @@ static be_node *_be_decode(const char **data, long long *data_len)
 		--(*data_len);
 		++(*data);
 		ret->val.i = _be_decode_int(data, data_len);
-		if (**data != 'e')
+		if (**data != 'e') {
+			be_free(ret);
 			return NULL;
+		}
 		--(*data_len);
 		++(*data);
 
