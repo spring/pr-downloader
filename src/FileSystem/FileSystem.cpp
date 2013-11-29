@@ -234,20 +234,20 @@ int CFileSystem::validatePool(const std::string& path)
 		return 0;
 	}
 	int res=0;
-	std::list <std::string*>dirs;
-	dirs.push_back(new std::string(path));
+	std::list <std::string>dirs;
+	dirs.push_back(path);
 	int maxdirs=257; //FIXME: unknown dirs in pool will break bar
 	int finished=0;
 	IHash* md5=new HashMD5();
 	while(!dirs.empty()) {
 		struct dirent* dentry;
 		DIR* d;
-		std::string* dir=dirs.front();
+		const std::string& dir=dirs.front();
 		dirs.pop_front();
-		d=opendir(dir->c_str());
+		d=opendir(dir.c_str());
 		while ( (dentry=readdir(d))!=NULL) {
 			LOG_PROGRESS(finished, maxdirs);
-			std::string absname=dir->c_str();
+			std::string absname=dir;
 			absname += PATH_DELIMITER;
 			absname += dentry->d_name;
 			if (dentry->d_name[0]!='.') { //don't check hidden files / . / ..
@@ -258,7 +258,7 @@ int CFileSystem::validatePool(const std::string& path)
 				stat(absname.c_str(), &sb);
 				if((sb.st_mode & S_IFDIR)!=0) {
 #endif
-					dirs.push_back(new std::string(absname));
+					dirs.push_back(absname);
 				} else {
 					FileData filedata=FileData();
 					int len=absname.length();
@@ -284,7 +284,6 @@ int CFileSystem::validatePool(const std::string& path)
 			}
 		}
 		finished++;
-		delete(dir);
 		closedir(d);
 	}
 	delete md5;
