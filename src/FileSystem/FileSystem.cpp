@@ -242,7 +242,7 @@ int CFileSystem::validatePool(const std::string& path)
 	while(!dirs.empty()) {
 		struct dirent* dentry;
 		DIR* d;
-		const std::string& dir=dirs.front();
+		const std::string dir=dirs.front();
 		dirs.pop_front();
 		d=opendir(dir.c_str());
 		while ( (dentry=readdir(d))!=NULL) {
