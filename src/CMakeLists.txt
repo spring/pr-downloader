@@ -5,6 +5,9 @@ subdirs(FileSystem)
 add_library(Version STATIC Version.cpp)
 set_target_properties(Version PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
 
+if (PRD_DISABLE_STDOUT_LOGGING)
+	add_definitions(-DDISABLE_STDOUT_LOGGING)
+endif()
 
 add_library(Util STATIC
 	Util.cpp
@@ -42,46 +45,46 @@ set(PRDOWNLOADER_LIBS
 )
 
 
-OPTION(SHAREDLIB
+OPTION(PRD_SHAREDLIB
 	"Enables compilation of the shared lib" ON)
 
-if (SHAREDLIB)
+if (PRD_SHAREDLIB)
 	add_library(${PRDOWNLOADER_SHARED} SHARED
 		pr-downloader.cpp
 	)
-	if(DO_INSTALL)
+	if(PRD_DO_INSTALL)
 		INSTALL (TARGETS ${PRDOWNLOADER_SHARED}
-			RUNTIME DESTINATION ${BINDIR}
-			LIBRARY DESTINATION ${LIBDIR}
-			ARCHIVE DESTINATION ${LIBDIR} )
+			RUNTIME DESTINATION ${PRD_BINDIR}
+			LIBRARY DESTINATION ${PRD_LIBDIR}
+			ARCHIVE DESTINATION ${PRD_LIBDIR} )
 	endif()
 	target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
 endif()
 
-OPTION(STATICLIB
+OPTION(PRD_STATICLIB
 	"Enables compilation of the static lib" ON)
-if (STATICLIB)
+if (PRD_STATICLIB)
 	add_library(${PRDOWNLOADER_STATIC} STATIC
 		pr-downloader.cpp
 	)
-	if(DO_INSTALL)
+	if(PRD_DO_INSTALL)
 		INSTALL (TARGETS ${PRDOWNLOADER_STATIC}
-			RUNTIME DESTINATION ${BINDIR}
-			LIBRARY DESTINATION ${LIBDIR}
-			ARCHIVE DESTINATION ${LIBDIR} )
+			RUNTIME DESTINATION ${PRD_BINDIR}
+			LIBRARY DESTINATION ${PRD_LIBDIR}
+			ARCHIVE DESTINATION ${PRD_LIBDIR} )
 	endif()
 	target_link_libraries( ${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} ${CMAKE_DL_LIBS})
 endif()
 
-OPTION(CONSOLETOOL
+OPTION(PRD_CONSOLETOOL
         "Enables compilation and installation of the console tool ${PRDOWNLOADER}" ON)
 
-if (CONSOLETOOL)
+if (PRD_CONSOLETOOL)
 	add_executable(${PRDOWNLOADER}
 		main.cpp
 	)
 
-	if (LINK_STATIC)
+	if (PRD_LINK_STATIC)
 		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
 	else  ()
 		# hack arround "make install" doesn't generate libpr-downloader_shared.so
@@ -91,30 +94,30 @@ if (CONSOLETOOL)
 	if (WIN32)
 		set_target_properties(${PRDOWNLOADER} PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")
 	endif()
-	if (DO_INSTALL)
+	if (PRD_DO_INSTALL)
 		INSTALL (TARGETS ${PRDOWNLOADER}
-			RUNTIME DESTINATION ${BINDIR}
-			LIBRARY DESTINATION ${LIBDIR}
-			ARCHIVE DESTINATION ${LIBDIR} )
+			RUNTIME DESTINATION ${PRD_BINDIR}
+			LIBRARY DESTINATION ${PRD_LIBDIR}
+			ARCHIVE DESTINATION ${PRD_LIBDIR} )
 	endif()
-endif(CONSOLETOOL)
+endif(PRD_CONSOLETOOL)
 
 FILE( GLOB_RECURSE header "*.h" )
 
 
 
-if(NOT WIN32 AND DEVELOP_FILES)
+if(NOT WIN32 AND PRD_DEVELOP_FILES)
 	SET(VERSION ${PR_DOWNLOADER_VERSION})
 	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
 	               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
-	if (DO_INSTALL)
-		install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${LIBDIR}/pkgconfig")
+	if (PRD_DO_INSTALL)
+		install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${PRD_LIBDIR}/pkgconfig")
 	endif()
 endif()
 
-if(DO_INSTALL AND DEVELOP_FILES AND DO_INSTALL)
+if(PRD_DO_INSTALL AND PRD_DEVELOP_FILES AND PRD_DO_INSTALL)
 	INSTALL (FILES
 		pr-downloader.h
-	        DESTINATION ${INCLUDE_DIR}/Downloader COMPONENT Devel )
+	        DESTINATION ${PRD_INCLUDE_DIR}/Downloader COMPONENT Devel )
 endif()
 

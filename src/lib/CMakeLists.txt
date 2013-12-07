@@ -1,4 +1,4 @@
-if(ARCHIVE_SUPPORT)
+if(PRD_ARCHIVE_SUPPORT)
 	subdirs(7z)
 	if (NOT MINIZIP_FOUND)
 		subdirs(minizip)

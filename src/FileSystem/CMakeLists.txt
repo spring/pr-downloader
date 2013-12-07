@@ -1,4 +1,4 @@
-if (ARCHIVE_SUPPORT)
+if (PRD_ARCHIVE_SUPPORT)
 	set(archivessrc SevenZipArchive.cpp ZipArchive.cpp)
 	set(archiveslib pr-7z)
 	add_definitions(-DARCHIVE_SUPPORT)
@@ -22,7 +22,7 @@ target_link_libraries(FileSystem
 	bencode
 	${archiveslib}
 )
-if(ARCHIVE_SUPPORT)
+if(PRD_ARCHIVE_SUPPORT)
 	if (MINIZIP_FOUND)
 		target_link_libraries(FileSystem ${MINIZIP_LIBRARIES})
 	else()
