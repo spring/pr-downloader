@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+	void LOG_DISABLE(bool disableLogging);
 
 	enum L_LEVEL {
 		L_ERROR = 1,

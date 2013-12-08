@@ -258,3 +258,9 @@ bool DownloadDumpSDP(const char* path)
 {
 	return fileSystem->dumpSDP(path);
 }
+
+void DownloadDisableLogging(bool disableLogging)
+{
+	LOG_DISABLE(disableLogging);
+}
+

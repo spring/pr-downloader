@@ -6,12 +6,19 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+static bool logEnabled = true;
+
+void LOG_DISABLE(bool disableLogging)
+{
+	logEnabled = !disableLogging;
+}
 
 void L_LOG(L_LEVEL level, const char* format ...)
 {
-#ifdef DISABLE_STDOUT_LOGGING
-	return;
-#else
+	if (!logEnabled) {
+		return;
+	}
+
 	va_list args;
 	va_start(args,format);
 	switch(level) {
@@ -37,7 +44,6 @@ void L_LOG(L_LEVEL level, const char* format ...)
 		break;
 	}
 	va_end(args);
-#endif
 }
 
 void LOG_DOWNLOAD(const char* filename)
@@ -45,17 +51,16 @@ void LOG_DOWNLOAD(const char* filename)
 	L_LOG(L_RAW, "[Download] %s\n",filename);
 }
 
-#ifndef DISABLE_STDOUT_LOGGING
 static unsigned long lastlogtime=0;
-#endif
 
 void LOG_PROGRESS(long done, long total, bool forceOutput)
 {
+	if (!logEnabled) {
+		return;
+	}
+
 	unsigned long now=getTime(); // needs to be here atm to avoid static link failure because of circular deps between libs
-#ifdef DISABLE_STDOUT_LOGGING
-	static_cast<void>(now); // suppress compiler warning
-	return;
-#else
+
 	if (lastlogtime<now) {
 		lastlogtime=now;
 	} else {
@@ -80,6 +85,5 @@ void LOG_PROGRESS(long done, long total, bool forceOutput)
 	// and back to line begin - do not forget the fflush to avoid output buffering problems!
 	L_LOG(L_RAW,"] %ld/%ld ", done, total);
 	L_LOG(L_RAW,"\r");
-#endif
 }
 

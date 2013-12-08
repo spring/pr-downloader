@@ -27,6 +27,7 @@ enum {
 	DOWNLOAD_MAP,
 	DOWNLOAD_GAME,
 	DOWNLOAD_ENGINE,
+	DISABLE_LOGGING,
 	HELP,
 	SHOW_VERSION,
 	EXTRACT_FILE,
@@ -43,6 +44,7 @@ static struct option long_options[] = {
 	{"download-game"           , 1, 0, DOWNLOAD_GAME},
 	{"download-engine"         , 1, 0, DOWNLOAD_ENGINE},
 	{"filesystem-writepath"    , 1, 0, FILESYSTEM_WRITEPATH},
+	{"disable-logging"         , 0, 0, DISABLE_LOGGING},
 	{"help"                    , 0, 0, HELP},
 	{"version"                 , 0, 0, SHOW_VERSION},
 	{0                         , 0, 0, 0}
@@ -173,6 +175,9 @@ int main(int argc, char **argv)
 			}
 			break;
 		}
+		case DISABLE_LOGGING:
+			DownloadDisableLogging(true);
+			break;
 		case HELP:
 		default: {
 			show_help(argv[0]);

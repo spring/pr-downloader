@@ -5,10 +5,6 @@ subdirs(FileSystem)
 add_library(Version STATIC Version.cpp)
 set_target_properties(Version PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
 
-if (PRD_DISABLE_STDOUT_LOGGING)
-	add_definitions(-DDISABLE_STDOUT_LOGGING)
-endif()
-
 add_library(Util STATIC
 	Util.cpp
 	Logger.cpp

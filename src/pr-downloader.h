@@ -86,5 +86,10 @@ extern bool DownloadRapidValidate();
 */
 extern bool DownloadDumpSDP(const char* path);
 
+/**
+* control printing to stdout
+*/
+extern void DownloadDisableLogging(bool disableLogging);
+
 #endif
 
