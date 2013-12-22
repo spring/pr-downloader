@@ -67,7 +67,7 @@ namespace XmlRpc {
     //! Handle server responses. Called by the event dispatcher during execute.
     //!  @param eventType The type of event that occurred.
     //!  @see XmlRpcDispatch::EventType
-    virtual unsigned handleEvent(unsigned eventType) {return true;}
+    virtual unsigned handleEvent(unsigned /*eventType*/) {return true;}
 
   protected:
     // Execution processing helpers
