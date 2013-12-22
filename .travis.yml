@@ -3,7 +3,8 @@ compiler:
   - clang
   - gcc
 before_script:
-  - git submodule update --init --recursive
-  - cmake -DREPOCREATOR:BOOL=ON .
+  - cmake .
 script:
-  - make
+  - make -j2
+  - src/pr-downloader ba:stable
+  - src/pr-downloader --rapid-validate
