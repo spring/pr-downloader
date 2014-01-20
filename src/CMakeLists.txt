@@ -1,23 +1,62 @@
 subdirs(lib)
-subdirs(Downloader)
-subdirs(FileSystem)
 
 add_library(Version STATIC Version.cpp)
 set_target_properties(Version PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
 
-add_library(Util STATIC
-	Util.cpp
-	Logger.cpp
+
+if (PRD_ARCHIVE_SUPPORT)
+	set(archivessrc FileSystem/SevenZipArchive.cpp FileSystem/ZipArchive.cpp)
+	set(archiveslib pr-7z)
+	add_definitions(-DARCHIVE_SUPPORT)
+endif()
+
+add_library(Downloader STATIC
+	Downloader/Rapid/RapidDownloader.cpp
+	Downloader/Rapid/Repo.cpp
+	Downloader/Rapid/Sdp.cpp
+	Downloader/Http/HttpDownloader.cpp
+	Downloader/Http/DownloadData.cpp
+	Downloader/Plasma/PlasmaDownloader.cpp
+	Downloader/CurlWrapper.cpp
 	Downloader/Download.cpp
 	Downloader/IDownloader.cpp
 	Downloader/Mirror.cpp
 	Downloader/IDownloadsObserver.cpp
+	FileSystem/AtomicFile.cpp
+	FileSystem/FileData.cpp
+	FileSystem/FileSystem.cpp
+	FileSystem/File.cpp
+	FileSystem/HashMD5.cpp
+	FileSystem/HashSHA1.cpp
+	FileSystem/HashCRC32.cpp
+	FileSystem/IHash.cpp
+	Util.cpp
+	Logger.cpp
+	${archivessrc}
 )
 
-add_library(CurlWrapper
-	Downloader/CurlWrapper.cpp
+target_link_libraries(Downloader
+	${CURL_LIBRARIES}
+	${OPENSSL_LIBRARIES}
+	xmlrpc
+	${WIN32LIBS}
+	soap
+	${ZLIB_LIBRARIES}
+	pr-md5
+	pr-sha1
+	bencode
+	${archiveslib}
+	Version
 )
-target_link_libraries(CurlWrapper Version)
+
+if(PRD_ARCHIVE_SUPPORT)
+	if (MINIZIP_FOUND)
+		target_link_libraries(Downloader ${MINIZIP_LIBRARIES})
+	else()
+		target_link_libraries(Downloader pr-minizip)
+	endif()
+endif()
+
 
 set (PRDOWNLOADER "pr-downloader")
 set (PRDOWNLOADER_SHARED ${PRDOWNLOADER}_shared)
@@ -32,12 +71,7 @@ ENDIF ()
 
 set(PRDOWNLOADER_LIBS
 	${WIN32LIBS}
-	Util
-	Rapid
-	Http
-	CurlWrapper
-	Plasma
-	FileSystem
+	Downloader
 )
 
 
