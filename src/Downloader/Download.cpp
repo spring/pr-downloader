@@ -137,7 +137,7 @@ unsigned int IDownload::getProgress() const
 	if ( dltype == TYP_RAPID )
 		return rapid_progress;
 	if (file==NULL)
-		return -1;
+		return 0;
 	return http_downloaded_size;
 
 }
