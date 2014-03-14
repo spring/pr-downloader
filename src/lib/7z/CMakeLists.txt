@@ -1,4 +1,4 @@
-add_library(pr-7z
+add_library(pr-7z STATIC
 	7zAlloc.c
 	7zBuf.c
 	7zBuf2.c
