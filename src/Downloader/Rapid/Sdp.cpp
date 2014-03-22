@@ -171,7 +171,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 		}
 		if (sdp->file_handle!=NULL) {
 			if (sdp->skipped<LENGTH_SIZE) { // check if we skipped all 4 bytes, if not so, skip them
-				int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
+				const int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
 				for (int i=0; i<toskip; i++) { //copy bufs avaiable
 					sdp->cursize_buf[sdp->skipped+i]=buf_pos[i];
 //					if (sdp->skipped>0) {
@@ -179,8 +179,8 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 //					}
 				}
 //				LOG_DEBUG("toskip: %d skipped: %d",toskip,sdp->skipped);
-				sdp->skipped=toskip+sdp->skipped;
-				buf_pos=buf_pos+toskip;
+				sdp->skipped += toskip;
+				buf_pos += toskip;
 				if (sdp->skipped==LENGTH_SIZE) {
 					(*sdp->list_it)->compsize=parse_int32(sdp->cursize_buf);
 //					LOG_DEBUG("%s %hhu %hhu %hhu %hhu", sdp->file_name.c_str(), sdp->cursize_buf[0], sdp->cursize_buf[1], sdp->cursize_buf[2], sdp->cursize_buf[3]);
@@ -189,27 +189,21 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 				}
 			}
 			if (sdp->skipped==LENGTH_SIZE) {
-				int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
+				const int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
 						    buf_end-buf_pos);
 //				LOG_DEBUG("%s %d %ld %ld %ld %d %d %d %d %d",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
-				int res=0;
-				if (towrite>0) {
-					res=sdp->file_handle->Write(buf_pos,towrite);
-					if (res!=towrite) {
-						LOG_ERROR("fwrite error");
-						return -1;
-					}
-					if (res<=0) {
-						LOG_ERROR("wrote error: %d", res);
-						return -1;
-					}
-				} else if (towrite<0) {
+				if (towrite<=0) {
 					LOG_DEBUG("Fatal, something went wrong here! %d", towrite);
 					return -1;
 				}
+				const int res=sdp->file_handle->Write(buf_pos,towrite);
+				if (res!=towrite) {
+					LOG_ERROR("fwrite error");
+					return -1;
+				}
+				buf_pos += res;
+				sdp->file_pos += res;
 
-				buf_pos=buf_pos+res;
-				sdp->file_pos+=res;
 				if (sdp->file_pos>=(*sdp->list_it)->compsize) { //file finished -> next file
 					sdp->file_handle->Close();
 					delete sdp->file_handle;
