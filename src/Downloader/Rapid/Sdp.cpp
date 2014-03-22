@@ -160,64 +160,51 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			md5.Set((*sdp->list_it)->md5, sizeof((*sdp->list_it)->md5));
 			fileSystem->getPoolFilename(md5.toString(), sdp->file_name);
 			sdp->file_handle=new AtomicFile(sdp->file_name);
-//			LOG_DEBUG("opened %s, size: %d", sdp->file_name.c_str(), (*sdp->list_it)->size);
-//FIXME		sdp->setStatsPos(sdp->getStatsPos()+1);
 			if (sdp->file_handle==NULL) {
 				LOG_ERROR("couldn't open %s",(*sdp->list_it)->name.c_str());
 				return -1;
 			}
-			//here comes the init new file stuff
 			sdp->file_pos=0;
 		}
-		if (sdp->file_handle!=NULL) {
-			if (sdp->skipped<LENGTH_SIZE) { // check if we skipped all 4 bytes, if not so, skip them
-				const int toskip=intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
-				for (int i=0; i<toskip; i++) { //copy bufs avaiable
-					sdp->cursize_buf[sdp->skipped+i]=buf_pos[i];
-//					if (sdp->skipped>0) {
-//						LOG_DEBUG("copy %d to %d ", i, sdp->skipped+i);
-//					}
-				}
-//				LOG_DEBUG("toskip: %d skipped: %d",toskip,sdp->skipped);
-				sdp->skipped += toskip;
-				buf_pos += toskip;
-				if (sdp->skipped==LENGTH_SIZE) {
-					(*sdp->list_it)->compsize=parse_int32(sdp->cursize_buf);
-//					LOG_DEBUG("%s %hhu %hhu %hhu %hhu", sdp->file_name.c_str(), sdp->cursize_buf[0], sdp->cursize_buf[1], sdp->cursize_buf[2], sdp->cursize_buf[3]);
-//					LOG_DEBUG("(data read from sdp)uncompressed size: %d  (data read from net)compressed size: %d", (*sdp->list_it)->size, (*sdp->list_it)->compsize);
-					assert((*sdp->list_it)->size+2000 >= (*sdp->list_it)->compsize);
-				}
+		if (sdp->skipped<LENGTH_SIZE) { // check if we skipped all 4 bytes for file length, if not so, skip them
+			const int toskip = intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
+			for (int i=0; i<toskip; i++) { //copy bufs avaiable
+				sdp->cursize_buf[sdp->skipped+i]=buf_pos[i];
 			}
-			if (sdp->skipped==LENGTH_SIZE) {
-				const int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
-						    buf_end-buf_pos);
-//				LOG_DEBUG("%s %d %ld %ld %ld %d %d %d %d %d",sdp->file_name.c_str(), (*sdp->list_it).compsize, buf_pos,buf_end, buf_start, towrite, size, nmemb , sdp->skipped, sdp->file_pos);
-				if (towrite<=0) {
-					LOG_DEBUG("Fatal, something went wrong here! %d", towrite);
-					return -1;
-				}
-				const int res=sdp->file_handle->Write(buf_pos,towrite);
-				if (res!=towrite) {
-					LOG_ERROR("fwrite error");
-					return -1;
-				}
-				buf_pos += res;
-				sdp->file_pos += res;
+			sdp->skipped += toskip;
+			buf_pos += toskip;
+			if (sdp->skipped==LENGTH_SIZE) { // all length bytes read, parse
+				(*sdp->list_it)->compsize=parse_int32(sdp->cursize_buf);
+				assert((*sdp->list_it)->size+2000 >= (*sdp->list_it)->compsize);
+			}
+		}
+		if (sdp->skipped==LENGTH_SIZE) { // length bytes read
+			const int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
+					    buf_end-buf_pos);
+			if (towrite<=0) {
+				LOG_DEBUG("Fatal, something went wrong here! %d", towrite);
+				return -1;
+			}
+			const int res=sdp->file_handle->Write(buf_pos,towrite);
+			if (res!=towrite) {
+				LOG_ERROR("fwrite error");
+				return -1;
+			}
+			buf_pos += res;
+			sdp->file_pos += res;
 
-				if (sdp->file_pos>=(*sdp->list_it)->compsize) { //file finished -> next file
-					sdp->file_handle->Close();
-					delete sdp->file_handle;
-					sdp->file_handle = NULL;
-					if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())) {
-						LOG_ERROR("File is broken?!: %s",sdp->file_name.c_str());
-						remove(sdp->file_name.c_str());
-						return -1;
-					}
-					sdp->file_handle=NULL;
-					sdp->list_it++;
-					sdp->file_pos=0;
-					sdp->skipped=0;
+			if (sdp->file_pos>=(*sdp->list_it)->compsize) { //file finished -> next file
+				sdp->file_handle->Close();
+				delete sdp->file_handle;
+				sdp->file_handle = NULL;
+				if (!fileSystem->fileIsValid(*sdp->list_it,sdp->file_name.c_str())) {
+					LOG_ERROR("File is broken?!: %s",sdp->file_name.c_str());
+					remove(sdp->file_name.c_str());
+					return -1;
 				}
+				sdp->list_it++;
+				sdp->file_pos=0;
+				sdp->skipped=0;
 			}
 		}
 	}
@@ -275,7 +262,7 @@ bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 		std::list<FileData*>::iterator it;
 		for (it=files.begin(); it!=files.end(); ++it) {
 			if ((*it)->download==true) {
-				buf[i/8] = buf[i/8] + (1<<(i%8));
+				buf[i/8] |= (1<<(i%8));
 			}
 			i++;
 		}
