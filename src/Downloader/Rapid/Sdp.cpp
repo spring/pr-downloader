@@ -166,6 +166,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			}
 			sdp->file_pos=0;
 		}
+		assert(sdp->file_handle!=NULL);
 		if (sdp->skipped<LENGTH_SIZE) { // check if we skipped all 4 bytes for file length, if not so, skip them
 			const int toskip = intmin(buf_end-buf_pos,LENGTH_SIZE-sdp->skipped); //calculate bytes we can skip, could overlap received bufs
 			for (int i=0; i<toskip; i++) { //copy bufs avaiable
@@ -181,8 +182,8 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 		if (sdp->skipped==LENGTH_SIZE) { // length bytes read
 			const int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
 					    buf_end-buf_pos);
-			if (towrite<=0) {
-				LOG_DEBUG("Fatal, something went wrong here! %d", towrite);
+			if (towrite<0) {
+				LOG_ERROR("Fatal, something went wrong here! %d, %d %d", towrite, buf_end, buf_pos);
 				return -1;
 			}
 			const int res=sdp->file_handle->Write(buf_pos,towrite);
