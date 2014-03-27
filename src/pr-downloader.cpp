@@ -88,14 +88,11 @@ bool search(downloadtype type, category cat, const char* name, std::list<IDownlo
 	switch(type) {
 	case DL_RAPID:
 		return rapidDownload->search(searchres, searchname.c_str(), icat);
-		break;
 	case DL_HTTP:
 	case DL_ENGINE:
 		return httpDownload->search(searchres, searchname.c_str(), icat);
-		break;
 	case DL_PLASMA:
 		return plasmaDownload->search(searchres, searchname.c_str(), icat);
-		break;
 	case DL_ANY:
 		rapidDownload->search(searchres, searchname.c_str(), icat);
 		if (!searchres.empty()) {
@@ -109,7 +106,6 @@ bool search(downloadtype type, category cat, const char* name, std::list<IDownlo
 		}
 		//last try, use plasma
 		return plasmaDownload->search(searchres, searchname.c_str(), icat);
-		break;
 	default:
 		LOG_ERROR("%s: type invalid", __FUNCTION__);
 		return false;
