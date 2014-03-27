@@ -4,6 +4,7 @@
 #include "FileSystem.h"
 #include "Logger.h"
 #include "IHash.h"
+#include "Util.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -290,7 +291,7 @@ bool CFile::SetTimestamp(long timestamp)
 	HANDLE h;
 	bool close = false;
 	if (handle==NULL) {
-		h = CreateFile(filename.c_str() , GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+		h = CreateFile(s2ws(filename).c_str() , GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 		close = true;
 	} else {
 		h = (HANDLE)_get_osfhandle(fileno(handle));

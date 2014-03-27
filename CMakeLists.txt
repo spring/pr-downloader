@@ -78,6 +78,9 @@ else (MINGW)
 	#set(CMAKE_INSTALL_RPATH "${PRD_LIBDIR}")
 endif (MINGW)
 
+if(WIN32)
+	add_definitions(-DUNICODE -D_UNICODE)
+endif()
 
 if (PREFER_STATIC_LIBS)
 	#curl dependency

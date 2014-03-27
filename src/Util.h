@@ -59,4 +59,10 @@ bool urlToPath(const std::string& url, std::string& path);
  */
 unsigned long getTime();
 
+/*
+	convert std::wstring to std::string
+*/
+std::string ws2s(const std::wstring& s);
+std::wstring s2ws(const std::string& s);
+
 #endif

@@ -106,3 +106,32 @@ unsigned long getTime()
 {
 	return time(NULL);
 }
+
+#ifdef WIN32
+#include <windows.h>
+std::string ws2s(const std::wstring& s)
+{
+	const size_t slength = s.length() + 1;
+	const int len = WideCharToMultiByte(CP_UTF8,0, s.c_str(),slength,NULL,0,NULL,NULL);
+	char* buf = new char[len];
+	WideCharToMultiByte(CP_UTF8, 0, s.c_str(), slength, buf, len, NULL, NULL);
+	std::string r(buf, len);
+	delete [] buf;
+	return r;
+}
+
+std::wstring s2ws(const std::string& s)
+{
+	const size_t slength = s.length() + 1;
+	const int len = MultiByteToWideChar(CP_ACP , 0, s.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_UTF8, 0, s.c_str(), slength, buf, len);
+	std::wstring r(buf, len);
+	delete[] buf;
+	return r;
+}
+
+
+#endif
+
+

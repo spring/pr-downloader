@@ -133,9 +133,9 @@ bool CFileSystem::setWritePath(const std::string& path)
 			springdir=".spring";
 		}
 #else
-		TCHAR pathMyDocs[MAX_PATH];
-		SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
-		springdir=pathMyDocs;
+		WCHAR pathMyDocs[MAX_PATH];
+		const size_t len = SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
+		springdir = ws2s(pathMyDocs);
 		springdir.append("\\My Games\\Spring");
 #endif
 	}
