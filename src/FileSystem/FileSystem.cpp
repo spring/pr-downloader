@@ -30,12 +30,23 @@
 
 CFileSystem* CFileSystem::singleton = NULL;
 
+
+FILE* CFileSystem::propen(const std::string& filename, const std::string& mode) const
+{
+#ifdef WIN32
+	return _wfopen(Util::s2ws(filename).c_str(), Util::s2ws(mode).c_str());
+#else
+	return fopen(filename.c_str(), mode.c_str());
+#endif
+}
+
 bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) const
 {
 	HashMD5 md5hash;
 	int bytes;
 	unsigned char data[IO_BUF_SIZE];
-	gzFile inFile = gzopen (filename.c_str(), "rb");
+	FILE* f= propen(filename.c_str(), "rb");
+	gzFile inFile = gzdopen (fileno(f), "rb");
 	if (inFile == NULL) { //file can't be opened
 		LOG_ERROR("Could not open file %s", filename.c_str());
 		return false;
@@ -49,6 +60,7 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 
 	md5hash.Final();
 	gzclose (inFile);
+	fclose(f);
 	/*	if (filesize!=mod->size){
 			ERROR("File %s invalid, size wrong: %d but should be %d", filename.c_str(),filesize, mod->size);
 			return false;
@@ -69,7 +81,8 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 	unsigned char c_size[4];
 	unsigned char length;
 
-	gzFile in=gzopen(filename.c_str(), "r");
+	FILE* f= propen(filename.c_str(), "rb");
+	gzFile in=gzdopen(fileno(f), "rb");
 	if (in==Z_NULL) {
 		LOG_ERROR("Could not open %s",filename.c_str());
 		return false;
@@ -100,6 +113,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 		files.push_back(f);
 	}
 	gzclose(in);
+	fclose(f);
 	LOG_DEBUG("Parsed %s with %d files\n", filename.c_str(), (int)files.size());
 	return true;
 }
@@ -312,10 +326,17 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 	return (t<sb.st_ctime+secs);
 }
 
-bool CFileSystem::fileExists(const std::string& filename)
+bool CFileSystem::fileExists( const std::string& path )
 {
+	if (path.empty()) return false;
+#ifdef WIN32
+	const std::wstring wpath = s2ws(path);
+	DWORD dwAttrib = GetFileAttributesW(wpath.c_str());
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES);
+#else
 	struct stat buffer;
-	return stat(filename.c_str(), &buffer) == 0;
+	return (stat (path.c_str(), &buffer) == 0);
+#endif
 }
 
 bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
@@ -449,7 +470,7 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 			continue;
 		}
 		LOG_INFO("extracting (%s)", tmp.c_str());
-		FILE* f=fopen(tmp.c_str(), "wb+");
+		FILE* f=propen(tmp, "wb+");
 		if (f == NULL) {
 			LOG_ERROR("Error creating %s", tmp.c_str());
 			delete archive;

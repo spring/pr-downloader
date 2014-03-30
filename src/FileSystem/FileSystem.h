@@ -108,6 +108,8 @@ public:
 
 	std::string EscapePath(const std::string& path);
 
+	FILE* propen(const std::string& filename, const std::string& mode) const;
+
 #ifdef WIN32
 	long FiletimeToTimestamp(const _FILETIME& time);
 	void TimestampToFiletime(const time_t t, _FILETIME& pft);

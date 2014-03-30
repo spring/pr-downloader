@@ -30,7 +30,7 @@ bool AtomicFile::Open(const std::string& filename)
 		}
 	}
 	LOG_DEBUG("opened %s", filename.c_str());
-	handle = fopen(tmpname.c_str(), "wb+");
+	handle = fileSystem->propen(tmpname, "wb+");
 	return (handle != NULL);
 }
 

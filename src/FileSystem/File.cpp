@@ -64,9 +64,9 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	isnewfile=res!=0;
 	if (isnewfile) { //if file is new, create it, if not, open the existing one without truncating it
 		tmpfile = filename + ".tmp";
-		handle=fopen(tmpfile.c_str(), "wb+");
+		handle=fileSystem->propen(tmpfile, "wb+");
 	} else {
-		handle=fopen(filename.c_str(), "rb+");
+		handle=fileSystem->propen(filename, "rb+");
 		timestamp = sb.st_mtime;
 	}
 	if (handle==0) {
