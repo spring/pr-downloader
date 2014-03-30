@@ -149,8 +149,11 @@ void CRapidDownloader::setMasterUrl(const std::string& url)
 void CRapidDownloader::download(const std::string& name)
 {
 	std::string tmp;
-	urlToPath(name,tmp);
-	this->path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
+	if (!urlToPath(name,tmp)){
+		LOG_ERROR("Invalid path: %s", tmp.c_str());
+		return;
+	}
+	path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
 	fileSystem->createSubdirs(path);
 	LOG_DEBUG("%s",name.c_str());
 	//first try already downloaded file, as repo master file rarely changes
@@ -164,7 +167,8 @@ void CRapidDownloader::download(const std::string& name)
 
 bool CRapidDownloader::parse()
 {
-	gzFile fp=gzopen(path.c_str(), "rb");
+	FILE* f = fileSystem->propen(path, "rb");
+	gzFile fp=gzdopen(fileno(f), "rb");
 	if (fp==Z_NULL) {
 		LOG_ERROR("Could not open %s", path.c_str());
 		return false;
@@ -186,6 +190,7 @@ bool CRapidDownloader::parse()
 		}
 	}
 	gzclose(fp);
+	fclose(f);
 	LOG_INFO("Found %d repos in %s",repos.size(),path.c_str());
 	return true;
 }

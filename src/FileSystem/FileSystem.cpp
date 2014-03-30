@@ -34,7 +34,7 @@ CFileSystem* CFileSystem::singleton = NULL;
 FILE* CFileSystem::propen(const std::string& filename, const std::string& mode) const
 {
 #ifdef WIN32
-	return _wfopen(Util::s2ws(filename).c_str(), Util::s2ws(mode).c_str());
+	return _wfopen(s2ws(filename).c_str(), s2ws(mode).c_str());
 #else
 	return fopen(filename.c_str(), mode.c_str());
 #endif
@@ -147,9 +147,9 @@ bool CFileSystem::setWritePath(const std::string& path)
 			springdir=".spring";
 		}
 #else
-		WCHAR pathMyDocs[MAX_PATH];
-		const size_t len = SHGetFolderPath( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
-		springdir = ws2s(pathMyDocs);
+		char pathMyDocs[MAX_PATH];
+		const size_t len = SHGetFolderPathA( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
+		springdir = pathMyDocs;
 		springdir.append("\\My Games\\Spring");
 #endif
 	}
@@ -186,18 +186,26 @@ const std::string& CFileSystem::getSpringDir()
 
 bool CFileSystem::directoryExists(const std::string& path) const
 {
+	if (path.empty()) return false;
+#ifdef WIN32
+	const std::wstring wpath = s2ws(path);
+	DWORD dwAttrib = GetFileAttributesW(wpath.c_str());
+	return ((dwAttrib != INVALID_FILE_ATTRIBUTES) && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+#else
 	struct stat fileinfo;
 	int res=stat(path.c_str(),&fileinfo);
 	return ((res == 0) && ((fileinfo.st_mode & S_IFDIR) != 0));
+#endif
 }
 
+bool CreateDir(const std::string& path)
+{
 #ifdef WIN32
-#define MKDIR(path) \
-	mkdir(path)
+	return !CreateDirectory(s2ws(path).c_str(), NULL);
 #else
-#define MKDIR(path) \
-	mkdir(path, 0755)
+	return mkdir(path, 0755) == 0;
 #endif
+}
 
 bool CFileSystem::createSubdirs (const std::string& path) const
 {
@@ -214,13 +222,13 @@ bool CFileSystem::createSubdirs (const std::string& path) const
 		if (c==PATH_DELIMITER) {
 			const std::string tocreate=tmp.substr(0,i);
 			if (!fileSystem->directoryExists(tocreate)) {
-				if (MKDIR(tmp.substr(0,i).c_str())!=0)
+				if (!CreateDir(tmp.substr(0,i).c_str()))
 					return false;
 			}
 		}
 	}
 
-	if ((!directoryExists(tmp)) && (MKDIR(tmp.c_str()))!=0)
+	if ((!directoryExists(tmp)) && (CreateDir(tmp.c_str()))!=0)
 		return false;
 	return true;
 }
@@ -330,8 +338,7 @@ bool CFileSystem::fileExists( const std::string& path )
 {
 	if (path.empty()) return false;
 #ifdef WIN32
-	const std::wstring wpath = s2ws(path);
-	DWORD dwAttrib = GetFileAttributesW(wpath.c_str());
+	DWORD dwAttrib = GetFileAttributesW(s2ws(path).c_str());
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES);
 #else
 	struct stat buffer;

@@ -41,7 +41,8 @@ bool CRepo::getDownload(IDownload& dl)
 bool CRepo::parse()
 {
 	LOG_DEBUG("%s",tmpFile.c_str());
-	gzFile fp=gzopen(tmpFile.c_str(), "r");
+	FILE* f = fileSystem->propen(tmpFile, "rb");
+	gzFile fp = gzdopen(fileno(f), "rb");
 	if (fp==Z_NULL) {
 		LOG_ERROR("Could not open %s",tmpFile.c_str());
 		return false;
@@ -81,5 +82,6 @@ bool CRepo::parse()
 		LOG_ERROR("%d %s\n", errnum, errstr);
 	}
 	gzclose(fp);
+	fclose(f);
 	return true;
 }
