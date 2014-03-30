@@ -203,7 +203,7 @@ bool CreateDir(const std::string& path)
 #ifdef WIN32
 	return !CreateDirectory(s2ws(path).c_str(), NULL);
 #else
-	return mkdir(path, 0755) == 0;
+	return mkdir(path.c_str(), 0755) == 0;
 #endif
 }
 
