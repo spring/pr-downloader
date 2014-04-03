@@ -509,8 +509,12 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 
 bool CFileSystem::Rename(const std::string& source, const std::string& destination)
 {
+#ifdef WIN32
+	return MoveFileW(s2ws(source).c_str(), s2ws(destination).c_str());
+#else
 	int res = rename(source.c_str(), destination.c_str());
 	return (res==0);
+#endif
 }
 
 

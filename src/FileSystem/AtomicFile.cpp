@@ -24,7 +24,7 @@ bool AtomicFile::Open(const std::string& filename)
 			remove(tmpname.c_str());
 		}
 		//rename destination file to temp file
-		if (rename(filename.c_str(), tmpname.c_str())<0) {
+		if (fileSystem->Rename(filename, tmpname)<0) {
 			LOG_ERROR("error renaming temp file %s", filename.c_str());
 			return false;
 		}
@@ -48,7 +48,7 @@ void AtomicFile::Close()
 	fsync(fileno(handle));
 #endif
 	fclose(handle);
-	rename(tmpname.c_str(), filename.c_str());
+	fileSystem->Rename(tmpname, filename);
 	handle = NULL;
 }
 
