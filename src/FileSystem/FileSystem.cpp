@@ -222,6 +222,7 @@ bool CFileSystem::createSubdirs (const std::string& path) const
 	for (unsigned int i=2; i<tmp.size(); i++) {
 		char c=tmp.at(i);
 #ifdef WIN32
+		/* skip for example mkdir(C:\) */
 		if ((i==2) && (c == PATH_DELIMITER))
 			continue;
 #endif
@@ -238,7 +239,6 @@ bool CFileSystem::createSubdirs (const std::string& path) const
 		return false;
 	return true;
 }
-#undef MKDIR
 
 
 void CFileSystem::getPoolFilename(const std::string& md5str, std::string& path)
