@@ -222,10 +222,10 @@ bool CFileSystem::createSubdirs (const std::string& path) const
 	for (unsigned int i=2; i<tmp.size(); i++) {
 		char c=tmp.at(i);
 #ifdef WIN32
-		if ((i==2) && (c == '\\'))
+		if ((i==2) && (c == PATH_DELIMITER))
 			continue;
 #endif
-		if (c==PATH_DELIMITER) {
+		if (c == PATH_DELIMITER) {
 			const std::string tocreate=tmp.substr(0,i);
 			if (!fileSystem->directoryExists(tocreate)) {
 				if (!CreateDir(tmp.substr(0,i).c_str()))
