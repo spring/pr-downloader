@@ -234,7 +234,7 @@ bool CFileSystem::createSubdirs (const std::string& path) const
 		}
 	}
 
-	if ((!directoryExists(tmp)) && (CreateDir(tmp.c_str()))!=0)
+	if ((!directoryExists(tmp)) && (!CreateDir(tmp.c_str())))
 		return false;
 	return true;
 }
