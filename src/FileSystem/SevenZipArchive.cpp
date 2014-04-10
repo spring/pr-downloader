@@ -13,6 +13,7 @@ extern "C" {
 }
 
 #include "Logger.h"
+#include "Util.h"
 
 static Byte kUtf8Limits[5] = { 0xC0, 0xE0, 0xF0, 0xF8, 0xFC };
 static Bool Utf16_To_Utf8(char *dest, size_t *destLen, const UInt16 *src, size_t srcLen)
@@ -111,7 +112,11 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name):
 
 	SzArEx_Init(&db);
 
+#ifdef WIN32
+	WRes wres = InFile_OpenW(&archiveStream.file, s2ws(name).c_str());
+#else
 	WRes wres = InFile_Open(&archiveStream.file, name.c_str());
+#endif
 	if (wres) {
 		LOG_ERROR("Error opening %s %s", name.c_str(), strerror(wres));
 		return;
