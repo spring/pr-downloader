@@ -148,10 +148,12 @@ bool CFileSystem::setWritePath(const std::string& path)
 			springdir=".spring";
 		}
 #else
-		char pathMyDocs[MAX_PATH];
-		const size_t len = SHGetFolderPathA( NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, pathMyDocs);
-		springdir = pathMyDocs;
-		springdir.append("\\My Games\\Spring");
+	wchar_t my_documents[MAX_PATH];
+	HRESULT result = SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, my_documents);
+	if (result == S_OK)  {
+		springdir = ws2s(my_documents);
+	}
+	springdir.append("\\My Games\\Spring");
 #endif
 	}
 	if (!springdir.empty()) { //dir has to be without slash at the end
@@ -207,7 +209,7 @@ bool CFileSystem::directoryExists(const std::string& path) const
 bool CreateDir(const std::string& path)
 {
 #ifdef WIN32
-	return !CreateDirectory(s2ws(path).c_str(), NULL);
+	return CreateDirectory(s2ws(path).c_str(), NULL);
 #else
 	return mkdir(path.c_str(), 0755) == 0;
 #endif
