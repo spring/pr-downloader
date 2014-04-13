@@ -99,6 +99,11 @@ bool urlToPath(const std::string& url, std::string& path)
 		path.replace(pos,1,1, PATH_DELIMITER);
 		pos=path.find("/",pos+1);
 	}
+	for(size_t i=0; i<path.length(); i++){ //replace : in url
+		if (path[i] == ':') {
+			path[i] = '-';
+		}
+	}
 	return true;
 }
 
