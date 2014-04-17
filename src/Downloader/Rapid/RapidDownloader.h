@@ -44,7 +44,7 @@ public:
 	*/
 	virtual bool download(IDownload* download,int max_parallel = 10);
 
-	void setMasterUrl(const std::string& url);
+	virtual bool setOption(const std::string& key, const std::string& value);
 	/**
 		parses a rep master-file
 	*/

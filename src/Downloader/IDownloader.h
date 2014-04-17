@@ -54,6 +54,7 @@ public:
 	*/
 	static void freeResult(std::list<IDownload*>& list);
 
+	virtual bool setOption(const std::string& key, const std::string& value);
 private:
 	static IDownloader* httpdl;
 	static IDownloader* plasmadl;

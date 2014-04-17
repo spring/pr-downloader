@@ -18,11 +18,10 @@
 #endif
 
 
-CRapidDownloader::CRapidDownloader()
+CRapidDownloader::CRapidDownloader():
+	url(REPO_MASTER),
+	reposLoaded(false)
 {
-	reposLoaded = false;
-	sdps.clear();
-	setMasterUrl(REPO_MASTER);
 }
 
 CRapidDownloader::~CRapidDownloader()
@@ -107,7 +106,7 @@ bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& 
 	return true;
 }
 
-bool CRapidDownloader::download(IDownload* download,int max_parallel)
+bool CRapidDownloader::download(IDownload* download, int /*max_parallel*/)
 {
 	LOG_DEBUG("%s",download->name.c_str());
 	if (download->dltype != IDownload::TYP_RAPID) { //skip non-rapid downloads
@@ -139,10 +138,14 @@ bool CRapidDownloader::match_download_name(const std::string &str1,const std::st
 	return false;
 }
 
-void CRapidDownloader::setMasterUrl(const std::string& url)
+bool CRapidDownloader::setOption(const std::string& key, const std::string& value)
 {
-	this->url=url;
-	reposLoaded = false;
+	if (key == "masterurl") {
+		url=value;
+		reposLoaded = false;
+		return true;
+	}
+	return IDownloader::setOption(key, value);
 }
 
 

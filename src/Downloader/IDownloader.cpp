@@ -82,3 +82,9 @@ void IDownloader::freeResult(std::list<IDownload*>& list)
 	}
 	list.clear();
 }
+
+bool IDownloader::setOption(const std::string& key, const std::string& value)
+{
+	LOG_ERROR("Invalid option: %s=%s", key.c_str(), value.c_str());
+	return false;
+}
