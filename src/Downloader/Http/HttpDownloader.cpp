@@ -340,7 +340,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			default:
 				long http_code = 0;
 				curl_easy_getinfo(msg->easy_handle, CURLINFO_RESPONSE_CODE, &http_code);
-				LOG_ERROR("CURL error(%d): %s %d (%s)",msg->msg, curl_easy_strerror(msg->data.result), http_code, data->mirror->url.c_str());
+				LOG_ERROR("CURL error(%d:%d): %s %d (%s)",msg->msg, msg->data.result, curl_easy_strerror(msg->data.result), http_code, data->mirror->url.c_str());
 				if (data->start_piece>=0) {
 					data->download->pieces[data->start_piece].state=IDownload::STATE_NONE;
 				}
