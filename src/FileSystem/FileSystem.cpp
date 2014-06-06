@@ -257,7 +257,7 @@ void CFileSystem::getPoolFilename(const std::string& md5str, std::string& path)
 }
 
 
-int CFileSystem::validatePool(const std::string& path)
+int CFileSystem::validatePool(const std::string& path, bool deletebroken)
 {
 	if(!directoryExists(path)) {
 		LOG_ERROR("Pool directory doesn't exist: %s", path.c_str());
@@ -306,6 +306,9 @@ int CFileSystem::validatePool(const std::string& path)
 
 						if (!fileIsValid(&filedata, absname)) { //check if md5 in filename is the same as in filename
 							LOG_ERROR("Invalid File in pool: %s",absname.c_str());
+							if (deletebroken) {
+								remove(absname.c_str());
+							}
 						} else {
 							res++;
 						}

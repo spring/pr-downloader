@@ -18,6 +18,7 @@
 enum {
 	RAPID_DOWNLOAD=0,
 	RAPID_VALIDATE,
+	RAPID_VALIDATE_DELETE,
 	RAPID_SEARCH,
 	HTTP_SEARCH,
 	HTTP_DOWNLOAD,
@@ -37,6 +38,7 @@ enum {
 static struct option long_options[] = {
 	{"rapid-download"          , 1, 0, RAPID_DOWNLOAD},
 	{"rapid-validate"          , 0, 0, RAPID_VALIDATE},
+	{"delete"                  , 0, 0, RAPID_VALIDATE_DELETE},
 	{"dump-sdp"                , 1, 0, FILESYSTEM_DUMPSDP},
 	{"http-download"           , 1, 0, HTTP_DOWNLOAD},
 	{"http-search"             , 1, 0, HTTP_SEARCH},
@@ -120,6 +122,7 @@ int main(int argc, char **argv)
 	DownloadInit();
 
 	bool res=true;
+	bool removeinvalid = false;
 	while (true) {
 		int option_index = 0;
 		int c = getopt_long(argc, argv, "", long_options, &option_index);
@@ -131,7 +134,11 @@ int main(int argc, char **argv)
 			break;
 		}
 		case RAPID_VALIDATE: {
-			DownloadRapidValidate();
+			DownloadRapidValidate(removeinvalid);
+			break;
+		}
+		case RAPID_VALIDATE_DELETE: {
+			removeinvalid = true;
 			break;
 		}
 		case FILESYSTEM_DUMPSDP: {

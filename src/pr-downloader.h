@@ -78,8 +78,9 @@ extern bool DownloadGetConfig(CONFIG type, const void** value);
 
 /**
 * validate rapid pool
+* @param deletebroken files
 */
-extern bool DownloadRapidValidate();
+extern bool DownloadRapidValidate(bool deletebroken);
 
 /**
 * dump contents of a sdp

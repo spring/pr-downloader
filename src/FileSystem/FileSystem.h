@@ -57,7 +57,7 @@ public:
 		Validate all files in /pool/ (check md5)
 		@return count of valid files found
 	*/
-	int validatePool(const std::string& path);
+	int validatePool(const std::string& path, bool deletebroken);
 
 	/**
 		check if file is older then secs, returns true if file is older or something goes wrong
