@@ -120,6 +120,9 @@ int IDownload::getMirrorCount() const
 bool IDownload::addMirror(const std::string& url)
 {
 	LOG_DEBUG("%s",url.c_str());
+	if (origin_name.empty()) {
+		origin_name = url;
+	}
 	Mirror* mirror=new Mirror(url);
 	this->mirrors.push_back(mirror);
 	return true;
