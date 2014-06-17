@@ -254,8 +254,9 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 static int progress_func(DownloadData* data, double total, double done, double, double)
 {
 	data->download->progress = done;
-	if (data->download->cat >= IDownload::CAT_ENGINE_LINUX && data->download->cat <= IDownload::CAT_ENGINE_MACOSX)
-		LOG_PROGRESS(done, total, false);
+	if (data->got_ranges) {
+		LOG_PROGRESS(done, total, done >= total);
+	}
 	return 0;
 }
 
