@@ -181,7 +181,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 		}
 		if (sdp->skipped==LENGTH_SIZE) { // length bytes read
 			const int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
-					    buf_end-buf_pos);
+									  buf_end-buf_pos);
 			if (towrite<0) {
 				LOG_ERROR("Fatal, something went wrong here! %d, %d %d", towrite, buf_end, buf_pos);
 				return -1;
@@ -217,7 +217,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 	draw a nice download status-bar
 */
 static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloaded,
-			 double TotalToUpload, double NowUploaded)
+						 double TotalToUpload, double NowUploaded)
 {
 
 	(void)csdp;

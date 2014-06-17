@@ -91,11 +91,11 @@ public:
 	 */
 	int size;
 	unsigned int http_downloaded_size;
-	
-	
+
+
 	std::map<CSdp*,uint64_t> rapid_size;
 	std::map<CSdp*,uint64_t> map_rapid_progress;
-	
+
 	int rapid_progress;
 	/**
 	 *	state for whole file
@@ -106,7 +106,7 @@ public:
 	 */
 	unsigned int getProgress() const;
 	std::string version;
-	
+
 	unsigned int parallel_downloads;
 	DownloadData * write_only_from;
 
