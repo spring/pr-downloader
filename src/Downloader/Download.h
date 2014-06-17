@@ -96,7 +96,7 @@ public:
 	std::map<CSdp*,uint64_t> rapid_size;
 	std::map<CSdp*,uint64_t> map_rapid_progress;
 
-	int rapid_progress;
+	int progress;
 	/**
 	 *	state for whole file
 	 */

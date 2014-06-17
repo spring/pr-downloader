@@ -234,7 +234,7 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	for ( std::map<CSdp*,uint64_t>::iterator it = csdp.m_download->map_rapid_progress.begin(); it != csdp.m_download->map_rapid_progress.end(); it++ ) {
 		total += (*it).second;
 	}
-	csdp.m_download->rapid_progress = total;
+	csdp.m_download->progress = total;
 	if (TotalToDownload == NowDownloaded) //force output when download is finished
 		LOG_PROGRESS(NowDownloaded,TotalToDownload, true);
 	else
