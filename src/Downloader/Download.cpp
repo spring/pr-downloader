@@ -40,7 +40,6 @@ IDownload::IDownload(const std::string& name,const std::string& origin_name, cat
 	hash(NULL),
 	file(NULL),
 	size(-1),
-	http_downloaded_size(0),
 	progress(0),
 	state(IDownload::STATE_NONE),
 	parallel_downloads(0),
@@ -136,9 +135,7 @@ unsigned int IDownload::getProgress() const
 {
 	if ( dltype == TYP_RAPID || dltype == TYP_HTTP )
 		return progress;
-	if (file==NULL)
-		return 0;
-	return http_downloaded_size;
+	return 0;
 
 }
 

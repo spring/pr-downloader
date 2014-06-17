@@ -90,7 +90,6 @@ public:
 	 *	file size
 	 */
 	int size;
-	unsigned int http_downloaded_size;
 
 
 	std::map<CSdp*,uint64_t> rapid_size;
