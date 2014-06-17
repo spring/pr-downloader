@@ -251,6 +251,14 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 	return pieces;
 }
 
+static int progress_func(DownloadData* data, double total, double done, double, double)
+{
+	data->download->progress = done;
+	if (data->download->cat >= IDownload::CAT_ENGINE_LINUX && data->download->cat <= IDownload::CAT_ENGINE_MACOSX)
+		LOG_PROGRESS(done, total, false);
+	return 0;
+}
+
 bool CHttpDownloader::setupDownload(DownloadData* piece)
 {
 	std::vector<unsigned int> pieces = verifyAndGetNextPieces(*(piece->download->file), piece->download);
@@ -280,7 +288,9 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	piece->mirror->escapeUrl(escaped);
 	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
-	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 1L);
+	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 0L);
+	curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, piece);
+	curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
 	curl_easy_setopt(curle, CURLOPT_URL, escaped.c_str());
 
 	if ((piece->download->size>0) && (piece->start_piece>=0) && piece->download->pieces.size() > 0) { //don't set range, if size unknown
