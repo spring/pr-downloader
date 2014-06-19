@@ -12,6 +12,8 @@ CMakeFiles
 /zlib*
 /mingwlibs
 /dist
+/src/libspringdownloader.pc
+/src/pr-downloader
 *.a
 *.so
 Makefile
