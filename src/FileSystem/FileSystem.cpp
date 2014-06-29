@@ -166,7 +166,8 @@ bool CFileSystem::setWritePath(const std::string& path)
 
 }
 
-CFileSystem::CFileSystem()
+CFileSystem::CFileSystem():
+	portableDownload(true)
 {
 }
 
@@ -444,7 +445,15 @@ bool CFileSystem::extractEngine(const std::string& filename, const std::string& 
 #ifdef ARCHIVE_SUPPORT
 	const std::string output = getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + EscapePath(version);
 	LOG_ERROR("blabla: %s", output.c_str());
-	return extract(filename, output);
+	if (!extract(filename, output))
+		return false;
+	if (portableDownload)
+		return true;
+	const std::string cfg = output + PATH_DELIMITER + "springsettings.cfg";
+	if (fileExists(cfg)) {
+		return remove(cfg.c_str());
+	}
+	return true;
 #else
 	LOG_ERROR("no archive support!");
 	return false;

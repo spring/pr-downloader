@@ -94,6 +94,7 @@ public:
 	*/
 	bool extractEngine(const std::string& filename, const std::string& version);
 	bool setWritePath(const std::string& path);
+	void setEnginePortableDownload(const bool portable) {portableDownload = portable;}
 
 	/**
 	*	returns full filename for pool file from md5
@@ -116,6 +117,7 @@ public:
 #endif
 
 private:
+	bool portableDownload;
 	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;
 	bool parse_repository_line(char* str, SRepository* repository, int size);
