@@ -21,7 +21,7 @@ bool AtomicFile::Open(const std::string& filename)
 
 	if (fileexists) {
 		if (tmpexists) { //remove existing tempfile
-			remove(tmpname.c_str());
+			fileSystem->removeFile(tmpname.c_str());
 		}
 		//rename destination file to temp file
 		if (fileSystem->Rename(filename, tmpname)<0) {
@@ -57,6 +57,6 @@ AtomicFile::~AtomicFile()
 	if (handle!=NULL) {
 		LOG_ERROR("File %s wasn't closed, deleting it", tmpname.c_str());
 		fclose(handle);
-		remove(tmpname.c_str());
+		fileSystem->removeFile(tmpname.c_str());
 	}
 }

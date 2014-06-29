@@ -38,7 +38,7 @@ void CFile::Close()
 	if (handle!=0) {
 		fclose(handle);
 		if (IsNewFile()) {
-			unlink(filename.c_str()); //delete possible existing destination file
+			fileSystem->removeFile(filename.c_str()); //delete possible existing destination file
 			fileSystem->Rename(tmpfile, filename);
 			isnewfile = false;
 		}

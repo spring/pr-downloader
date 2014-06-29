@@ -116,6 +116,7 @@ public:
 	void TimestampToFiletime(const time_t t, _FILETIME& pft);
 #endif
 
+	bool removeFile(const std::string& path);
 private:
 	bool portableDownload;
 	std::list<std::string> tmpfiles;

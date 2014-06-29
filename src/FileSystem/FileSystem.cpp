@@ -67,7 +67,7 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 		}*/
 	if (!md5hash.compare(mod->md5, sizeof(mod->md5) )) { //file is invalid
 //		ERROR("Damaged file found: %s",filename.c_str());
-//		unlink(filename.c_str());
+//		removeFile(filename.c_str());
 		return false;
 	}
 	return true;
@@ -122,7 +122,7 @@ CFileSystem::~CFileSystem()
 {
 	std::list<std::string>::iterator it;
 	for (it = tmpfiles.begin(); it != tmpfiles.end(); ++it) {
-		remove(it->c_str());
+		removeFile(it->c_str());
 	}
 	tmpfiles.clear();
 }
@@ -308,7 +308,7 @@ int CFileSystem::validatePool(const std::string& path, bool deletebroken)
 						if (!fileIsValid(&filedata, absname)) { //check if md5 in filename is the same as in filename
 							LOG_ERROR("Invalid File in pool: %s",absname.c_str());
 							if (deletebroken) {
-								remove(absname.c_str());
+								removeFile(absname.c_str());
 							}
 						} else {
 							res++;
@@ -356,6 +356,11 @@ bool CFileSystem::fileExists( const std::string& path )
 	struct stat buffer;
 	return (stat (path.c_str(), &buffer) == 0);
 #endif
+}
+
+bool CFileSystem::removeFile(const std::string& path)
+{
+	return remove(path.c_str());
 }
 
 bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
@@ -451,7 +456,7 @@ bool CFileSystem::extractEngine(const std::string& filename, const std::string& 
 		return true;
 	const std::string cfg = output + PATH_DELIMITER + "springsettings.cfg";
 	if (fileExists(cfg)) {
-		return remove(cfg.c_str());
+		return removeFile(cfg);
 	}
 	return true;
 #else
