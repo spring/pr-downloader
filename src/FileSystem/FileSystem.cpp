@@ -167,7 +167,7 @@ bool CFileSystem::setWritePath(const std::string& path)
 }
 
 CFileSystem::CFileSystem():
-	portableDownload(true)
+	portableDownload(false)
 {
 }
 
