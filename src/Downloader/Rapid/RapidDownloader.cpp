@@ -145,6 +145,10 @@ bool CRapidDownloader::setOption(const std::string& key, const std::string& valu
 		reposLoaded = false;
 		return true;
 	}
+	if (key == "forceupdate") {
+		reposLoaded = false;
+		return true;
+	}
 	return IDownloader::setOption(key, value);
 }
 
