@@ -7,14 +7,21 @@ obj-*
 /debian/*\.log
 /html
 build/
-CMakeFiles
 /curl*
 /zlib*
 /mingwlibs
 /dist
+# output
 /src/libspringdownloader.pc
 /src/pr-downloader
 *.a
 *.so
+
+# CMake
 Makefile
 CMakeCache.txt
+CMakeFiles
+
+#codeblocks project file
+/pr-downloader.cbp
+
