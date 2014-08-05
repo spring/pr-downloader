@@ -449,7 +449,6 @@ bool CFileSystem::extractEngine(const std::string& filename, const std::string& 
 {
 #ifdef ARCHIVE_SUPPORT
 	const std::string output = getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + EscapePath(version);
-	LOG_ERROR("blabla: %s", output.c_str());
 	if (!extract(filename, output))
 		return false;
 	if (portableDownload)
