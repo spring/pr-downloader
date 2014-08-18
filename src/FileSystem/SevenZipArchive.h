@@ -6,7 +6,7 @@
 extern "C" {
 #include "lib/7z/7zFile.h"
 #include "lib/7z/7z.h"
-};
+}
 
 #include <vector>
 #include <string>
