@@ -88,7 +88,7 @@ public:
 	/**
 	*	extracts a 7z file to dstdir
 	*/
-	bool extract(const std::string& filename, const std::string& dstdir);
+	bool extract(const std::string& filename, const std::string& dstdir, bool overwrite = false);
 	/**
 	*	extract engine download
 	*/

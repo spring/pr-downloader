@@ -464,7 +464,7 @@ bool CFileSystem::extractEngine(const std::string& filename, const std::string& 
 #endif
 }
 
-bool CFileSystem::extract(const std::string& filename, const std::string& dstdir)
+bool CFileSystem::extract(const std::string& filename, const std::string& dstdir, bool overwrite)
 {
 #ifdef ARCHIVE_SUPPORT
 	LOG_INFO("Extracting %s to %s", filename.c_str(), dstdir.c_str());
@@ -498,7 +498,8 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 		createSubdirs(tmp);
 		if (fileSystem->fileExists(tmp)) {
 			LOG_ERROR("File already exists: %s", tmp.c_str());
-			continue;
+			if (!overwrite)
+				continue;
 		}
 		LOG_INFO("extracting (%s)", tmp.c_str());
 		FILE* f=propen(tmp, "wb+");
