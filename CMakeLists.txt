@@ -102,8 +102,10 @@ include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 # MINIZIP_FOUND is used in lib & FileSystem
+Set(MINIZIP_FIND_QUIETLY TRUE)
 FIND_PACKAGE(MiniZip)
 if(NOT MINIZIP_FOUND)
+	message(STATUS "libminizip was not found, using integrated")
 	include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/lib")
 endif()
 
