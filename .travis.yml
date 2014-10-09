@@ -3,8 +3,9 @@ compiler:
   - clang
   - gcc
 before_script:
-  - cmake .
+  - cmake . -DPRD_DEVELOP_FILES:BOOL=ON
 script:
   - make -j2
+  - sudo make install
   - src/pr-downloader ba:stable
   - src/pr-downloader --rapid-validate
