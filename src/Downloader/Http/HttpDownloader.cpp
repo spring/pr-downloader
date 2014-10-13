@@ -11,6 +11,7 @@
 #include "Downloader/Mirror.h"
 #include "Downloader/CurlWrapper.h"
 #include "lib/xmlrpc++/src/XmlRpcCurlClient.h"
+#include "lib/xmlrpc++/src/XmlRpc.h"
 #include "lib/xmlrpc++/src/XmlRpcValue.h"
 
 #ifdef WIN32
@@ -25,12 +26,37 @@
 #include <sstream>
 #include <stdlib.h>
 
+class xmllog: public XmlRpc::XmlRpcLogHandler {
+public:
+	virtual ~xmllog() {}
+	void log(int level, const char* msg)
+	{
+		LOG_INFO("%s",msg);
+	}
+};
+
+static xmllog* logger = NULL;
+static int logcount = 0;
+
 CHttpDownloader::CHttpDownloader()
 {
+	if (logger == NULL) {
+		assert(logcount == 0);
+		logger = new xmllog();
+		XmlRpc::XmlRpcLogHandler::setLogHandler(logger);
+		XmlRpc::XmlRpcLogHandler::setVerbosity(5);
+	}
+	logcount++;
 }
 
 CHttpDownloader::~CHttpDownloader()
 {
+	assert(logcount>=0);
+	logcount--;
+	if (logcount == 0) {
+		delete logger;
+		logger = NULL;
+	}
 }
 
 bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
@@ -72,6 +98,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 
 
 	if (result.getType()!=XmlRpc::XmlRpcValue::TypeArray) {
+		LOG_ERROR("Returned xml isn't an array!");
 		return false;
 	}
 
