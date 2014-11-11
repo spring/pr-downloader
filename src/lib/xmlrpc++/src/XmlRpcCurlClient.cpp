@@ -92,7 +92,7 @@ XmlRpcCurlClient::execute(const char* method, XmlRpcValue const& params, XmlRpcV
 		long port = 0;
 		curl_easy_getinfo(_curl, CURLINFO_PRIMARY_IP, &ip);
 		curl_easy_getinfo(_curl, CURLINFO_PRIMARY_PORT, &port);
-		XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: couldn't parse result from: %s:%d", ip, port);
+		XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: couldn't parse result from: %s:%d %s", ip, port, _response.c_str());
 		return false;
 	}
 
