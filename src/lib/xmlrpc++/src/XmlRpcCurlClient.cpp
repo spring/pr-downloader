@@ -71,10 +71,31 @@ XmlRpcCurlClient::execute(const char* method, XmlRpcValue const& params, XmlRpcV
 	curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, XmlRpcCurlClient::readResponse);
 	CURLcode res = curl_easy_perform(_curl);
 	XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: method %s.", method);
-	if(res != CURLE_OK)
+	if(res != CURLE_OK) {
+		const char* err = curl_easy_strerror(res);
+		if (err != NULL) {
+			XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: curl error: %s", err);
+		}
 		return false;
-	if(!parseResponse(result))
+	}
+	if (_response.empty()) {
+		const char* ip = NULL;
+		long port = 0;
+		curl_easy_getinfo(_curl, CURLINFO_PRIMARY_IP, &ip);
+		curl_easy_getinfo(_curl, CURLINFO_PRIMARY_PORT, &port);
+		XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: empty result received from: %s:%d", ip, port);
 		return false;
+	}
+
+	if(!parseResponse(result)) {
+		const char* ip = NULL;
+		long port = 0;
+		curl_easy_getinfo(_curl, CURLINFO_PRIMARY_IP, &ip);
+		curl_easy_getinfo(_curl, CURLINFO_PRIMARY_PORT, &port);
+		XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: couldn't parse result from: %s:%d", ip, port);
+		return false;
+	}
+
 	XmlRpcUtil::log(1, "XmlRpcCurlClient::execute: method %s completed.", method);
 	_response = "";
 	return true;
