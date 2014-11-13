@@ -25,8 +25,11 @@ void IDownloader::Initialize(IDownloadsObserver* observer)
 void IDownloader::Shutdown()
 {
 	delete(httpdl);
+	httpdl = NULL;
 	delete(plasmadl);
+	plasmadl = NULL;
 	delete(rapiddl);
+	rapiddl = NULL;
 	curl_global_cleanup();
 }
 
