@@ -15,6 +15,7 @@ class IDownloader;
 IDownloader* IDownloader::httpdl=NULL;
 //IDownloader* IDownloader::plasmadl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
+IDownloaderProcessUpdateListener IDownloader::listener;
 
 void IDownloader::Initialize(IDownloadsObserver* observer)
 {
@@ -93,3 +94,8 @@ bool IDownloader::setOption(const std::string& key, const std::string& value)
 	LOG_ERROR("Invalid option: %s=%s", key.c_str(), value.c_str());
 	return false;
 }
+
+void IDownloader::setProcessUpdateListener(IDownloaderProcessUpdateListener l) {
+	IDownloader::listener = l;
+}
+

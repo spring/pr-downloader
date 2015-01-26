@@ -237,6 +237,9 @@ void CHttpDownloader::showProcess(IDownload* download, bool force)
 {
 	int done = download->getProgress();
 	int size = download->size;
+	if (listener != NULL) {
+		listener(done, size);
+	}
 	LOG_PROGRESS(done, size, force);
 }
 
@@ -298,6 +301,9 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 static int progress_func(DownloadData* data, double total, double done, double, double)
 {
 	data->download->progress = done;
+	if (IDownloader::listener != NULL) {
+		IDownloader::listener(done, total);
+	}
 	if (data->got_ranges) {
 		LOG_PROGRESS(done, total, done >= total);
 	}

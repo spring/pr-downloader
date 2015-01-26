@@ -10,6 +10,10 @@
 
 static bool fetchDepends = true;
 
+void SetDownloadListener(IDownloaderProcessUpdateListener listener) {
+	IDownloader::setProcessUpdateListener(listener);
+}
+
 bool download_engine(std::list<IDownload*>& dllist)
 {
 	httpDownload->download(dllist);
@@ -209,9 +213,9 @@ bool addDepends(std::list<IDownload*>& dls)
 	return true;
 }
 
-bool DownloadStart()
+int DownloadStart()
 {
-	bool res = true;
+	int res = 0;
 	std::list<IDownload*> dls;
 	std::list<int>::iterator it;
 	for (it = downloads.begin(); it != downloads.end(); ++it) {
@@ -227,6 +231,7 @@ bool DownloadStart()
 
 	if (dls.empty()) {
 		LOG_DEBUG("Nothing to do, did you forget to call DownloadAdd()?");
+		res = 1;
 		return res;
 	}
 
@@ -234,17 +239,17 @@ bool DownloadStart()
 	case DL_RAPID:
 	case DL_HTTP:
 		if(!rapidDownload->download(dls))
-			res = false;
+			res = 2;
 		if (!httpDownload->download(dls,1))
-			res = false;
+			res = 3;
 		break;
 	case DL_ENGINE:
 		if (!download_engine(dls))
-			res = false;
+			res = 4;
 		break;
 	default:
 		LOG_ERROR("%s():%d  Invalid type specified: %d %d", __FUNCTION__, __LINE__, typ, downloads.size());
-		res = false;
+		res = 5;
 	}
 
 	IDownloader::freeResult(searchres);

@@ -33,7 +33,7 @@ struct downloadInfo {
 	downloads all downloads that where added with @DownloadAdd
 	clears search results
 */
-extern bool DownloadStart();
+extern int DownloadStart();
 
 /**
 	adds a download, see @DownloadSearch & @DownloadGetSearchInfo
@@ -92,5 +92,8 @@ extern bool DownloadDumpSDP(const char* path);
 */
 extern void DownloadDisableLogging(bool disableLogging);
 
+typedef void (*IDownloaderProcessUpdateListener)(int done, int size);
+
+extern void SetDownloadListener(IDownloaderProcessUpdateListener listener);
 #endif
 

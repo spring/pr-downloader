@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 class IDownloadsObserver;
+typedef void (*IDownloaderProcessUpdateListener)(int done, int size);
 
 class IDownloader
 {
@@ -55,12 +56,15 @@ public:
 	static void freeResult(std::list<IDownload*>& list);
 
 	virtual bool setOption(const std::string& key, const std::string& value);
+	static void setProcessUpdateListener(IDownloaderProcessUpdateListener l);
 private:
 	static IDownloader* httpdl;
 	static IDownloader* plasmadl;
 	static IDownloader* rapiddl;
 	static IDownloader* widgetdl;
 
+public:
+	static IDownloaderProcessUpdateListener listener;
 };
 
 #define httpDownload IDownloader::GetHttpInstance()
