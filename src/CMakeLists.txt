@@ -16,7 +16,7 @@ add_library(Downloader STATIC
 	Downloader/Rapid/Sdp.cpp
 	Downloader/Http/HttpDownloader.cpp
 	Downloader/Http/DownloadData.cpp
-	Downloader/Plasma/PlasmaDownloader.cpp
+#	Downloader/Plasma/PlasmaDownloader.cpp
 	Downloader/CurlWrapper.cpp
 	Downloader/Download.cpp
 	Downloader/IDownloader.cpp
@@ -40,7 +40,7 @@ target_link_libraries(Downloader
 	${OPENSSL_LIBRARIES}
 	xmlrpc
 	${WIN32LIBS}
-	soap
+#	soap
 	${ZLIB_LIBRARIES}
 	pr-md5
 	pr-sha1

@@ -16,7 +16,7 @@ enum category {
 enum downloadtype {
 	DL_RAPID,
 	DL_HTTP,
-	DL_PLASMA,
+//	DL_PLASMA,
 	DL_ENGINE, //FIXME: also in category
 	DL_ANY
 };
