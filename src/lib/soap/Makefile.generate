@@ -84,4 +84,4 @@ clean:
 	ContentServiceSoap.VerifyAccountData.res.xml
 
 download:
-	wget http://zero-k.info/ContentService.asmx?WSDL -O ContentService.wsdl
+	wget http://zero-k.info/ContentService.svc?wsdl -O ContentService.wsdl
