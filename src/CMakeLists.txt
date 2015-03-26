@@ -35,6 +35,15 @@ add_library(Downloader STATIC
 	${archivessrc}
 )
 
+IF (WIN32)
+	SET(WIN32LIBS ws2_32 mswsock)
+ENDIF ()
+
+set(PRDOWNLOADER_LIBS
+	${WIN32LIBS}
+	Downloader
+)
+
 target_link_libraries(Downloader
 	${CURL_LIBRARIES}
 	${OPENSSL_LIBRARIES}
@@ -62,17 +71,9 @@ set (PRDOWNLOADER "pr-downloader")
 set (PRDOWNLOADER_SHARED ${PRDOWNLOADER}_shared)
 set (PRDOWNLOADER_STATIC ${PRDOWNLOADER}_static)
 
-IF (WIN32)
-	SET(WIN32LIBS ws2_32)
-	LIST(APPEND WIN32LIBS mswsock)
-ENDIF ()
 
 
 
-set(PRDOWNLOADER_LIBS
-	${WIN32LIBS}
-	Downloader
-)
 
 
 OPTION(PRD_SHAREDLIB
