@@ -38,7 +38,7 @@ if(PRD_CLEAR_COMPILER_FLAGS)
 	SET(CMAKE_SHARED_LINKER_FLAGS "")
 endif()
 
-MESSAGE(STATUS "Version ${PR_DOWNLOADER_VERSION}")
+MESSAGE(STATUS "PR-Downloader version: ${PR_DOWNLOADER_VERSION}")
 if   (MINGW)
 	if(NOT DEFINED ${MINGWLIBS})
 		set(MINGWLIBS "${CMAKE_SOURCE_DIR}/mingwlibs" CACHE PATH "Location of the mingwlibs package")
