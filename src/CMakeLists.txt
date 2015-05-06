@@ -1,9 +1,5 @@
 subdirs(lib)
 
-add_library(Version STATIC Version.cpp)
-set_target_properties(Version PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
-
-
 if (PRD_ARCHIVE_SUPPORT)
 	set(archivessrc FileSystem/SevenZipArchive.cpp FileSystem/ZipArchive.cpp)
 	set(archiveslib pr-7z)
@@ -32,8 +28,11 @@ add_library(Downloader STATIC
 	FileSystem/IHash.cpp
 	Util.cpp
 	Logger.cpp
+	Version.cpp
 	${archivessrc}
 )
+
+set_source_files_properties(Version.cpp PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
 
 IF (WIN32)
 	SET(WIN32LIBS ws2_32 mswsock)
@@ -55,7 +54,6 @@ target_link_libraries(Downloader
 	pr-sha1
 	bencode
 	${archiveslib}
-	Version
 )
 
 if(PRD_ARCHIVE_SUPPORT)

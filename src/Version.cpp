@@ -1,7 +1,7 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #ifndef PR_DOWNLOADER_VERSION
-#error PR_DOWNLOADER_VERSION isn not defined
+#error PR_DOWNLOADER_VERSION is not defined
 #else
 
 #define QUOTEME_(x) #x
