@@ -192,6 +192,8 @@ bool CRapidDownloader::parse()
 			CRepo repotmp=CRepo(url, this);
 			repos.push_back(repotmp);
 		} else {
+			gzclose(fp);
+			fclose(f);
 			LOG_ERROR("Parse Error %s, Line %d: %s",path.c_str(),i,buf);
 			return false;
 		}

@@ -48,6 +48,7 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 	FILE* f= propen(filename.c_str(), "rb");
 	gzFile inFile = gzdopen (fileno(f), "rb");
 	if (inFile == NULL) { //file can't be opened
+		fclose(f);
 		LOG_ERROR("Could not open file %s", filename.c_str());
 		return false;
 	}
@@ -103,6 +104,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 		      (gzread(in, &c_size, 4)))) {
 			LOG_ERROR("Error reading %s", filename.c_str());
 			gzclose(in);
+			fclose(f);
 			return false;
 		}
 		FileData* f=new FileData;
