@@ -109,7 +109,13 @@ OPTION(PRD_CONSOLETOOL
         "Enables compilation and installation of the console tool ${PRDOWNLOADER}" ON)
 
 if (PRD_CONSOLETOOL)
+	### Add icon and manifest to exe using windres
+	if(WIN32 AND MINGW)
+	        set(PRD_ICON "${CURRENT_SOURCE_DIR}/icon.rc")
+	endif()
+
 	add_executable(${PRDOWNLOADER}
+		${PRD_ICON}
 		main.cpp
 	)
 
