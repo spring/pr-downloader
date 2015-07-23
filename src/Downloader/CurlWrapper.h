@@ -7,7 +7,7 @@ class CurlWrapper
 public:
 	CurlWrapper();
 	~CurlWrapper();
-	CURL* const GetHandle() const {
+	CURL* GetHandle() const {
 		return handle;
 	}
 private:
