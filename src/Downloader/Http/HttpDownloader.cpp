@@ -26,11 +26,11 @@
 #include <sstream>
 #include <stdlib.h>
 
-class xmllog: public XmlRpc::XmlRpcLogHandler {
+class xmllog: public XmlRpc::XmlRpcLogHandler
+{
 public:
 	virtual ~xmllog() {}
-	void log(int level, const char* msg)
-	{
+	void log(int level, const char* msg) {
 		LOG_INFO("%s",msg);
 	}
 };
@@ -61,12 +61,12 @@ CHttpDownloader::~CHttpDownloader()
 
 bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
 {
-	CURL* curl = CurlWrapper::CurlInit();
+	CurlWrapper* curlw = new CurlWrapper();
 	LOG_DEBUG("%s", name.c_str()  );
 
 	const std::string method(XMLRPC_METHOD);
 	//std::string category;
-	XmlRpc::XmlRpcCurlClient client(curl, XMLRPC_HOST,XMLRPC_PORT, XMLRPC_URI);
+	XmlRpc::XmlRpcCurlClient client(curlw->GetHandle(), XMLRPC_HOST,XMLRPC_PORT, XMLRPC_URI);
 	XmlRpc::XmlRpcValue arg;
 	arg["springname"]=name;
 	arg["torrent"]=true;
@@ -99,6 +99,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 
 	if (result.getType()!=XmlRpc::XmlRpcValue::TypeArray) {
 		LOG_ERROR("Returned xml isn't an array!");
+		delete curlw;
 		return false;
 	}
 
@@ -106,10 +107,12 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 		XmlRpc::XmlRpcValue resfile = result[i];
 
 		if (resfile.getType()!=XmlRpc::XmlRpcValue::TypeStruct) {
+			delete curlw;
 			return false;
 		}
 		if (resfile["category"].getType()!=XmlRpc::XmlRpcValue::TypeString) {
 			LOG_ERROR("No category in result");
+			delete curlw;
 			return false;
 		}
 		std::string filename=fileSystem->getSpringDir();
@@ -125,8 +128,9 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 			LOG_ERROR("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
 		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
-			(resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
+		    (resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
 			LOG_ERROR("Invalid type in result");
+			delete curlw;
 			return false;
 		}
 		filename.append(resfile["filename"]);
@@ -165,6 +169,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 		}
 		res.push_back(dl);
 	}
+	delete curlw;
 	return true;
 }
 
@@ -299,14 +304,14 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	piece->start_piece=pieces.size() > 0 ? pieces[0] : -1;
 	assert(piece->download->pieces.size()<=0 || piece->start_piece >=0);
 	piece->pieces = pieces;
-	if (piece->easy_handle==NULL) {
-		piece->easy_handle=CurlWrapper::CurlInit();
+	if (piece->curlw==NULL) {
+		piece->curlw = new CurlWrapper();
 	} else {
-		curl_easy_cleanup(piece->easy_handle);
-		piece->easy_handle=CurlWrapper::CurlInit();
+		delete piece->curlw;
+		piece->curlw = new CurlWrapper();
 	}
 
-	CURL* curle= piece->easy_handle;
+	CURL* curle = piece->curlw->GetHandle();
 	piece->mirror=piece->download->getFastestMirror();
 	if (piece->mirror==NULL) {
 		LOG_ERROR("No mirror found");
@@ -351,7 +356,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 DownloadData* CHttpDownloader::getDataByHandle(const std::vector <DownloadData*>& downloads, const CURL* easy_handle) const
 {
 	for(int i=0; i<(int)downloads.size(); i++) { //search corresponding data structure
-		if (downloads[i]->easy_handle == easy_handle) {
+		if (downloads[i]->curlw->GetHandle() == easy_handle) {
 			return downloads[i];
 		}
 	}
@@ -411,22 +416,22 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			}
 			//get speed at which this piece was downloaded + update mirror info
 			double dlSpeed;
-			curl_easy_getinfo(data->easy_handle, CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
+			curl_easy_getinfo(data->curlw->GetHandle(), CURLINFO_SPEED_DOWNLOAD, &dlSpeed);
 			data->mirror->UpdateSpeed(dlSpeed);
 			if (data->mirror->status == Mirror::STATUS_UNKNOWN) //set mirror status only when unset
 				data->mirror->status=Mirror::STATUS_OK;
 
 			//remove easy handle, as its finished
-			curl_multi_remove_handle(curlm, data->easy_handle);
-			curl_easy_cleanup(data->easy_handle);
-			data->easy_handle=NULL;
+			curl_multi_remove_handle(curlm, data->curlw->GetHandle());
+			delete data->curlw;
+			data->curlw=NULL;
 			LOG_INFO("piece finished");
 			//piece finished / failed, try a new one
 			if (!setupDownload(data)) {
 				LOG_DEBUG("No piece found, all pieces finished / currently downloading");
 				break;
 			}
-			int ret=curl_multi_add_handle(curlm, data->easy_handle);
+			int ret=curl_multi_add_handle(curlm, data->curlw->GetHandle());
 			if (ret!=CURLM_OK) {
 				LOG_ERROR("curl_multi_perform_error: %d %d", ret, CURLM_BAD_EASY_HANDLE);
 			}
@@ -474,7 +479,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 				}
 			} else {
 				downloads.push_back(dlData);
-				curl_multi_add_handle(curlm, dlData->easy_handle);
+				curl_multi_add_handle(curlm, dlData->curlw->GetHandle());
 			}
 		}
 	}
@@ -516,7 +521,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 		double size=-1;
 		for (unsigned i=0; i<downloads.size(); i++) {
 			double tmp;
-			curl_easy_getinfo(downloads[i]->easy_handle, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &tmp);
+			curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_CONTENT_LENGTH_DOWNLOAD, &tmp);
 			if (tmp>size) {
 				size=tmp;
 			}
@@ -541,7 +546,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 	}
 	for (unsigned i=0; i<downloads.size(); i++) {
 		long timestamp;
-		if (curl_easy_getinfo(downloads[i]->easy_handle, CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
+		if (curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
 			if (downloads[i]->download->state != IDownload::STATE_FINISHED) //decrease local timestamp if download failed to force redownload next time
 				timestamp--;
 			downloads[i]->download->file->SetTimestamp(timestamp);

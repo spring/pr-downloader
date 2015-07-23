@@ -10,15 +10,13 @@ DownloadData::DownloadData()
 	start_piece=0;
 	mirror=NULL;
 	download=NULL;
-	easy_handle=CurlWrapper::CurlInit();
+	curlw = new CurlWrapper();
 	got_ranges = false;
 }
 
 DownloadData::~DownloadData()
 {
-	if (easy_handle!=NULL) {
-		curl_easy_cleanup(easy_handle);
-		easy_handle=NULL;
-	}
+	delete curlw;
+	curlw = NULL;
 }
 

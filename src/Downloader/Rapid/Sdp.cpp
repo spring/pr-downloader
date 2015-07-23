@@ -244,52 +244,54 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 
 bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 {
-	CURL* curl = CurlWrapper::CurlInit();
-	if (curl) {
-		CURLcode res;
-		LOG_INFO("Using rapid");
-		LOG_INFO(url.c_str());
+	CurlWrapper* curlw = new CurlWrapper();
+	if (!curlw) {
+		return false;
+	}
+	CURLcode res;
+	LOG_INFO("Using rapid");
+	LOG_INFO(url.c_str());
 
-		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_URL, url.c_str());
 
-		int  buflen=files.size()/8;
-		if (files.size()%8!=0)
-			buflen++;
-		char* buf=(char*)malloc(buflen); //FIXME: compress blockwise and not all at once
-		memset(buf,0,buflen);
-		int destlen=files.size()*2;
-		LOG_DEBUG("%d %d %d",(int)files.size(),buflen,destlen);
-		int i=0;
-		std::list<FileData*>::iterator it;
-		for (it=files.begin(); it!=files.end(); ++it) {
-			if ((*it)->download==true) {
-				buf[i/8] |= (1<<(i%8));
-			}
-			i++;
+	int  buflen=files.size()/8;
+	if (files.size()%8!=0)
+		buflen++;
+	char* buf=(char*)malloc(buflen); //FIXME: compress blockwise and not all at once
+	memset(buf,0,buflen);
+	int destlen=files.size()*2;
+	LOG_DEBUG("%d %d %d",(int)files.size(),buflen,destlen);
+	int i=0;
+	std::list<FileData*>::iterator it;
+	for (it=files.begin(); it!=files.end(); ++it) {
+		if ((*it)->download==true) {
+			buf[i/8] |= (1<<(i%8));
 		}
-		char* dest=(char*)malloc(destlen);
+		i++;
+	}
+	char* dest=(char*)malloc(destlen);
 
-		gzip_str(buf,buflen,dest,&destlen);
+	gzip_str(buf,buflen,dest,&destlen);
 
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_streamed_data);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, this);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEFUNCTION, write_streamed_data);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEDATA, this);
 
 
-		globalFiles=&files;
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, dest);
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE,destlen);
-		curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
-		curl_easy_setopt(curl, CURLOPT_PROGRESSFUNCTION, progress_func);
-		curl_easy_setopt(curl, CURLOPT_PROGRESSDATA, this);
+	globalFiles=&files;
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_POSTFIELDS, dest);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_POSTFIELDSIZE,destlen);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_NOPROGRESS, 0L);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_PROGRESSFUNCTION, progress_func);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_PROGRESSDATA, this);
 
-		res = curl_easy_perform(curl);
-		free(dest);
-		/* always cleanup */
-		curl_easy_cleanup(curl);
-		if (res!=CURLE_OK) {
-			LOG_ERROR("Curl cleanup error: %s",curl_easy_strerror(res));
-			return false;
-		}
+	res = curl_easy_perform(curlw->GetHandle());
+	free(dest);
+	/* always cleanup */
+	delete curlw;
+	curlw = NULL;
+	if (res != CURLE_OK) {
+		LOG_ERROR("Curl cleanup error: %s",curl_easy_strerror(res));
+		return false;
 	}
 	return true;
 }
