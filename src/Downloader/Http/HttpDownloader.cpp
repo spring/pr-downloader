@@ -356,6 +356,8 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 DownloadData* CHttpDownloader::getDataByHandle(const std::vector <DownloadData*>& downloads, const CURL* easy_handle) const
 {
 	for(int i=0; i<(int)downloads.size(); i++) { //search corresponding data structure
+		if (downloads[i]->curlw == nullptr)
+			continue;
 		if (downloads[i]->curlw->GetHandle() == easy_handle) {
 			return downloads[i];
 		}
@@ -520,6 +522,8 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 	if (!aborted) { // if download didn't fail, get file size reported in http-header
 		double size=-1;
 		for (unsigned i=0; i<downloads.size(); i++) {
+			if (downloads[i]->curlw == nullptr)
+				continue;
 			double tmp;
 			curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_CONTENT_LENGTH_DOWNLOAD, &tmp);
 			if (tmp>size) {
@@ -546,7 +550,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 	}
 	for (unsigned i=0; i<downloads.size(); i++) {
 		long timestamp;
-		if (curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
+		if ((downloads[i]->curlw != nullptr) && curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
 			if (downloads[i]->download->state != IDownload::STATE_FINISHED) //decrease local timestamp if download failed to force redownload next time
 				timestamp--;
 			downloads[i]->download->file->SetTimestamp(timestamp);
