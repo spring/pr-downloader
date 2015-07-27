@@ -356,7 +356,9 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 DownloadData* CHttpDownloader::getDataByHandle(const std::vector <DownloadData*>& downloads, const CURL* easy_handle) const
 {
 	for(size_t i=0; i<downloads.size(); i++) { //search corresponding data structure
-		assert(downloads[i]->curlw != NULL);
+		if (downloads[i]->curlw == nullptr) { //inactive download
+			continue;
+		}
 		if (downloads[i]->curlw->GetHandle() == easy_handle) {
 			return downloads[i];
 		}
