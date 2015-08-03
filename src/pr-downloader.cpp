@@ -14,10 +14,11 @@ bool download_engine(std::list<IDownload*>& dllist)
 {
 	httpDownload->download(dllist);
 	bool res = true;
-	std::list<IDownload*>::iterator it;
-	for (it = dllist.begin(); it!=dllist.end(); ++it) {
-		if (!fileSystem->extractEngine((*it)->name, (*it)->version))
+	for (const IDownload* dl: dllist) {
+		if (!fileSystem->extractEngine(dl->name, dl->version)) {
+			LOG_ERROR("Failed to extract engine %s", dl->version.c_str());
 			res = false;
+		}
 	}
 	return res;
 }

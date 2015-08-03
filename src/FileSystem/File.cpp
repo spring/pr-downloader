@@ -105,8 +105,8 @@ bool CFile::Hash(IHash& hash, int piece)
 		int toread=std::min(left, (long unsigned)sizeof(buf));
 		read=Read(buf, toread, piece);
 		if(read<=0) {
-			LOG_ERROR("EOF or read error on piece %d, left: %d toread: %d size: %d, GetPiecePos %d GetPieceSize(): %d read: %d", piece, left, toread, GetPieceSize(piece), GetPiecePos(piece), GetPieceSize(piece), read);
-			LOG_ERROR("curpos: %d", curpos);
+			LOG_DEBUG("EOF or read error on piece %d, left: %d toread: %d size: %d, GetPiecePos %d GetPieceSize(): %d read: %d", piece, left, toread, GetPieceSize(piece), GetPiecePos(piece), GetPieceSize(piece), read);
+			LOG_DEBUG("curpos: %d", curpos);
 			return false;
 		}
 		hash.Update(buf, toread);
@@ -126,13 +126,13 @@ int CFile::Read(char *buf, int bufsize, int piece)
 	int items=fread(buf, bufsize, 1, handle);
 	if (items<=0) {
 		if(ferror(handle)) {
-			LOG_ERROR("read error %s bufsize: %d curpos: %d GetPieceSize: %d", strerror(errno), bufsize, curpos, GetPieceSize());
+			LOG_DEBUG("read error %s bufsize: %d curpos: %d GetPieceSize: %d", strerror(errno), bufsize, curpos, GetPieceSize());
 			SetPos(0, piece);
 			return -1;
 		}
 		if(feof(handle)) {
-			LOG_ERROR("EOF while Read: '%s' items: %d!", strerror(errno), items);
-			LOG_ERROR("read error %s bufsize: %d curpos: %d GetPieceSize: %d", strerror(errno), bufsize, curpos, GetPieceSize());
+			LOG_DEBUG("EOF while Read: '%s' items: %d!", strerror(errno), items);
+			LOG_DEBUG("read error %s bufsize: %d curpos: %d GetPieceSize: %d", strerror(errno), bufsize, curpos, GetPieceSize());
 			return -1;
 		}
 	}

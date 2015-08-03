@@ -241,7 +241,7 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 			showProcess(download, true);
 			return pieces;
 		} else {
-			LOG_ERROR("md5 sum missmatch %s %s", download->hash->toString().c_str(), md5.toString().c_str());
+			LOG_INFO("md5 sum missmatch %s %s", download->hash->toString().c_str(), md5.toString().c_str());
 		}
 	}
 
