@@ -241,7 +241,7 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 			showProcess(download, true);
 			return pieces;
 		} else {
-			LOG_ERROR("md5 sum missmatch %s %s", download->hash->toString().c_str(), md5.toString().c_str());
+			LOG_INFO("md5 sum missmatch %s %s", download->hash->toString().c_str(), md5.toString().c_str());
 		}
 	}
 
@@ -356,8 +356,9 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 DownloadData* CHttpDownloader::getDataByHandle(const std::vector <DownloadData*>& downloads, const CURL* easy_handle) const
 {
 	for(size_t i=0; i<downloads.size(); i++) { //search corresponding data structure
-		if (downloads[i]->curlw == nullptr)
+		if (downloads[i]->curlw == nullptr) { //inactive download
 			continue;
+		}
 		if (downloads[i]->curlw->GetHandle() == easy_handle) {
 			return downloads[i];
 		}

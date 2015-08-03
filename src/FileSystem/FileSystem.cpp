@@ -122,9 +122,8 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 
 CFileSystem::~CFileSystem()
 {
-	std::list<std::string>::iterator it;
-	for (it = tmpfiles.begin(); it != tmpfiles.end(); ++it) {
-		removeFile(it->c_str());
+	for (const std::string& file: tmpfiles) {
+		removeFile(file.c_str());
 	}
 	tmpfiles.clear();
 }
@@ -356,13 +355,17 @@ bool CFileSystem::fileExists( const std::string& path )
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES);
 #else
 	struct stat buffer;
-	return (stat (path.c_str(), &buffer) == 0);
+	return stat(path.c_str(), &buffer) == 0;
 #endif
 }
 
 bool CFileSystem::removeFile(const std::string& path)
 {
-	return remove(path.c_str());
+	const bool res = unlink(path.c_str()) == 0;
+	if (!res) {
+		LOG_ERROR("Couldn't delete %s", path.c_str());
+	}
+	return res;
 }
 
 bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
@@ -451,8 +454,10 @@ bool CFileSystem::extractEngine(const std::string& filename, const std::string& 
 {
 #ifdef ARCHIVE_SUPPORT
 	const std::string output = getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + EscapePath(version);
-	if (!extract(filename, output))
+	if (!extract(filename, output)) {
+		LOG_DEBUG("Failed to extract %s %s", filename.c_str(), output.c_str());
 		return false;
+	}
 	if (portableDownload)
 		return true;
 	const std::string cfg = output + PATH_DELIMITER + "springsettings.cfg";
