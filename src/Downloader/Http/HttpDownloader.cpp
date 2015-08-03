@@ -30,7 +30,7 @@ class xmllog: public XmlRpc::XmlRpcLogHandler
 {
 public:
 	virtual ~xmllog() {}
-	void log(int level, const char* msg) {
+	void log(int /*level*/, const char* msg) {
 		LOG_INFO("%s",msg);
 	}
 };

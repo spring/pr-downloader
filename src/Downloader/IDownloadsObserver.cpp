@@ -3,12 +3,12 @@
 #include "IDownloadsObserver.h"
 #include "Download.h"
 
-void IDownloadsObserver::Add(IDownload* dl)
+void IDownloadsObserver::Add(IDownload* /*dl*/)
 {
 
 }
 
-void IDownloadsObserver::Remove(IDownload* dl)
+void IDownloadsObserver::Remove(IDownload* /*dl*/)
 {
 
 }
