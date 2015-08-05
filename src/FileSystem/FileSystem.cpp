@@ -361,7 +361,11 @@ bool CFileSystem::fileExists( const std::string& path )
 
 bool CFileSystem::removeFile(const std::string& path)
 {
+#ifdef WIN32
+	const bool res = _wunlink(s2ws(path).c_str()) == 0;
+#else
 	const bool res = unlink(path.c_str()) == 0;
+#endif
 	if (!res) {
 		LOG_ERROR("Couldn't delete %s", path.c_str());
 	}
