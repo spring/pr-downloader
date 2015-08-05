@@ -500,7 +500,12 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 				name[i]=PATH_DELIMITER;
 		}
 #endif
-		std::string tmp = dstdir + PATH_DELIMITER;
+		std::string tmp = dstdir;
+
+		if (!tmp.empty() && tmp[tmp.length()-1] != PATH_DELIMITER) {
+			tmp += PATH_DELIMITER;
+		}
+
 		tmp += name.c_str(); //FIXME: concating UTF-16
 		createSubdirs(tmp);
 		if (fileSystem->fileExists(tmp)) {
