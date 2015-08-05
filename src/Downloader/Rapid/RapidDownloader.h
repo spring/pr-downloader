@@ -24,10 +24,6 @@ public:
 	~CRapidDownloader();
 
 	/**
-		download a tag, for exampe ba:stable
-	*/
-	bool download_tag(const std::string& modname);
-	/**
 		lists all tags on all servers
 	*/
 	void list_tag();
@@ -50,8 +46,8 @@ public:
 	*/
 	void updateRepos();
 	void downloadRepo(const std::string& url);
-	
-	
+
+
 
 private:
 	bool parse();
