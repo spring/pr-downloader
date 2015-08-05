@@ -367,7 +367,20 @@ bool CFileSystem::removeFile(const std::string& path)
 	const bool res = unlink(path.c_str()) == 0;
 #endif
 	if (!res) {
-		LOG_ERROR("Couldn't delete %s", path.c_str());
+		LOG_ERROR("Couldn't delete file %s", path.c_str());
+	}
+	return res;
+}
+
+bool CFileSystem::removeDir(const std::string& path)
+{
+#ifdef WIN32
+	const bool res = _wrmdir(s2ws(path).c_str()) == 0;
+#else
+	const bool res = rmdir(path.c_str()) == 0;
+#endif
+	if (!res) {
+		LOG_ERROR("Couldn't delete dir %s", path.c_str());
 	}
 	return res;
 }

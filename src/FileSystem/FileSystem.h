@@ -117,6 +117,7 @@ public:
 #endif
 
 	bool removeFile(const std::string& path);
+	bool removeDir(const std::string& path);
 private:
 	bool portableDownload;
 	std::list<std::string> tmpfiles;
