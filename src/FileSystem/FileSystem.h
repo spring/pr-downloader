@@ -45,13 +45,13 @@ public:
 	/**
 		checks if a directory exists
 	*/
-	bool directoryExists(const std::string& path) const;
+	static bool directoryExists(const std::string& path);
 
 	/**
 		creates directory if it doesn't exist, expects PATH_DELIMETER at the end of the path
 		creates a directory with all subdirectorys (doesn't handle c:\ ...)
 	*/
-	bool createSubdirs(const std::string& path) const;
+	static bool createSubdirs(const std::string& path);
 
 	/**
 		Validate all files in /pool/ (check md5)
@@ -66,7 +66,7 @@ public:
 	/**
 		check if a file is readable
 	*/
-	bool fileExists(const std::string& filename);
+	static bool fileExists(const std::string& filename);
 	/**
 	*
 	*	parses the bencoded torrent data, strucutre is like this:
@@ -116,8 +116,8 @@ public:
 	void TimestampToFiletime(const time_t t, _FILETIME& pft);
 #endif
 
-	bool removeFile(const std::string& path);
-	bool removeDir(const std::string& path);
+	static bool removeFile(const std::string& path);
+	static bool removeDir(const std::string& path);
 private:
 	bool portableDownload;
 	std::list<std::string> tmpfiles;

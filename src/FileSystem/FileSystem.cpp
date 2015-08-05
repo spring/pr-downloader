@@ -194,7 +194,7 @@ const std::string& CFileSystem::getSpringDir()
 	return springdir;
 }
 
-bool CFileSystem::directoryExists(const std::string& path) const
+bool CFileSystem::directoryExists(const std::string& path)
 {
 	if (path.empty()) return false;
 #ifdef WIN32
@@ -217,7 +217,7 @@ bool CreateDir(const std::string& path)
 #endif
 }
 
-bool CFileSystem::createSubdirs (const std::string& path) const
+bool CFileSystem::createSubdirs (const std::string& path)
 {
 	std::string tmp=path;
 	if (path[path.length()]!=PATH_DELIMITER) {
