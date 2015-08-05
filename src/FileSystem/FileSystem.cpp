@@ -462,7 +462,7 @@ bool CFileSystem::extractEngine(const std::string& filename, const std::string& 
 		return true;
 	const std::string cfg = output + PATH_DELIMITER + "springsettings.cfg";
 	if (fileExists(cfg)) {
-		return removeFile(cfg);
+		removeFile(cfg);
 	}
 	return true;
 #else
