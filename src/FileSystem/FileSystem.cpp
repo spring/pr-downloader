@@ -226,25 +226,32 @@ bool CreateDir(const std::string& path)
 bool CFileSystem::createSubdirs (const std::string& path)
 {
 	assert(!path.empty());
-	for (unsigned int i=2; i<path.size(); i++) {
+	for (size_t i=2; i<path.size(); i++) {
 		char c=path.at(i);
 #ifdef WIN32
 		/* skip for example mkdir(C:\) */
 		if ((i==2) && (c == PATH_DELIMITER))
 			continue;
 #endif
-		if (c == PATH_DELIMITER) {
-			const std::string tocreate = path.substr(0,i);
-			if (!fileSystem->directoryExists(tocreate)) {
-				if (!CreateDir(tocreate))
-					return false;
-			}
+		if (c != PATH_DELIMITER) {
+			continue;
+		}
+
+		const std::string tocreate = path.substr(0,i);
+		LOG_DEBUG("Checking %s", tocreate.c_str());
+		if (fileSystem->directoryExists(tocreate)) {
+			continue;
+		}
+
+		if (!CreateDir(tocreate)) {
+			return false;
 		}
 	}
 
-	if (!directoryExists(path) && !CreateDir(path))
-		return false;
-	return true;
+	if (directoryExists(path)) {
+		return true;
+	}
+	return CreateDir(path);
 }
 
 
