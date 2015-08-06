@@ -221,7 +221,7 @@ bool CFileSystem::createSubdirs (const std::string& path)
 {
 	std::string tmp=path;
 	if (path[path.length()]!=PATH_DELIMITER) {
-		tmp=tmp.substr(0,tmp.rfind(PATH_DELIMITER));
+		tmp += PATH_DELIMITER;
 	}
 	for (unsigned int i=2; i<tmp.size(); i++) {
 		char c=tmp.at(i);
