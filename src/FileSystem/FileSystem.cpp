@@ -33,11 +33,16 @@ CFileSystem* CFileSystem::singleton = NULL;
 
 FILE* CFileSystem::propen(const std::string& filename, const std::string& mode) const
 {
+	FILE* ret;
 #ifdef WIN32
-	return _wfopen(s2ws(filename).c_str(), s2ws(mode).c_str());
+	ret = _wfopen(s2ws(filename).c_str(), s2ws(mode).c_str());
 #else
-	return fopen(filename.c_str(), mode.c_str());
+	ret = fopen(filename.c_str(), mode.c_str());
 #endif
+	if (ret == NULL) {
+		LOG_ERROR("Couldn't open %s", filename.c_str());
+	}
+	return ret;
 }
 
 bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) const
@@ -203,8 +208,8 @@ bool CFileSystem::directoryExists(const std::string& path)
 	return ((dwAttrib != INVALID_FILE_ATTRIBUTES) && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 #else
 	struct stat fileinfo;
-	int res=stat(path.c_str(),&fileinfo);
-	return ((res == 0) && ((fileinfo.st_mode & S_IFDIR) != 0));
+	const int res = stat(path.c_str(),&fileinfo);
+	return (res == 0) && ((fileinfo.st_mode & S_IFDIR) != 0);
 #endif
 }
 

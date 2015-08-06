@@ -53,7 +53,6 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	this->size=size;
 	fileSystem->createSubdirs(CFileSystem::DirName(filename));
 	SetPieceSize(piecesize);
-//	fileSystem->createSubdirs(filename);
 	if (handle!=NULL) {
 		LOG_ERROR("file opened before old was closed");
 		return false;
