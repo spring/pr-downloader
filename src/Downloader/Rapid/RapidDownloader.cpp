@@ -175,6 +175,9 @@ void CRapidDownloader::download(const std::string& name)
 bool CRapidDownloader::parse()
 {
 	FILE* f = fileSystem->propen(path, "rb");
+	if (f == NULL) {
+		return false;
+	}
 	gzFile fp=gzdopen(fileno(f), "rb");
 	if (fp==Z_NULL) {
 		LOG_ERROR("Could not open %s", path.c_str());
