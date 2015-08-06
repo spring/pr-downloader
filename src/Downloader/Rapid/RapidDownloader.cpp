@@ -161,7 +161,7 @@ void CRapidDownloader::download(const std::string& name)
 		return;
 	}
 	path = fileSystem->getSpringDir() + PATH_DELIMITER +"rapid" +PATH_DELIMITER+ tmp;
-	fileSystem->createSubdirs(path);
+	fileSystem->createSubdirs(CFileSystem::DirName(path));
 	LOG_DEBUG("%s",name.c_str());
 	//first try already downloaded file, as repo master file rarely changes
 	if ((fileSystem->fileExists(path)) && (fileSystem->isOlder(path,REPO_MASTER_RECHECK_TIME)) && parse())

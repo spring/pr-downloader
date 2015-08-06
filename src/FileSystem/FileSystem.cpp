@@ -210,6 +210,7 @@ bool CFileSystem::directoryExists(const std::string& path)
 
 bool CreateDir(const std::string& path)
 {
+	assert(!path.empty());
 #ifdef WIN32
 	return CreateDirectory(s2ws(path).c_str(), NULL);
 #else
@@ -219,27 +220,24 @@ bool CreateDir(const std::string& path)
 
 bool CFileSystem::createSubdirs (const std::string& path)
 {
-	std::string tmp=path;
-	if (path[path.length()]!=PATH_DELIMITER) {
-		tmp += PATH_DELIMITER;
-	}
-	for (unsigned int i=2; i<tmp.size(); i++) {
-		char c=tmp.at(i);
+	assert(!path.empty());
+	for (unsigned int i=2; i<path.size(); i++) {
+		char c=path.at(i);
 #ifdef WIN32
 		/* skip for example mkdir(C:\) */
 		if ((i==2) && (c == PATH_DELIMITER))
 			continue;
 #endif
 		if (c == PATH_DELIMITER) {
-			const std::string tocreate=tmp.substr(0,i);
+			const std::string tocreate = path.substr(0,i);
 			if (!fileSystem->directoryExists(tocreate)) {
-				if (!CreateDir(tmp.substr(0,i).c_str()))
+				if (!CreateDir(tocreate))
 					return false;
 			}
 		}
 	}
 
-	if ((!directoryExists(tmp)) && (!CreateDir(tmp.c_str())))
+	if (!directoryExists(path) && !CreateDir(path))
 		return false;
 	return true;
 }
@@ -581,6 +579,16 @@ std::string CFileSystem::EscapePath(const std::string& path)
 			tmp += path[i];
 	}
 	return tmp;
+}
+
+std::string CFileSystem::DirName(const std::string& path)
+{
+	const std::string::size_type pos = path.rfind(PATH_DELIMITER);
+	if (pos != std::string::npos) {
+		return path.substr(0, pos);
+	} else {
+		return path;
+	}
 }
 
 

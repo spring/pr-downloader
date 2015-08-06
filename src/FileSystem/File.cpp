@@ -51,7 +51,7 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	LOG_DEBUG("%s %d %d", filename.c_str(), size, piecesize);
 	this->filename=filename;
 	this->size=size;
-	fileSystem->createSubdirs(filename);
+	fileSystem->createSubdirs(CFileSystem::DirName(filename));
 	SetPieceSize(piecesize);
 //	fileSystem->createSubdirs(filename);
 	if (handle!=NULL) {

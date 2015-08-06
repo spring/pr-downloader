@@ -118,6 +118,12 @@ public:
 
 	static bool removeFile(const std::string& path);
 	static bool removeDir(const std::string& path);
+
+	/*
+		returns the directory for the path, i.e:
+		dir/filename -> dir
+	*/
+	static std::string DirName(const std::string& path);
 private:
 	bool portableDownload;
 	std::list<std::string> tmpfiles;

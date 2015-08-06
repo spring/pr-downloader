@@ -12,7 +12,7 @@
 CPlasmaDownloader::CPlasmaDownloader():
 	torrentPath(fileSystem->getSpringDir()+PATH_DELIMITER +  "torrent" + PATH_DELIMITER)
 {
-	fileSystem->createSubdirs(this->torrentPath);
+	fileSystem->createSubdirs(CFileSystem::DirName(torrentPath));
 }
 
 bool CPlasmaDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category category)
