@@ -127,10 +127,6 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 
 CFileSystem::~CFileSystem()
 {
-	for (const std::string& file: tmpfiles) {
-		removeFile(file.c_str());
-	}
-	tmpfiles.clear();
 }
 
 bool CFileSystem::setWritePath(const std::string& path)

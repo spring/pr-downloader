@@ -126,7 +126,6 @@ public:
 	static std::string DirName(const std::string& path);
 private:
 	bool portableDownload;
-	std::list<std::string> tmpfiles;
 	std::list<FileData> mods;
 	bool parse_repository_line(char* str, SRepository* repository, int size);
 	std::string springdir;
