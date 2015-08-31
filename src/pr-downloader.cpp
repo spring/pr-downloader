@@ -184,15 +184,9 @@ bool DownloadAdd(unsigned int id)
 
 bool addDepends(std::list<IDownload*>& dls)
 {
-	std::list<IDownload*>::iterator it;
-	for (it = dls.begin(); it != dls.end(); ++it) {
-		if ((*it)->depend.empty()) {
-			continue;
-		}
-		std::list<std::string>::iterator stit;
-		for (stit = (*it)->depend.begin(); stit != (*it)->depend.end(); ++stit) {
+	for (const IDownload* dl: dls) {
+		for (const std::string& depend: dl->depend) {
 			std::list<IDownload*> depends;
-			const std::string& depend = (*stit);
 			search(DL_ANY, CAT_ANY, depend.c_str(), depends);
 			LOG_INFO("Adding depend %s", depend.c_str());
 			dls.merge(depends);
