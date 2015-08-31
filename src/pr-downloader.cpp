@@ -182,6 +182,16 @@ bool DownloadAdd(unsigned int id)
 	return true;
 }
 
+bool dlListContains(const std::list<IDownload*>&dls, const std::string& name)
+{
+	for(const IDownload* dl: dls) {
+		if (dl->name == name) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool addDepends(std::list<IDownload*>& dls)
 {
 	for (const IDownload* dl: dls) {
@@ -189,7 +199,11 @@ bool addDepends(std::list<IDownload*>& dls)
 			std::list<IDownload*> depends;
 			search(DL_ANY, CAT_ANY, depend.c_str(), depends);
 			LOG_INFO("Adding depend %s", depend.c_str());
-			dls.merge(depends);
+			for(IDownload* newdep: depends) {
+				if (!dlListContains(dls, newdep->name)) {
+					dls.push_back(newdep);
+				}
+			}
 		}
 	}
 	return true;
