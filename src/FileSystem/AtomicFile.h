@@ -9,9 +9,9 @@ class AtomicFile: public IFile
 public:
 	AtomicFile(std::string filename);
 	virtual ~AtomicFile();
-	bool Open(const std::string& filename);
-	int Write(const char* buf, int size);
-	void Close();
+	bool Open(const std::string& filename) override;
+	int Write(const char* buf, int size) override;
+	void Close() override;
 private:
 	FILE* handle;
 	std::string filename;

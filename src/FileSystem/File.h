@@ -51,7 +51,7 @@ public:
 	/**
 	*	close file
 	*/
-	void Close();
+	void Close() override;
 	/**
 	*	read buf from file, starting at restored piece pos, if piece>=0
 	*   @todo hides IFile::Read
