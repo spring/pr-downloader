@@ -2,8 +2,19 @@ language: cpp
 compiler:
   - clang
   - gcc
+
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -q
+
+install:
+  - sudo apt-get install gcc-4.7 g++-4.7
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.7 90
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.7 90
+
 before_script:
   - cmake . -DPRD_DEVELOP_FILES:BOOL=ON
+
 script:
   - make -j2
   - sudo make install
