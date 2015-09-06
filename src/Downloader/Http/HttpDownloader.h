@@ -37,7 +37,7 @@ public:
 	virtual bool download(std::list< IDownload* >& download, int max_parallel=10);
 	void showProcess(IDownload* download, bool forceOutput);
 	static bool DownloadUrl(const std::string& url, std::string& res);
-	static bool ParseResult(const std::string& name, IDownload::category cat, const std::string& json, std::list<IDownload*>& res);
+	static bool ParseResult(const std::string& name, const std::string& json, std::list<IDownload*>& res);
 private:
 	bool parallelDownload(IDownload& download);
 	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);

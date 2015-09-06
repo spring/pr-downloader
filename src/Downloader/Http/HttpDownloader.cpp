@@ -87,7 +87,7 @@ static std::string getRequestUrl(const std::string& name, IDownload::category ca
 	return url + std::string("&torrent=true&springname=") + name;
 }
 
-bool CHttpDownloader::ParseResult(const std::string& name, IDownload::category cat, const std::string& json, std::list<IDownload*>& res)
+bool CHttpDownloader::ParseResult(const std::string& name, const std::string& json, std::list<IDownload*>& res)
 {
 	Json::Value result;   // will contains the root value after parsing.
 	Json::Reader reader;
@@ -116,13 +116,16 @@ bool CHttpDownloader::ParseResult(const std::string& name, IDownload::category c
 		std::string filename=fileSystem->getSpringDir();
 		std::string category=resfile["category"].asString();
 		filename+=PATH_DELIMITER;
-		if (category=="map")
+		IDownload::category cat = IDownload::CAT_NONE;
+		if (category=="map") {
 			filename+="maps";
-		else if (category=="game")
+			cat = IDownload::CAT_MAPS;
+		} else if (category=="game") {
 			filename+="games";
-		else if (category.find("engine")==0) // engine_windows, engine_linux, engine_macosx
+			cat = IDownload::CAT_GAMES;
+		} else if (category.find("engine")==0) { // engine_windows, engine_linux, engine_macosx
 			filename+="engine";
-		else
+		} else
 			LOG_ERROR("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
 
@@ -179,7 +182,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 		LOG_ERROR("Error downloading %s %s", url.c_str(), dlres.c_str());
 	        return false;
 	}
-	return ParseResult(name, cat, dlres, res);
+	return ParseResult(name, dlres, res);
 }
 
 size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data)

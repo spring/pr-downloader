@@ -70,7 +70,7 @@ IDownload::~IDownload()
 
 const std::string IDownload::getCat(category cat) const
 {
-	const char* cats[]= {"none","maps","mods","luawidgets","aibots","lobbyclients","media","other","replays","springinstallers","tools"};
+	const char* cats[]= {"none","map","game","luawidgets","aibots","lobbyclients","media","other","replays","springinstallers","tools","engine_linux", "engine_linux64", "engine_windows", "engine_macosx"};
 	return cats[cat];
 }
 
