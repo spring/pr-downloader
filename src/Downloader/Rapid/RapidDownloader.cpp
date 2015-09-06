@@ -67,18 +67,17 @@ bool CRapidDownloader::reloadRepos()
 bool CRapidDownloader::download_name(IDownload* download, int reccounter,std::string name)
 {
 	LOG_DEBUG("%s %s",name.c_str(),download->name.c_str());
-	std::list<CSdp>::iterator it;
 	if (reccounter>10)
 		return false;
 	LOG_DEBUG("Using rapid");
-	for (it=sdps.begin(); it!=sdps.end(); ++it) {
-		if (match_download_name((*it).getName(),name.length() == 0 ? download->name : name )) {
+	for (CSdp& sdp: sdps) {
+		if (match_download_name(sdp.getName(),name.length() == 0 ? download->name : name )) {
 
-			LOG_DOWNLOAD((it)->getName().c_str() );
-			if (!(*it).download(download))
+			LOG_DOWNLOAD(sdp.getName().c_str() );
+			if (!sdp.download(download))
 				return false;
-			if ((*it).getDepends().length()>0) {
-				if (!download_name(download,reccounter+1,(*it).getDepends()))
+			if (sdp.getDepends().length()>0) {
+				if (!download_name(download,reccounter+1,sdp.getDepends()))
 					return false;
 			}
 			return true;
@@ -94,12 +93,11 @@ bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& 
 	LOG_DEBUG("%s",name.c_str());
 	reloadRepos();
 	sdps.sort(list_compare);
-	std::list<CSdp>::iterator it;
-	for (it=sdps.begin(); it!=sdps.end(); ++it) {
-		if (match_download_name((*it).getShortName(),name)
-		    || (match_download_name((*it).getName(),name))) {
-			IDownload* dl=new IDownload((*it).getName().c_str(), name, cat, IDownload::TYP_RAPID);
-			dl->addMirror((*it).getShortName().c_str());
+	for (CSdp& sdp: sdps) {
+		if (match_download_name(sdp.getShortName(),name)
+		    || (match_download_name(sdp.getName(),name))) {
+			IDownload* dl=new IDownload(sdp.getName().c_str(), name, cat, IDownload::TYP_RAPID);
+			dl->addMirror(sdp.getShortName().c_str());
 			result.push_back(dl);
 		}
 	}
@@ -211,19 +209,18 @@ void CRapidDownloader::updateRepos()
 {
 	LOG_DEBUG("%s","Updating repos...");
 	download(url);
-	std::list<CRepo>::iterator it;
 	std::list<IDownload*> dls;
-	for (it = repos.begin(); it != repos.end(); ++it) {
+	for (CRepo& repo: repos) {
 		IDownload* dl = new IDownload();
-		if ((*it).getDownload(*dl)) {
+		if (repo.getDownload(*dl)) {
 			dls.push_back(dl);
 		} else {
 			delete dl;
 		}
 	}
 	httpDownload->download(dls);
-	for (it = repos.begin(); it != repos.end(); ++it) {
-		(*it).parse();
+	for (CRepo& repo: repos) {
+		repo.parse();
 	}
 	IDownloader::freeResult(dls);
 }

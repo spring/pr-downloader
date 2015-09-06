@@ -83,21 +83,19 @@ bool CSdp::download(IDownload * download)
 		fileSystem->parseSdp(filename,files); //parse downloaded file
 	}
 
-	std::list<FileData*>::iterator it;
-
 	HashMD5 md5= HashMD5();
 	FileData tmp=FileData();
 	int i=0;
-	for(it = files.begin(); it!=files.end(); ++it) { //check which file are available on local disk -> create list of files to download
+	for(FileData* filedata: files) { //check which file are available on local disk -> create list of files to download
 		i++;
-		md5.Set((*it)->md5, sizeof((*it)->md5));
+		md5.Set(filedata->md5, sizeof(filedata->md5));
 		std::string file;
 		fileSystem->getPoolFilename(md5.toString(), file);
 		if (!fileSystem->fileExists(file)) { //add non-existing files to download list
 			count++;
-			(*it)->download=true;
+			filedata->download=true;
 		} else {
-			(*it)->download=false;
+			filedata->download=false;
 		}
 		if (i%30==0) {
 			LOG_DEBUG("\r%d/%d checked",i,(int)files.size());
@@ -120,9 +118,8 @@ bool CSdp::download(IDownload * download)
 		LOG_DEBUG("Already downloaded: %s", shortname.c_str());
 		downloaded=true;
 	}
-
-	for(it = files.begin(); it!=files.end(); ++it) { //free memory
-		delete *it;
+	for(FileData* filedata: files) { //free memory
+		delete filedata;
 	}
 	if ((rename) && (!fileSystem->Rename(tmpFile, filename))) {
 		LOG_ERROR("Couldn't rename %s to %s", tmpFile.c_str(), filename.c_str());
@@ -226,13 +223,13 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 	csdp.m_download->rapid_size[&csdp] = TotalToDownload;
 	csdp.m_download->map_rapid_progress[&csdp] = NowDownloaded;
 	uint64_t total = 0;
-	for ( std::map<CSdp*,uint64_t>::iterator it = csdp.m_download->rapid_size.begin(); it != csdp.m_download->rapid_size.end(); it++ ) {
-		total += (*it).second;
+	for ( auto it : csdp.m_download->rapid_size) {
+		total += it.second;
 	}
 	csdp.m_download->size = total;
 	total = 0;
-	for ( std::map<CSdp*,uint64_t>::iterator it = csdp.m_download->map_rapid_progress.begin(); it != csdp.m_download->map_rapid_progress.end(); it++ ) {
-		total += (*it).second;
+	for ( auto it : csdp.m_download->map_rapid_progress) {
+		total += it.second;
 	}
 	csdp.m_download->progress = total;
 	if (TotalToDownload == NowDownloaded) //force output when download is finished
@@ -262,9 +259,8 @@ bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 	int destlen=files.size()*2;
 	LOG_DEBUG("%d %d %d",(int)files.size(),buflen,destlen);
 	int i=0;
-	std::list<FileData*>::iterator it;
-	for (it=files.begin(); it!=files.end(); ++it) {
-		if ((*it)->download==true) {
+	for (FileData* it: files) {
+		if (it->download==true) {
 			buf[i/8] |= (1<<(i%8));
 		}
 		i++;
