@@ -461,33 +461,32 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel)
 {
 
-	std::list<IDownload*>::iterator it;
 	std::vector <DownloadData*> downloads;
 	CURLM* curlm=curl_multi_init();
-	for(it=download.begin(); it!=download.end(); ++it) {
-		if ((*it)->dltype != IDownload::TYP_HTTP) {
+	for(IDownload* dl: download) {
+		if (dl->dltype != IDownload::TYP_HTTP) {
 			LOG_DEBUG("skipping non http-dl")
 			continue;
 		}
-		const int count=std::min(max_parallel, std::max(1, std::min((int)(*it)->pieces.size(), (*it)->getMirrorCount()))); //count of parallel downloads
-		if((*it)->getMirrorCount()<=0) {
+		const int count=std::min(max_parallel, std::max(1, std::min((int)dl->pieces.size(), dl->getMirrorCount()))); //count of parallel downloads
+		if(dl->getMirrorCount()<=0) {
 			LOG_ERROR("No mirrors found");
 			return false;
 		}
 		LOG_DEBUG("Using %d parallel downloads", count);
-		(*it)->parallel_downloads = count;
+		dl->parallel_downloads = count;
 		CFile* file=new CFile();
-		if(!file->Open((*it)->name, (*it)->size, (*it)->piecesize)) {
+		if(!file->Open(dl->name, dl->size, dl->piecesize)) {
 			delete file;
 			return false;
 		}
-		(*it)->file = file;
+		dl->file = file;
 		for(int i=0; i<count; i++) {
 			DownloadData* dlData=new DownloadData();
-			dlData->download=*it;
+			dlData->download=dl;
 			if (!setupDownload(dlData)) { //no piece found (all pieces already downloaded), skip
 				delete dlData;
-				if ((*it)->state!=IDownload::STATE_FINISHED) {
+				if (dl->state!=IDownload::STATE_FINISHED) {
 					LOG_ERROR("no piece found");
 					return false;
 				}
@@ -556,9 +555,9 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 	}
 
 	//close all open files
-	for(it=download.begin(); it!=download.end(); ++it) {
-		if ((*it)->file!=NULL)
-			(*it)->file->Close();
+	for(IDownload* dl: download) {
+		if (dl->file!=NULL)
+			dl->file->Close();
 	}
 	for (unsigned i=0; i<downloads.size(); i++) {
 		long timestamp;
