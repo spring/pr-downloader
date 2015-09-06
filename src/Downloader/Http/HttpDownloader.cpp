@@ -559,7 +559,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 		if (dl->file!=NULL)
 			dl->file->Close();
 	}
-	for (unsigned i=0; i<downloads.size(); i++) {
+	for (size_t i=0; i<downloads.size(); i++) {
 		long timestamp;
 		if ((downloads[i]->curlw != nullptr) && curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
 			if (downloads[i]->download->state != IDownload::STATE_FINISHED) //decrease local timestamp if download failed to force redownload next time
