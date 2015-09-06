@@ -40,6 +40,9 @@ bool CRepo::getDownload(IDownload& dl)
 
 bool CRepo::parse()
 {
+	if (tmpFile.empty()) {
+		return false;
+	}
 	LOG_DEBUG("%s",tmpFile.c_str());
 	FILE* f = fileSystem->propen(tmpFile, "rb");
 	if (f == nullptr) {
