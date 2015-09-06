@@ -24,14 +24,6 @@ public:
 	~CRapidDownloader();
 
 	/**
-		lists all tags on all servers
-	*/
-	void list_tag();
-	/**
-		remove a dsp from the list of remote dsps
-	*/
-	void addRemoteDsp(CSdp& dsp);
-	/**
 		search for a mod, searches for the short + long name
 	*/
 	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
@@ -41,15 +33,21 @@ public:
 	virtual bool download(IDownload* download,int max_parallel = 10);
 
 	virtual bool setOption(const std::string& key, const std::string& value);
+
+	void addRemoteDsp(CSdp& dsp);
 	/**
 		parses a rep master-file
 	*/
-	void updateRepos();
-	void downloadRepo(const std::string& url);
-
-
-
 private:
+	/**
+		lists all tags on all servers
+	*/
+	void list_tag();
+	/**
+		remove a dsp from the list of remote dsps
+	*/
+	void downloadRepo(const std::string& url);
+	void updateRepos();
 	bool parse();
 	void download(const std::string& name);
 	std::string path;
