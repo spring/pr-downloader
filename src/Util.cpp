@@ -25,6 +25,9 @@ std::vector<std::string> tokenizeString(const std::string& str, char c)
 	if (start < str.size()) {
 		res.push_back(str.substr(start, start - str.size()));
 	}
+	if (start == str.size()) {
+		res.push_back(std::string());
+	}
 	return res;
 }
 
