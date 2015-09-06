@@ -1,0 +1,16 @@
+/jsoncpp/NEWS.txt
+/jsoncpp/SConstruct
+/jsoncpp/*.py
+/jsoncpp/pkg-config
+/jsoncpp/test
+/jsoncpp/scons-tools
+/jsoncpp/doc
+/jsoncpp/makefiles
+/jsoncpp/devtools
+/jsoncpp/version
+/jsoncpp/version.in
+/jsoncpp/travis.sh
+/jsoncpp/src/test_lib_json
+/jsoncpp/src/CMakeLists.txt
+/jsoncpp/include/CMakeLists.txt
+/jsoncpp/src/jsontestrunner
