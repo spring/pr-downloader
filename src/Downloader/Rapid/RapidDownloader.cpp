@@ -184,21 +184,17 @@ bool CRapidDownloader::parse()
 	repos.clear();
 	int i=0;
 	while (gzgets(fp, buf, sizeof(buf))!=Z_NULL) {
-		const std::string tmp=buf;
-		std::string url;
-		std::string shortname;
-		getStrByIdx(tmp,shortname, ',',0);
-		getStrByIdx(tmp,url, ',',1);
-		i++;
-		if (url.size()>0) { //create new repo from url
-			CRepo repotmp=CRepo(url, shortname, this);
-			repos.push_back(repotmp);
-		} else {
+		const std::string line=buf;
+		const std::vector<std::string> items = tokenizeString(line, ',');
+		if (items.size()<= 2) { //create new repo from url
 			gzclose(fp);
 			fclose(f);
 			LOG_ERROR("Parse Error %s, Line %d: %s",path.c_str(),i,buf);
 			return false;
 		}
+		i++;
+		CRepo repotmp = CRepo(items[1], items[0], this);
+		repos.push_back(repotmp);
 	}
 	gzclose(fp);
 	fclose(f);

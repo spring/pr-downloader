@@ -66,19 +66,16 @@ bool CRepo::parse()
 			}
 		}
 
-		std::string tmp=buf;
-		std::string shortname;
-		getStrByIdx(tmp,shortname, ',',0);
-		std::string md5;
-		getStrByIdx(tmp, md5, ',',1);
-		std::string depends;
-		getStrByIdx(tmp,depends, ',',2);
-		std::string name;
-		getStrByIdx(tmp,name, ',',3);
-		if (shortname.size()>0) { //create new repo from url
-			CSdp sdptmp=CSdp(shortname, md5, name, depends, repourl);
-			rapid->addRemoteDsp(sdptmp);
+		const std::string line=buf;
+		std::vector<std::string> items = tokenizeString(line, ',');
+		if (items.size() < 4) {
+			LOG_ERROR("Invalid line: %s", line.c_str());
+			continue;
 		}
+
+		//create new repo from url
+		CSdp sdptmp=CSdp(items[0], items[1], items[3], items[2], repourl);
+		rapid->addRemoteDsp(sdptmp);
 	}
 	int errnum=Z_OK;
 	const char* errstr = gzerror(fp, &errnum);

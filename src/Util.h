@@ -7,6 +7,7 @@
 #define MAX_PARALLEL_DOWNLOADS 10
 
 #include <string>
+#include <vector>
 
 class FileData;
 
@@ -17,11 +18,10 @@ class FileData;
 std::string getUrl(const FileData* info, const std::string& path);
 
 /**
-	returns substring number idx split by c
-	str is for example "aaa,bbb,ccc"
-	getStrByIdx(str,',',2) returns bbb
+	tokenizes a string into a vector split by c
+	empty tokens aren't ignored
 */
-void getStrByIdx(const std::string& str, std::string& res, char c, int idx);
+std::vector<std::string> tokenizeString(const std::string& str, char c);
 
 /**
 * decompresses in to out

@@ -9,34 +9,23 @@
 #include <zlib.h>
 #include <time.h>
 
-void getStrByIdx(const std::string& str, std::string& res, char c, int idx)
+std::vector<std::string> tokenizeString(const std::string& str, char c)
 {
-	unsigned int i=0;
-	if (idx==0) {
-		for (i=0; i<str.size(); i++) {
-			if (str[i]==c)
-				break;
-		}
-		res.assign(str.substr(0,i));
-		return;
-	}
-	int start=0;
-	int end=0;
-	int count=0;
-	for (i=0; i<str.length(); i++) {
-		if (str[i]==c) {
-			count++;
-			if (count>=idx) {
-				if (start==0)
-					start=i+1;
-				else {
-					end=i;
-					break;
-				}
-			}
+	std::vector<std::string> res;
+	size_t start = 0;
+	size_t pos;
+	for(pos = 0; pos<str.size(); pos++) {
+		if (str[pos] == c) {
+			const size_t len = pos - start;
+			res.push_back(str.substr(start, len));
+			start = pos + 1;
 		}
 	}
-	res.assign(str.substr(start,end-start));
+
+	if (start < str.size()) {
+		res.push_back(str.substr(start, start - str.size()));
+	}
+	return res;
 }
 
 void gzip_str(const char* in, const int inlen,  char* out, int *outlen)
