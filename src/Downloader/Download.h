@@ -58,7 +58,7 @@ public:
 	/**
 	 *	returns the string name of a category
 	 */
-	const std::string getCat(category cat);
+	const std::string getCat(category cat) const;
 	/**
 	 *	returns first url
 	 */
