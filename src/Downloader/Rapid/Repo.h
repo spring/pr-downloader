@@ -13,10 +13,8 @@ class IDownload;
 
 class CRepo
 {
-	std::string repourl;
-	CRapidDownloader* rapid;
 public:
-	CRepo(const std::string& repourl, CRapidDownloader* rapid);
+	CRepo(const std::string& repourl, const std::string& shortname, CRapidDownloader* rapid);
 	~CRepo();
 
 	/**
@@ -33,9 +31,13 @@ public:
 	<tag>,<md5>,<depends on (descriptive name)>,<descriptive name>
 	*/
 	bool parse();
+	const std::string& getShortName(){return shortname;}
 private:
+	std::string repourl;
+	CRapidDownloader* rapid;
 	std::list<CSdp*> sdps;
 	std::string tmpFile;
+	std::string shortname;
 };
 
 #endif

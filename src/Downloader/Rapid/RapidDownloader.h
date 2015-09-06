@@ -47,7 +47,7 @@ private:
 		remove a dsp from the list of remote dsps
 	*/
 	void downloadRepo(const std::string& url);
-	void updateRepos();
+	bool updateRepos(const std::string& searchstr);
 	bool parse();
 	void download(const std::string& name);
 	std::string path;
@@ -61,7 +61,7 @@ private:
 	/**
 		update all repos from the web
 	*/
-	bool reloadRepos();
+	bool reloadRepos(const std::string& searchstr);
 	bool reposLoaded;
 	/**
 		helper function for sort

@@ -54,13 +54,12 @@ bool CRapidDownloader::list_compare(CSdp& first ,CSdp& second)
 	return false;
 }
 
-bool CRapidDownloader::reloadRepos()
+bool CRapidDownloader::reloadRepos(const std::string& searchstr)
 {
 	if (reposLoaded)
 		return true;
-	updateRepos();
 	reposLoaded=true;
-	return true;
+	return updateRepos(searchstr);
 }
 
 
@@ -91,7 +90,7 @@ bool CRapidDownloader::download_name(IDownload* download, int reccounter,std::st
 bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category cat)
 {
 	LOG_DEBUG("%s",name.c_str());
-	reloadRepos();
+	reloadRepos(name);
 	sdps.sort(list_compare);
 	for (CSdp& sdp: sdps) {
 		if (match_download_name(sdp.getShortName(),name)
@@ -111,7 +110,7 @@ bool CRapidDownloader::download(IDownload* download, int /*max_parallel*/)
 		LOG_DEBUG("skipping non rapid-dl");
 		return true;
 	}
-	reloadRepos();
+	reloadRepos(download->origin_name);
 	return download_name(download,0);
 }
 
@@ -185,12 +184,14 @@ bool CRapidDownloader::parse()
 	repos.clear();
 	int i=0;
 	while (gzgets(fp, buf, sizeof(buf))!=Z_NULL) {
-		std::string tmp=buf;
+		const std::string tmp=buf;
 		std::string url;
+		std::string shortname;
+		getStrByIdx(tmp,shortname, ',',0);
 		getStrByIdx(tmp,url, ',',1);
 		i++;
 		if (url.size()>0) { //create new repo from url
-			CRepo repotmp=CRepo(url, this);
+			CRepo repotmp=CRepo(url, shortname, this);
 			repos.push_back(repotmp);
 		} else {
 			gzclose(fp);
@@ -205,23 +206,38 @@ bool CRapidDownloader::parse()
 	return true;
 }
 
-void CRapidDownloader::updateRepos()
+bool CRapidDownloader::updateRepos(const std::string& searchstr)
 {
+
+    std::string::size_type pos = searchstr.find(':');
+	std::string tag;
+    if (pos != std::string::npos) { //a tag is found, set it
+        tag = searchstr.substr(0, pos);
+    }
+
 	LOG_DEBUG("%s","Updating repos...");
 	download(url);
+
 	std::list<IDownload*> dls;
 	for (CRepo& repo: repos) {
 		IDownload* dl = new IDownload();
 		if (repo.getDownload(*dl)) {
+			if (repo.getShortName() == tag) { //matching repo exists, update this only
+				IDownloader::freeResult(dls);
+				dls.push_back(dl);
+				break;
+			}
 			dls.push_back(dl);
 		} else {
 			delete dl;
 		}
 	}
+
 	httpDownload->download(dls);
 	for (CRepo& repo: repos) {
 		repo.parse();
 	}
 	IDownloader::freeResult(dls);
+	return true;
 }
 

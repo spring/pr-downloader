@@ -12,9 +12,10 @@
 #include <stdio.h>
 
 
-CRepo::CRepo(const std::string& repourl, CRapidDownloader* rapid):
+CRepo::CRepo(const std::string& repourl,const std::string& _shortname, CRapidDownloader* rapid):
 	repourl(repourl),
-	rapid(rapid)
+	rapid(rapid),
+	shortname(_shortname)
 {
 }
 
