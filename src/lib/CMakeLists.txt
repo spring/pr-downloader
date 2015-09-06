@@ -7,11 +7,3 @@ endif()
 subdirs(md5)
 subdirs(bencode)
 subdirs(sha1)
-
-if(NOT Jsoncpp_FOUND)
-	set(JSONCPP_WITH_TESTS FALSE)
-	set(JSONCPP_WITH_POST_BUILD_UNITTEST FALSE)
-	set(JSONCPP_WITH_PKGCONFIG_SUPPORT FALSE)
-	subdirs(jsoncpp)
-endif()
-

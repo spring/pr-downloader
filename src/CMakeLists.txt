@@ -6,6 +6,13 @@ if (PRD_ARCHIVE_SUPPORT)
 	add_definitions(-DARCHIVE_SUPPORT)
 endif()
 
+if (NOT Jsoncpp_FOUND)
+	set(jsonlibcppsrc
+		lib/jsoncpp/src/lib_json/json_value.cpp
+		lib/jsoncpp/src/lib_json/json_reader.cpp
+		lib/jsoncpp/src/lib_json/json_writer.cpp
+	)
+endif()
 
 add_library(Downloader STATIC
 	Downloader/Rapid/RapidDownloader.cpp
@@ -32,6 +39,7 @@ add_library(Downloader STATIC
 	Version.cpp
 	lib/base64/base64.cpp
 	${archivessrc}
+	${jsonlibcppsrc}
 )
 set_source_files_properties(Version.cpp PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
 

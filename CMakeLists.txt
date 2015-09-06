@@ -105,9 +105,9 @@ else()
 endif()
 
 find_package(Jsoncpp)
+set(Jsoncpp_FOUND FALSE)
 if(NOT Jsoncpp_FOUND) # no system jsoncpp found, use bundled one
 	set(Jsoncpp_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/jsoncpp/include)
-	set(Jsoncpp_LIBRARIES jsoncpp)
 endif()
 
 include_directories(SYSTEM ${CURL_INCLUDE_DIR})
