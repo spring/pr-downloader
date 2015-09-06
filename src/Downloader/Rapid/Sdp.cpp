@@ -227,7 +227,9 @@ static int progress_func(CSdp& csdp, double TotalToDownload, double NowDownloade
 		total += it.second;
 	}
 	csdp.m_download->size = total;
-	IDownloader::listener(NowDownloaded, TotalToDownload);
+	if (IDownloader::listener != nullptr) {
+		IDownloader::listener(NowDownloaded, TotalToDownload);
+	}
 	total = 0;
 	for ( auto it : csdp.m_download->map_rapid_progress) {
 		total += it.second;

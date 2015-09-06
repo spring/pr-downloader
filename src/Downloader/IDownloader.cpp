@@ -15,7 +15,7 @@ class IDownloader;
 IDownloader* IDownloader::httpdl=NULL;
 //IDownloader* IDownloader::plasmadl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
-IDownloaderProcessUpdateListener IDownloader::listener;
+IDownloaderProcessUpdateListener IDownloader::listener = nullptr;
 
 void IDownloader::Initialize(IDownloadsObserver* observer)
 {
