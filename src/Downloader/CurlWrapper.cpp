@@ -30,3 +30,15 @@ CurlWrapper::~CurlWrapper()
 	handle = NULL;
 	curl_slist_free_all(list); /* free the list again */
 }
+
+std::string CurlWrapper::escapeUrl(const std::string& url)
+{
+	std::string res;
+	for(unsigned int i=0; i<url.size(); i++) { //FIXME: incomplete, needs to support all unicode chars
+		if (url[i]==' ')
+			res.append("%20");
+		else
+			res.append(1,url[i]);
+	}
+	return res;
+}

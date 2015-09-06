@@ -10,7 +10,6 @@ class Mirror
 public:
 	Mirror(const std::string& url);
 	void UpdateSpeed(int speed);
-	void escapeUrl(std::string& escaped);
 
 	enum MIRROR_STATUS {
 		STATUS_BROKEN,

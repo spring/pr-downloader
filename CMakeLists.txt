@@ -104,11 +104,15 @@ else()
 	find_package(ZLIB REQUIRED)
 endif()
 
-#compile fix for soap (springlobby defines this)
-remove_definitions(-DHAVE_CONFIG_H)
+find_package(Jsoncpp)
+if(NOT Jsoncpp_FOUND) # no system jsoncpp found, use bundled one
+	set(Jsoncpp_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/jsoncpp/include)
+	set(Jsoncpp_LIBRARIES jsoncpp)
+endif()
 
 include_directories(SYSTEM ${CURL_INCLUDE_DIR})
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
+include_directories(${Jsoncpp_INCLUDE_DIRS})
 
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")

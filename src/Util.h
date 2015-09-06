@@ -3,10 +3,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#define XMLRPC_METHOD "springfiles.search"
-#define XMLRPC_HOST "api.springfiles.com"
-#define XMLRPC_PORT 80
-#define XMLRPC_URI "/xmlrpc.php"
+#define HTTP_SEARCH_URL "http://api.springfiles.com/json.php"
 #define MAX_PARALLEL_DOWNLOADS 10
 
 #include <string>

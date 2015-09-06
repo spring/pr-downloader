@@ -1,6 +1,8 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "HttpDownloader.h"
+#include <json/reader.h>
+
 #include "DownloadData.h"
 #include "FileSystem/FileSystem.h"
 #include "FileSystem/File.h"
@@ -10,9 +12,8 @@
 #include "Logger.h"
 #include "Downloader/Mirror.h"
 #include "Downloader/CurlWrapper.h"
-#include "lib/xmlrpc++/src/XmlRpcCurlClient.h"
-#include "lib/xmlrpc++/src/XmlRpc.h"
-#include "lib/xmlrpc++/src/XmlRpcValue.h"
+#include "lib/base64/base64.h"
+
 
 #ifdef WIN32
 #include <winsock2.h>
@@ -26,97 +27,103 @@
 #include <sstream>
 #include <stdlib.h>
 
-class xmllog: public XmlRpc::XmlRpcLogHandler
-{
-public:
-	virtual ~xmllog() {}
-	void log(int /*level*/, const char* msg) {
-		LOG_INFO("%s",msg);
-	}
-};
-
-static xmllog* logger = NULL;
-static int logcount = 0;
-
 CHttpDownloader::CHttpDownloader()
 {
-	if (logger == NULL) {
-		assert(logcount == 0);
-		logger = new xmllog();
-		XmlRpc::XmlRpcLogHandler::setLogHandler(logger);
-		XmlRpc::XmlRpcLogHandler::setVerbosity(5);
-	}
-	logcount++;
 }
 
 CHttpDownloader::~CHttpDownloader()
 {
-	assert(logcount>=0);
-	logcount--;
-	if (logcount == 0) {
-		delete logger;
-		logger = NULL;
-	}
 }
 
-bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
+static size_t
+WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+	size_t realsize = size*nmemb;
+	std::string* res = static_cast<std::string*>(userp);
+	res->append((char*)contents, realsize);
+	return realsize;
+}
+
+//downloads url into res
+static bool DownloadUrl(const std::string& url, std::string& res)
 {
 	CurlWrapper* curlw = new CurlWrapper();
-	LOG_DEBUG("%s", name.c_str()  );
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_URL, CurlWrapper::escapeUrl(url).c_str());
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEDATA, (void *)&res);
+	CURLcode curlres = curl_easy_perform(curlw->GetHandle());
+	if (!curlres == CURLE_OK) {
+        LOG_ERROR("Error in curl %s", curl_easy_strerror(curlres));
+	}
+	delete curlw;
+	return curlres == CURLE_OK;
+}
 
-	const std::string method(XMLRPC_METHOD);
-	//std::string category;
-	XmlRpc::XmlRpcCurlClient client(curlw->GetHandle(), XMLRPC_HOST,XMLRPC_PORT, XMLRPC_URI);
-	XmlRpc::XmlRpcValue arg;
-	arg["springname"]=name;
-	arg["torrent"]=true;
+static std::string getRequestUrl(const std::string& name, IDownload::category cat)
+{
+	std::string url = HTTP_SEARCH_URL "?category=";
 	switch(cat) {
 	case IDownload::CAT_MAPS:
-		arg["category"]="map";
+		url+="map";
 		break;
 	case IDownload::CAT_GAMES:
-		arg["category"]="game";
+		url+="game";
 		break;
 	case IDownload::CAT_ENGINE_LINUX:
-		arg["category"]="engine_linux";
+		url+="engine_linux";
 		break;
 	case IDownload::CAT_ENGINE_LINUX64:
-		arg["category"]="engine_linux64";
+		url+="engine_linux64";
 		break;
 	case IDownload::CAT_ENGINE_WINDOWS:
-		arg["category"]="engine_windows";
+		url+="engine_windows";
 		break;
 	case IDownload::CAT_ENGINE_MACOSX:
-		arg["category"]="engine_macosx";
+		url+="engine_macosx";
 		break;
 	default:
 		break;
 	}
+	return url + std::string("&torrent=true&springname=") + name;
+}
 
-	XmlRpc::XmlRpcValue result;
-	client.execute(method.c_str(),arg, result);
+bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
+{
+	LOG_DEBUG("%s", name.c_str()  );
 
 
-	if (result.getType()!=XmlRpc::XmlRpcValue::TypeArray) {
-		LOG_ERROR("Returned xml isn't an array!");
-		delete curlw;
+	std::string dlres;
+	const std::string url = getRequestUrl(name, cat);
+	if (!DownloadUrl(url, dlres)) {
+		LOG_ERROR("Error downloading %s %s", url.c_str(), dlres.c_str());
+        return false;
+	}
+	Json::Value result;   // will contains the root value after parsing.
+	Json::Reader reader;
+	const bool parsingSuccessful = reader.parse( dlres, result );
+	if ( !parsingSuccessful ) {
+		LOG_ERROR("Couldn't parse result: %s %s", reader.getFormattedErrorMessages().c_str(), dlres.c_str());
 		return false;
 	}
 
-	for(int i=0; i<result.size(); i++) {
-		XmlRpc::XmlRpcValue resfile = result[i];
+	if (!result.isArray()) {
+		LOG_ERROR("Returned json isn't an array!");
+		return false;
+	}
 
-		if (resfile.getType()!=XmlRpc::XmlRpcValue::TypeStruct) {
-			delete curlw;
+	for(Json::Value::ArrayIndex i=0; i<result.size(); i++) {
+		Json::Value resfile = result[i];
+
+		if (!resfile.isObject()) {
+			LOG_ERROR("Entry isn't object!");
 			return false;
 		}
-		if (resfile["category"].getType()!=XmlRpc::XmlRpcValue::TypeString) {
+		if (!resfile["category"].isString()) {
 			LOG_ERROR("No category in result");
-			delete curlw;
 			return false;
 		}
 		std::string filename=fileSystem->getSpringDir();
-		std::string category=resfile["category"];
+		std::string category=resfile["category"].asString();
 		filename+=PATH_DELIMITER;
 		if (category=="map")
 			filename+="maps";
@@ -127,49 +134,48 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 		else
 			LOG_ERROR("Unknown Category %s", category.c_str());
 		filename+=PATH_DELIMITER;
-		if ((resfile["mirrors"].getType()!=XmlRpc::XmlRpcValue::TypeArray) ||
-		    (resfile["filename"].getType()!=XmlRpc::XmlRpcValue::TypeString)) {
+
+		if ((!resfile["mirrors"].isArray()) ||
+		    (!resfile["filename"].isString())) {
 			LOG_ERROR("Invalid type in result");
-			delete curlw;
 			return false;
 		}
-		filename.append(resfile["filename"]);
+		filename.append(resfile["filename"].asString());
 		IDownload* dl=new IDownload(filename,name, cat);
-		XmlRpc::XmlRpcValue mirrors = resfile["mirrors"];
-		for(int j=0; j<mirrors.size(); j++) {
-			if (mirrors[j].getType()!=XmlRpc::XmlRpcValue::TypeString) {
+		Json::Value mirrors = resfile["mirrors"];
+		for(Json::Value::ArrayIndex j=0; j<mirrors.size(); j++) {
+			if (!mirrors[j].isString()) {
 				LOG_ERROR("Invalid type in result");
 			} else {
-				dl->addMirror(mirrors[j]);
+				dl->addMirror(mirrors[j].asString());
 			}
 		}
 
-		if(resfile["torrent"].getType()==XmlRpc::XmlRpcValue::TypeBase64) {
-			const std::vector<char> torrent = resfile["torrent"];
+		if(resfile["torrent"].isString()) {
+			const std::string torrent = base64_decode(resfile["torrent"].asString());
 			fileSystem->parseTorrent(&torrent[0], torrent.size(), dl);
 		}
-		if (resfile["version"].getType()==XmlRpc::XmlRpcValue::TypeString) {
-			const std::string& version = resfile["version"];
+		if (resfile["version"].isString()) {
+			const std::string& version = resfile["version"].asString();
 			dl->version = version;
 		}
-		if (resfile["md5"].getType()==XmlRpc::XmlRpcValue::TypeString) {
+		if (resfile["md5"].isString()) {
 			dl->hash=new HashMD5();
-			dl->hash->Set(resfile["md5"]);
+			dl->hash->Set(resfile["md5"].asString());
 		}
-		if (resfile["size"].getType()==XmlRpc::XmlRpcValue::TypeInt) {
-			dl->size=resfile["size"];
+		if (resfile["size"].isInt()) {
+			dl->size=resfile["size"].asInt();
 		}
-		if (resfile["depends"].getType() == XmlRpc::XmlRpcValue::TypeArray) {
-			for(int i=0; i<resfile["depends"].size(); i++) {
-				if (resfile["depends"][i].getType() == XmlRpc::XmlRpcValue::TypeString) {
-					const std::string &dep = resfile["depends"][i];
+		if (resfile["depends"].isArray()) {
+			for(Json::Value::ArrayIndex i=0; i<resfile["depends"].size(); i++) {
+				if (resfile["depends"][i].isString()) {
+					const std::string &dep = resfile["depends"][i].asString();
 					dl->addDepend(dep);
 				}
 			}
 		}
 		res.push_back(dl);
 	}
-	delete curlw;
 	return true;
 }
 
@@ -317,14 +323,13 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 		LOG_ERROR("No mirror found");
 		return false;
 	}
-	std::string escaped;
-	piece->mirror->escapeUrl(escaped);
+
 	curl_easy_setopt(curle, CURLOPT_WRITEFUNCTION, multi_write_data);
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
 	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 0L);
 	curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, piece);
 	curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
-	curl_easy_setopt(curle, CURLOPT_URL, escaped.c_str());
+	curl_easy_setopt(curle, CURLOPT_URL, CurlWrapper::escapeUrl(piece->mirror->url).c_str());
 
 	if ((piece->download->size>0) && (piece->start_piece>=0) && piece->download->pieces.size() > 0) { //don't set range, if size unknown
 		std::string range;

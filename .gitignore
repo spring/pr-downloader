@@ -3,7 +3,8 @@
 \.pc*
 \.*swp
 obj-*
-*\.cmake
+cmake_install.cmake
+CTestTestfile.cmake
 /debian/*\.log
 /html
 build/

@@ -6,6 +6,7 @@ if (PRD_ARCHIVE_SUPPORT)
 	add_definitions(-DARCHIVE_SUPPORT)
 endif()
 
+
 add_library(Downloader STATIC
 	Downloader/Rapid/RapidDownloader.cpp
 	Downloader/Rapid/Repo.cpp
@@ -29,9 +30,9 @@ add_library(Downloader STATIC
 	Util.cpp
 	Logger.cpp
 	Version.cpp
+	lib/base64/base64.cpp
 	${archivessrc}
 )
-
 set_source_files_properties(Version.cpp PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
 
 IF (WIN32)
@@ -46,9 +47,8 @@ set(PRDOWNLOADER_LIBS
 target_link_libraries(Downloader
 	${CURL_LIBRARIES}
 	${OPENSSL_LIBRARIES}
-	xmlrpc
 	${WIN32LIBS}
-#	soap
+	${Jsoncpp_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	pr-md5
 	pr-sha1
