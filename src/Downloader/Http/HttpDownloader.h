@@ -36,6 +36,7 @@ public:
 	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
 	virtual bool download(std::list< IDownload* >& download, int max_parallel=10);
 	void showProcess(IDownload* download, bool forceOutput);
+	static bool DownloadUrl(const std::string& url, std::string& res);
 private:
 	bool parallelDownload(IDownload& download);
 	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);
@@ -43,7 +44,7 @@ private:
 	/**
 	* show progress bar
 	*/
-	
+
 
 	/**
 	*	gets next piece that can be downloaded, mark it as downloading

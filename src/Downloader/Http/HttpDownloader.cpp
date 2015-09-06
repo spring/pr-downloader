@@ -45,7 +45,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 }
 
 //downloads url into res
-static bool DownloadUrl(const std::string& url, std::string& res)
+bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 {
 	CurlWrapper* curlw = new CurlWrapper();
 	curl_easy_setopt(curlw->GetHandle(), CURLOPT_URL, CurlWrapper::escapeUrl(url).c_str());
