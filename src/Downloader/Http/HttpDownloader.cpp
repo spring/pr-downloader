@@ -87,22 +87,13 @@ static std::string getRequestUrl(const std::string& name, IDownload::category ca
 	return url + std::string("&torrent=true&springname=") + name;
 }
 
-bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
+bool CHttpDownloader::ParseResult(const std::string& name, IDownload::category cat, const std::string& json, std::list<IDownload*>& res)
 {
-	LOG_DEBUG("%s", name.c_str()  );
-
-
-	std::string dlres;
-	const std::string url = getRequestUrl(name, cat);
-	if (!DownloadUrl(url, dlres)) {
-		LOG_ERROR("Error downloading %s %s", url.c_str(), dlres.c_str());
-        return false;
-	}
 	Json::Value result;   // will contains the root value after parsing.
 	Json::Reader reader;
-	const bool parsingSuccessful = reader.parse( dlres, result );
+	const bool parsingSuccessful = reader.parse( json, result );
 	if ( !parsingSuccessful ) {
-		LOG_ERROR("Couldn't parse result: %s %s", reader.getFormattedErrorMessages().c_str(), dlres.c_str());
+		LOG_ERROR("Couldn't parse result: %s %s", reader.getFormattedErrorMessages().c_str(), json.c_str());
 		return false;
 	}
 
@@ -177,6 +168,18 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 		res.push_back(dl);
 	}
 	return true;
+}
+
+bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
+{
+	LOG_DEBUG("%s", name.c_str()  );
+	std::string dlres;
+	const std::string url = getRequestUrl(name, cat);
+	if (!DownloadUrl(url, dlres)) {
+		LOG_ERROR("Error downloading %s %s", url.c_str(), dlres.c_str());
+	        return false;
+	}
+	return ParseResult(name, cat, dlres, res);
 }
 
 size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data)
