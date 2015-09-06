@@ -41,10 +41,14 @@ bool CRepo::parse()
 {
 	LOG_DEBUG("%s",tmpFile.c_str());
 	FILE* f = fileSystem->propen(tmpFile, "rb");
+	if (f == nullptr) {
+		LOG_ERROR("Could not open %s",tmpFile.c_str());
+		return false;
+	}
 	gzFile fp = gzdopen(fileno(f), "rb");
 	if (fp==Z_NULL) {
 		fclose(f);
-		LOG_ERROR("Could not open %s",tmpFile.c_str());
+		LOG_ERROR("Could not gzdopen %s",tmpFile.c_str());
 		return false;
 	}
 
