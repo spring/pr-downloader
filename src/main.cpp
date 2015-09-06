@@ -109,7 +109,7 @@ bool search(category cat, const char* name)
 	downloadInfo dl;
 	for (int i=0; i<count; i++) {
 		DownloadGetSearchInfo(i, dl);
-		LOG("%s", dl.filename);
+		LOG("%s\n", dl.filename);
 	}
 	return true;
 }
@@ -202,7 +202,7 @@ int main(int argc, char **argv)
 		}
 	}
 	if (!DownloadStart()) {
-		LOG_ERROR("Error occured while downloading");
+		LOG_ERROR("Error occurred while downloading");
 	} else {
 		LOG_INFO("Download complete!");
 	}
