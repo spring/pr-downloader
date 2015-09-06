@@ -4,8 +4,8 @@
 # http://stackoverflow.com/questions/18005880/how-to-writing-a-cmake-module-for-jsoncpp
 #
 #  Jsoncpp_FOUND - system has Jsoncpp
-#  Jsoncpp_INCLUDE_DIRS - the Jsoncpp include directories
-#  Jsoncpp_LIBRARIES - link these to use Jsoncpp
+#  Jsoncpp_INCLUDE_DIR - the Jsoncpp include directory
+#  Jsoncpp_LIBRARY - link to use Jsoncpp
 
 # Use pkg-config to get hints about paths
 INCLUDE(FindPkgConfig)
@@ -24,5 +24,3 @@ find_library(Jsoncpp_LIBRARY
   NAMES jsoncpp
   PATHS ${Jsoncpp_PKGCONF_LIBRARY_DIRS}
 )
-
-

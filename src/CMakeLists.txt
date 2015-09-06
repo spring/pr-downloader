@@ -6,7 +6,7 @@ if (PRD_ARCHIVE_SUPPORT)
 	add_definitions(-DARCHIVE_SUPPORT)
 endif()
 
-if (NOT Jsoncpp_FOUND)
+if (PRD_JSONCPP_INTERNAL)
 	set(jsonlibcppsrc
 		lib/jsoncpp/src/lib_json/json_value.cpp
 		lib/jsoncpp/src/lib_json/json_reader.cpp
@@ -56,7 +56,7 @@ target_link_libraries(Downloader
 	${CURL_LIBRARIES}
 	${OPENSSL_LIBRARIES}
 	${WIN32LIBS}
-	${Jsoncpp_LIBRARIES}
+	${Jsoncpp_LIBRARY}
 	${ZLIB_LIBRARIES}
 	pr-md5
 	pr-sha1

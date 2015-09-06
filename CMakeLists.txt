@@ -30,6 +30,7 @@ OPTION(PRD_DEVELOP_FILES "install development files (header, libspringdownloader
 OPTION(PRD_DO_INSTALL "install files" ON)
 OPTION(PRD_ARCHIVE_SUPPORT "enable archive support" ON)
 OPTION(PRD_CLEAR_COMPILER_FLAGS "clear all compiler flags" OFF)
+OPTION(PRD_JSONCPP_INTERNAL "use bundled JsonCpp" ON)
 
 if(PRD_CLEAR_COMPILER_FLAGS)
 	SET(CMAKE_CXX_FLAGS "")
@@ -104,15 +105,16 @@ else()
 	find_package(ZLIB REQUIRED)
 endif()
 
-find_package(Jsoncpp)
-set(Jsoncpp_FOUND FALSE)
-if(NOT Jsoncpp_FOUND) # no system jsoncpp found, use bundled one
-	set(Jsoncpp_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/jsoncpp/include)
+if (PRD_JSONCPP_INTERNAL)
+	# use bundled JsonCpp
+	set(Jsoncpp_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/jsoncpp/include)
+else()
+	find_package(Jsoncpp REQUIRED)
 endif()
 
 include_directories(SYSTEM ${CURL_INCLUDE_DIR})
 include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
-include_directories(${Jsoncpp_INCLUDE_DIRS})
+include_directories(${Jsoncpp_INCLUDE_DIR})
 
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
