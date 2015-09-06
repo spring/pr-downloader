@@ -41,6 +41,7 @@ bool CRepo::getDownload(IDownload& dl)
 bool CRepo::parse()
 {
 	if (tmpFile.empty()) {
+		LOG_DEBUG("tmpfile empty, repo not initialized?");
 		return false;
 	}
 	LOG_DEBUG("%s",tmpFile.c_str());
