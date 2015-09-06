@@ -116,13 +116,11 @@ bool CHttpDownloader::ParseResult(const std::string& name, const std::string& js
 		std::string filename=fileSystem->getSpringDir();
 		std::string category=resfile["category"].asString();
 		filename+=PATH_DELIMITER;
-		IDownload::category cat = IDownload::CAT_NONE;
+
 		if (category=="map") {
 			filename+="maps";
-			cat = IDownload::CAT_MAPS;
 		} else if (category=="game") {
 			filename+="games";
-			cat = IDownload::CAT_GAMES;
 		} else if (category.find("engine")==0) { // engine_windows, engine_linux, engine_macosx
 			filename+="engine";
 		} else
@@ -135,6 +133,8 @@ bool CHttpDownloader::ParseResult(const std::string& name, const std::string& js
 			return false;
 		}
 		filename.append(resfile["filename"].asString());
+
+		const IDownload::category cat = IDownload::getCatFromStr(category);
 		IDownload* dl=new IDownload(filename,name, cat);
 		Json::Value mirrors = resfile["mirrors"];
 		for(Json::Value::ArrayIndex j=0; j<mirrors.size(); j++) {

@@ -68,11 +68,24 @@ IDownload::~IDownload()
 	}
 }
 
-const std::string IDownload::getCat(category cat) const
+static const char* cats[]= {"none","map","game","luawidgets","aibots","lobbyclients","media","other","replays","springinstallers","tools","engine_linux", "engine_linux64", "engine_windows", "engine_macosx"};
+
+const std::string IDownload::getCat(category cat)
 {
-	const char* cats[]= {"none","map","game","luawidgets","aibots","lobbyclients","media","other","replays","springinstallers","tools","engine_linux", "engine_linux64", "engine_windows", "engine_macosx"};
 	return cats[cat];
 }
+
+IDownload::category IDownload::getCatFromStr(const std::string& str)
+{
+	for(int i=0; i<CAT_COUNT; i++) {
+		if (str == cats[i]) {
+			return (IDownload::category)i;
+		}
+	}
+	LOG_ERROR("Unknown category: %s", str.c_str());
+	return CAT_NONE;
+}
+
 
 const std::string IDownload::getUrl()
 {

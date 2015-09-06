@@ -35,6 +35,7 @@ public:
 		CAT_ENGINE_LINUX64,
 		CAT_ENGINE_WINDOWS,
 		CAT_ENGINE_MACOSX,
+		CAT_COUNT
 	} cat;
 
 	enum download_type {
@@ -58,7 +59,8 @@ public:
 	/**
 	 *	returns the string name of a category
 	 */
-	const std::string getCat(category cat) const;
+	static const std::string getCat(category cat);
+	static IDownload::category getCatFromStr(const std::string& str);
 	/**
 	 *	returns first url
 	 */
