@@ -166,7 +166,17 @@ static be_node *_be_decode(const char **data, long long *data_len)
 	}
 
 	/* byte strings */
-	case '0'...'9': {
+	case '0':
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+	{
 		ret = be_alloc(BE_STR);
 
 		ret->val.s = _be_decode_str(data, data_len);
