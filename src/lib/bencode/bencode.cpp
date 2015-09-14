@@ -242,12 +242,12 @@ void be_free(be_node *node)
 #include "Logger.h"
 #include <stdint.h>
 
-static void _be_dump_indent(ssize_t indent)
+static void _be_dump_indent(size_t indent)
 {
 	while (indent-- > 0)
 		LOG("    ");
 }
-static void _be_dump(be_node *node, ssize_t indent)
+static void _be_dump(be_node *node, size_t indent)
 {
 	size_t i;
 
