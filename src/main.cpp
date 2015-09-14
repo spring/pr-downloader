@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 			optind++;
 		}
 	}
-	if (!DownloadStart()) {
+	if (DownloadStart() != 0) {
 		LOG_ERROR("Error occurred while downloading");
 	} else {
 		LOG_INFO("Download complete!");
