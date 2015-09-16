@@ -7,12 +7,20 @@
 #include "Util.h"
 
 #include <stdio.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#else
+#include <io.h> //_chsize
+#endif
 #include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <sys/time.h>
+#endif
+#include <algorithm> //std::min
+
 
 #ifdef WIN32
 #include <windows.h>
@@ -76,7 +84,12 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	}
 
 	if((!isnewfile) && (size>0) && (size!=sb.st_size)) { //truncate file if real-size != excepted file size
-		int ret=ftruncate(fileno(handle), size);
+#ifdef _MSC_VER
+		int ret  = _chsize(fileno(handle), size);
+#else
+		int ret = ftruncate(fileno(handle), size);
+#endif
+
 		if (ret!=0) {
 			LOG_ERROR("ftruncate failed");
 		}

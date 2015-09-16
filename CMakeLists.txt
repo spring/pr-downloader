@@ -95,6 +95,10 @@ if(WIN32)
 	add_definitions(-DUNICODE -D_UNICODE)
 endif()
 
+if(MSVC)
+	add_definitions(-DWIN32_LEAN_AND_MEAN -DNOMINMAX)
+endif()
+
 if (PREFER_STATIC_LIBS)
 	#curl dependency
 	FIND_PACKAGE_STATIC(OpenSSL REQUIRED)

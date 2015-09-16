@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string>
-#include <unistd.h>
 #include <getopt.h>
 #include <stdio.h>
 #include <list>

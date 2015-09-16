@@ -26,6 +26,7 @@
 #include <string>
 #include <sstream>
 #include <stdlib.h>
+#include <algorithm> //std::min, std::max
 
 CHttpDownloader::CHttpDownloader()
 {

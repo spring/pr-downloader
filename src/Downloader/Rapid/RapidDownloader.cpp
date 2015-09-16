@@ -12,10 +12,13 @@
 #include <string.h>
 #include <list>
 #include <zlib.h>
+#include <algorithm>  //std::min
 
 #ifndef WIN32
 #include <regex.h>
 #endif
+#undef min
+#undef max
 
 
 CRapidDownloader::CRapidDownloader():

@@ -252,7 +252,7 @@ static void _be_dump(be_node *node, size_t indent)
 	size_t i;
 
 	_be_dump_indent(indent);
-	indent = abs(indent);
+	indent = abs((long)indent);
 
 	switch (node->type) {
 	case BE_STR:
