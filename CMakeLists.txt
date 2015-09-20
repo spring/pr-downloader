@@ -59,8 +59,6 @@ if   (MINGW)
 	if(NOT EXISTS "${MINGWLIBS}" OR NOT IS_DIRECTORY "${MINGWLIBS}")
 		MESSAGE(WARNING "MINGWLIBS is not a valid directory")
 	endif ()
-	include_directories(${MINGWLIBS}/include)
-	include_directories("${CMAKE_FIND_ROOT_PATH}/include")
 
 
 	if (PRD_LINK_STATIC)
@@ -116,20 +114,13 @@ else()
 	find_package(Jsoncpp REQUIRED)
 endif()
 
-include_directories(SYSTEM ${CURL_INCLUDE_DIR})
-include_directories(SYSTEM ${ZLIB_INCLUDE_DIR})
-include_directories(${Jsoncpp_INCLUDE_DIR})
-
-
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
-
 # MINIZIP_FOUND is used in lib & FileSystem
-Set(MINIZIP_FIND_QUIETLY TRUE)
 FIND_PACKAGE(MiniZip)
 if(NOT MINIZIP_FOUND)
-	message(STATUS "libminizip was not found, using integrated")
-	include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src/lib")
+       message(STATUS "libminizip was not found, using integrated")
+       SET(MINIZIP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/lib)
 endif()
+
 
 subdirs(src)
 

@@ -41,6 +41,14 @@ add_library(Downloader STATIC
 	${archivessrc}
 	${jsonlibcppsrc}
 )
+
+target_include_directories(Downloader
+		PRIVATE ${pr-downloader_SOURCE_DIR}/src
+		PRIVATE ${Jsoncpp_INCLUDE_DIR}
+		PRIVATE ${MINIZIP_INCLUDE_DIR}
+		PRIVATE ${CURL_INCLUDE_DIR}
+		PRIVATE ${ZLIB_INCLUDE_DIR}
+	)
 set_source_files_properties(Version.cpp PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
 
 IF (WIN32)
