@@ -5,11 +5,11 @@ compiler:
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo add-apt-repository -y ppa:george-edison55/precise-backports
+  - sudo add-apt-repository -y ppa:george-edison55/precise-backports #cmake
   - sudo apt-get update -q
 
 install:
-  - sudo apt-get install gcc-4.7 g++-4.7 cmake
+  - sudo apt-get install gcc-4.7 g++-4.7 cmake cmake-data
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.7 90
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.7 90
 
