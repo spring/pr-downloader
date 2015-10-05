@@ -356,7 +356,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 		//parse server response	header as well
 		curl_easy_setopt(curle, CURLOPT_HEADERFUNCTION, multiHeader);
 		curl_easy_setopt(curle, CURLOPT_WRITEHEADER, piece);
-		for ( std::vector<unsigned int>::iterator it = piece->pieces.begin(); it != piece->pieces.end(); it++ )
+		for ( std::vector<unsigned int>::iterator it = piece->pieces.begin(); it != piece->pieces.end(); ++it )
 			piece->download->pieces[*it].state=IDownload::STATE_DOWNLOADING;
 	} else { //
 		LOG_DEBUG("single piece transfer");
@@ -416,7 +416,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			}
 			assert(data->download->file!=NULL);
 			assert(data->start_piece< (int)data->download->pieces.size());
-			for ( std::vector<unsigned int>::iterator it = data->pieces.begin(); it != data->pieces.end(); it++ ) {
+			for ( std::vector<unsigned int>::iterator it = data->pieces.begin(); it != data->pieces.end(); ++it ) {
 				if (data->download->pieces[*it].sha->isSet()) {
 					data->download->file->Hash(sha1, *it);
 

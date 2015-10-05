@@ -18,7 +18,7 @@
 class IArchive
 {
 protected:
-	IArchive(const std::string& /*archiveName*/) {}
+	explicit IArchive(const std::string& /*archiveName*/) {}
 
 public:
 	virtual ~IArchive() {}

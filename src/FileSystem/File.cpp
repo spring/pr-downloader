@@ -108,7 +108,6 @@ bool CFile::Hash(IHash& hash, int piece)
 	SetPos(0, piece);
 	hash.Init();
 //	LOG("piece %d left: %d",piece,  GetPieceSize(piece));
-	int read=0;
 	long unsigned left=GetPieceSize(piece); //total bytes to hash
 	if (left==0) {
 		LOG_ERROR("tried to hash empty piece %d", piece);
@@ -116,8 +115,8 @@ bool CFile::Hash(IHash& hash, int piece)
 	}
 
 	while(left>0) {
-		int toread=std::min(left, (long unsigned)sizeof(buf));
-		read=Read(buf, toread, piece);
+		const int toread=std::min(left, (long unsigned)sizeof(buf));
+		const int read=Read(buf, toread, piece);
 		if(read<=0) {
 			LOG_DEBUG("EOF or read error on piece %d, left: %d toread: %d size: %d, GetPiecePos %d GetPieceSize(): %d read: %d", piece, left, toread, GetPieceSize(piece), GetPiecePos(piece), GetPieceSize(piece), read);
 			LOG_DEBUG("curpos: %d", curpos);
@@ -241,7 +240,7 @@ bool CFile::SetPieceSize(int pieceSize)
 int CFile::GetPiecesSize(std::vector< unsigned int > pieces) const
 {
   int size = 0;
-  for ( std::vector< unsigned int >::iterator it = pieces.begin(); it != pieces.end(); it++ )
+  for ( std::vector< unsigned int >::iterator it = pieces.begin(); it != pieces.end(); ++it )
   {
     size += GetPieceSize(*it);
   }

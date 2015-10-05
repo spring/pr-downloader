@@ -7,7 +7,7 @@
 class AtomicFile: public IFile
 {
 public:
-	AtomicFile(std::string filename);
+	explicit AtomicFile(std::string filename);
 	virtual ~AtomicFile();
 	bool Open(const std::string& filename) override;
 	int Write(const char* buf, int size) override;

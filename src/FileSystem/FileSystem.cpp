@@ -50,7 +50,7 @@ bool CFileSystem::fileIsValid(const FileData* mod, const std::string& filename) 
 	HashMD5 md5hash;
 	int bytes;
 	unsigned char data[IO_BUF_SIZE];
-	FILE* f= propen(filename.c_str(), "rb");
+	FILE* f= propen(filename, "rb");
 	gzFile inFile = gzdopen (fileno(f), "rb");
 	if (inFile == NULL) { //file can't be opened
 		fclose(f);
@@ -87,7 +87,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData*>& fi
 	unsigned char c_size[4];
 	unsigned char length;
 
-	FILE* f= propen(filename.c_str(), "rb");
+	FILE* f= propen(filename, "rb");
 	gzFile in=gzdopen(fileno(f), "rb");
 	if (in==Z_NULL) {
 		LOG_ERROR("Could not open %s",filename.c_str());
@@ -315,7 +315,7 @@ int CFileSystem::validatePool(const std::string& path, bool deletebroken)
 						if (!fileIsValid(&filedata, absname)) { //check if md5 in filename is the same as in filename
 							LOG_ERROR("Invalid File in pool: %s",absname.c_str());
 							if (deletebroken) {
-								removeFile(absname.c_str());
+								removeFile(absname);
 							}
 						} else {
 							res++;

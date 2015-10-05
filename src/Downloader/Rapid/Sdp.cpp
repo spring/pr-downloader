@@ -151,7 +151,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 	while (buf_pos<buf_end) { //all bytes written?
 		if (sdp->file_handle==NULL) { //no open file, create one
 			while ( (!(*sdp->list_it)->download==true) && (sdp->list_it!=sdp->globalFiles->end())) { //get file
-				sdp->list_it++;
+				++sdp->list_it;
 			}
 			HashMD5 md5;
 			md5.Set((*sdp->list_it)->md5, sizeof((*sdp->list_it)->md5));
@@ -200,7 +200,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 					fileSystem->removeFile(sdp->file_name.c_str());
 					return -1;
 				}
-				sdp->list_it++;
+				++sdp->list_it;
 				sdp->file_pos=0;
 				sdp->skipped=0;
 			}

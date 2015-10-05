@@ -18,7 +18,7 @@ extern "C" {
 class CSevenZipArchive: public IArchive
 {
 public:
-	CSevenZipArchive(const std::string& name);
+	explicit CSevenZipArchive(const std::string& name);
 	virtual ~CSevenZipArchive();
 
 	virtual unsigned int NumFiles() const;

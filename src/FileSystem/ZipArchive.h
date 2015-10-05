@@ -16,7 +16,7 @@
 class CZipArchive: public IArchive
 {
 public:
-	CZipArchive(const std::string& archiveName);
+	explicit CZipArchive(const std::string& archiveName);
 	virtual ~CZipArchive();
 
 	virtual bool IsOpen();
