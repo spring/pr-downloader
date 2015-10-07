@@ -68,18 +68,43 @@ IDownload::~IDownload()
 	}
 }
 
-static const char* cats[]= {"none","map","game","luawidgets","aibots","lobbyclients","media","other","replays","springinstallers","tools","engine_linux", "engine_linux64", "engine_windows", "engine_macosx"};
+static std::map<int, std::string> categories;
+
+void IDownload::initCategories()
+{
+	if (!categories.empty()) { //not initialized yet
+		return;
+	}
+	categories[CAT_NONE] = "none";
+	categories[CAT_MAPS] ="map";
+	categories[CAT_GAMES] ="game";
+	categories[CAT_LUAWIDGETS] ="luawidgets";
+	categories[CAT_AIBOTS] = "aibots";
+	categories[CAT_LOBBYCLIENTS] = "lobbyclients";
+	categories[CAT_MEDIA] = "media";
+	categories[CAT_OTHER] = "other";
+	categories[CAT_REPLAYS] = "replays";
+	categories[CAT_SPRINGINSTALLERS] = "springinstallers";
+	categories[CAT_TOOLS] = "tools";
+	categories[CAT_ENGINE_LINUX] = "engine_linux";
+	categories[CAT_ENGINE_LINUX64] = "engine_linux64";
+	categories[CAT_ENGINE_WINDOWS] =  "engine_windows";
+	categories[CAT_ENGINE_MACOSX] = "engine_macosx";
+	categories[CAT_COUNT] = "count";
+}
 
 const std::string IDownload::getCat(category cat)
 {
-	return cats[cat];
+	IDownload::initCategories();
+	return categories[cat];
 }
 
 IDownload::category IDownload::getCatFromStr(const std::string& str)
 {
-	for(int i=0; i<CAT_COUNT; i++) {
-		if (str == cats[i]) {
-			return (IDownload::category)i;
+	IDownload::initCategories();
+	for(const auto &myPair: categories) {
+		if (myPair.second == str) {
+			return (IDownload::category)myPair.first;
 		}
 	}
 	LOG_ERROR("Unknown category: %s", str.c_str());

@@ -113,7 +113,7 @@ public:
 
 private:
 	std::vector <Mirror*> mirrors;
-
+	static void initCategories();
 
 };
 
