@@ -285,6 +285,7 @@ bool CSdp::downloadStream(const std::string& url,std::list<FileData*> files)
 
 	res = curl_easy_perform(curlw->GetHandle());
 	free(dest);
+	free(buf);
 	/* always cleanup */
 	delete curlw;
 	curlw = NULL;
