@@ -18,18 +18,6 @@ void SetDownloadsObserver(IDownloadsObserver* ob)
 	observer=ob;
 }
 
-void ObserverAdd(IDownload* id)
-{
-	if(observer!=NULL)
-		observer->Add(id);
-}
-
-void ObserverRemove(IDownload* id)
-{
-	if(observer!=NULL)
-		observer->Remove(id);
-}
-
 IDownload::IDownload(const std::string& name,const std::string& origin_name, category cat, download_type typ ):
 	cat(cat),
 	dltype(typ),
@@ -45,12 +33,14 @@ IDownload::IDownload(const std::string& name,const std::string& origin_name, cat
 	parallel_downloads(0),
 	write_only_from(NULL)
 {
-	ObserverAdd(this);
+	if(observer!=NULL)
+		observer->Add(this);
 }
 
 IDownload::~IDownload()
 {
-	ObserverRemove(this);
+	if(observer!=NULL)
+		observer->Remove(this);
 
 	for(unsigned i=0; i<pieces.size(); i++) {
 		delete pieces[i].sha;
