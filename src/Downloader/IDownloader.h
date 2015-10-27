@@ -17,7 +17,6 @@ class IDownloader
 public:
 	static IDownloader* GetHttpInstance();
 	static IDownloader* GetRapidInstance();
-//	static IDownloader* GetPlasmaInstance();
 
 	/**
 		Initialize all Downloaders
@@ -59,7 +58,6 @@ public:
 	static void setProcessUpdateListener(IDownloaderProcessUpdateListener l);
 private:
 	static IDownloader* httpdl;
-	static IDownloader* plasmadl;
 	static IDownloader* rapiddl;
 	static IDownloader* widgetdl;
 
@@ -68,7 +66,6 @@ public:
 };
 
 #define httpDownload IDownloader::GetHttpInstance()
-//#define plasmaDownload IDownloader::GetPlasmaInstance()
 #define rapidDownload IDownloader::GetRapidInstance()
 
 

@@ -4,7 +4,6 @@
 #include "Download.h"
 #include "Http/HttpDownloader.h"
 #include "Rapid/RapidDownloader.h"
-//#include "Plasma/PlasmaDownloader.h"
 #include "Util.h"
 #include "Logger.h"
 #include "Mirror.h"
@@ -13,7 +12,6 @@
 class IDownloader;
 
 IDownloader* IDownloader::httpdl=NULL;
-//IDownloader* IDownloader::plasmadl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
 IDownloaderProcessUpdateListener IDownloader::listener = nullptr;
 
@@ -27,8 +25,6 @@ void IDownloader::Shutdown()
 {
 	delete(httpdl);
 	httpdl = NULL;
-//	delete(plasmadl);
-//	plasmadl = NULL;
 	delete(rapiddl);
 	rapiddl = NULL;
 	curl_global_cleanup();
@@ -46,14 +42,6 @@ IDownloader* IDownloader::GetRapidInstance()
 		rapiddl=new CRapidDownloader();
 	return rapiddl;
 }
-/*
-IDownloader* IDownloader::GetPlasmaInstance()
-{
-	if (plasmadl==NULL)
-		plasmadl=new CPlasmaDownloader();
-	return plasmadl;
-}
-*/
 
 bool IDownloader::download(std::list<IDownload*>& download, int max_parallel)
 {
