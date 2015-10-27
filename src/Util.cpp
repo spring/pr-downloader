@@ -68,15 +68,6 @@ unsigned int intmin(int x, int y)
 	return y;
 }
 
-void urlEncode(std::string& url)
-{
-	for (int i=url.length()-1; i>=0; i--) {
-		if (url.at(i)==' ') {
-			url.replace(i,1,"%20");
-		}
-	}
-}
-
 bool urlToPath(const std::string& url, std::string& path)
 {
 	size_t pos=url.find("//");

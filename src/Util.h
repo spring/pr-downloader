@@ -39,12 +39,6 @@ unsigned int parse_int32(unsigned char c[4]);
 unsigned int intmin(int x, int y);
 
 /**
-	replace " " with %20 in an url
-	FIXME: this should handle all special chars
-*/
-void urlEncode(std::string& url);
-
-/**
 	creates a path from an url, for example:
 	http://www.server.com/path/file.gz is translated to:
 	www.server.com\path\file.gz
