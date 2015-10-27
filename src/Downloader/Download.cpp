@@ -5,7 +5,6 @@
 #include "FileSystem/IHash.h"
 #include "FileSystem/File.h"
 #include "Mirror.h"
-#include "IDownloadsObserver.h"
 
 #include <string>
 #include <list>
@@ -33,15 +32,10 @@ IDownload::IDownload(const std::string& name,const std::string& origin_name, cat
 	parallel_downloads(0),
 	write_only_from(NULL)
 {
-	if(observer!=NULL)
-		observer->Add(this);
 }
 
 IDownload::~IDownload()
 {
-	if(observer!=NULL)
-		observer->Remove(this);
-
 	for(unsigned i=0; i<pieces.size(); i++) {
 		delete pieces[i].sha;
 	}
