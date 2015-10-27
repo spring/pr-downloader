@@ -20,7 +20,6 @@ add_library(Downloader STATIC
 	Downloader/Rapid/Sdp.cpp
 	Downloader/Http/HttpDownloader.cpp
 	Downloader/Http/DownloadData.cpp
-#	Downloader/Plasma/PlasmaDownloader.cpp
 	Downloader/CurlWrapper.cpp
 	Downloader/Download.cpp
 	Downloader/IDownloader.cpp
