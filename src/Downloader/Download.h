@@ -14,7 +14,6 @@ class DownloadData;
 class IHash;
 class Mirror;
 class CFile;
-class IDownloadsObserver;
 
 class IDownload
 {
@@ -116,8 +115,6 @@ private:
 	static void initCategories();
 
 };
-
-void SetDownloadsObserver(IDownloadsObserver* ob);
 
 #endif
 

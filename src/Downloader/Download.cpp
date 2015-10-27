@@ -10,12 +10,6 @@
 #include <list>
 #include <stdio.h>
 
-IDownloadsObserver* observer=NULL;
-
-void SetDownloadsObserver(IDownloadsObserver* ob)
-{
-	observer=ob;
-}
 
 IDownload::IDownload(const std::string& name,const std::string& origin_name, category cat, download_type typ ):
 	cat(cat),

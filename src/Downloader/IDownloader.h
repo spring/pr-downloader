@@ -9,7 +9,6 @@
 #include <string>
 #include <stdio.h>
 
-class IDownloadsObserver;
 typedef void (*IDownloaderProcessUpdateListener)(int done, int size);
 
 class IDownloader
@@ -21,7 +20,7 @@ public:
 	/**
 		Initialize all Downloaders
 	*/
-	static void Initialize(IDownloadsObserver* observer=NULL);
+	static void Initialize();
 
 	/**
 		Shutdown all Downloaders

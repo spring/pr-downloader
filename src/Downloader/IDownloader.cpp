@@ -15,10 +15,9 @@ IDownloader* IDownloader::httpdl=NULL;
 IDownloader* IDownloader::rapiddl=NULL;
 IDownloaderProcessUpdateListener IDownloader::listener = nullptr;
 
-void IDownloader::Initialize(IDownloadsObserver* observer)
+void IDownloader::Initialize()
 {
 	curl_global_init(CURL_GLOBAL_ALL);
-	SetDownloadsObserver(observer);
 }
 
 void IDownloader::Shutdown()
