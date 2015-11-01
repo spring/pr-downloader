@@ -153,6 +153,9 @@ bool DownloadSetConfig(CONFIG type, const void* value)
 	case CONFIG_FETCH_DEPENDS:
 		fetchDepends = (const bool*) value;
 		return true;
+	case CONFIG_RAPID_FORCEUPDATE:
+		rapidDownload->setOption("forceupdate", ""); //FIXME, use value
+		return true;
 	}
 	return false;
 }
@@ -166,6 +169,9 @@ bool DownloadGetConfig(CONFIG type, const void** value)
 	case CONFIG_FETCH_DEPENDS:
 		*value = (const bool*)fetchDepends;
 		return true;
+	case CONFIG_RAPID_FORCEUPDATE:
+		//FIXME: implement
+		return false;
 	}
 	return false;
 }

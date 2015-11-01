@@ -62,7 +62,8 @@ extern void DownloadShutdown();
 
 enum CONFIG {
 	CONFIG_FILESYSTEM_WRITEPATH = 1, //const char, sets the output directory
-	CONFIG_FETCH_DEPENDS //bool, automaticly fetch depending files
+	CONFIG_FETCH_DEPENDS, //bool, automaticly fetch depending files
+	CONFIG_RAPID_FORCEUPDATE, //bool, always fetch repo files
 };
 
 /**
