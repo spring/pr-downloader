@@ -13,21 +13,15 @@ static void initCategories()
 	if (!categories.empty()) { //not initialized yet
 		return;
 	}
-	categories[DownloadEnum::CAT_NONE] = "none";
-	categories[DownloadEnum::CAT_MAPS] ="map";
-	categories[DownloadEnum::CAT_GAMES] ="game";
-	categories[DownloadEnum::CAT_LUAWIDGETS] ="luawidgets";
-	categories[DownloadEnum::CAT_AIBOTS] = "aibots";
-	categories[DownloadEnum::CAT_LOBBYCLIENTS] = "lobbyclients";
-	categories[DownloadEnum::CAT_MEDIA] = "media";
-	categories[DownloadEnum::CAT_OTHER] = "other";
-	categories[DownloadEnum::CAT_REPLAYS] = "replays";
-	categories[DownloadEnum::CAT_SPRINGINSTALLERS] = "springinstallers";
-	categories[DownloadEnum::CAT_TOOLS] = "tools";
+	categories[DownloadEnum::CAT_MAP] ="map";
+	categories[DownloadEnum::CAT_GAME] ="game";
+	categories[DownloadEnum::CAT_SPRINGLOBBY] = "springlobby";
+	categories[DownloadEnum::CAT_ENGINE] = "engine";
 	categories[DownloadEnum::CAT_ENGINE_LINUX] = "engine_linux";
 	categories[DownloadEnum::CAT_ENGINE_LINUX64] = "engine_linux64";
 	categories[DownloadEnum::CAT_ENGINE_WINDOWS] =  "engine_windows";
 	categories[DownloadEnum::CAT_ENGINE_MACOSX] = "engine_macosx";
+	categories[DownloadEnum::CAT_HTTP] = "http";
 	categories[DownloadEnum::CAT_COUNT] = "count";
 }
 

@@ -79,12 +79,12 @@ void show_results(int count)
 {
 	for(int i=0; i<count; i++) {
 		downloadInfo dl;
-		DownloadGetSearchInfo(i, dl);
+		DownloadGetInfo(i, dl);
 		LOG_DEBUG("Download path: %s", dl.filename);
 	}
 }
 
-bool download(category cat, const char* name)
+bool download(DownloadEnum::Category cat, const char* name)
 {
 	int count = DownloadSearch(DL_ANY, cat, name);
 	if (count<=0) {
@@ -98,7 +98,7 @@ bool download(category cat, const char* name)
 	return true;
 }
 
-bool search(category cat, const char* name)
+bool search(DownloadEnum::Category cat, const char* name)
 {
 	int count = DownloadSearch(DL_ANY, cat, name);
 	if (count<=0) {
@@ -107,7 +107,7 @@ bool search(category cat, const char* name)
 	}
 	downloadInfo dl;
 	for (int i=0; i<count; i++) {
-		DownloadGetSearchInfo(i, dl);
+		DownloadGetInfo(i, dl);
 		LOG("%s\n", dl.filename);
 	}
 	return true;
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 			break;
 		switch (c) {
 		case RAPID_DOWNLOAD: {
-			download(CAT_GAME, optarg);
+			download(DownloadEnum::CAT_GAME, optarg);
 			break;
 		}
 		case RAPID_VALIDATE: {
@@ -148,24 +148,15 @@ int main(int argc, char **argv)
 			DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, optarg);
 			break;
 		}
-		case HTTP_SEARCH: {
-			search(CAT_ANY, optarg);
-			break;
-		}
-		case HTTP_DOWNLOAD: {
-			if (!download(CAT_ANY, optarg))
-				res = false;
-			break;
-		}
 		case DOWNLOAD_MAP: {
-			if (!download(CAT_MAP, optarg)) {
+			if (!download(DownloadEnum::CAT_MAP, optarg)) {
 				LOG_ERROR("No map found for %s",optarg);
 				res=false;
 			}
 			break;
 		}
 		case DOWNLOAD_GAME: {
-			if (!download(CAT_GAME, optarg)) {
+			if (!download(DownloadEnum::CAT_GAME, optarg)) {
 				LOG_ERROR("No game found for %s",optarg);
 				res=false;
 			}
@@ -175,7 +166,7 @@ int main(int argc, char **argv)
 			show_version();
 			break;
 		case DOWNLOAD_ENGINE: {
-			if (!download(CAT_ENGINE, optarg)) {
+			if (!download(DownloadEnum::CAT_ENGINE, optarg)) {
 				LOG_ERROR("No engine version found for %s",optarg);
 				res=false;
 			}
@@ -193,7 +184,7 @@ int main(int argc, char **argv)
 	}
 	if (optind < argc) {
 		while (optind < argc) {
-			if (!download(CAT_ANY, argv[optind])) {
+			if (!download(DownloadEnum::CAT_GAME, argv[optind])) {
 				LOG_ERROR("No file found for %s",argv[optind]);
 				res=false;
 			}
