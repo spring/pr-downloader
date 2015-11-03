@@ -14,12 +14,20 @@ void SetDownloadListener(IDownloaderProcessUpdateListener listener) {
 	IDownloader::setProcessUpdateListener(listener);
 }
 
+bool isEngineDownload(DownloadEnum::Category cat)
+{
+	return (cat == DownloadEnum::CAT_ENGINE_LINUX)   ||
+	       (cat == DownloadEnum::CAT_ENGINE_LINUX64) ||
+	       (cat == DownloadEnum::CAT_ENGINE_MACOSX)  ||
+	       (cat == DownloadEnum::CAT_ENGINE_WINDOWS);
+}
+
 bool download_engine(std::list<IDownload*>& dllist)
 {
 	httpDownload->download(dllist);
 	bool res = true;
 	for (const IDownload* dl: dllist) {
-		if (!fileSystem->extractEngine(dl->name, dl->version)) {
+		if (isEngineDownload(dl->cat) && !fileSystem->extractEngine(dl->name, dl->version)) {
 			LOG_ERROR("Failed to extract engine %s", dl->version.c_str());
 			res = false;
 		}
@@ -41,15 +49,6 @@ IDownload* GetIDownloadByID(std::list<IDownload*>& dllist, int id)
 	LOG_ERROR("%s: Couln't find dl %d", __FUNCTION__, id);
 	return NULL;
 }
-
-bool isEngineDownload(DownloadEnum::Category cat)
-{
-	return (cat == DownloadEnum::CAT_ENGINE_LINUX)   ||
-	       (cat == DownloadEnum::CAT_ENGINE_LINUX64) ||
-	       (cat == DownloadEnum::CAT_ENGINE_MACOSX)  ||
-	       (cat == DownloadEnum::CAT_ENGINE_WINDOWS);
-}
-
 
 std::list<IDownload*> searchres;
 
