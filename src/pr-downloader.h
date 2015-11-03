@@ -8,19 +8,11 @@
 
 #include "Downloader/DownloadEnum.h"
 
-enum downloadtype {
-	DL_RAPID,
-	DL_HTTP,
-	DL_ENGINE, //FIXME: also in category
-	DL_ANY
-};
-
 #define NAME_LEN 1024
 struct downloadInfo {
 	char filename[NAME_LEN];
 	bool validated;
 	int speed;
-	downloadtype type;
 	DownloadEnum::Category cat;
 };
 /**
@@ -39,7 +31,7 @@ extern bool DownloadAdd(unsigned int id);
 * @return count of results
 * @see downloadSearchGetId
 */
-extern int DownloadSearch(downloadtype type, DownloadEnum::Category category, const char* name);
+extern int DownloadSearch(DownloadEnum::Category category, const char* name);
 
 /**
 *	get info about a result / current download

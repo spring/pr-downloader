@@ -52,35 +52,26 @@ bool isEngineDownload(DownloadEnum::Category cat)
 
 
 std::list<IDownload*> searchres;
-downloadtype typ;
 
-bool search(downloadtype type, DownloadEnum::Category cat, const char* name, std::list<IDownload*>& searchres)
+bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>& searchres)
 {
-	if (isEngineDownload(cat)) { //engine downloads only work with http
-		type = DL_ENGINE;
-		LOG_ERROR("engine dl");
-	}
-	typ = type;
 	std::string searchname = name;
 
-	switch(type) {
-	case DL_RAPID:
-		return rapidDownload->search(searchres, searchname.c_str(), cat);
-	case DL_HTTP:
-	case DL_ENGINE:
+	switch(cat) {
+	case DownloadEnum::CAT_HTTP: //no search possible!
+		return false;
+	case DownloadEnum::CAT_MAP:
+	case DownloadEnum::CAT_ENGINE:
 		return httpDownload->search(searchres, searchname.c_str(), cat);
-	case DL_ANY:
+	case DownloadEnum::CAT_GAME:
 		rapidDownload->search(searchres, searchname.c_str(), cat);
 		if (!searchres.empty()) {
-			typ = DL_RAPID;
-			break;
+			return true;
 		}
-		typ = DL_HTTP;
 		httpDownload->search(searchres, searchname.c_str(), cat);
 		if (!searchres.empty()) {
-			break;
+			return true;
 		}
-		return false;
 	default:
 		LOG_ERROR("%s: type invalid", __FUNCTION__);
 		return false;
@@ -88,10 +79,10 @@ bool search(downloadtype type, DownloadEnum::Category cat, const char* name, std
 	return true;
 }
 
-int DownloadSearch(downloadtype type, DownloadEnum::Category cat, const char* name)
+int DownloadSearch(DownloadEnum::Category cat, const char* name)
 {
 	IDownloader::freeResult(searchres);
-	search(type, cat, name, searchres);
+	search(cat, name, searchres);
 	return searchres.size();
 }
 
@@ -176,7 +167,7 @@ bool addDepends(std::list<IDownload*>& dls)
 	for (const IDownload* dl: dls) {
 		for (const std::string& depend: dl->depend) {
 			std::list<IDownload*> depends;
-			search(DL_ANY, DownloadEnum::CAT_COUNT, depend.c_str(), depends);
+			search(DownloadEnum::CAT_COUNT, depend.c_str(), depends);
 			LOG_INFO("Adding depend %s", depend.c_str());
 			for(IDownload* newdep: depends) {
 				if (!dlListContains(dls, newdep->name)) {
@@ -210,22 +201,12 @@ int DownloadStart()
 		return res;
 	}
 
-	switch (typ) {
-	case DL_RAPID:
-	case DL_HTTP:
-		if(!rapidDownload->download(dls))
-			res = 2;
-		if (!httpDownload->download(dls,1))
-			res = 3;
-		break;
-	case DL_ENGINE:
-		if (!download_engine(dls))
-			res = 4;
-		break;
-	default:
-		LOG_ERROR("%s():%d  Invalid type specified: %d %d", __FUNCTION__, __LINE__, typ, downloads.size());
-		res = 5;
-	}
+	if(!rapidDownload->download(dls))
+		res = 2;
+	if (!httpDownload->download(dls,1))
+		res = 3;
+	if (!download_engine(dls))
+		res = 4;
 
 	IDownloader::freeResult(searchres);
 	dls.clear();
