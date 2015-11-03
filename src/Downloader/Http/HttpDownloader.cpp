@@ -62,8 +62,12 @@ bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 
 static std::string getRequestUrl(const std::string& name, DownloadEnum::Category cat)
 {
-	std::string url = HTTP_SEARCH_URL "?category=" + DownloadEnum::getCat(cat);
-	return url + std::string("&torrent=true&springname=") + name;
+
+	std::string url = HTTP_SEARCH_URL + std::string("?");
+	if (cat == DownloadEnum::CAT_NONE) {
+		url += "category=" + DownloadEnum::getCat(cat) + std::string("&");
+	}
+	return url + std::string("torrent=true&springname=") + name;
 }
 
 bool CHttpDownloader::ParseResult(const std::string& name, const std::string& json, std::list<IDownload*>& res)

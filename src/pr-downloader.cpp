@@ -59,6 +59,7 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 	switch(cat) {
 	case DownloadEnum::CAT_HTTP: //no search possible!
 		return false;
+	case DownloadEnum::CAT_NONE:
 	case DownloadEnum::CAT_MAP:
 	case DownloadEnum::CAT_ENGINE:
 		return httpDownload->search(searchres, searchname.c_str(), cat);
@@ -71,8 +72,10 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 		if (!searchres.empty()) {
 			return true;
 		}
+		return false;
 	default:
 		LOG_ERROR("%s: type invalid", __FUNCTION__);
+		assert(false);
 		return false;
 	}
 	return true;
