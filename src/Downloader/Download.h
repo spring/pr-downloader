@@ -9,6 +9,7 @@
 #include <map>
 #include <stdint.h>
 #include "Rapid/Sdp.h"
+#include "DownloadEnum.h"
 
 class DownloadData;
 class IHash;
@@ -18,31 +19,14 @@ class CFile;
 class IDownload
 {
 public:
-	enum category {
-		CAT_NONE=0,
-		CAT_MAPS,
-		CAT_GAMES,
-		CAT_LUAWIDGETS,
-		CAT_AIBOTS,
-		CAT_LOBBYCLIENTS,
-		CAT_MEDIA,
-		CAT_OTHER,
-		CAT_REPLAYS,
-		CAT_SPRINGINSTALLERS,
-		CAT_TOOLS,
-		CAT_ENGINE_LINUX,
-		CAT_ENGINE_LINUX64,
-		CAT_ENGINE_WINDOWS,
-		CAT_ENGINE_MACOSX,
-		CAT_COUNT
-	} cat;
+	DownloadEnum::Category cat;
 
 	enum download_type {
 		TYP_RAPID,
 		TYP_HTTP
 	} dltype;
 
-	IDownload(const std::string& filename="",const std::string& orig_name="", category cat=CAT_NONE, download_type typ = TYP_HTTP);
+	IDownload(const std::string& filename="",const std::string& orig_name="", DownloadEnum::Category cat=DownloadEnum::CAT_NONE, download_type typ = TYP_HTTP);
 	~IDownload();
 	/**
 	 *
@@ -55,11 +39,6 @@ public:
 
 	std::list<std::string> depend; //list of all depends
 	bool downloaded; //file was downloaded?
-	/**
-	 *	returns the string name of a category
-	 */
-	static const std::string getCat(category cat);
-	static IDownload::category getCatFromStr(const std::string& str);
 	/**
 	 *	returns first url
 	 */

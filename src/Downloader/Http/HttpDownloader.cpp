@@ -60,31 +60,9 @@ bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 	return curlres == CURLE_OK;
 }
 
-static std::string getRequestUrl(const std::string& name, IDownload::category cat)
+static std::string getRequestUrl(const std::string& name, DownloadEnum::Category cat)
 {
-	std::string url = HTTP_SEARCH_URL "?category=";
-	switch(cat) {
-	case IDownload::CAT_MAPS:
-		url+="map";
-		break;
-	case IDownload::CAT_GAMES:
-		url+="game";
-		break;
-	case IDownload::CAT_ENGINE_LINUX:
-		url+="engine_linux";
-		break;
-	case IDownload::CAT_ENGINE_LINUX64:
-		url+="engine_linux64";
-		break;
-	case IDownload::CAT_ENGINE_WINDOWS:
-		url+="engine_windows";
-		break;
-	case IDownload::CAT_ENGINE_MACOSX:
-		url+="engine_macosx";
-		break;
-	default:
-		break;
-	}
+	std::string url = HTTP_SEARCH_URL "?category=" + DownloadEnum::getCat(cat);
 	return url + std::string("&torrent=true&springname=") + name;
 }
 
@@ -135,7 +113,7 @@ bool CHttpDownloader::ParseResult(const std::string& name, const std::string& js
 		}
 		filename.append(resfile["filename"].asString());
 
-		const IDownload::category cat = IDownload::getCatFromStr(category);
+		const DownloadEnum::Category cat = DownloadEnum::getCatFromStr(category);
 		IDownload* dl=new IDownload(filename,name, cat);
 		Json::Value mirrors = resfile["mirrors"];
 		for(Json::Value::ArrayIndex j=0; j<mirrors.size(); j++) {
@@ -174,7 +152,7 @@ bool CHttpDownloader::ParseResult(const std::string& name, const std::string& js
 	return true;
 }
 
-bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, IDownload::category cat)
+bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name, DownloadEnum::Category cat)
 {
 	LOG_DEBUG("%s", name.c_str()  );
 	std::string dlres;

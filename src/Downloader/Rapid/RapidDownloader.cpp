@@ -90,7 +90,7 @@ bool CRapidDownloader::download_name(IDownload* download, int reccounter,std::st
 
 
 
-bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& name, IDownload::category cat)
+bool CRapidDownloader::search(std::list<IDownload*>& result, const std::string& name, DownloadEnum::Category cat)
 {
 	LOG_DEBUG("%s",name.c_str());
 	reloadRepos(name);

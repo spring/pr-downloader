@@ -11,7 +11,7 @@
 #include <stdio.h>
 
 
-IDownload::IDownload(const std::string& name,const std::string& origin_name, category cat, download_type typ ):
+IDownload::IDownload(const std::string& name,const std::string& origin_name, DownloadEnum::Category cat, download_type typ ):
 	cat(cat),
 	dltype(typ),
 	name(name),
@@ -45,50 +45,6 @@ IDownload::~IDownload()
 		file = NULL;
 	}
 }
-
-static std::map<int, std::string> categories;
-
-void IDownload::initCategories()
-{
-	if (!categories.empty()) { //not initialized yet
-		return;
-	}
-	categories[CAT_NONE] = "none";
-	categories[CAT_MAPS] ="map";
-	categories[CAT_GAMES] ="game";
-	categories[CAT_LUAWIDGETS] ="luawidgets";
-	categories[CAT_AIBOTS] = "aibots";
-	categories[CAT_LOBBYCLIENTS] = "lobbyclients";
-	categories[CAT_MEDIA] = "media";
-	categories[CAT_OTHER] = "other";
-	categories[CAT_REPLAYS] = "replays";
-	categories[CAT_SPRINGINSTALLERS] = "springinstallers";
-	categories[CAT_TOOLS] = "tools";
-	categories[CAT_ENGINE_LINUX] = "engine_linux";
-	categories[CAT_ENGINE_LINUX64] = "engine_linux64";
-	categories[CAT_ENGINE_WINDOWS] =  "engine_windows";
-	categories[CAT_ENGINE_MACOSX] = "engine_macosx";
-	categories[CAT_COUNT] = "count";
-}
-
-const std::string IDownload::getCat(category cat)
-{
-	IDownload::initCategories();
-	return categories[cat];
-}
-
-IDownload::category IDownload::getCatFromStr(const std::string& str)
-{
-	IDownload::initCategories();
-	for(const auto &myPair: categories) {
-		if (myPair.second == str) {
-			return (IDownload::category)myPair.first;
-		}
-	}
-	LOG_ERROR("Unknown category: %s", str.c_str());
-	return CAT_NONE;
-}
-
 
 const std::string IDownload::getUrl()
 {

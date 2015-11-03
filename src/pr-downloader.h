@@ -6,12 +6,7 @@
 #ifndef PR_DOWNLOADER_H
 #define PR_DOWNLOADER_H
 
-enum category {
-	CAT_MAP,
-	CAT_GAME,
-	CAT_ENGINE,
-	CAT_ANY
-};
+#include "Downloader/DownloadEnum.h"
 
 enum downloadtype {
 	DL_RAPID,
@@ -26,7 +21,7 @@ struct downloadInfo {
 	bool validated;
 	int speed;
 	downloadtype type;
-	category cat;
+	DownloadEnum::Category cat;
 };
 /**
 	downloads all downloads that where added with @DownloadAdd
@@ -44,12 +39,12 @@ extern bool DownloadAdd(unsigned int id);
 * @return count of results
 * @see downloadSearchGetId
 */
-extern int DownloadSearch(downloadtype type, category cat, const char* name);
+extern int DownloadSearch(downloadtype type, DownloadEnum::Category category, const char* name);
 
 /**
-*	get info about a search result
+*	get info about a result / current download
 */
-extern bool DownloadGetSearchInfo(int id, downloadInfo& info);
+extern bool DownloadGetInfo(int id, downloadInfo& info);
 
 /**
 *	Initialize the lib

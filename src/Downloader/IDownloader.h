@@ -46,7 +46,7 @@ public:
 	*	NOTE: the caller has to free the list, IDownload is allocated for each result!
 	*	@see freeResult
 	*/
-	virtual bool search(std::list<IDownload*>& result, const std::string& name="", const IDownload::category=IDownload::CAT_NONE)=0;
+	virtual bool search(std::list<IDownload*>& result, const std::string& name="", const DownloadEnum::Category=DownloadEnum::CAT_NONE)=0;
 
 	/**
 	*	free's a result list

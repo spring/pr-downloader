@@ -33,14 +33,14 @@ public:
 	unsigned int getStatsPos();
 	unsigned int getCount();
 	const std::string& getCacheFile(const std::string &url);
-	virtual bool search(std::list<IDownload*>& result, const std::string& name, IDownload::category=IDownload::CAT_NONE);
+	virtual bool search(std::list<IDownload*>& result, const std::string& name, DownloadEnum::Category=DownloadEnum::CAT_NONE);
 	virtual bool download(std::list< IDownload* >& download, int max_parallel=10);
 	void showProcess(IDownload* download, bool forceOutput);
 	static bool DownloadUrl(const std::string& url, std::string& res);
 	static bool ParseResult(const std::string& name, const std::string& json, std::list<IDownload*>& res);
 private:
 	bool parallelDownload(IDownload& download);
-	std::list<IDownload>* realSearch(const std::string& name, IDownload::category cat);
+	std::list<IDownload>* realSearch(const std::string& name, DownloadEnum::Category cat);
 	std::string escapeUrl(const std::string& url);
 	/**
 	* show progress bar
