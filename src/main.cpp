@@ -86,7 +86,7 @@ void show_results(int count)
 
 bool download(DownloadEnum::Category cat, const char* name)
 {
-	int count = DownloadSearch(DL_ANY, cat, name);
+	int count = DownloadSearch(cat, name);
 	if (count<=0) {
 		LOG_DEBUG("Couldn't find %s",name);
 		return false;
@@ -100,7 +100,7 @@ bool download(DownloadEnum::Category cat, const char* name)
 
 bool search(DownloadEnum::Category cat, const char* name)
 {
-	int count = DownloadSearch(DL_ANY, cat, name);
+	int count = DownloadSearch(cat, name);
 	if (count<=0) {
 		LOG_ERROR("Couldn't find %s",name);
 		return false;
