@@ -96,8 +96,13 @@ bool CHttpDownloader::ParseResult(const std::string& name, const std::string& js
 			LOG_ERROR("No category in result");
 			return false;
 		}
+		if (!resfile["springname"].isString()) {
+			LOG_ERROR("No springname in result");
+			return false;
+		}
 		std::string filename=fileSystem->getSpringDir();
 		std::string category=resfile["category"].asString();
+		const std::string springname = resfile["springname"].asString();
 		filename+=PATH_DELIMITER;
 
 		if (category=="map") {
@@ -118,7 +123,7 @@ bool CHttpDownloader::ParseResult(const std::string& name, const std::string& js
 		filename.append(resfile["filename"].asString());
 
 		const DownloadEnum::Category cat = DownloadEnum::getCatFromStr(category);
-		IDownload* dl=new IDownload(filename,name, cat);
+		IDownload* dl=new IDownload(filename, springname, cat);
 		Json::Value mirrors = resfile["mirrors"];
 		for(Json::Value::ArrayIndex j=0; j<mirrors.size(); j++) {
 			if (!mirrors[j].isString()) {
