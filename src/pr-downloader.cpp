@@ -64,6 +64,7 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 	case DownloadEnum::CAT_ENGINE:
 		return httpDownload->search(searchres, searchname.c_str(), cat);
 	case DownloadEnum::CAT_GAME:
+	case DownloadEnum::CAT_COUNT:
 		rapidDownload->search(searchres, searchname.c_str(), cat);
 		if (!searchres.empty()) {
 			return true;
