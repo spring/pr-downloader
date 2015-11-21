@@ -2,6 +2,8 @@
 #include "Downloader/IDownloader.h"
 #include "FileSystem/FileSystem.h"
 #include "Logger.h"
+#include "lib/md5/md5.h"
+#include "lib/base64/base64.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -235,3 +237,23 @@ void DownloadDisableLogging(bool disableLogging)
 	LOG_DISABLE(disableLogging);
 }
 
+// TODO: Add support for other hash types (SHA1, CRC32, ..?)
+char* CalcHash(const char* str, int size, int type)
+{
+	const unsigned char* hash;
+	if (type == 0) {
+		MD5_CTX ctx;
+		MD5Init(&ctx);
+		MD5Update(&ctx, (unsigned char*) str, size);
+		MD5Final(&ctx);
+		hash = ctx.digest;
+	} else {
+		return NULL;
+	}
+
+	std::string encoded = base64_encode(hash, 16);
+	char* ret = (char*) malloc((encoded.size()+1) * sizeof(char));
+	strncpy(ret, encoded.c_str(), encoded.size());
+	ret[encoded.size()] = '\0';
+	return ret;
+}
