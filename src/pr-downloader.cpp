@@ -54,17 +54,27 @@ IDownload* GetIDownloadByID(std::list<IDownload*>& dllist, int id)
 
 std::list<IDownload*> searchres;
 
+int DownloadAddByUrl(DownloadEnum::Category cat, const char* filename, const char* url)
+{
+    IDownload* dl = new IDownload(filename, url, cat);
+    dl->addMirror(url);
+    searchres.push_back(dl);
+	return searchres.size();
+}
+
 bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>& searchres)
 {
 	std::string searchname = name;
 
 	switch(cat) {
-	case DownloadEnum::CAT_HTTP: //no search possible!
-		return false;
 	case DownloadEnum::CAT_NONE:
+		return false;
+	case DownloadEnum::CAT_HTTP: //no search possible!
+	case DownloadEnum::CAT_SPRINGLOBBY:{
+		return false;
+	}
 	case DownloadEnum::CAT_MAP:
 	case DownloadEnum::CAT_ENGINE:
-	case DownloadEnum::CAT_SPRINGLOBBY:
 		return httpDownload->search(searchres, searchname.c_str(), cat);
 	case DownloadEnum::CAT_GAME:
 	case DownloadEnum::CAT_COUNT:

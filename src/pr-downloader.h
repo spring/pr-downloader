@@ -22,6 +22,11 @@ struct downloadInfo {
 extern int DownloadStart();
 
 /**
+	adds a download by url without searching
+*/
+extern int DownloadAddByUrl(DownloadEnum::Category cat, const char* filename, const char* url);
+
+/**
 	adds a download, see @DownloadSearch & @DownloadGetSearchInfo
 */
 extern bool DownloadAdd(unsigned int id);
