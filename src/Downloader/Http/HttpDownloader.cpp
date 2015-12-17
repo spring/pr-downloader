@@ -53,8 +53,8 @@ bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEDATA, (void *)&res);
 	CURLcode curlres = curl_easy_perform(curlw->GetHandle());
-	if (!curlres == CURLE_OK) {
-        LOG_ERROR("Error in curl %s", curl_easy_strerror(curlres));
+	if (curlres != CURLE_OK) {
+	        LOG_ERROR("Error in curl %s", curl_easy_strerror(curlres));
 	}
 	delete curlw;
 	return curlres == CURLE_OK;
