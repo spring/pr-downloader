@@ -41,7 +41,7 @@ bool HashCRC32::Set(const unsigned char* data, int size)
 	if(size!=getSize())
 		return false;
 	for(int i=0; i<size; i++)
-		((unsigned char*)crc)[i]=data[i];
+		((unsigned char*) &crc)[i]=data[i];
 	isset=true;
 	return true;
 }
