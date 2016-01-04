@@ -16,10 +16,10 @@ class IHash;
 
 struct CFilePiece {
 public:
-	CFilePiece() {
-		this->valid=false;
-		this->pos=0;
-	};
+	CFilePiece()
+		: valid(false)
+		, pos(0)
+	{}
 	bool valid; //checksum validated
 	int pos; //current relative read/write pos
 };
