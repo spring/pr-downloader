@@ -469,12 +469,14 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 		}
 		LOG_DEBUG("Using %d parallel downloads", count);
 		dl->parallel_downloads = count;
-		CFile* file=new CFile();
-		if(!file->Open(dl->name, dl->size, dl->piecesize)) {
-			delete file;
+		if (dl->file == nullptr) {
+			dl->file = new CFile();
+		}
+		if(!dl->file->Open(dl->name, dl->size, dl->piecesize)) {
+			delete dl->file;
+			dl->file = nullptr;
 			return false;
 		}
-		dl->file = file;
 		for(int i=0; i<count; i++) {
 			DownloadData* dlData=new DownloadData();
 			dlData->download=dl;
