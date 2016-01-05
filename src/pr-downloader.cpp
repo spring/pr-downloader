@@ -75,6 +75,10 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 	}
 	case DownloadEnum::CAT_MAP:
 	case DownloadEnum::CAT_ENGINE:
+	case DownloadEnum::CAT_ENGINE_LINUX:
+	case DownloadEnum::CAT_ENGINE_LINUX64:
+	case DownloadEnum::CAT_ENGINE_WINDOWS:
+	case DownloadEnum::CAT_ENGINE_MACOSX:
 		return httpDownload->search(searchres, searchname.c_str(), cat);
 	case DownloadEnum::CAT_GAME:
 	case DownloadEnum::CAT_COUNT:
