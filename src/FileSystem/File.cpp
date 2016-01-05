@@ -27,7 +27,7 @@
 #endif
 
 CFile::CFile():
-	handle(NULL),
+	handle(nullptr),
 	piecesize(-1),
 	size(-1),
 	curpos(0),
@@ -43,7 +43,7 @@ CFile::~CFile()
 }
 void CFile::Close()
 {
-	if (handle!=0) {
+	if (handle != nullptr) {
 		fclose(handle);
 		if (IsNewFile()) {
 			if (fileSystem->fileExists(filename)) { //delete possible existing destination file
@@ -52,7 +52,7 @@ void CFile::Close()
 			fileSystem->Rename(tmpfile, filename);
 			isnewfile = false;
 		}
-		handle=0;
+		handle = nullptr;
 	}
 }
 
@@ -63,7 +63,7 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	this->size=size;
 	fileSystem->createSubdirs(CFileSystem::DirName(filename));
 	SetPieceSize(piecesize);
-	if (handle!=NULL) {
+	if (handle != nullptr) {
 		LOG_ERROR("file opened before old was closed");
 		return false;
 	}
@@ -73,12 +73,12 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	isnewfile=res!=0;
 	if (isnewfile) { //if file is new, create it, if not, open the existing one without truncating it
 		tmpfile = filename + ".tmp";
-		handle=fileSystem->propen(tmpfile, "wb+");
+		handle = fileSystem->propen(tmpfile, "wb+");
 	} else {
-		handle=fileSystem->propen(filename, "rb+");
+		handle = fileSystem->propen(filename, "rb+");
 		timestamp = sb.st_mtime;
 	}
-	if (handle==0) {
+	if (handle == nullptr) {
 		LOG_ERROR("open(%s): %s",filename.c_str(), strerror(errno));
 		return false;
 	}
@@ -209,7 +209,7 @@ int CFile::Seek(unsigned long pos, int piece)
 
 bool CFile::SetPieceSize(int pieceSize)
 {
-	assert(handle==NULL); //this function has to be called before the file is opened
+	assert(handle == nullptr); //this function has to be called before the file is opened
 	pieces.clear();
 	if ((size<=0) || (pieceSize<=0)) {
 		LOG_DEBUG("SetPieceSize(): FileSize:%ld PieceSize: %d", size, pieceSize);
@@ -273,7 +273,7 @@ long CFile::GetPiecePos(int piece) const
 
 long CFile::GetSizeFromHandle() const
 {
-	if(handle==NULL) {
+	if(handle == nullptr) {
 		LOG_ERROR("GetSize(): file isn't opened!");
 		return -1;
 	}
@@ -303,7 +303,7 @@ bool CFile::SetTimestamp(long timestamp)
 	FILETIME ftime;
 	HANDLE h;
 	bool close = false;
-	if (handle==NULL) {
+	if (handle == nullptr) {
 		h = CreateFile(s2ws(filename).c_str() , GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 		close = true;
 	} else {
@@ -321,7 +321,7 @@ bool CFile::SetTimestamp(long timestamp)
 #else
 	struct timeval tv = {0, 0};
 	tv.tv_sec = timestamp;
-	if (handle==NULL) {
+	if (handle == nullptr) {
 		return lutimes(filename.c_str(), &tv) == 0;
 	} else {
 		return futimes(fileno(handle), &tv) == 0;
