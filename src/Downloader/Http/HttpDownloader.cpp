@@ -471,11 +471,11 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 		dl->parallel_downloads = count;
 		if (dl->file == nullptr) {
 			dl->file = new CFile();
-		}
-		if(!dl->file->Open(dl->name, dl->size, dl->piecesize)) {
-			delete dl->file;
-			dl->file = nullptr;
-			return false;
+			if (!dl->file->Open(dl->name, dl->size, dl->piecesize)) {
+				delete dl->file;
+				dl->file = nullptr;
+				return false;
+			}
 		}
 		for(int i=0; i<count; i++) {
 			DownloadData* dlData=new DownloadData();
