@@ -2,7 +2,6 @@
 
 #include "FileData.h"
 #include "IHash.h"
-#include "HashCRC32.h"
 #include "HashMD5.h"
 #include "Logger.h"
 #include <string.h>

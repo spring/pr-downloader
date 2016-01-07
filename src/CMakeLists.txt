@@ -30,7 +30,6 @@ add_library(Downloader STATIC
 	FileSystem/File.cpp
 	FileSystem/HashMD5.cpp
 	FileSystem/HashSHA1.cpp
-	FileSystem/HashCRC32.cpp
 	FileSystem/IHash.cpp
 	Util.cpp
 	Logger.cpp
