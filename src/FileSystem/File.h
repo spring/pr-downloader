@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 
-#include "IFile.h"
+#include "File.h"
 
 class IHash;
 
@@ -25,7 +25,7 @@ public:
 };
 
 
-class CFile: public IFile
+class CFile
 {
 public:
 	/**
@@ -45,13 +45,12 @@ public:
 	bool Hash(IHash& hash, int piece=-1);
 	/**
 	*	open file
-	*   @todo hides IFile::Open
 	*/
 	bool Open(const std::string& filename, long size=-1, int piecesize=-1);
 	/**
 	*	close file
 	*/
-	void Close() override;
+	void Close();
 	/**
 	*	read buf from file, starting at restored piece pos, if piece>=0
 	*   @todo hides IFile::Read

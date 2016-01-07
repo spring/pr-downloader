@@ -7,7 +7,7 @@
 #include "FileSystem/FileSystem.h"
 #include "FileSystem/FileData.h"
 #include "FileSystem/HashMD5.h"
-#include "FileSystem/AtomicFile.h"
+#include "FileSystem/File.h"
 #include "Downloader/CurlWrapper.h"
 #include "Downloader/Download.h"
 #include <string>
@@ -156,11 +156,12 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			HashMD5 md5;
 			md5.Set((*sdp->list_it)->md5, sizeof((*sdp->list_it)->md5));
 			fileSystem->getPoolFilename(md5.toString(), sdp->file_name);
-			sdp->file_handle=new AtomicFile(sdp->file_name);
+			sdp->file_handle=new CFile();
 			if (sdp->file_handle==NULL) {
 				LOG_ERROR("couldn't open %s",(*sdp->list_it)->name.c_str());
 				return -1;
 			}
+			sdp->file_handle->Open(sdp->file_name);
 			sdp->file_pos=0;
 		}
 		assert(sdp->file_handle!=NULL);

@@ -10,7 +10,7 @@
 
 class IDownload;
 class FileData;
-class AtomicFile;
+class CFile;
 
 class CSdp
 {
@@ -50,7 +50,7 @@ public:
 	bool downloadInitialized;
 	std::list<FileData*>::iterator list_it;
 	std::list<FileData*>* globalFiles; //list with all files of an sdp
-	AtomicFile* file_handle;
+	CFile* file_handle;
 	std::string file_name;
 
 	unsigned int file_pos;
@@ -95,7 +95,7 @@ private:
 	std::string filename;
 	std::string depends;
 	bool downloaded;
-	
+
 };
 
 #endif

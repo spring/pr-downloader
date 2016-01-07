@@ -25,7 +25,6 @@ add_library(Downloader STATIC
 	Downloader/IDownloader.cpp
 	Downloader/Mirror.cpp
 	Downloader/DownloadEnum.cpp
-	FileSystem/AtomicFile.cpp
 	FileSystem/FileData.cpp
 	FileSystem/FileSystem.cpp
 	FileSystem/File.cpp
