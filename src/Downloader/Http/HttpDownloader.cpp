@@ -310,7 +310,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 		piece->download->size = piece->download->file->GetPieceSize(-1);
 		LOG_DEBUG("Size is %d",piece->download->size);
 	}
-	piece->start_piece=pieces.size() > 0 ? pieces[0] : -1;
+	piece->start_piece = pieces.size() > 0 ? pieces[0] : -1;
 	assert(piece->download->pieces.size()<=0 || piece->start_piece >=0);
 	piece->pieces = pieces;
 	if (piece->curlw==NULL) {
