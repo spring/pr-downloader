@@ -38,7 +38,6 @@ public:
 	std::string origin_name; //name of object. Not the filename
 
 	std::list<std::string> depend; //list of all depends
-	bool downloaded; //file was downloaded?
 	/**
 	 *	returns first url
 	 */

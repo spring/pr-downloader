@@ -16,7 +16,6 @@ IDownload::IDownload(const std::string& name,const std::string& origin_name, Dow
 	dltype(typ),
 	name(name),
 	origin_name(origin_name),
-	downloaded(false),
 	piecesize(0),
 	hash(NULL),
 	file(NULL),
