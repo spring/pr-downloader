@@ -58,7 +58,6 @@ public:
 private:
 	static IDownloader* httpdl;
 	static IDownloader* rapiddl;
-	static IDownloader* widgetdl;
 
 public:
 	static IDownloaderProcessUpdateListener listener;
