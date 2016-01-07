@@ -24,6 +24,20 @@ bool isEngineDownload(DownloadEnum::Category cat)
 	       (cat == DownloadEnum::CAT_ENGINE_WINDOWS);
 }
 
+DownloadEnum::Category getPlatformEngineCat()
+{
+#ifdef WIN32
+	return DownloadEnum::CAT_ENGINE_WINDOWS;
+#elif defined(__APPLE__)
+	return DownloadEnum::CAT_ENGINE_MACOSX;
+#elif defined(__x86_64__)
+	return DownloadEnum::CAT_ENGINE_LINUX64;
+#else
+	return DownloadEnum::CAT_ENGINE_LINUX;
+#endif
+}
+
+
 bool download_engine(std::list<IDownload*>& dllist)
 {
 	httpDownload->download(dllist);
@@ -66,6 +80,10 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 {
 	std::string searchname = name;
 
+	if (cat == DownloadEnum::CAT_ENGINE) {
+		cat = getPlatformEngineCat();
+	}
+
 	switch(cat) {
 	case DownloadEnum::CAT_NONE:
 		return false;
@@ -74,7 +92,6 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 		return false;
 	}
 	case DownloadEnum::CAT_MAP:
-	case DownloadEnum::CAT_ENGINE:
 	case DownloadEnum::CAT_ENGINE_LINUX:
 	case DownloadEnum::CAT_ENGINE_LINUX64:
 	case DownloadEnum::CAT_ENGINE_WINDOWS:
