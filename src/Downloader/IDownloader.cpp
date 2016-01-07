@@ -44,18 +44,15 @@ IDownloader* IDownloader::GetRapidInstance()
 
 bool IDownloader::download(std::list<IDownload*>& download, int max_parallel)
 {
-	std::list<IDownload*>::iterator it;
 	if (download.empty()) {
 		LOG_ERROR("download list empty");
 		return false;
 	}
 	bool res=true;
-	for (it=download.begin(); it!=download.end(); ++it) {
-		if (!(*it)->downloaded) //don't download twice
-			(*it)->downloaded=this->download(*it,max_parallel);
-		if (!(*it)->downloaded) {
-			res=false;
-		}
+	for (IDownload* dl: download) {
+		if (dl->state != IDownload::STATE_FINISHED) //don't download twice
+			if (!this->download(dl,max_parallel));
+				res = false;
 	}
 	return res;
 }
