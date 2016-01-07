@@ -234,6 +234,9 @@ void CHttpDownloader::showProcess(IDownload* download, bool force)
 std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file, IDownload* download)
 {
 	std::vector< unsigned int > pieces;
+	if (download->state == IDownload::STATE_FINISHED) {
+		return pieces;
+	}
 	//verify file by md5 if pieces.size == 0
 	if((download->pieces.empty()) && (download->hash!=NULL) && (download->hash->isSet())) {
 		HashMD5 md5=HashMD5();
