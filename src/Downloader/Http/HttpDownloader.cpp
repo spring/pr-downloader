@@ -495,6 +495,8 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 			}
 		}
 	}
+	if (downloads.empty())
+		return true;
 
 	bool aborted=false;
 	int running=1, last=-1;
