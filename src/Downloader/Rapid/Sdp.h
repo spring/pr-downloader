@@ -18,10 +18,10 @@ public:
 	CSdp(const std::string& shortname, const std::string& md5, const std::string& name, const std::string& depends, const std::string& url);
 	~CSdp();
 	/**
-		download a mod, we already know the host where to download from + the md5 of the sdp file
+		download a game, we already know the host where to download from + the md5 of the sdp file
 		we have to download the sdp + parse it + download associated files
 	*/
-	bool download(IDownload * download);
+	bool download(IDownload* download);
 	/**
 		returns md5 of a repo
 	*/

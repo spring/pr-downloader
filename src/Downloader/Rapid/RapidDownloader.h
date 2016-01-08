@@ -26,11 +26,11 @@ public:
 	/**
 		search for a mod, searches for the short + long name
 	*/
-	virtual bool search(std::list<IDownload*>& result, const std::string& name, DownloadEnum::Category=DownloadEnum::CAT_NONE);
+	bool search(std::list<IDownload*>& result, const std::string& name, DownloadEnum::Category=DownloadEnum::CAT_NONE) override;
 	/**
 		start a download
 	*/
-	virtual bool download(IDownload* download,int max_parallel = 10);
+	bool download(IDownload* download,int max_parallel = 10) override;
 
 	virtual bool setOption(const std::string& key, const std::string& value);
 

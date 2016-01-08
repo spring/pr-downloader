@@ -57,7 +57,7 @@ bool createPoolDirs(const std::string& root)
 }
 
 
-bool CSdp::download(IDownload * download)
+bool CSdp::download(IDownload* download)
 {
 	if (downloaded) //allow download only once of the same sdp
 		return true;
@@ -112,17 +112,22 @@ bool CSdp::download(IDownload * download)
 		count = 0;
 	}
 	if (count>0) {
-		downloaded=downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
+		downloaded = downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		LOG_DEBUG("Sucessfully downloaded %d files: %s %s",count,shortname.c_str(),name.c_str());
 	} else {
 		LOG_DEBUG("Already downloaded: %s", shortname.c_str());
-		downloaded=true;
+		downloaded = true;
 	}
+
 	for(FileData* filedata: files) { //free memory
 		delete filedata;
 	}
 	if ((rename) && (!fileSystem->Rename(tmpFile, filename))) {
 		LOG_ERROR("Couldn't rename %s to %s", tmpFile.c_str(), filename.c_str());
+		return false;
+	}
+	if (downloaded) {
+		download->state = IDownload::STATE_FINISHED;
 	}
 	return downloaded;
 }
