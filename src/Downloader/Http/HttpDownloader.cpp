@@ -64,7 +64,7 @@ static std::string getRequestUrl(const std::string& name, DownloadEnum::Category
 {
 
 	std::string url = HTTP_SEARCH_URL + std::string("?");
-	if (cat == DownloadEnum::CAT_NONE) {
+	if (cat != DownloadEnum::CAT_NONE) {
 		url += "category=" + DownloadEnum::getCat(cat) + std::string("&");
 	}
 	return url + std::string("torrent=true&springname=") + name;

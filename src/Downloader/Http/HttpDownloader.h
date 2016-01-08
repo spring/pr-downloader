@@ -40,7 +40,6 @@ public:
 	static bool ParseResult(const std::string& name, const std::string& json, std::list<IDownload*>& res);
 private:
 	bool parallelDownload(IDownload& download);
-	std::list<IDownload>* realSearch(const std::string& name, DownloadEnum::Category cat);
 	std::string escapeUrl(const std::string& url);
 	/**
 	* show progress bar
