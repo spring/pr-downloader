@@ -66,26 +66,27 @@ bool CRapidDownloader::reloadRepos(const std::string& searchstr)
 }
 
 
-bool CRapidDownloader::download_name(IDownload* download, int reccounter,std::string name)
+bool CRapidDownloader::download_name(IDownload* download, int reccounter, std::string name)
 {
 	LOG_DEBUG("%s %s",name.c_str(),download->name.c_str());
 	if (reccounter>10)
 		return false;
-	LOG_DEBUG("Using rapid");
+	LOG_DEBUG("Using rapid to download %s", download->name.c_str());
 	for (CSdp& sdp: sdps) {
-		if (match_download_name(sdp.getName(),name.length() == 0 ? download->name : name )) {
+		if (!match_download_name(sdp.getName(), name.length() == 0 ? download->name : name ))
+			continue;
 
-			LOG_DOWNLOAD(sdp.getName().c_str() );
-			if (!sdp.download(download))
-				return false;
-			if (sdp.getDepends().length()>0) {
-				if (!download_name(download,reccounter+1,sdp.getDepends()))
-					return false;
-			}
-			return true;
+		LOG_DOWNLOAD(sdp.getName().c_str() );
+		if (!sdp.download(download)) {
+			return false;
+		}
+		if (sdp.getDepends().empty())
+			continue;
+		if (!download_name(download, reccounter+1, sdp.getDepends())) {
+			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
 
