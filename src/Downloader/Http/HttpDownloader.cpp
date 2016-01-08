@@ -233,7 +233,7 @@ void CHttpDownloader::showProcess(IDownload* download, bool force)
 
 std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file, IDownload* download)
 {
-	std::vector< unsigned int > pieces;
+	std::vector<unsigned int> pieces;
 	if (download->state == IDownload::STATE_FINISHED) {
 		return pieces;
 	}
@@ -457,10 +457,12 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 
 bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel)
 {
-
 	std::vector <DownloadData*> downloads;
 	CURLM* curlm=curl_multi_init();
 	for(IDownload* dl: download) {
+		if (dl->state == IDownload::STATE_FINISHED) {
+			continue;
+		}
 		if (dl->dltype != IDownload::TYP_HTTP) {
 			LOG_DEBUG("skipping non http-dl")
 			continue;
@@ -557,8 +559,9 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 
 	//close all open files
 	for(IDownload* dl: download) {
-		if (dl->file!=NULL)
+		if (dl->file != nullptr) {
 			dl->file->Close();
+		}
 	}
 	for (size_t i=0; i<downloads.size(); i++) {
 		long timestamp;
@@ -566,6 +569,8 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 			if (downloads[i]->download->state != IDownload::STATE_FINISHED) //decrease local timestamp if download failed to force redownload next time
 				timestamp--;
 			downloads[i]->download->file->SetTimestamp(timestamp);
+			delete downloads[i]->download->file;
+			downloads[i]->download->file = nullptr;
 		}
 		delete downloads[i];
 	}
