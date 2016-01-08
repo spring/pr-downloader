@@ -222,6 +222,9 @@ bool CreateDir(const std::string& path)
 bool CFileSystem::createSubdirs (const std::string& path)
 {
 	assert(!path.empty());
+	if (directoryExists(path)) {
+		return true;
+	}
 	for (size_t i=2; i<path.size(); i++) {
 		char c=path.at(i);
 #ifdef WIN32
