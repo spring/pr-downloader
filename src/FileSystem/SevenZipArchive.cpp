@@ -112,7 +112,7 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name):
 
 	SzArEx_Init(&db);
 
-#ifdef WIN32
+#ifdef _WIN32
 	WRes wres = InFile_OpenW(&archiveStream.file, s2ws(name).c_str());
 #else
 	WRes wres = InFile_Open(&archiveStream.file, name.c_str());
