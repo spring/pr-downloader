@@ -18,15 +18,18 @@ void SetDownloadListener(IDownloaderProcessUpdateListener listener) {
 
 bool isEngineDownload(DownloadEnum::Category cat)
 {
-	return (cat == DownloadEnum::CAT_ENGINE_LINUX)   ||
-	       (cat == DownloadEnum::CAT_ENGINE_LINUX64) ||
-	       (cat == DownloadEnum::CAT_ENGINE_MACOSX)  ||
-	       (cat == DownloadEnum::CAT_ENGINE_WINDOWS);
+	return (cat == DownloadEnum::CAT_ENGINE_LINUX)     ||
+	       (cat == DownloadEnum::CAT_ENGINE_LINUX64)   ||
+	       (cat == DownloadEnum::CAT_ENGINE_MACOSX)    ||
+	       (cat == DownloadEnum::CAT_ENGINE_WINDOWS)   ||
+	       (cat == DownloadEnum::CAT_ENGINE_WINDOWS64);
 }
 
 DownloadEnum::Category getPlatformEngineCat()
 {
-#ifdef WIN32
+#ifdef _WIN64
+	return DownloadEnum::CAT_ENGINE_WINDOWS64;
+#elif defined WIN32
 	return DownloadEnum::CAT_ENGINE_WINDOWS;
 #elif defined(__APPLE__)
 	return DownloadEnum::CAT_ENGINE_MACOSX;
@@ -95,6 +98,7 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 	case DownloadEnum::CAT_ENGINE_LINUX:
 	case DownloadEnum::CAT_ENGINE_LINUX64:
 	case DownloadEnum::CAT_ENGINE_WINDOWS:
+	case DownloadEnum::CAT_ENGINE_WINDOWS64:
 	case DownloadEnum::CAT_ENGINE_MACOSX:
 		return httpDownload->search(searchres, searchname.c_str(), cat);
 	case DownloadEnum::CAT_GAME:

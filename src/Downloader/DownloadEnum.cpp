@@ -20,6 +20,7 @@ static void initCategories()
 	categories[DownloadEnum::CAT_ENGINE_LINUX] = "engine_linux";
 	categories[DownloadEnum::CAT_ENGINE_LINUX64] = "engine_linux64";
 	categories[DownloadEnum::CAT_ENGINE_WINDOWS] =  "engine_windows";
+	categories[DownloadEnum::CAT_ENGINE_WINDOWS64] =  "engine_windows64";
 	categories[DownloadEnum::CAT_ENGINE_MACOSX] = "engine_macosx";
 	categories[DownloadEnum::CAT_HTTP] = "http";
 	categories[DownloadEnum::CAT_COUNT] = "count";
