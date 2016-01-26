@@ -497,8 +497,18 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 			}
 		}
 	}
-	if (downloads.empty())
+	if (downloads.empty()) {
+		LOG_DEBUG("Nothing to download!");
+		//close all open files
+		for(IDownload* dl: download) {
+			if (dl->file != nullptr) {
+				dl->file->Close();
+				delete dl->file;
+				dl->file = nullptr;
+			}
+		}
 		return true;
+	}
 
 	bool aborted=false;
 	int running=1, last=-1;

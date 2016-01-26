@@ -44,6 +44,7 @@ CFile::~CFile()
 void CFile::Close()
 {
 	if (handle != nullptr) {
+		LOG_INFO("closing %s", filename.c_str());
 		fclose(handle);
 		if (IsNewFile()) {
 			if (fileSystem->fileExists(filename)) { //delete possible existing destination file
