@@ -46,6 +46,7 @@ void CFile::Close()
 	if (handle != nullptr) {
 		LOG_INFO("closing %s", filename.c_str());
 		fclose(handle);
+		handle = nullptr;
 		if (IsNewFile()) {
 			if (fileSystem->fileExists(filename)) { //delete possible existing destination file
 				fileSystem->removeFile(filename);
@@ -53,7 +54,6 @@ void CFile::Close()
 			fileSystem->Rename(tmpfile, filename);
 			isnewfile = false;
 		}
-		handle = nullptr;
 	}
 }
 
