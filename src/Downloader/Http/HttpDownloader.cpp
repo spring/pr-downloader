@@ -285,7 +285,7 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 		download->state=IDownload::STATE_FINISHED;
 		showProcess(download, true);
 	}
-	LOG_DEBUG("Pieces to download: %d\n",pieces.size());
+	LOG_DEBUG("Pieces to download: %d",pieces.size());
 	return pieces;
 }
 
