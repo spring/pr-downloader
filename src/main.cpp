@@ -184,7 +184,7 @@ int main(int argc, char **argv)
 	}
 	if (optind < argc) {
 		while (optind < argc) {
-			if (!download(DownloadEnum::CAT_GAME, argv[optind])) {
+			if (!download(DownloadEnum::CAT_NONE, argv[optind])) {
 				LOG_ERROR("No file found for %s",argv[optind]);
 				res=false;
 			}

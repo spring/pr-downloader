@@ -88,8 +88,6 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 	}
 
 	switch(cat) {
-	case DownloadEnum::CAT_NONE:
-		return false;
 	case DownloadEnum::CAT_HTTP: //no search possible!
 	case DownloadEnum::CAT_SPRINGLOBBY:{
 		return false;
@@ -103,6 +101,7 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 		return httpDownload->search(searchres, searchname.c_str(), cat);
 	case DownloadEnum::CAT_GAME:
 	case DownloadEnum::CAT_COUNT:
+	case DownloadEnum::CAT_NONE:
 		rapidDownload->search(searchres, searchname.c_str(), cat);
 		if (!searchres.empty()) {
 			return true;
