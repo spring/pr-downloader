@@ -10,6 +10,7 @@
 
 #include <zlib.h>
 #include <stdio.h>
+#include <cassert>
 
 
 CRepo::CRepo(const std::string& repourl,const std::string& _shortname, CRapidDownloader* rapid):
@@ -40,6 +41,7 @@ bool CRepo::getDownload(IDownload& dl)
 
 bool CRepo::parse()
 {
+	assert(!tmpFile.empty());
 	if (tmpFile.empty()) {
 		LOG_DEBUG("tmpfile empty, repo not initialized?");
 		return false;

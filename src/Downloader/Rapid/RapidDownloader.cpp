@@ -209,24 +209,28 @@ bool CRapidDownloader::parse()
 bool CRapidDownloader::updateRepos(const std::string& searchstr)
 {
 
-    std::string::size_type pos = searchstr.find(':');
+	std::string::size_type pos = searchstr.find(':');
 	std::string tag;
-    if (pos != std::string::npos) { //a tag is found, set it
-        tag = searchstr.substr(0, pos);
-    }
+	if (pos != std::string::npos) { //a tag is found, set it
+		tag = searchstr.substr(0, pos);
+	}
 
 	LOG_DEBUG("%s","Updating repos...");
 	download(url);
 
 	std::list<IDownload*> dls;
+	std::list<CRepo*> usedrepos;
 	for (CRepo& repo: repos) {
 		IDownload* dl = new IDownload();
 		if (repo.getDownload(*dl)) {
 			if (repo.getShortName() == tag) { //matching repo exists, update this only
 				IDownloader::freeResult(dls);
+				usedrepos.clear();
+				usedrepos.push_back(&repo);
 				dls.push_back(dl);
 				break;
 			}
+			usedrepos.push_back(&repo);
 			dls.push_back(dl);
 		} else {
 			delete dl;
@@ -234,8 +238,8 @@ bool CRapidDownloader::updateRepos(const std::string& searchstr)
 	}
 
 	httpDownload->download(dls);
-	for (CRepo& repo: repos) {
-		repo.parse();
+	for (CRepo* repo: usedrepos) {
+		repo->parse();
 	}
 	IDownloader::freeResult(dls);
 	return true;
