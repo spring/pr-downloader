@@ -170,19 +170,22 @@ void CFile::SetPos(long pos, int piece)
 
 int CFile::Write(const char*buf, int bufsize, int piece)
 {
+	assert(bufsize > 0);
+
 	SetPos(GetPiecePos(piece), piece);
 	clearerr(handle);
 //	LOG("Write() bufsize %d piece %d handle %d", bufsize, piece, fileno(handle));
-	int res=fwrite(buf, bufsize, 1, handle);
-	if (res!=1)
-		LOG_ERROR("write error %d", res);
+	static int const PIECES = 1;
+	int res=fwrite(buf, bufsize, PIECES, handle);
+	if (res != PIECES)
+		LOG_ERROR("write error %s (%d):  %s", filename.c_str(), res, strerror(errno));
 //	LOG("wrote bufsize %d", bufsize);
 	if(ferror(handle)!=0) {
-		LOG_ERROR("Error in write(): %s", strerror(errno));
+		LOG_ERROR("Error in write(): %s %s", strerror(errno), filename.c_str());
 		abort();
 	}
 	if(feof(handle)) {
-		LOG_ERROR("EOF in write(): %s", strerror(errno));
+		LOG_ERROR("EOF in write(): %s %s", strerror(errno), filename.c_str());
 	}
 	SetPos(GetPiecePos(piece)+bufsize, piece);
 	/*	if ((piece>=0) && (GetPiecePos(piece)==GetPieceSize(piece))) {
