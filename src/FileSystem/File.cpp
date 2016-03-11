@@ -44,7 +44,7 @@ CFile::~CFile()
 void CFile::Close()
 {
 	if (handle != nullptr) {
-		LOG_INFO("closing %s", filename.c_str());
+		LOG_DEBUG("closing %s", filename.c_str());
 		fclose(handle);
 		handle = nullptr;
 		if (IsNewFile()) {
@@ -97,7 +97,7 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	} else if (size<=0) {
 		//TODO: allocate disk space
 	}
-	LOG_INFO("opened %s", filename.c_str());
+	LOG_DEBUG("opened %s", filename.c_str());
 	return true;
 }
 
