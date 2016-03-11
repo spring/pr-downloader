@@ -183,12 +183,13 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,CSd
 			}
 		}
 		if (sdp->skipped==LENGTH_SIZE) { // length bytes read
-			const int towrite=intmin ((*sdp->list_it)->compsize-sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
-									  buf_end-buf_pos);
-			if (towrite<0) {
-				LOG_ERROR("Fatal, something went wrong here! %d, %d %d", towrite, buf_end, buf_pos);
-				return -1;
-			}
+			const int towrite=intmin ((*sdp->list_it)->compsize - sdp->file_pos ,  //minimum of bytes to write left in file and bytes to write left in buf
+									  buf_end - buf_pos);
+			assert(towrite>=0);
+
+			if (towrite == 0)
+				break;
+
 			const int res=sdp->file_handle->Write(buf_pos,towrite);
 			if (res!=towrite) {
 				LOG_ERROR("fwrite error");
