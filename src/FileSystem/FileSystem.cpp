@@ -510,6 +510,9 @@ bool CFileSystem::extract(const std::string& filename, const std::string& dstdir
 	}
 
 	const unsigned int num = archive->NumFiles();
+	if (num <= 0) {
+		return false;
+	}
 	for (unsigned int i=0; i<num; i++) {
 		std::vector<unsigned char> buf;
 		std::string name;
