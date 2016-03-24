@@ -18,7 +18,6 @@
 
 #ifndef _BENCODE_H
 #define _BENCODE_H
-#define BE_DEBUG //FIXME: remove this line
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -57,9 +56,6 @@ extern "C" {
 	extern be_node *be_decode(const char *bencode);
 	extern be_node *be_decoden(const char *bencode, long long bencode_len);
 	extern void be_free(be_node *node);
-#ifdef BE_DEBUG
-	extern void be_dump(be_node *node);
-#endif
 
 #ifdef __cplusplus
 }
