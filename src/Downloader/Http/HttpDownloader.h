@@ -27,7 +27,7 @@ public:
 		downloads a file from Url to filename
 	*/
 	//FIXME: this hides diff signature from IDownloader
-	bool download(const std::string& Url, const std::string& filename, int pos=1);
+	bool downloadbyurl(const std::string& Url, const std::string& filename, int pos=1);
 	void setCount(unsigned int count);
 	void setStatsPos(unsigned int pos);
 	unsigned int getStatsPos();

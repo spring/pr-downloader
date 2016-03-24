@@ -32,7 +32,7 @@ public:
 	*/
 	bool download(IDownload* download,int max_parallel = 10) override;
 
-	virtual bool setOption(const std::string& key, const std::string& value);
+	bool setOption(const std::string& key, const std::string& value) override;
 
 	void addRemoteDsp(CSdp& dsp);
 	/**
@@ -49,7 +49,7 @@ private:
 	void downloadRepo(const std::string& url);
 	bool updateRepos(const std::string& searchstr);
 	bool parse();
-	void download(const std::string& name);
+	void downloadbyname(const std::string& name);
 	std::string path;
 	std::string url;
 	std::list<CRepo> repos;

@@ -154,7 +154,7 @@ bool CRapidDownloader::setOption(const std::string& key, const std::string& valu
 }
 
 
-void CRapidDownloader::download(const std::string& name)
+void CRapidDownloader::downloadbyname(const std::string& name)
 {
 	std::string tmp;
 	if (!urlToPath(name,tmp)){
@@ -216,7 +216,7 @@ bool CRapidDownloader::updateRepos(const std::string& searchstr)
 	}
 
 	LOG_DEBUG("%s","Updating repos...");
-	download(url);
+	downloadbyname(url);
 
 	std::list<IDownload*> dls;
 	std::list<CRepo*> usedrepos;
