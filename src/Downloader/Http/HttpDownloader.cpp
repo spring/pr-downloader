@@ -568,24 +568,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 		//sleep for one sec / until something happened
 		select(count+1, &rSet, &wSet, &eSet, &t);
 	}
-	if (!aborted) { // if download didn't fail, get file size reported in http-header
-		double size=-1;
-		for (unsigned i=0; i<downloads.size(); i++) {
-			if (downloads[i]->curlw == nullptr)
-				continue;
-			double tmp;
-			curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_CONTENT_LENGTH_DOWNLOAD, &tmp);
-			if (tmp>size) {
-				size=tmp;
-			}
-		}
-		//set download size if isn't set and we have a valid number
-//		if ((size>0) && (download->size<0)) {
-//  		download->size = size;
-//		}
 
-	}
-//	showProcess(download, file);
 	LOG("\n");
 
 	if (!aborted) {
