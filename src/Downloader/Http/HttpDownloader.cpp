@@ -36,10 +36,9 @@ CHttpDownloader::~CHttpDownloader()
 {
 }
 
-static size_t
-WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
+static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
-	size_t realsize = size*nmemb;
+	const size_t realsize = size * nmemb;
 	std::string* res = static_cast<std::string*>(userp);
 	res->append((char*)contents, realsize);
 	return realsize;
@@ -173,7 +172,7 @@ bool CHttpDownloader::search(std::list<IDownload*>& res, const std::string& name
 	return ParseResult(name, dlres, res);
 }
 
-size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data)
+static size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data)
 {
 	//LOG_DEBUG("%d %d",size,  nmemb);
 	if (!data->got_ranges) {
@@ -190,7 +189,7 @@ size_t multi_write_data(void *ptr, size_t size, size_t nmemb, DownloadData* data
 	return data->download->file->Write((const char*)ptr, size*nmemb, data->start_piece);
 }
 
-size_t multiHeader(void *ptr, size_t size, size_t nmemb, DownloadData *data)
+static size_t multiHeader(void *ptr, size_t size, size_t nmemb, DownloadData *data)
 {
 	if(data->download->pieces.empty()) { //no chunked transfer, don't check headers
 		LOG_DEBUG("Unchunked transfer!");
@@ -255,19 +254,20 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 	unsigned alreadyDl=0;
 	for(unsigned i=0; i<download->pieces.size(); i++ ) { //find first not downloaded piece
 		showProcess(download, false);
-		if (download->pieces[i].state==IDownload::STATE_FINISHED) {
+		IDownload::piece& p = download->pieces[i];
+		if (p.state == IDownload::STATE_FINISHED) {
 			alreadyDl++;
 			LOG_DEBUG("piece %d marked as downloaded", i);
 			if ( pieces.size() > 0 )
 				break;//Contiguos non-downloaded area finished
 			continue;
-		} else if (download->pieces[i].state==IDownload::STATE_NONE) {
-			if ((download->pieces[i].sha->isSet()) && (!file.IsNewFile())) { //reuse piece, if checksum is fine
+		} else if (p.state==IDownload::STATE_NONE) {
+			if ((p.sha->isSet()) && (!file.IsNewFile())) { //reuse piece, if checksum is fine
 				file.Hash(sha1, i);
 //	LOG("bla %s %s", sha1.toString().c_str(), download.pieces[i].sha->toString().c_str());
 				if (sha1.compare(download->pieces[i].sha)) {
 					LOG_DEBUG("piece %d has already correct checksum, reusing", i);
-					download->pieces[i].state=IDownload::STATE_FINISHED;
+					p.state=IDownload::STATE_FINISHED;
 					showProcess(download, true);
 					alreadyDl++;
 					if ( pieces.size() > 0 )
