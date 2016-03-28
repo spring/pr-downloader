@@ -574,11 +574,13 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 		}
 	}
 	for (size_t i=0; i<downloads.size(); i++) {
-		long timestamp;
+		long timestamp = 0;
 		if ((downloads[i]->curlw != nullptr) && curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
-			if (downloads[i]->download->state != IDownload::STATE_FINISHED) //decrease local timestamp if download failed to force redownload next time
-				timestamp--;
-			downloads[i]->download->file->SetTimestamp(timestamp);
+			if (timestamp > 0) {
+				if (downloads[i]->download->state != IDownload::STATE_FINISHED) //decrease local timestamp if download failed to force redownload next time
+					timestamp--;
+				downloads[i]->download->file->SetTimestamp(timestamp);
+			}
 			delete downloads[i]->download->file;
 			downloads[i]->download->file = nullptr;
 		}
