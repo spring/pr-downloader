@@ -455,6 +455,31 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 	return aborted;
 }
 
+static void CleanupDownloads(std::list<IDownload*>& download, std::vector <DownloadData*>& downloads)
+{
+	//close all open files
+	for(IDownload* dl: download) {
+		if (dl->file != nullptr) {
+			dl->file->Close();
+		}
+	}
+	for (size_t i=0; i<downloads.size(); i++) {
+		long timestamp = 0;
+		if ((downloads[i]->curlw != nullptr) && curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
+			if (timestamp > 0) {
+				if (downloads[i]->download->state != IDownload::STATE_FINISHED) //decrease local timestamp if download failed to force redownload next time
+					timestamp--;
+				downloads[i]->download->file->SetTimestamp(timestamp);
+			}
+			delete downloads[i]->download->file;
+			downloads[i]->download->file = nullptr;
+		}
+		delete downloads[i];
+	}
+
+	downloads.clear();
+}
+
 bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel)
 {
 	std::vector <DownloadData*> downloads;
@@ -566,28 +591,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 	if (!aborted) {
 		LOG_DEBUG("download complete");
 	}
-
-	//close all open files
-	for(IDownload* dl: download) {
-		if (dl->file != nullptr) {
-			dl->file->Close();
-		}
-	}
-	for (size_t i=0; i<downloads.size(); i++) {
-		long timestamp = 0;
-		if ((downloads[i]->curlw != nullptr) && curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
-			if (timestamp > 0) {
-				if (downloads[i]->download->state != IDownload::STATE_FINISHED) //decrease local timestamp if download failed to force redownload next time
-					timestamp--;
-				downloads[i]->download->file->SetTimestamp(timestamp);
-			}
-			delete downloads[i]->download->file;
-			downloads[i]->download->file = nullptr;
-		}
-		delete downloads[i];
-	}
-
-	downloads.clear();
+	CleanupDownloads(download, downloads);
 	curl_multi_cleanup(curlm);
 	return !aborted;
 }
