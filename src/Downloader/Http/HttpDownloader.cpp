@@ -406,20 +406,20 @@ bool CHttpDownloader::processMessages(CURLM* curlm, std::vector <DownloadData*>&
 			}
 			assert(data->download->file!=NULL);
 			assert(data->start_piece< (int)data->download->pieces.size());
-			for ( std::vector<unsigned int>::iterator it = data->pieces.begin(); it != data->pieces.end(); ++it ) {
-				if (data->download->pieces[*it].sha->isSet()) {
-					data->download->file->Hash(sha1, *it);
+			for ( size_t idx = 0; idx < data->pieces.size(); idx++ ) {
+				IDownload::piece& p = data->download->pieces[idx];
+				if (p.sha->isSet()) {
+					data->download->file->Hash(sha1, idx);
 
-					if (sha1.compare(data->download->pieces[*it].sha)) { //piece valid
-
-						data->download->pieces[*it].state=IDownload::STATE_FINISHED;
+					if (sha1.compare(p.sha)) { //piece valid
+						p.state = IDownload::STATE_FINISHED;
 						showProcess(data->download, true);
-						// LOG("piece %d verified!", data->piece);
+						//LOG("piece %d verified!", idx);
 					} else { // piece download broken, mark mirror as broken (for this file)
-						data->download->pieces[*it].state=IDownload::STATE_NONE;
+						p.state = IDownload::STATE_NONE;
 						data->mirror->status=Mirror::STATUS_BROKEN;
 						//FIXME: cleanup curl handle here + process next dl
-						LOG_ERROR("Piece %d is invalid",*it);
+						LOG_ERROR("Piece %d is invalid", idx);
 					}
 				} else {
 					LOG_INFO("sha1 checksum seems to be not set, can't check received piece %d-%d", data->start_piece,data->pieces.size());
