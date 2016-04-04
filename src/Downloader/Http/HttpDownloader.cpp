@@ -44,14 +44,40 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
 	return realsize;
 }
 
+static int progress_func(DownloadData* data, double total, double done, double, double)
+{
+	data->download->progress = done;
+	if (IDownloader::listener != NULL) {
+		IDownloader::listener(done, total);
+	}
+	if (data->got_ranges) {
+		LOG_PROGRESS(done, total, done >= total);
+	}
+	return 0;
+}
+
+
 //downloads url into res
 bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 {
 	CurlWrapper* curlw = new CurlWrapper();
+	DownloadData d;
+	d.got_ranges = false;
+	d.download = new IDownload();
+	d.download->addMirror(url);
+	d.download->name = url;
+	d.download->origin_name = url;
+
 	curl_easy_setopt(curlw->GetHandle(), CURLOPT_URL, CurlWrapper::escapeUrl(url).c_str());
 	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEDATA, (void *)&res);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_PROGRESSDATA, &d);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_PROGRESSFUNCTION, progress_func);
+	curl_easy_setopt(curlw->GetHandle(), CURLOPT_NOPROGRESS, 0L);
 	CURLcode curlres = curl_easy_perform(curlw->GetHandle());
+
+	delete d.download;
+	d.download = nullptr;
 	if (curlres != CURLE_OK) {
 	        LOG_ERROR("Error in curl %s", curl_easy_strerror(curlres));
 	}
@@ -287,18 +313,6 @@ std::vector< unsigned int > CHttpDownloader::verifyAndGetNextPieces(CFile& file,
 	}
 	LOG_DEBUG("Pieces to download: %d",pieces.size());
 	return pieces;
-}
-
-static int progress_func(DownloadData* data, double total, double done, double, double)
-{
-	data->download->progress = done;
-	if (IDownloader::listener != NULL) {
-		IDownloader::listener(done, total);
-	}
-	if (data->got_ranges) {
-		LOG_PROGRESS(done, total, done >= total);
-	}
-	return 0;
 }
 
 bool CHttpDownloader::setupDownload(DownloadData* piece)
