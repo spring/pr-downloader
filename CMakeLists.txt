@@ -32,7 +32,11 @@ OPTION(PRD_ARCHIVE_SUPPORT "enable archive support" ON)
 OPTION(PRD_CLEAR_COMPILER_FLAGS "clear all compiler flags" OFF)
 
 find_package(Jsoncpp)
-OPTION(PRD_JSONCPP_INTERNAL "use bundled JsonCpp" ${Jsoncpp_FOUND})
+if (${Jsoncpp_FOUND})
+	OPTION(PRD_JSONCPP_INTERNAL "use bundled JsonCpp" FALSE)
+else()
+	OPTION(PRD_JSONCPP_INTERNAL "use bundled JsonCpp" TRUE)
+endif()
 
 if(PRD_CLEAR_COMPILER_FLAGS)
 	SET(CMAKE_CXX_FLAGS "")
@@ -110,11 +114,15 @@ else()
 endif()
 
 if (PRD_JSONCPP_INTERNAL)
-	# use bundled JsonCpp
-	set(Jsoncpp_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/jsoncpp/include)
+        # use bundled JsonCpp
+        set(PRD_JSONCPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/jsoncpp/include)
+        set(PRD_JSONCPP_LIBRARIES "")
 else()
-	find_package(Jsoncpp REQUIRED)
+        find_package(Jsoncpp REQUIRED)
+	set(PRD_JSONCPP_INCLUDE_DIR ${Jsoncpp_INCLUDE_DIR})
+	set(PRD_JSONCPP_LIBRARIES ${Jsoncpp_LIBRARY})
 endif()
+
 
 # MINIZIP_FOUND is used in lib & FileSystem
 FIND_PACKAGE(MiniZip)

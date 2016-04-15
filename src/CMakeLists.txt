@@ -41,7 +41,7 @@ add_library(Downloader STATIC
 
 target_include_directories(Downloader
 		PRIVATE ${pr-downloader_SOURCE_DIR}/src
-		PRIVATE ${Jsoncpp_INCLUDE_DIR}
+		PRIVATE ${PRD_JSONCPP_INCLUDE_DIR}
 		PRIVATE ${MINIZIP_INCLUDE_DIR}
 		PRIVATE ${CURL_INCLUDE_DIR}
 		PRIVATE ${ZLIB_INCLUDE_DIR}
@@ -61,7 +61,7 @@ target_link_libraries(Downloader
 	${CURL_LIBRARIES}
 	${OPENSSL_LIBRARIES}
 	${WIN32LIBS}
-	${Jsoncpp_LIBRARY}
+	${PRD_JSONCPP_LIBRARIES}
 	${ZLIB_LIBRARIES}
 	pr-md5
 	pr-sha1
