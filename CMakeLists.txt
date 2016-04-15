@@ -30,7 +30,9 @@ OPTION(PRD_DEVELOP_FILES "install development files (header, libspringdownloader
 OPTION(PRD_DO_INSTALL "install files" ON)
 OPTION(PRD_ARCHIVE_SUPPORT "enable archive support" ON)
 OPTION(PRD_CLEAR_COMPILER_FLAGS "clear all compiler flags" OFF)
-OPTION(PRD_JSONCPP_INTERNAL "use bundled JsonCpp" ON)
+
+find_package(Jsoncpp)
+OPTION(PRD_JSONCPP_INTERNAL "use bundled JsonCpp" ${Jsoncpp_FOUND})
 
 if(PRD_CLEAR_COMPILER_FLAGS)
 	SET(CMAKE_CXX_FLAGS "")
