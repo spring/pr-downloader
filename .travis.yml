@@ -3,15 +3,11 @@ compiler:
   - clang
   - gcc
 
-before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo add-apt-repository -y ppa:george-edison55/precise-backports #cmake
-  - sudo apt-get update -q
+sudo: required
+dist: trusty
 
 install:
-  - sudo apt-get install gcc-4.7 g++-4.7 cmake cmake-data
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.7 90
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.7 90
+  - sudo apt-get install -y gcc-4.7 g++-4.7 cmake libcurl4-openssl-dev libjsoncpp-dev
 
 before_script:
   - cmake . -DPRD_DEVELOP_FILES:BOOL=ON
