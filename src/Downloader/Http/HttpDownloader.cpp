@@ -337,7 +337,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	CURL* curle = piece->curlw->GetHandle();
 	piece->mirror=piece->download->getFastestMirror();
 	if (piece->mirror==NULL) {
-		LOG_ERROR("No mirror found");
+		LOG_ERROR("No mirror found for %s", piece->download->name.c_str());
 		return false;
 	}
 
