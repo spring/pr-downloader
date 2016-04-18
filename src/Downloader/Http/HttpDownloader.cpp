@@ -368,9 +368,11 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 
 		//this sets the header If-Modified-Since -> downloads only when remote file is newer than local file
 		const long timestamp = piece->download->file->GetTimestamp();
-		curl_easy_setopt(curle, CURLOPT_TIMECONDITION, CURL_TIMECOND_IFMODSINCE);
-		curl_easy_setopt(curle, CURLOPT_TIMEVALUE, timestamp );
-		curl_easy_setopt(curle, CURLOPT_FILETIME, 1);
+		if ((timestamp >= 0) && (piece->download->hash == nullptr)) { //timestamp known + hash not known -> only dl when changed
+			curl_easy_setopt(curle, CURLOPT_TIMECONDITION, CURL_TIMECOND_IFMODSINCE);
+			curl_easy_setopt(curle, CURLOPT_TIMEVALUE, timestamp );
+			curl_easy_setopt(curle, CURLOPT_FILETIME, 1);
+		}
 	}
 	return true;
 }
