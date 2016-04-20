@@ -183,6 +183,7 @@ bool CHttpDownloader::ParseResult(const std::string& name, const std::string& js
 		}
 		res.push_back(dl);
 	}
+	LOG_DEBUG("Parsed %d results", res.size());
 	return true;
 }
 
