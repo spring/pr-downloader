@@ -43,10 +43,21 @@ DownloadEnum::Category getPlatformEngineCat()
 
 bool download_engine(std::list<IDownload*>& dllist)
 {
-	httpDownload->download(dllist);
 	bool res = true;
-	for (const IDownload* dl: dllist) {
-		if (isEngineDownload(dl->cat) && !fileSystem->extractEngine(dl->name, dl->version)) {
+	std::list<IDownload*> enginedls;
+
+
+	for (IDownload* dl: dllist) {
+		if (isEngineDownload(dl->cat)) {
+			enginedls.push_back(dl);
+		}
+	}
+	if (enginedls.empty())
+		return res;
+
+	httpDownload->download(enginedls);
+	for (const IDownload* dl: enginedls) {
+		if (!fileSystem->extractEngine(dl->name, dl->version)) {
 			LOG_ERROR("Failed to extract engine %s", dl->version.c_str());
 			res = false;
 		}
