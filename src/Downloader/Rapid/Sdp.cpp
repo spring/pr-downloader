@@ -114,7 +114,7 @@ bool CSdp::download(IDownload* download)
 	if (count>0) {
 		downloaded = downloadStream(this->url+"/streamer.cgi?"+this->md5,files);
 		if (!downloaded) {
-			LOG_ERROR("Couldn't download files for %s", this->md5);
+			LOG_ERROR("Couldn't download files for %s", this->md5.c_str());
 			fileSystem->removeFile(tmpFile);
 			fileSystem->removeFile(filename);
 			return false;
