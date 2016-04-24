@@ -528,15 +528,11 @@ bool CHttpDownloader::download(std::list<IDownload*>& download, int max_parallel
 			DownloadData* dlData=new DownloadData();
 			dlData->download=dl;
 			if (!setupDownload(dlData)) { //no piece found (all pieces already downloaded), skip
-				delete dlData;
-				if (dl->state!=IDownload::STATE_FINISHED) {
-					LOG_ERROR("no piece found");
-					return false;
-				}
-			} else {
-				downloads.push_back(dlData);
-				curl_multi_add_handle(curlm, dlData->curlw->GetHandle());
+				LOG_ERROR("Failed to setup download %d/%d", i, count);
+				continue;
 			}
+			downloads.push_back(dlData);
+			curl_multi_add_handle(curlm, dlData->curlw->GetHandle());
 		}
 	}
 	if (downloads.empty()) {
