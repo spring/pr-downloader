@@ -13,6 +13,7 @@
 #include <list>
 #include <zlib.h>
 #include <algorithm>  //std::min
+#include <set>
 
 #ifndef WIN32
 #include <regex.h>
@@ -72,9 +73,15 @@ bool CRapidDownloader::download_name(IDownload* download, int reccounter, std::s
 	if (reccounter>10)
 		return false;
 	LOG_DEBUG("Using rapid to download %s", download->name.c_str());
+	std::set<std::string> downloaded;
+
 	for (CSdp& sdp: sdps) {
-		if (!match_download_name(sdp.getName(), name.length() == 0 ? download->name : name ))
+		if (!match_download_name(sdp.getName(), name.empty() ? download->name : name ))
 			continue;
+
+		if (downloaded.find(sdp.getMD5()) != downloaded.end()) //already downloaded, skip (i.e. stable entries are twice in versions.gz)
+			continue;
+		downloaded.insert(sdp.getMD5());
 
 		LOG_DOWNLOAD(sdp.getName().c_str() );
 		if (!sdp.download(download)) {
