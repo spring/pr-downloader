@@ -51,13 +51,16 @@ void LOG_DOWNLOAD(const char* filename)
 	L_LOG(L_RAW, "[Download] %s\n",filename);
 }
 
-static unsigned long lastlogtime=0;
 
 void LOG_PROGRESS(long done, long total, bool forceOutput)
 {
+	static unsigned long lastlogtime = 0;
+	static float lastPercentage = 0.0f;
+
 	if (!logEnabled) {
 		return;
 	}
+
 
 	unsigned long now=getTime(); // needs to be here atm to avoid static link failure because of circular deps between libs
 
@@ -73,6 +76,11 @@ void LOG_PROGRESS(long done, long total, bool forceOutput)
 	if (total>0) {
 		percentage = (float)done / total;
 	}
+
+	if (percentage == lastPercentage)
+		return;
+	lastPercentage = percentage;
+
 	L_LOG(L_RAW, "[Progress] %3.0f%% [",percentage * 100.0f);
 	int totaldotz = 30;                           // how wide you want the progress meter to be
 	int dotz = percentage * totaldotz;
