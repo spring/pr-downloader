@@ -95,6 +95,20 @@ static std::string getRequestUrl(const std::string& name, DownloadEnum::Category
 	return url + std::string("torrent=true&springname=") + name;
 }
 
+static std::string escapeFilename(const std::string& str)
+{
+	std::string s = str;
+	const static std::string illegalChars = "\\/:?\"<>|";
+
+	for (auto it = s.begin() ; it < s.end() ; ++it){
+		const bool found = illegalChars.find(*it) != std::string::npos;
+		if (found) {
+			*it = '_';
+		}
+	}
+	return s;
+}
+
 bool CHttpDownloader::ParseResult(const std::string& name, const std::string& json, std::list<IDownload*>& res)
 {
 	Json::Value result;   // will contains the root value after parsing.
@@ -145,7 +159,7 @@ bool CHttpDownloader::ParseResult(const std::string& name, const std::string& js
 			LOG_ERROR("Invalid type in result");
 			return false;
 		}
-		filename.append(resfile["filename"].asString());
+		filename.append(escapeFilename(resfile["filename"].asString()));
 
 		const DownloadEnum::Category cat = DownloadEnum::getCatFromStr(category);
 		IDownload* dl=new IDownload(filename, springname, cat);
