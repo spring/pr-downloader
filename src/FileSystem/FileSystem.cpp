@@ -479,7 +479,7 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 bool CFileSystem::extractEngine(const std::string& filename, const std::string& version)
 {
 #ifdef ARCHIVE_SUPPORT
-	const std::string output = getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + EscapePath(version);
+	const std::string output = getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + CFileSystem::EscapeFilename(version);
 	if (!extract(filename, output)) {
 		LOG_DEBUG("Failed to extract %s %s", filename.c_str(), output.c_str());
 		return false;
@@ -584,17 +584,6 @@ bool CFileSystem::Rename(const std::string& source, const std::string& destinati
 }
 
 
-std::string CFileSystem::EscapePath(const std::string& path)
-{
-	std::string tmp;
-	for (unsigned int i=0; i<path.size(); i++) {
-		if ( (path[i] != '/')
-		     && (path[i] != '\\'))
-			tmp += path[i];
-	}
-	return tmp;
-}
-
 std::string CFileSystem::DirName(const std::string& path)
 {
 	const std::string::size_type pos = path.rfind(PATH_DELIMITER);
@@ -625,3 +614,18 @@ void CFileSystem::TimestampToFiletime(const time_t t, _FILETIME& pft)
 	pft.dwHighDateTime = ll >> 32;
 }
 #endif
+
+std::string CFileSystem::EscapeFilename(const std::string& str)
+{
+        std::string s = str;
+        const static std::string illegalChars = "\\/:?\"<>|";
+
+        for (auto it = s.begin() ; it < s.end() ; ++it){
+                const bool found = illegalChars.find(*it) != std::string::npos;
+                if (found) {
+                        *it = '_';
+                }
+        }
+        return s;
+}
+

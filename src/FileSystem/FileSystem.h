@@ -107,7 +107,10 @@ public:
 	bool Rename(const std::string& source, const std::string& destination);
 
 
-	std::string EscapePath(const std::string& path);
+	/*
+		replaces all invalid chars, i.e. \ from filename
+	*/
+	static std::string EscapeFilename(const std::string& path);
 
 	FILE* propen(const std::string& filename, const std::string& mode) const;
 
@@ -124,6 +127,7 @@ public:
 		dir/filename -> dir
 	*/
 	static std::string DirName(const std::string& path);
+
 private:
 	bool portableDownload;
 	std::list<FileData> mods;
