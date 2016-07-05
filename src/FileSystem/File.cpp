@@ -66,10 +66,6 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	SetPieceSize(piecesize);
 	assert(handle == nullptr);
 
-	if (handle!=NULL) {
-		LOG_ERROR("File %s opened before old was closed", filename.c_str());
-		return false;
-	}
 	struct stat sb;
 	int res=stat(filename.c_str(), &sb);
 	timestamp = 0;
