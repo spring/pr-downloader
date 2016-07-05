@@ -20,6 +20,7 @@ Else()
 	TARGET_LINK_LIBRARIES(prd_test
 		${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 		Downloader
+		-ldl
 	)
 #	target_include_directories(libSpringLobby_test
 #		PRIVATE ${libSpringLobby_SOURCE_DIR}/src
