@@ -81,6 +81,7 @@ IDownload* GetIDownloadByID(std::list<IDownload*>& dllist, int id)
 }
 
 std::list<IDownload*> searchres;
+std::list<int> downloads;
 
 int DownloadAddByUrl(DownloadEnum::Category cat, const char* filename, const char* url)
 {
@@ -133,6 +134,7 @@ bool search(DownloadEnum::Category cat, const char* name, std::list<IDownload*>&
 int DownloadSearch(DownloadEnum::Category cat, const char* name)
 {
 	IDownloader::freeResult(searchres);
+	downloads.clear();
 	search(cat, name, searchres);
 	return searchres.size();
 }
@@ -190,8 +192,6 @@ bool DownloadGetConfig(CONFIG type, const void** value)
 	}
 	return false;
 }
-
-std::list<int> downloads;
 
 bool DownloadAdd(unsigned int id)
 {
@@ -251,7 +251,6 @@ int DownloadStart()
 		res = 1;
 		return res;
 	}
-
 	if(!rapidDownload->download(dls))
 		res = 2;
 	if (!httpDownload->download(dls,1))
