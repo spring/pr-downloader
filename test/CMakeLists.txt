@@ -22,6 +22,10 @@ Else()
 		Downloader
 		${CMAKE_DL_LIBS}
 	)
+
+	target_include_directories(prd_test
+		PRIVATE ${Boost_INCLUDE_DIRS}
+	)	
 #	target_include_directories(libSpringLobby_test
 #		PRIVATE ${libSpringLobby_SOURCE_DIR}/src
 #	)
