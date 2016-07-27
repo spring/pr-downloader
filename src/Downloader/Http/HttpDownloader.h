@@ -5,6 +5,7 @@
 
 #include "../IDownloader.h"
 
+#include <curl/curl.h>
 #include <string>
 #include <list>
 
@@ -13,8 +14,6 @@ class HashSHA1;
 class CFile;
 class FileData;
 class DownloadData;
-typedef void CURLM;
-typedef void CURL;
 
 class CHttpDownloader: public IDownloader
 {

@@ -22,7 +22,6 @@
 #endif
 
 #include <stdio.h>
-#include <curl/curl.h>
 #include <string>
 #include <sstream>
 #include <stdlib.h>
