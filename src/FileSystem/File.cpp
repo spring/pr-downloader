@@ -66,8 +66,14 @@ bool CFile::Open(const std::string& filename, long size, int piecesize)
 	SetPieceSize(piecesize);
 	assert(handle == nullptr);
 
+#if defined(__WIN32__) || defined(_MSC_VER)
+	struct _stat sb;
+	int res=_wstat(s2ws(filename).c_str(), &sb);
+#else
 	struct stat sb;
 	int res=stat(filename.c_str(), &sb);
+#endif
+
 	timestamp = 0;
 	isnewfile=res!=0;
 	if (isnewfile) { //if file is new, create it, if not, open the existing one without truncating it
