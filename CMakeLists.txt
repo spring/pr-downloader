@@ -151,5 +151,9 @@ else()
         message(WARNING "clang-format not found")
 endif()
 
-ENABLE_TESTING()
-Add_Subdirectory(test)
+option(PRD_TESTS "Enable prd unit tests" ON)
+
+if (${PRD_TESTS})
+	ENABLE_TESTING()
+	Add_Subdirectory(test)
+endif()
