@@ -34,7 +34,7 @@ if (UNIX AND NOT MINGW AND NOT APPLE)
 endif()
 TARGET_LINK_LIBRARIES(lsl-unitsync lsl-utils ${Boost_LIBRARIES} ${PNG_LIBRARY} ${X11_LIBRARIES} ${CMAKE_DL_LIBS} ${RT_LIBRARY})
 target_include_directories(lsl-unitsync
-		PRIVATE ${libSpringLobby_SOURCE_DIR}/src
-		PRIVATE ${libSpringLobby_SOURCE_DIR}/lib
+		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lsl/src
+		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lib
 		PRIVATE ${PRD_JSONCPP_INCLUDE_DIR}
 	)
