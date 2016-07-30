@@ -15,8 +15,6 @@ LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 #----------------------------------------------------------------------------------------------------
 OPTION(BUILD_SHARED_LIBS "Chooses whether to link dynamic or static libraries. Recommend keeping this activated unless you know what you're doing." ON)
 
-OPTION(BUILD_TESTS "build example and test binaries" OFF)
-	
 SET( LIBSPRINGLOBBY_REV	"${PR_DOWNLOADER_VERSION}")
 
 # If we build for windows Systems, we also include the Resource-File containing the Manifest, Icon and other Resources.
@@ -39,12 +37,6 @@ cmake_policy(SET CMP0006 OLD)
 
 OPTION(LSLSERVER
 	"Compile and install lsl-server (broken)" OFF)
-
-
-if (${BUILD_TESTS})
-	enable_testing()
-	add_subdirectory( test )
-endif()
 
 
 add_subdirectory( lslutils )
