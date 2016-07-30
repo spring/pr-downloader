@@ -24,7 +24,7 @@ set_source_files_properties(  ${libUnitsyncHeader} PROPERTIES HEADER_FILE_ONLY 1
 #cimage deps
 FIND_PACKAGE(PNG REQUIRED)
 FIND_PACKAGE(X11 REQUIRED)
-ADD_LIBRARY(lsl-unitsync STATIC ${libUnitsyncHeader} ${libUnitsyncSrc} ${LSL_libjsonsrc})
+ADD_LIBRARY(lsl-unitsync STATIC ${libUnitsyncHeader} ${libUnitsyncSrc} ${jsonlibcppsrc})
 if(ADD_WXCONVERT)
 	target_compile_definitions(lsl-unitsync PRIVATE -DHAVE_WX)
 endif()
@@ -36,5 +36,5 @@ TARGET_LINK_LIBRARIES(lsl-unitsync lsl-utils ${Boost_LIBRARIES} ${PNG_LIBRARY} $
 target_include_directories(lsl-unitsync
 		PRIVATE ${libSpringLobby_SOURCE_DIR}/src
 		PRIVATE ${libSpringLobby_SOURCE_DIR}/lib
-		PRIVATE ${LSL_JSONCPP_INCLUDE_DIR}
+		PRIVATE ${PRD_JSONCPP_INCLUDE_DIR}
 	)

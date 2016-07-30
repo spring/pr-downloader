@@ -8,9 +8,9 @@ endif()
 
 if (PRD_JSONCPP_INTERNAL)
 	set(jsonlibcppsrc
-		lib/jsoncpp/src/lib_json/json_value.cpp
-		lib/jsoncpp/src/lib_json/json_reader.cpp
-		lib/jsoncpp/src/lib_json/json_writer.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/jsoncpp/src/lib_json/json_value.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/jsoncpp/src/lib_json/json_reader.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/jsoncpp/src/lib_json/json_writer.cpp
 	)
 endif()
 

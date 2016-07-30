@@ -8,9 +8,10 @@ dist: trusty
 
 install:
   - sudo apt-get install -y gcc-4.7 g++-4.7 cmake libcurl4-openssl-dev libjsoncpp-dev
+  - sudo apt-get install -y libboost-thread1.55-dev libboost-system1.55-dev libboost-filesystem1.55-dev spring libjsoncpp-dev
 
 before_script:
-  - cmake . -DPRD_DEVELOP_FILES:BOOL=ON
+  - cmake . -DPRD_DEVELOP_FILES:BOOL=ON -DBUILD_TESTS=ON -DPRD_ENABLE_LSL=ON
 
 script:
   - make -j2
