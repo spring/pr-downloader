@@ -42,7 +42,6 @@ OPTION(LSLSERVER
 
 add_subdirectory( src )
 
-add_subdirectory( doc )
 if (${BUILD_TESTS})
 	enable_testing()
 	add_subdirectory( test )
