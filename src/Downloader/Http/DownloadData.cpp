@@ -7,9 +7,9 @@
 
 DownloadData::DownloadData()
 {
-	start_piece=0;
-	mirror=NULL;
-	download=NULL;
+	start_piece = 0;
+	mirror = NULL;
+	download = NULL;
 	curlw = new CurlWrapper();
 	got_ranges = false;
 }
@@ -19,4 +19,3 @@ DownloadData::~DownloadData()
 	delete curlw;
 	curlw = NULL;
 }
-

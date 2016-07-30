@@ -13,9 +13,8 @@
 #include <stdio.h>
 #include <list>
 
-
 enum {
-	RAPID_DOWNLOAD=0,
+	RAPID_DOWNLOAD = 0,
 	RAPID_VALIDATE,
 	RAPID_VALIDATE_DELETE,
 	RAPID_SEARCH,
@@ -35,21 +34,20 @@ enum {
 };
 
 static struct option long_options[] = {
-	{"rapid-download"          , 1, 0, RAPID_DOWNLOAD},
-	{"rapid-validate"          , 0, 0, RAPID_VALIDATE},
-	{"delete"                  , 0, 0, RAPID_VALIDATE_DELETE},
-	{"dump-sdp"                , 1, 0, FILESYSTEM_DUMPSDP},
-	{"http-download"           , 1, 0, HTTP_DOWNLOAD},
-	{"http-search"             , 1, 0, HTTP_SEARCH},
-	{"download-map"            , 1, 0, DOWNLOAD_MAP},
-	{"download-game"           , 1, 0, DOWNLOAD_GAME},
-	{"download-engine"         , 1, 0, DOWNLOAD_ENGINE},
-	{"filesystem-writepath"    , 1, 0, FILESYSTEM_WRITEPATH},
-	{"disable-logging"         , 0, 0, DISABLE_LOGGING},
-	{"help"                    , 0, 0, HELP},
-	{"version"                 , 0, 0, SHOW_VERSION},
-	{0                         , 0, 0, 0}
-};
+    {"rapid-download", 1, 0, RAPID_DOWNLOAD},
+    {"rapid-validate", 0, 0, RAPID_VALIDATE},
+    {"delete", 0, 0, RAPID_VALIDATE_DELETE},
+    {"dump-sdp", 1, 0, FILESYSTEM_DUMPSDP},
+    {"http-download", 1, 0, HTTP_DOWNLOAD},
+    {"http-search", 1, 0, HTTP_SEARCH},
+    {"download-map", 1, 0, DOWNLOAD_MAP},
+    {"download-game", 1, 0, DOWNLOAD_GAME},
+    {"download-engine", 1, 0, DOWNLOAD_ENGINE},
+    {"filesystem-writepath", 1, 0, FILESYSTEM_WRITEPATH},
+    {"disable-logging", 0, 0, DISABLE_LOGGING},
+    {"help", 0, 0, HELP},
+    {"version", 0, 0, SHOW_VERSION},
+    {0, 0, 0, 0}};
 
 void show_version()
 {
@@ -58,16 +56,16 @@ void show_version()
 
 void show_help(const char* cmd)
 {
-	int i=0;
+	int i = 0;
 	LOG("Usage: %s \n", cmd);
-	bool append=false;
-	while (long_options[i].name!=0) {
+	bool append = false;
+	while (long_options[i].name != 0) {
 		if (append) {
 			LOG("\n");
 		}
-		append=true;
-		LOG("--%s",long_options[i].name);
-		if (long_options[i].has_arg!=0)
+		append = true;
+		LOG("--%s", long_options[i].name);
+		if (long_options[i].has_arg != 0)
 			LOG(" <name>");
 		i++;
 	}
@@ -77,7 +75,7 @@ void show_help(const char* cmd)
 
 void show_results(int count)
 {
-	for(int i=0; i<count; i++) {
+	for (int i = 0; i < count; i++) {
 		downloadInfo dl;
 		DownloadGetInfo(i, dl);
 		LOG_DEBUG("Download path: %s", dl.filename);
@@ -87,11 +85,11 @@ void show_results(int count)
 bool download(DownloadEnum::Category cat, const char* name)
 {
 	int count = DownloadSearch(cat, name);
-	if (count<=0) {
-		LOG_DEBUG("Couldn't find %s",name);
+	if (count <= 0) {
+		LOG_DEBUG("Couldn't find %s", name);
 		return false;
 	}
-	for (int i=0; i<count; i++) {
+	for (int i = 0; i < count; i++) {
 		DownloadAdd(i);
 	}
 	show_results(count);
@@ -101,26 +99,26 @@ bool download(DownloadEnum::Category cat, const char* name)
 bool search(DownloadEnum::Category cat, const char* name)
 {
 	int count = DownloadSearch(cat, name);
-	if (count<=0) {
-		LOG_ERROR("Couldn't find %s",name);
+	if (count <= 0) {
+		LOG_ERROR("Couldn't find %s", name);
 		return false;
 	}
 	downloadInfo dl;
-	for (int i=0; i<count; i++) {
+	for (int i = 0; i < count; i++) {
 		DownloadGetInfo(i, dl);
 		LOG("%s\n", dl.filename);
 	}
 	return true;
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 	show_version();
-	if (argc<2)
+	if (argc < 2)
 		show_help(argv[0]);
 	DownloadInit();
 
-	bool res=true;
+	bool res = true;
 	bool removeinvalid = false;
 	while (true) {
 		int option_index = 0;
@@ -128,65 +126,65 @@ int main(int argc, char **argv)
 		if (c == -1)
 			break;
 		switch (c) {
-		case RAPID_DOWNLOAD: {
-			download(DownloadEnum::CAT_GAME, optarg);
-			break;
-		}
-		case RAPID_VALIDATE: {
-			DownloadRapidValidate(removeinvalid);
-			break;
-		}
-		case RAPID_VALIDATE_DELETE: {
-			removeinvalid = true;
-			break;
-		}
-		case FILESYSTEM_DUMPSDP: {
-			DownloadDumpSDP(optarg);
-			break;
-		}
-		case FILESYSTEM_WRITEPATH: {
-			DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, optarg);
-			break;
-		}
-		case DOWNLOAD_MAP: {
-			if (!download(DownloadEnum::CAT_MAP, optarg)) {
-				LOG_ERROR("No map found for %s",optarg);
-				res=false;
+			case RAPID_DOWNLOAD: {
+				download(DownloadEnum::CAT_GAME, optarg);
+				break;
 			}
-			break;
-		}
-		case DOWNLOAD_GAME: {
-			if (!download(DownloadEnum::CAT_GAME, optarg)) {
-				LOG_ERROR("No game found for %s",optarg);
-				res=false;
+			case RAPID_VALIDATE: {
+				DownloadRapidValidate(removeinvalid);
+				break;
 			}
-			break;
-		}
-		case SHOW_VERSION:
-			show_version();
-			break;
-		case DOWNLOAD_ENGINE: {
-			if (!download(DownloadEnum::CAT_ENGINE, optarg)) {
-				LOG_ERROR("No engine version found for %s",optarg);
-				res=false;
+			case RAPID_VALIDATE_DELETE: {
+				removeinvalid = true;
+				break;
 			}
-			break;
-		}
-		case DISABLE_LOGGING:
-			DownloadDisableLogging(true);
-			break;
-		case HELP:
-		default: {
-			show_help(argv[0]);
-			break;
-		}
+			case FILESYSTEM_DUMPSDP: {
+				DownloadDumpSDP(optarg);
+				break;
+			}
+			case FILESYSTEM_WRITEPATH: {
+				DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, optarg);
+				break;
+			}
+			case DOWNLOAD_MAP: {
+				if (!download(DownloadEnum::CAT_MAP, optarg)) {
+					LOG_ERROR("No map found for %s", optarg);
+					res = false;
+				}
+				break;
+			}
+			case DOWNLOAD_GAME: {
+				if (!download(DownloadEnum::CAT_GAME, optarg)) {
+					LOG_ERROR("No game found for %s", optarg);
+					res = false;
+				}
+				break;
+			}
+			case SHOW_VERSION:
+				show_version();
+				break;
+			case DOWNLOAD_ENGINE: {
+				if (!download(DownloadEnum::CAT_ENGINE, optarg)) {
+					LOG_ERROR("No engine version found for %s", optarg);
+					res = false;
+				}
+				break;
+			}
+			case DISABLE_LOGGING:
+				DownloadDisableLogging(true);
+				break;
+			case HELP:
+			default: {
+				show_help(argv[0]);
+				break;
+			}
 		}
 	}
 	if (optind < argc) {
 		while (optind < argc) {
 			if (!download(DownloadEnum::CAT_NONE, argv[optind])) {
-				LOG_ERROR("No file found for %s",argv[optind]);
-				res=false;
+				LOG_ERROR("No file found for %s", argv[optind]);
+				res = false;
 			}
 			optind++;
 		}

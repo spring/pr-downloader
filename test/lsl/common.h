@@ -4,7 +4,8 @@
 #include <exception>
 #include <string>
 
-struct TestFailedException : public std::logic_error {
+struct TestFailedException : public std::logic_error
+{
 	TestFailedException(std::string msg)
 	    : std::logic_error(msg)
 	{

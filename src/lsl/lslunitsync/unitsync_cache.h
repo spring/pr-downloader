@@ -39,7 +39,6 @@ public:
 	/// this caches MapInfo to facilitate GetMapExAsync
 	MostRecentlyUsedMapInfoCache m_mapinfo_cache;
 	MostRecentlyUsedArrayStringCache m_sides_cache;
-
 };
 } // namespace LSL
 

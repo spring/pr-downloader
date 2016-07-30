@@ -66,7 +66,7 @@ float FromFloatString(const std::string& s)
 {
 	std::stringstream ss;
 	ss.imbue(std::locale("C"));
-	for(size_t i = 0; i < s.size(); i++) {
+	for (size_t i = 0; i < s.size(); i++) {
 		if (s[i] == ',')
 			ss << '.';
 		else

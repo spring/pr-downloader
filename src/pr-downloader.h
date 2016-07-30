@@ -1,7 +1,6 @@
 /*
-	header for pr-downloader
+        header for pr-downloader
 */
-
 
 #ifndef PR_DOWNLOADER_H
 #define PR_DOWNLOADER_H
@@ -9,25 +8,27 @@
 #include "Downloader/DownloadEnum.h"
 
 #define NAME_LEN 1024
-struct downloadInfo {
+struct downloadInfo
+{
 	char filename[NAME_LEN];
 	bool validated;
 	int speed;
 	DownloadEnum::Category cat;
 };
 /**
-	downloads all downloads that where added with @DownloadAdd
-	clears search results
+        downloads all downloads that where added with @DownloadAdd
+        clears search results
 */
 extern int DownloadStart();
 
 /**
-	adds a download by url without searching
+        adds a download by url without searching
 */
-extern int DownloadAddByUrl(DownloadEnum::Category cat, const char* filename, const char* url);
+extern int DownloadAddByUrl(DownloadEnum::Category cat, const char* filename,
+			    const char* url);
 
 /**
-	adds a download, see @DownloadSearch & @DownloadGetSearchInfo
+        adds a download, see @DownloadSearch & @DownloadGetSearchInfo
 */
 extern bool DownloadAdd(unsigned int id);
 /**
@@ -53,9 +54,9 @@ extern void DownloadInit();
 extern void DownloadShutdown();
 
 enum CONFIG {
-	CONFIG_FILESYSTEM_WRITEPATH = 1, //const char, sets the output directory
-	CONFIG_FETCH_DEPENDS, //bool, automaticly fetch depending files
-	CONFIG_RAPID_FORCEUPDATE, //bool, always fetch repo files
+	CONFIG_FILESYSTEM_WRITEPATH = 1, // const char, sets the output directory
+	CONFIG_FETCH_DEPENDS,		 // bool, automaticly fetch depending files
+	CONFIG_RAPID_FORCEUPDATE,	// bool, always fetch repo files
 };
 
 /**
@@ -95,4 +96,3 @@ extern void SetDownloadListener(IDownloaderProcessUpdateListener listener);
 */
 extern char* CalcHash(const char* str, int size, int type);
 #endif
-

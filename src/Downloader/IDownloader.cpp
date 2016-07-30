@@ -11,8 +11,8 @@
 
 class IDownloader;
 
-IDownloader* IDownloader::httpdl=NULL;
-IDownloader* IDownloader::rapiddl=NULL;
+IDownloader* IDownloader::httpdl = NULL;
+IDownloader* IDownloader::rapiddl = NULL;
 IDownloaderProcessUpdateListener IDownloader::listener = nullptr;
 
 void IDownloader::Initialize()
@@ -22,23 +22,23 @@ void IDownloader::Initialize()
 
 void IDownloader::Shutdown()
 {
-	delete(httpdl);
+	delete (httpdl);
 	httpdl = NULL;
-	delete(rapiddl);
+	delete (rapiddl);
 	rapiddl = NULL;
 	curl_global_cleanup();
 }
 
 IDownloader* IDownloader::GetHttpInstance()
 {
-	if (httpdl==NULL)
-		httpdl=new CHttpDownloader();
+	if (httpdl == NULL)
+		httpdl = new CHttpDownloader();
 	return httpdl;
 }
 IDownloader* IDownloader::GetRapidInstance()
 {
-	if (rapiddl==NULL)
-		rapiddl=new CRapidDownloader();
+	if (rapiddl == NULL)
+		rapiddl = new CRapidDownloader();
 	return rapiddl;
 }
 
@@ -48,12 +48,12 @@ bool IDownloader::download(std::list<IDownload*>& download, int max_parallel)
 		LOG_ERROR("download list empty");
 		return false;
 	}
-	bool res=true;
-	for (IDownload* dl: download) {
-		if (dl->state == IDownload::STATE_FINISHED) //don't download twice
+	bool res = true;
+	for (IDownload* dl : download) {
+		if (dl->state == IDownload::STATE_FINISHED) // don't download twice
 			continue;
 
-		if (!this->download(dl,max_parallel))
+		if (!this->download(dl, max_parallel))
 			res = false;
 	}
 	return res;
@@ -63,13 +63,13 @@ bool IDownloader::download(IDownload* dl, int max_parallel)
 {
 	std::list<IDownload*> dls;
 	dls.push_back(dl);
-	return download(dls,max_parallel);
+	return download(dls, max_parallel);
 }
 
 void IDownloader::freeResult(std::list<IDownload*>& list)
 {
 	std::list<IDownload*>::iterator it;
-	for(it=list.begin(); it!=list.end(); ++it) {
+	for (it = list.begin(); it != list.end(); ++it) {
 		delete *it;
 	}
 	list.clear();
@@ -81,7 +81,7 @@ bool IDownloader::setOption(const std::string& key, const std::string& value)
 	return false;
 }
 
-void IDownloader::setProcessUpdateListener(IDownloaderProcessUpdateListener l) {
+void IDownloader::setProcessUpdateListener(IDownloaderProcessUpdateListener l)
+{
 	IDownloader::listener = l;
 }
-

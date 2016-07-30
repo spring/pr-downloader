@@ -4,15 +4,15 @@
 
 #include <limits.h>
 
-Mirror::Mirror(const std::string& url):
-	url(url)
+Mirror::Mirror(const std::string& url)
+    : url(url)
 {
-	status=STATUS_UNKNOWN;
-	maxspeed=-1;
+	status = STATUS_UNKNOWN;
+	maxspeed = -1;
 }
 
 void Mirror::UpdateSpeed(int speed)
 {
-	if (speed>maxspeed)
-		maxspeed=speed;
+	if (speed > maxspeed)
+		maxspeed = speed;
 }

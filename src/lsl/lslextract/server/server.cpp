@@ -65,7 +65,7 @@ void server::do_accept()
 				       }
 
 				       do_accept();
-			       });
+	});
 }
 
 void server::do_await_stop()

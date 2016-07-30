@@ -20,7 +20,8 @@ const std::string nosection_name("none");
 /*! An option list is made of a variable number of theses items.
  * Each item itself (should) contain a key, name and description.
  */
-struct listItem {
+struct listItem
+{
 	listItem(std::string key_, std::string name_, std::string desc_);
 
 	std::string key;
@@ -36,7 +37,8 @@ typedef std::vector<listItem> ListItemVec;
  * Therefore no sanity checks whatsoever are performed when changing a member.
  * Default constructors are mostly provided for compability with stl containers.
  */
-struct mmOptionModel {
+struct mmOptionModel
+{
 	//! sets members accordingly
 	///* this ctor sets controltype enum according to string *///
 	mmOptionModel(std::string name_, std::string key_, std::string description_, Enum::OptionType type_ = Enum::opt_undefined,
@@ -53,7 +55,8 @@ struct mmOptionModel {
 
 //! Holds a bool option
 /*! difference from parent: members def and value are bool */
-struct mmOptionBool : public mmOptionModel {
+struct mmOptionBool : public mmOptionModel
+{
 	//! sets members accordingly
 	mmOptionBool(std::string name_, std::string key_, std::string description_, bool def_,
 		     std::string section_ = Constants::nosection_name);
@@ -65,7 +68,8 @@ struct mmOptionBool : public mmOptionModel {
 };
 
 //! Holds a float option
-struct mmOptionFloat : public mmOptionModel {
+struct mmOptionFloat : public mmOptionModel
+{
 	//! sets members accordingly
 	mmOptionFloat(std::string name_, std::string key_, std::string description_, float def_, float stepping_, float min_, float max_,
 		      std::string section_ = Constants::nosection_name);
@@ -82,7 +86,8 @@ struct mmOptionFloat : public mmOptionModel {
 };
 
 //! Holds a string option
-struct mmOptionString : public mmOptionModel {
+struct mmOptionString : public mmOptionModel
+{
 	//! sets members accordingly
 	mmOptionString(std::string name_, std::string key_, std::string description_, std::string def_, unsigned int max_len_,
 		       std::string section_ = Constants::nosection_name);
@@ -102,7 +107,8 @@ struct mmOptionString : public mmOptionModel {
 /*! Most complex of option types. A convenience method for adding new Listitems is provided,
  * as well as a StringVector that contains the names of the added Listitems (useful for comboboxes)
  */
-struct mmOptionList : public mmOptionModel {
+struct mmOptionList : public mmOptionModel
+{
 	//! sets members accordingly; listitems,cbx_choices remain empty
 	mmOptionList(std::string name_, std::string key_, std::string description_, std::string def_,
 		     std::string section_ = Constants::nosection_name);
@@ -124,7 +130,8 @@ struct mmOptionList : public mmOptionModel {
 };
 
 
-struct mmOptionSection : public mmOptionModel {
+struct mmOptionSection : public mmOptionModel
+{
 	mmOptionSection(std::string name_, std::string key_, std::string description_,
 			std::string section_ = Constants::nosection_name);
 	mmOptionSection();

@@ -8,7 +8,8 @@ namespace http
 namespace server
 {
 
-struct header {
+struct header
+{
 	std::string name;
 	std::string value;
 };

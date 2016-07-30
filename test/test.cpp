@@ -3,7 +3,7 @@
 
 #include "FileSystem/FileSystem.h"
 
-BOOST_AUTO_TEST_CASE( prd )
+BOOST_AUTO_TEST_CASE(prd)
 {
 	BOOST_CHECK("_____" == CFileSystem::EscapeFilename("/<|>/"));
 	BOOST_CHECK("_____" == CFileSystem::EscapeFilename("/<|>\\"));

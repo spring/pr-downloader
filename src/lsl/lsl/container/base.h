@@ -34,7 +34,8 @@ protected:
 
 public:
 	//! putting this here makes it inherently distinguishable on a per *List basis
-	struct MissingItemException : public std::runtime_error {
+	struct MissingItemException : public std::runtime_error
+	{
 		MissingItemException(const KeyType& key);
 		MissingItemException(const typename MapType::size_type& idx);
 	};

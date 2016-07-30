@@ -15,7 +15,8 @@ namespace LSL
 //! member function pointer into an actual Command instance wrapped in a shared pointer
 template <class T0 = NoToken, class T1 = NoToken, class T2 = NoToken, class T3 = NoToken, class T4 = NoToken, class T5 = NoToken,
 	  class T6 = NoToken, class T7 = NoToken, class T8 = NoToken, class T9 = NoToken>
-struct CommandFactory {
+struct CommandFactory
+{
 	typedef Command<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>
 	    ActualCommandType;
 	typedef boost::shared_ptr<CommandBase>

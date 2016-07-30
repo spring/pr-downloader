@@ -2,4 +2,3 @@
 
 const char* getVersion();
 const char* getAgent();
-

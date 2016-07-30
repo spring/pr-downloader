@@ -68,7 +68,6 @@ Cache::Cache()
     , m_mapinfo_cache(1000000, "m_mapinfo_cache") // takes at most 30k per image (   100x100 24 bpp minimap )
     , m_sides_cache(200, "m_sides_cache")
 {
-
 }
 
 bool Cache::Get(const std::string& path, MapInfo& info)
@@ -290,7 +289,6 @@ void Cache::clear()
 	m_map_image_cache.Clear();
 	m_mapinfo_cache.Clear();
 	m_sides_cache.Clear();
-
 }
 
 bool Cache::Get(const std::string& path, UnitsyncImage& img)

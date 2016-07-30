@@ -8,7 +8,8 @@ namespace LSL
 
 //! minimal interface for classes usable as Items for ContainerBase
 template <class KeyImp>
-struct HasKey {
+struct HasKey
+{
 	typedef KeyImp
 	    KeyType;
 	//! This will be used a sthe index in std::map like container, needs to be unique

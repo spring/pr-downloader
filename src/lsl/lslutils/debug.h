@@ -11,49 +11,57 @@ namespace LSL
 namespace Exceptions
 {
 
-struct base : public std::runtime_error {
+struct base : public std::runtime_error
+{
 	base(const std::string& msg)
 	    : std::runtime_error(msg)
 	{
 	}
 };
-struct file_not_writable : public base {
+struct file_not_writable : public base
+{
 	file_not_writable(const std::string& msg)
 	    : base(msg)
 	{
 	}
 };
-struct file_not_found : public base {
+struct file_not_found : public base
+{
 	file_not_found(const std::string& msg)
 	    : base(msg)
 	{
 	}
 };
-struct unitsync : public base {
+struct unitsync : public base
+{
 	unitsync(const std::string& msg)
 	    : base("UNITSYNC: " + msg)
 	{
 	}
 };
-struct conversion : public base {
+struct conversion : public base
+{
 	conversion(const std::string& msg)
 	    : base("conversion failed: " + msg)
 	{
 	}
 };
-struct battle : public base {
+struct battle : public base
+{
 	battle(const std::string& msg)
 	    : base("battle exception: " + msg)
 	{
 	}
 };
-struct server : public base {
+struct server : public base
+{
 	server(const std::string& msg)
 	    : base("server exception: " + msg)
 	{
 	}
 };
-struct function_missing : public unitsync {
+struct function_missing : public unitsync
+{
 	function_missing(const std::string& funcname)
 	    : unitsync(" function couldn't be imported: " + funcname)
 	{

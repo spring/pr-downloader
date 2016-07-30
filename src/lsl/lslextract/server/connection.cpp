@@ -50,7 +50,7 @@ void connection::do_read()
 					} else if (ec != boost::asio::error::operation_aborted) {
 						connection_manager_.stop(shared_from_this());
 					}
-				});
+	});
 }
 
 void connection::do_write()
@@ -68,7 +68,7 @@ void connection::do_write()
 					 if (ec != boost::asio::error::operation_aborted) {
 						 connection_manager_.stop(shared_from_this());
 					 }
-				 });
+	});
 	LslDebug("%s %s %d %d", request_.method.c_str(), request_.uri.c_str(), reply_.status, reply_.content.size());
 }
 

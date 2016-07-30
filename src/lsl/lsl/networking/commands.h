@@ -64,7 +64,8 @@ namespace Tokens
 {
 //! base class for all tokens with a call operator that yields the actual value
 template <class TypeImp>
-struct Basic {
+struct Basic
+{
 	typedef TypeImp
 	    real_type;
 	const real_type value;
@@ -79,38 +80,44 @@ struct Basic {
 		return value;
 	}
 };
-struct Word : public Basic<std::string> {
+struct Word : public Basic<std::string>
+{
 	Word(std::string& params)
 	    : Basic<std::string>(GetWordParam(params))
 	{
 	}
 };
-struct Sentence : public Basic<std::string> {
+struct Sentence : public Basic<std::string>
+{
 	Sentence(std::string& params)
 	    : Basic<std::string>(GetWordParam(params))
 	{
 	}
 };
-struct Int : public Basic<int> {
+struct Int : public Basic<int>
+{
 	Int(std::string& params)
 	    : Basic<int>(GetIntParam(params))
 	{
 	}
 };
-struct Float : public Basic<float> {
+struct Float : public Basic<float>
+{
 	Float(std::string& params)
 	    : Basic<float>(GetIntParam(params))
 	{
 	}
 };
-struct Double : public Basic<double> {
+struct Double : public Basic<double>
+{
 	Double(std::string& params)
 	    : Basic<double>(GetIntParam(params))
 	{
 	}
 };
 //! this effectively ends further parsing by consuming all params
-struct All : public Basic<std::string> {
+struct All : public Basic<std::string>
+{
 	All(std::string& params)
 	    : Basic<std::string>(params)
 	{
@@ -137,7 +144,8 @@ namespace LSL
  * base class with a virtual porcess call to be able to keep them in
  * a map in CommandDictionary
  */
-struct CommandBase {
+struct CommandBase
+{
 	virtual void process(std::string& /*params*/)
 	{
 		assert(false); //means we've called a non-mapped command
@@ -152,7 +160,8 @@ struct CommandBase {
  **/
 template <class T0 = NoToken, class T1 = NoToken, class T2 = NoToken, class T3 = NoToken, class T4 = NoToken,
 	  class T5 = NoToken, class T6 = NoToken, class T7 = NoToken, class T8 = NoToken, class T9 = NoToken>
-struct Command : public CommandBase {
+struct Command : public CommandBase
+{
 	typedef boost::tuples::tuple<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>
 	    TokenTuple;
 	typedef Signature<TokenTuple, boost::tuples::length<TokenTuple>::value>

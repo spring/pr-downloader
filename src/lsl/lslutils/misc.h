@@ -53,7 +53,8 @@ namespace Predicates
 {
 
 //! Functor to compare given string w/o considering case
-struct CaseInsensitive {
+struct CaseInsensitive
+{
 	const std::string m_ref;
 	CaseInsensitive(const std::string& r)
 	    : m_ref(boost::to_lower_copy(r))

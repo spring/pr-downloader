@@ -34,7 +34,8 @@ class Tokenizer
 {
 
 	/// simple reference counted pointer to stream.
-	struct IncludeCacheEntry {
+	struct IncludeCacheEntry
+	{
 		std::string name; ///< used for error reporting
 		int line;
 		int column;
@@ -855,6 +856,5 @@ PDataList ParseTDF(std::istream& s, int* error_count)
 	}
 	return result;
 }
-
 }
 } // namespace LSL { namespace TDF {

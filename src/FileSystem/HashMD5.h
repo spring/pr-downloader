@@ -6,16 +6,17 @@
 #include "IHash.h"
 #include "lib/md5/md5.h"
 
-class HashMD5: public IHash
+class HashMD5 : public IHash
 {
 public:
 	HashMD5();
 	void Init();
 	void Final();
-	void Update(const char* data,const int size);
+	void Update(const char* data, const int size);
 	bool Set(const unsigned char* data, int size);
 	unsigned char get(int pos) const;
 	static std::string CalculateHash(const char* data, const int size);
+
 protected:
 	int getSize() const;
 

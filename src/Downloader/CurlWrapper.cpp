@@ -10,11 +10,13 @@ CurlWrapper::CurlWrapper()
 	handle = curl_easy_init();
 	curl_easy_setopt(handle, CURLOPT_CONNECTTIMEOUT, 30);
 
-	//if transfer is slower this bytes/s than this for CURLOPT_LOW_SPEED_TIME then its aborted
+	// if transfer is slower this bytes/s than this for CURLOPT_LOW_SPEED_TIME
+	// then its aborted
 	curl_easy_setopt(handle, CURLOPT_LOW_SPEED_LIMIT, 10);
 	curl_easy_setopt(handle, CURLOPT_LOW_SPEED_TIME, 30);
-	curl_easy_setopt(handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
-	curl_easy_setopt(handle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP|CURLPROTO_HTTPS);
+	curl_easy_setopt(handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
+	curl_easy_setopt(handle, CURLOPT_REDIR_PROTOCOLS,
+			 CURLPROTO_HTTP | CURLPROTO_HTTPS);
 	curl_easy_setopt(handle, CURLOPT_USERAGENT, getVersion());
 	curl_easy_setopt(handle, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(handle, CURLOPT_FOLLOWLOCATION, 1);
@@ -34,11 +36,12 @@ CurlWrapper::~CurlWrapper()
 std::string CurlWrapper::escapeUrl(const std::string& url)
 {
 	std::string res;
-	for(unsigned int i=0; i<url.size(); i++) { //FIXME: incomplete, needs to support all unicode chars
-		if (url[i]==' ')
+	for (unsigned int i = 0; i < url.size();
+	     i++) { // FIXME: incomplete, needs to support all unicode chars
+		if (url[i] == ' ')
 			res.append("%20");
 		else
-			res.append(1,url[i]);
+			res.append(1, url[i]);
 	}
 	return res;
 }

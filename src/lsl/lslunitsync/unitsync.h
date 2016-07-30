@@ -129,6 +129,7 @@ public:
 	std::string GetSidesCachePath(const std::string& gamename) const;
 	std::string GetSideImageCachePath(const std::string& gamename, const std::string sidename) const;
 	std::string GetUnitsCacheFilePath(const std::string& gamename) const;
+
 private:
 	bool GetImageFromCache(const std::string& cachefile, UnitsyncImage& img, ImageType imgtype);
 	UnitsyncImage GetImageFromUS(const std::string& mapname, const MapInfo& info, ImageType imgtype);
@@ -189,7 +190,8 @@ private:
 
 Unitsync& usync();
 
-struct GameOptions {
+struct GameOptions
+{
 	OptionMapBool bool_map;
 	OptionMapFloat float_map;
 	OptionMapString string_map;

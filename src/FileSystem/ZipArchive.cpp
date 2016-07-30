@@ -1,6 +1,5 @@
 /* This file is part of the Spring engine (GPL v2 or later), see LICENSE.html */
 
-
 #include "ZipArchive.h"
 
 #include <algorithm>
@@ -8,9 +7,8 @@
 
 #include "Logger.h"
 
-
 CZipArchive::CZipArchive(const std::string& archiveName)
-	: IArchive(archiveName)
+    : IArchive(archiveName)
 {
 	zip = unzOpen(archiveName.c_str());
 	if (!zip) {
@@ -19,7 +17,8 @@ CZipArchive::CZipArchive(const std::string& archiveName)
 	}
 
 	// We need to map file positions to speed up opening later
-	for (int ret = unzGoToFirstFile(zip); ret == UNZ_OK; ret = unzGoToNextFile(zip)) {
+	for (int ret = unzGoToFirstFile(zip); ret == UNZ_OK;
+	     ret = unzGoToNextFile(zip)) {
 		unz_file_info info;
 		char fName[512];
 
@@ -40,11 +39,11 @@ CZipArchive::CZipArchive(const std::string& archiveName)
 		fd.origName = fName;
 		fd.crc = info.crc;
 		fd.mode = 0755;
-		if (info.external_fa >0) {
+		if (info.external_fa > 0) {
 			fd.mode = info.external_fa >> 16;
 		}
 		fileData.push_back(fd);
-//		lcNameIndex[fLowerName] = fileData.size() - 1;
+		//		lcNameIndex[fLowerName] = fileData.size() - 1;
 	}
 }
 
@@ -65,9 +64,10 @@ unsigned int CZipArchive::NumFiles() const
 	return fileData.size();
 }
 
-void CZipArchive::FileInfo(unsigned int fid, std::string& name, int& size, int& mode) const
+void CZipArchive::FileInfo(unsigned int fid, std::string& name, int& size,
+			   int& mode) const
 {
-//	assert(IsFileId(fid));
+	//	assert(IsFileId(fid));
 
 	name = fileData[fid].origName;
 	size = fileData[fid].size;
@@ -76,7 +76,7 @@ void CZipArchive::FileInfo(unsigned int fid, std::string& name, int& size, int& 
 
 unsigned int CZipArchive::GetCrc32(unsigned int fid)
 {
-//	assert(IsFileId(fid));
+	//	assert(IsFileId(fid));
 
 	return fileData[fid].crc;
 }
@@ -84,13 +84,14 @@ unsigned int CZipArchive::GetCrc32(unsigned int fid)
 // To simplify things, files are always read completely into memory from
 // the zip-file, since zlib does not provide any way of reading more
 // than one file at a time
-bool CZipArchive::GetFile(unsigned int fid, std::vector<unsigned char>& buffer)
+bool CZipArchive::GetFile(unsigned int fid,
+			  std::vector<unsigned char>& buffer)
 {
 	// Prevent opening files on missing/invalid archives
 	if (!zip) {
 		return false;
 	}
-//	assert(IsFileId(fid));
+	//	assert(IsFileId(fid));
 
 	unzGoToFilePos(zip, &fileData[fid].fp);
 
@@ -104,7 +105,9 @@ bool CZipArchive::GetFile(unsigned int fid, std::vector<unsigned char>& buffer)
 	buffer.resize(fi.uncompressed_size);
 
 	bool ret = true;
-	if (!buffer.empty() && unzReadCurrentFile(zip, &buffer[0], fi.uncompressed_size) != (int)fi.uncompressed_size) {
+	if (!buffer.empty() &&
+	    unzReadCurrentFile(zip, &buffer[0], fi.uncompressed_size) !=
+		(int)fi.uncompressed_size) {
 		ret = false;
 	}
 

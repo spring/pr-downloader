@@ -347,7 +347,7 @@ MapInfo UnitsyncLib::GetMapInfoEx(int index)
 
 	if (m_get_map_info_count != nullptr) { //new style fetching (>= spring 101.0)
 		InitLib(m_get_map_info_count)
-		CHECK_FUNCTION(m_get_info_key);
+		    CHECK_FUNCTION(m_get_info_key);
 		CHECK_FUNCTION(m_get_info_value_string);
 		CHECK_FUNCTION(m_get_info_value_integer);
 		CHECK_FUNCTION(m_get_info_value_float);
@@ -1217,7 +1217,6 @@ void UnitsyncLib::DeleteSpringConfigKey(const std::string& key)
 	InitLib(m_delete_spring_config_key);
 	m_delete_spring_config_key(key.c_str());
 }
-
 
 
 UnitsyncLib& susynclib()

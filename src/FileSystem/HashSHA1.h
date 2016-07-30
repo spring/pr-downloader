@@ -6,17 +6,19 @@
 #include "IHash.h"
 #include "lib/sha1/sha1.h"
 
-class HashSHA1: public IHash
+class HashSHA1 : public IHash
 {
 public:
 	HashSHA1();
 	void Init();
 	void Final();
-	void Update(const char* data,const int size);
+	void Update(const char* data, const int size);
 	bool Set(const unsigned char* data, int size);
+
 protected:
 	int getSize() const;
 	unsigned char get(int pos) const;
+
 private:
 	SHA1Context sha1Context;
 };

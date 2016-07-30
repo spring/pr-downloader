@@ -20,12 +20,14 @@ namespace LSL
  * \note since the engine won't depend on availability of c++0x we're limited to 9 args for now
  **/
 template <class Tuple, int p_count>
-struct Signature {
+struct Signature
+{
 };
 
 //! specialization for 9 Tokens
 template <class Tuple>
-struct Signature<Tuple, 9> {
+struct Signature<Tuple, 9>
+{
 	typedef boost::function<void(const typename BT::element<0, Tuple>::type::real_type&,
 				     const typename BT::element<1, Tuple>::type::real_type&,
 				     const typename BT::element<2, Tuple>::type::real_type&,
@@ -57,7 +59,8 @@ struct Signature<Tuple, 9> {
 
 //! specialization for 8 Tokens
 template <class Tuple>
-struct Signature<Tuple, 8> {
+struct Signature<Tuple, 8>
+{
 	typedef boost::function<void(const typename BT::element<0, Tuple>::type::real_type&,
 				     const typename BT::element<1, Tuple>::type::real_type&,
 				     const typename BT::element<2, Tuple>::type::real_type&,
@@ -87,7 +90,8 @@ struct Signature<Tuple, 8> {
 
 //! specialization for 7 Tokens
 template <class Tuple>
-struct Signature<Tuple, 7> {
+struct Signature<Tuple, 7>
+{
 	typedef boost::function<void(const typename BT::element<0, Tuple>::type::real_type&,
 				     const typename BT::element<1, Tuple>::type::real_type&,
 				     const typename BT::element<2, Tuple>::type::real_type&,
@@ -115,7 +119,8 @@ struct Signature<Tuple, 7> {
 
 //! specialization for 6 Tokens
 template <class Tuple>
-struct Signature<Tuple, 6> {
+struct Signature<Tuple, 6>
+{
 	typedef boost::function<void(const typename BT::element<0, Tuple>::type::real_type&,
 				     const typename BT::element<1, Tuple>::type::real_type&,
 				     const typename BT::element<2, Tuple>::type::real_type&,
@@ -141,7 +146,8 @@ struct Signature<Tuple, 6> {
 
 //! specialization for 5 Tokens
 template <class Tuple>
-struct Signature<Tuple, 5> {
+struct Signature<Tuple, 5>
+{
 	typedef boost::function<void(const typename BT::element<0, Tuple>::type::real_type&,
 				     const typename BT::element<1, Tuple>::type::real_type&,
 				     const typename BT::element<2, Tuple>::type::real_type&,
@@ -165,7 +171,8 @@ struct Signature<Tuple, 5> {
 
 //! specialization for 4 Tokens
 template <class Tuple>
-struct Signature<Tuple, 4> {
+struct Signature<Tuple, 4>
+{
 	typedef boost::function<void(const typename BT::element<0, Tuple>::type::real_type&,
 				     const typename BT::element<1, Tuple>::type::real_type&,
 				     const typename BT::element<2, Tuple>::type::real_type&,
@@ -188,7 +195,8 @@ struct Signature<Tuple, 4> {
 
 //! specialization for 3 Tokens
 template <class Tuple>
-struct Signature<Tuple, 3> {
+struct Signature<Tuple, 3>
+{
 	typedef boost::function<void(const typename BT::element<0, Tuple>::type::real_type&,
 				     const typename BT::element<1, Tuple>::type::real_type&,
 				     const typename BT::element<2, Tuple>::type::real_type&)> Type; //call traits ftw
@@ -209,7 +217,8 @@ struct Signature<Tuple, 3> {
 
 //! specialization for 2 Tokens
 template <class Tuple>
-struct Signature<Tuple, 2> {
+struct Signature<Tuple, 2>
+{
 	typedef boost::function<void(const typename BT::element<0, Tuple>::type::real_type&,
 				     const typename BT::element<1, Tuple>::type::real_type&)> Type; //call traits ftw
 	template <class F, class T>
@@ -228,7 +237,8 @@ struct Signature<Tuple, 2> {
 
 //! specialization for 1 Token
 template <class Tuple>
-struct Signature<Tuple, 1> {
+struct Signature<Tuple, 1>
+{
 	typedef boost::function<void(const typename BT::element<0, Tuple>::type::real_type&)> Type; //call traits ftw
 	template <class F, class T>
 	static Type make(F f, T* x)
@@ -245,7 +255,8 @@ struct Signature<Tuple, 1> {
 
 //! specialization for no Tokens
 template <class Tuple>
-struct Signature<Tuple, 0> {
+struct Signature<Tuple, 0>
+{
 	typedef boost::function<void()> Type; //call traits ftw
 	template <class F, class T>
 	static Type make(F f, T* x)

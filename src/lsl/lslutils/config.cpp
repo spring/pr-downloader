@@ -12,9 +12,9 @@
 #undef _POSIX_
 #endif
 #include <stdlib.h>
-int setenv(const char *name, const char *value, int overwrite)
+int setenv(const char* name, const char* value, int overwrite)
 {
-    return _putenv_s(name, value);
+	return _putenv_s(name, value);
 }
 #endif
 

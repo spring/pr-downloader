@@ -351,7 +351,8 @@ void Server::UdpPingTheServer(const std::string& message)
 }
 
 // copypasta from spring.cpp , to get users ordered same way as in tasclient.
-struct UserOrder {
+struct UserOrder
+{
 	int index;			  // user number for m_users.Get
 	int order;			  // user order (we'll sort by it)
 	bool operator<(UserOrder b) const // comparison function for sorting

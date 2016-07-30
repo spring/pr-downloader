@@ -12,36 +12,36 @@
 class FileData;
 
 /**
-	creates a url from fileinfo, for example
-	<path>/<first2chars of md5>/<last 30 chars of md5>.gz
+        creates a url from fileinfo, for example
+        <path>/<first2chars of md5>/<last 30 chars of md5>.gz
 */
 std::string getUrl(const FileData* info, const std::string& path);
 
 /**
-	tokenizes a string into a vector split by c
-	empty tokens aren't ignored
+        tokenizes a string into a vector split by c
+        empty tokens aren't ignored
 */
 std::vector<std::string> tokenizeString(const std::string& str, char c);
 
 /**
 * decompresses in to out
 */
-void gzip_str(const char* in, const int inlen,  char* out, int *outlen);
+void gzip_str(const char* in, const int inlen, char* out, int* outlen);
 
 /**
-	parses an int, read from file or network
+        parses an int, read from file or network
 */
 unsigned int parse_int32(unsigned char c[4]);
 
 /**
-	returns minimum
+        returns minimum
 */
 unsigned int intmin(int x, int y);
 
 /**
-	creates a path from an url, for example:
-	http://www.server.com/path/file.gz is translated to:
-	www.server.com\path\file.gz
+        creates a path from an url, for example:
+        http://www.server.com/path/file.gz is translated to:
+        www.server.com\path\file.gz
 */
 bool urlToPath(const std::string& url, std::string& path);
 
@@ -51,7 +51,7 @@ bool urlToPath(const std::string& url, std::string& path);
 unsigned long getTime();
 
 /*
-	convert std::wstring to std::string
+        convert std::wstring to std::string
 */
 std::string ws2s(const std::wstring& s);
 std::wstring s2ws(const std::string& s);

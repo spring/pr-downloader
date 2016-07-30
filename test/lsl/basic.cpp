@@ -39,24 +39,32 @@ int main(int argc, char** argv)
 	//    TESTLIST(UserList)
 	//    TESTLIST(Battle::BattleList)
 	//    TESTLIST(ChannelList)
-/*
-	LSL::Server* tas = new LSL::Server();
+	/*
+          LSL::Server* tas = new LSL::Server();
 
-	tas->Connect("lobby.springrts.com", "lobby.springrts.com", 8200);
-	if (argc > 2)
-		tas->Login(argv[1], argv[2]);
-	else
-		tas->Login("dummy", "password");
-	//    sleep(5);
-	tas->JoinChannel("springlobby", "");
-*/
+          tas->Connect("lobby.springrts.com", "lobby.springrts.com", 8200);
+          if (argc > 2)
+                  tas->Login(argv[1], argv[2]);
+          else
+                  tas->Login("dummy", "password");
+          //    sleep(5);
+          tas->JoinChannel("springlobby", "");
+  */
 	dummySync();
 
 	//	std::string sequence("/root/path/jijij.png");
-	//	std::cout	<< "\n\nBeforeLast: " << LSL::Util::BeforeLast( sequence, "/" ) << "\n"
-	//				<< "AfterLast: " << LSL::Util::AfterLast( sequence, "/" ) << "\n"
-	//				<< "BeforeFirst: " << LSL::Util::BeforeFirst( sequence, "/" ) << "\n"
-	//				<< "AfterFirst: " << LSL::Util::AfterFirst( sequence, "/" ) << "\n";
+	//	std::cout	<< "\n\nBeforeLast: " << LSL::Util::BeforeLast(
+	//sequence,
+	//"/" ) << "\n"
+	//				<< "AfterLast: " << LSL::Util::AfterLast( sequence, "/" )
+	//<<
+	//"\n"
+	//				<< "BeforeFirst: " << LSL::Util::BeforeFirst( sequence,
+	//"/"
+	//) << "\n"
+	//				<< "AfterFirst: " << LSL::Util::AfterFirst( sequence, "/"
+	//)
+	//<< "\n";
 
 	return 0;
 }

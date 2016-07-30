@@ -15,7 +15,7 @@ extern "C" {
 /**
  * An LZMA/7zip compressed, single-file archive.
  */
-class CSevenZipArchive: public IArchive
+class CSevenZipArchive : public IArchive
 {
 public:
 	explicit CSevenZipArchive(const std::string& name);
@@ -23,7 +23,8 @@ public:
 
 	virtual unsigned int NumFiles() const;
 	virtual bool GetFile(unsigned int fid, std::vector<unsigned char>& buffer);
-	virtual void FileInfo(unsigned int fid, std::string& name, int& size, int& mode) const;
+	virtual void FileInfo(unsigned int fid, std::string& name, int& size,
+			      int& mode) const;
 	virtual unsigned GetCrc32(unsigned int fid);
 
 private:
@@ -31,43 +32,44 @@ private:
 	Byte* outBuffer;
 	size_t outBufferSize;
 
-	struct FileData {
+	struct FileData
+	{
 		int fp;
 		/**
-		 * Real/unpacked size of the file in bytes.
-		 * @see #unpackedSize
-		 * @see #packedSize
-		 */
+     * Real/unpacked size of the file in bytes.
+     * @see #unpackedSize
+     * @see #packedSize
+     */
 		int size;
 		std::string origName;
 		unsigned int crc;
 		/**
-		 * How many bytes of files have to be unpacked to get to this file.
-		 * This either equal to size, or is larger, if there are other files
-		 * in the same solid block.
-		 * @see #size
-		 * @see #packedSize
-		 */
+     * How many bytes of files have to be unpacked to get to this file.
+     * This either equal to size, or is larger, if there are other files
+     * in the same solid block.
+     * @see #size
+     * @see #packedSize
+     */
 		int unpackedSize;
 		/**
-		 * How many bytes of the archive have to be read
-		 * from disc to get to this file.
-		 * This may be smaller or larger then size,
-		 * and is smaller then or equal to unpackedSize.
-		 * @see #size
-		 * @see #unpackedSize
-		 */
+     * How many bytes of the archive have to be read
+     * from disc to get to this file.
+     * This may be smaller or larger then size,
+     * and is smaller then or equal to unpackedSize.
+     * @see #size
+     * @see #unpackedSize
+     */
 		int packedSize;
 		/**
-		 * file mode
-		 */
+     * file mode
+     */
 		int mode;
 	};
 	int GetFileName(const CSzArEx* db, int i);
 	const char* GetErrorStr(int res);
 
 	std::vector<FileData> fileData;
-	UInt16 *tempBuf;
+	UInt16* tempBuf;
 	size_t tempBufSize;
 
 	CFileInStream archiveStream;

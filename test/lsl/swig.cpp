@@ -9,8 +9,10 @@ namespace LSL
 {
 boost::signals2::signal<void()> battleSig;
 
-struct User {
-	User(const std::string& id, const std::string& nick, const std::string& country, const int cpu)
+struct User
+{
+	User(const std::string& id, const std::string& nick,
+	     const std::string& country, const int cpu)
 	{
 		battleSig.connect(*this);
 	}
@@ -20,7 +22,8 @@ struct User {
 	}
 };
 
-struct Battle {
+struct Battle
+{
 	void update()
 	{
 		battleSig();

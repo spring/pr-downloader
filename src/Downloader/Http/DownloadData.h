@@ -16,10 +16,10 @@ public:
 	~DownloadData();
 	int start_piece;
 	std::vector<unsigned int> pieces;
-	CurlWrapper* curlw; //curl_easy_handle
-	Mirror* mirror; //mirror used
-	IDownload *download;
-	bool got_ranges; //true if headers received from server are fine
+	CurlWrapper* curlw; // curl_easy_handle
+	Mirror* mirror;     // mirror used
+	IDownload* download;
+	bool got_ranges; // true if headers received from server are fine
 };
 
 #endif

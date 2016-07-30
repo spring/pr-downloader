@@ -167,7 +167,8 @@ public:
 	virtual void Load(Tokenizer& f);
 };
 
-struct Token {
+struct Token
+{
 	enum TokenType {
 		type_none,
 		type_section_name,

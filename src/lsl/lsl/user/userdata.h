@@ -15,7 +15,8 @@ const unsigned int SYNC_SYNCED = 1;
 const unsigned int SYNC_UNSYNCED = 2;
 
 //! @brief Struct used to store a client's status.
-struct UserStatus {
+struct UserStatus
+{
 	enum RankContainer {
 		RANK_1,
 		RANK_2,
@@ -44,7 +45,8 @@ struct UserStatus {
 };
 
 /** \todo really  not necessary to have a sep class for this **/
-struct UserPosition {
+struct UserPosition
+{
 	int x;
 	int y;
 	UserPosition()
@@ -55,7 +57,8 @@ struct UserPosition {
 };
 
 //! Battle specific user data
-struct UserBattleStatus {
+struct UserBattleStatus
+{
 	//!!! when adding something to this struct, also modify User::UpdateBattleStatus() !!
 	// total 17 members here
 	int team;

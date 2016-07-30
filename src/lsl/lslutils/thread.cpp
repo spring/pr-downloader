@@ -6,7 +6,8 @@
 
 namespace
 {
-struct WorkItemCompare {
+struct WorkItemCompare
+{
 	bool operator()(const LSL::WorkItem* a, const LSL::WorkItem* b)
 	{
 		return a->GetPriority() < b->GetPriority();

@@ -16,9 +16,9 @@ public:
 	unsigned char md5[16];
 	unsigned char crc32[4];
 	unsigned int size;
-	unsigned int compsize; //compressed size
+	unsigned int compsize; // compressed size
 	bool download;
-	int mode; //chmod
+	int mode; // chmod
 };
 
 #endif

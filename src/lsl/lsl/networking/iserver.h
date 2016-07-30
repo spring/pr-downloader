@@ -41,7 +41,8 @@ struct UnitsyncGame;
 struct UserStatus;
 class Server;
 
-struct PingThread {
+struct PingThread
+{
 	PingThread(Server*, int)
 	{
 	}
@@ -53,7 +54,8 @@ struct PingThread {
 	}
 };
 
-struct MuteListEntry {
+struct MuteListEntry
+{
 	const ConstUserPtr who;
 	const std::string msg;
 	MuteListEntry(const ConstUserPtr _who, const std::string& _msg)

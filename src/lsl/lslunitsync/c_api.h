@@ -30,7 +30,8 @@ public:
 */
 
 //! Everything spring makes available about a map
-struct SpringMapInfo {
+struct SpringMapInfo
+{
 	char* description;
 	int tidalStrength;
 	int gravity;

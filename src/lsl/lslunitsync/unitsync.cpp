@@ -53,7 +53,7 @@ namespace LSL
 
 Unitsync::Unitsync()
     : m_cache_thread(new WorkerThread)
-    , supportsManualUnLoad(false)       //new style fetching (>= spring 101.0)
+    , supportsManualUnLoad(false) //new style fetching (>= spring 101.0)
 {
 }
 
@@ -111,7 +111,6 @@ bool Unitsync::LoadUnitSyncLib(const std::string& unitsyncloc)
 	} else {
 		LslDebug("Unitsync doesn't support manual loading of archives :-/");
 	}
-
 
 
 	m_cache_path = LSL::Util::config().GetCachePath();
@@ -704,7 +703,7 @@ std::string Unitsync::GetFileCachePath(const std::string& name, bool IsMod, bool
 
 	ret += "-";
 	try {
-		 ret += IsMod ? m_mods_list.at(name) : m_maps_list.at(name);
+		ret += IsMod ? m_mods_list.at(name) : m_maps_list.at(name);
 	} catch (std::out_of_range) {
 		LslWarning("Hash of %s doesn't exist!", name.c_str());
 		assert(false);
@@ -723,7 +722,7 @@ void Unitsync::GetSpringDataPaths()
 	}
 	m_datapaths.resize(dirs + 1);
 	for (int i = 1; i <= dirs; i++) {
-		const std::string datadir = susynclib().GetSpringDataDirByIndex(i-1);
+		const std::string datadir = susynclib().GetSpringDataDirByIndex(i - 1);
 		if (datadir.empty()) {
 			continue;
 		}
@@ -737,8 +736,10 @@ bool Unitsync::GetPlaybackList(std::set<std::string>& ret, bool ReplayType) cons
 	if (!IsLoaded())
 		return false;
 
-	struct {
-		bool operator()(bool isReplayType, const std::string& filename) {
+	struct
+	{
+		bool operator()(bool isReplayType, const std::string& filename)
+		{
 			if (isReplayType) {
 				return (filename.substr(filename.length() - 4) == ".sdf" ||
 					filename.substr(filename.length() - 5) == ".sdfz");
@@ -746,7 +747,7 @@ bool Unitsync::GetPlaybackList(std::set<std::string>& ret, bool ReplayType) cons
 				return (filename.substr(filename.length() - 4) == ".ssf");
 			}
 		}
-	}isWantedFile;
+	} isWantedFile;
 
 	std::string subpath;
 	if (ReplayType) {

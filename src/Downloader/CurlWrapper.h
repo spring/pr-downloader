@@ -8,12 +8,13 @@ class CurlWrapper
 public:
 	CurlWrapper();
 	~CurlWrapper();
-	CURL* GetHandle() const {
+	CURL* GetHandle() const
+	{
 		return handle;
 	}
 	static std::string escapeUrl(const std::string& url);
 
 private:
 	CURL* handle;
-	struct curl_slist *list;
+	struct curl_slist* list;
 };

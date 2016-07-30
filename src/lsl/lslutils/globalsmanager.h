@@ -17,7 +17,8 @@ namespace Util
 {
 
 template <class T>
-struct LineInfo {
+struct LineInfo
+{
 	LineInfo(const char* at)
 	    : m(at)
 	{

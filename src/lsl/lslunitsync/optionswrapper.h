@@ -17,7 +17,8 @@ namespace LSL
 struct mmOptionSection;
 struct GameOptions;
 
-struct dummyConfig {
+struct dummyConfig
+{
 };
 
 
