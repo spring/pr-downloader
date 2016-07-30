@@ -31,7 +31,7 @@ ADD_LIBRARY(lsl-utils STATIC ${libSpringLobbyHeader} ${libSpringLobbyUtilsSrc} )
 TARGET_LINK_LIBRARIES(lsl-utils ${Boost_THREAD_LIBRARY})
 target_include_directories(lsl-utils
 		PRIVATE ${Boost_INCLUDE_DIRS}
-		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lsl/src
+		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lsl
 	)
 
 

@@ -40,7 +40,6 @@ cmake_policy(SET CMP0006 OLD)
 OPTION(LSLSERVER
 	"Compile and install lsl-server (broken)" OFF)
 
-add_subdirectory( src )
 
 if (${BUILD_TESTS})
 	enable_testing()
@@ -48,3 +47,12 @@ if (${BUILD_TESTS})
 endif()
 
 
+add_subdirectory( lslutils )
+if (LSLSERVER)
+	add_subdirectory( lsl )
+endif()
+add_subdirectory( lslunitsync )
+option(LSL_EXTRACT "Compile lslextract, a tool to extract metadata from spring's archive files" OFF)
+if (LSL_EXTRACT)
+	add_subdirectory( lslextract )
+endif()
