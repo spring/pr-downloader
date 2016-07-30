@@ -169,3 +169,7 @@ if(PRD_DO_INSTALL AND PRD_DEVELOP_FILES)
 	        DESTINATION ${PRD_INCLUDE_DIR}/Downloader COMPONENT Devel )
 endif()
 
+OPTION(PRD_ENABLE_LSL "compile lsl modules" OFF)
+if (PRD_ENABLE_LSL)
+	subdirs(lsl)
+endif()

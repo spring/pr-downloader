@@ -121,14 +121,6 @@ INCLUDE(cmake/compat_flags.cmake)
 OPTION(LSLSERVER
 	"Compile and install lsl-server (broken)" OFF)
 
-if(LSLSERVER)
-	IF (WIN32)
-		install(FILES AUTHORS COPYING NEWS README THANKS DESTINATION .)
-	ELSE (WIN32)
-		install(FILES AUTHORS COPYING NEWS README THANKS DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc/lsl-server )
-	ENDIF (WIN32)
-endif()
-
 find_package(Jsoncpp)
 if (${Jsoncpp_FOUND})
         OPTION(LSL_JSONCPP_INTERNAL "use bundled JsonCpp" FALSE)
