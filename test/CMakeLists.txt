@@ -32,9 +32,10 @@ Else()
 #	)
 
 
-
 ################################################################################
 ### libSpringLobby
+
+if (PRD_ENABLE_LSL)
 
 SET(basic_testSrc
 	${CMAKE_CURRENT_SOURCE_DIR}/lsl/basic.cpp 
@@ -52,6 +53,8 @@ target_include_directories(libSpringLobby_test
 IF( NOT WIN32 )
 	TARGET_LINK_LIBRARIES(libSpringLobby_test X11 )
 ENDIF()
+
+endif(PRD_ENABLE_LSL)
 
 ################################################################################
 ### swig

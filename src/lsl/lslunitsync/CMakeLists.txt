@@ -32,7 +32,7 @@ endif()
 if (UNIX AND NOT MINGW AND NOT APPLE)
 	FIND_LIBRARY(RT_LIBRARY rt)
 endif()
-TARGET_LINK_LIBRARIES(lsl-unitsync lsl-utils ${Boost_LIBRARIES} ${PNG_LIBRARY} ${X11_LIBRARIES} ${CMAKE_DL_LIBS} ${RT_LIBRARY})
+TARGET_LINK_LIBRARIES(lsl-unitsync lsl-utils ${Boost_LIBRARIES} ${PNG_LIBRARY} ${X11_LIBRARIES} ${CMAKE_DL_LIBS} ${RT_LIBRARY} ${PRD_JSONCPP_LIBRARIES})
 target_include_directories(lsl-unitsync
 		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lsl
 		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lib

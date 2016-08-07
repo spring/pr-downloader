@@ -1,4 +1,4 @@
-subdirs(lib)
+add_subdirectory(lib)
 
 if (PRD_ARCHIVE_SUPPORT)
 	set(archivessrc FileSystem/SevenZipArchive.cpp FileSystem/ZipArchive.cpp)
@@ -171,5 +171,5 @@ endif()
 
 OPTION(PRD_ENABLE_LSL "compile lsl modules" OFF)
 if (PRD_ENABLE_LSL)
-	subdirs(lsl)
+	add_subdirectory(lsl)
 endif()

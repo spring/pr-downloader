@@ -132,7 +132,7 @@ if(NOT MINIZIP_FOUND)
 endif()
 
 
-subdirs(src)
+add_subdirectory(src)
 
 
 find_program(CLANG_FORMAT_BINARY NAMES clang-format-3.7 clang-format-3.6 clang-format-3.5 clang-format-3.4 clang-format)
