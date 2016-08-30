@@ -32,7 +32,7 @@ CRapidDownloader::~CRapidDownloader()
 	sdps.clear();
 }
 
-void CRapidDownloader::addRemoteDsp(CSdp& sdp)
+void CRapidDownloader::addRemoteSdp(CSdp& sdp)
 {
 	sdps.push_back(sdp);
 }

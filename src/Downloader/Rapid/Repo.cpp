@@ -80,7 +80,7 @@ bool CRepo::parse()
 
 		// create new repo from url
 		CSdp sdptmp = CSdp(items[0], items[1], items[3], items[2], repourl);
-		rapid->addRemoteDsp(sdptmp);
+		rapid->addRemoteSdp(sdptmp);
 	}
 	int errnum = Z_OK;
 	const char* errstr = gzerror(fp, &errnum);

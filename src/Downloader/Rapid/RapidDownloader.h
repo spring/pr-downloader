@@ -36,7 +36,7 @@ public:
 
 	bool setOption(const std::string& key, const std::string& value) override;
 
-	void addRemoteDsp(CSdp& dsp);
+	void addRemoteSdp(CSdp& dsp);
 	/**
           parses a rep master-file
   */
