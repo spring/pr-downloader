@@ -3,12 +3,13 @@
 #ifndef FILE_SYSTEM_H
 #define FILE_SYSTEM_H
 
+#include "FileData.h"
+
 #include <list>
 #include <string>
 
 class SRepository;
 class CRepo;
-class FileData;
 class IDownload;
 
 #ifdef WIN32
@@ -30,7 +31,7 @@ public:
 	/**
           parses the file for a mod and creates
   */
-	bool parseSdp(const std::string& filename, std::list<FileData*>& files);
+	bool parseSdp(const std::string& filename, std::list<FileData>& files);
 	/**
    *	Validates a pool-file, (checks the md5)
    */
@@ -86,6 +87,10 @@ public:
   *	dumps info about the given .sdp
   */
 	bool dumpSDP(const std::string& filename);
+	/**
+  *	validates the given .sdp
+  */
+	bool validateSDP(const std::string& filename);
 	/**
   *	extracts a 7z file to dstdir
   */

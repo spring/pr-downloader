@@ -23,6 +23,7 @@ enum {
 	WIDGET_SEARCH,
 	FILESYSTEM_WRITEPATH,
 	FILESYSTEM_DUMPSDP,
+	FILESYSTEM_VALIDATESDP,
 	DOWNLOAD_MAP,
 	DOWNLOAD_GAME,
 	DOWNLOAD_ENGINE,
@@ -38,6 +39,7 @@ static struct option long_options[] = {
     {"rapid-validate", 0, 0, RAPID_VALIDATE},
     {"delete", 0, 0, RAPID_VALIDATE_DELETE},
     {"dump-sdp", 1, 0, FILESYSTEM_DUMPSDP},
+    {"validate-sdp", 1, 0, FILESYSTEM_VALIDATESDP},
     {"http-download", 1, 0, HTTP_DOWNLOAD},
     {"http-search", 1, 0, HTTP_SEARCH},
     {"download-map", 1, 0, DOWNLOAD_MAP},
@@ -140,6 +142,10 @@ int main(int argc, char** argv)
 			}
 			case FILESYSTEM_DUMPSDP: {
 				DownloadDumpSDP(optarg);
+				break;
+			}
+			case FILESYSTEM_VALIDATESDP: {
+				ValidateSDP(optarg);
 				break;
 			}
 			case FILESYSTEM_WRITEPATH: {

@@ -278,6 +278,11 @@ bool DownloadDumpSDP(const char* path)
 	return fileSystem->dumpSDP(path);
 }
 
+bool ValidateSDP(const char* path)
+{
+	return fileSystem->validateSDP(path);
+}
+
 void DownloadDisableLogging(bool disableLogging)
 {
 	LOG_DISABLE(disableLogging);

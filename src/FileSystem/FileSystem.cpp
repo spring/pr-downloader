@@ -82,7 +82,7 @@ bool CFileSystem::fileIsValid(const FileData* mod,
 }
 
 bool CFileSystem::parseSdp(const std::string& filename,
-			   std::list<FileData*>& files)
+			   std::list<FileData>& files)
 {
 	char c_name[255];
 	unsigned char c_md5[16];
@@ -113,12 +113,12 @@ bool CFileSystem::parseSdp(const std::string& filename,
 			fclose(f);
 			return false;
 		}
-		FileData* f = new FileData;
-		f->name = std::string(c_name, length);
-		memcpy(f->md5, &c_md5, 16);
-		memcpy(f->crc32, &c_crc32, 4);
-		f->size = parse_int32(c_size);
-		files.push_back(f);
+		FileData fd;
+		fd.name = std::string(c_name, length);
+		memcpy(fd.md5, &c_md5, 16);
+		memcpy(fd.crc32, &c_crc32, 4);
+		fd.size = parse_int32(c_size);
+		files.push_back(fd);
 	}
 	gzclose(in);
 	fclose(f);
@@ -475,19 +475,58 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 
 bool CFileSystem::dumpSDP(const std::string& filename)
 {
-	std::list<FileData*> files;
-	files.clear();
+	std::list<FileData> files;
 	if (!parseSdp(filename, files))
 		return false;
 	LOG_INFO("md5 (filename in pool)           crc32        size filename");
 	std::list<FileData*>::iterator it;
 	HashMD5 md5;
-	for (it = files.begin(); it != files.end(); ++it) {
-		md5.Set((*it)->md5, sizeof((*it)->md5));
-		LOG_INFO("%s %.8X %8d %s", md5.toString().c_str(), (*it)->crc32,
-			 (*it)->size, (*it)->name.c_str());
+	for (const FileData& fd: files) {
+		md5.Set(fd.md5, sizeof(fd.md5));
+		LOG_INFO("%s %.8X %8d %s", md5.toString().c_str(), fd.crc32,
+		         fd.size, fd.name.c_str());
 	}
 	return true;
+}
+
+bool CFileSystem::validateSDP(const std::string& sdpPath)
+{
+	if (!fileExists(sdpPath)){
+		LOG_ERROR("SDP file doesn't exist: %s", sdpPath.c_str());
+		return false;
+	}
+
+	std::list<FileData> files;
+	if (!parseSdp(sdpPath, files)) {// parse downloaded file
+		LOG_ERROR("Removing invalid SDP file: %s", sdpPath.c_str());
+		if (!removeFile(sdpPath)) {
+			LOG_ERROR("Failed removing %s, aborting", sdpPath.c_str());
+			return false;
+		}
+		return false;
+	}
+
+	bool valid = true;
+	for (FileData& fd : files) {
+		std::string filePath;
+		HashMD5 fileMd5;
+
+		fileMd5.Set(fd.md5, sizeof(fd.md5));
+		getPoolFilename(fileMd5.toString(), filePath);
+		if(!fileExists(filePath)) {
+			valid = false;
+			LOG_INFO("Missing file: %s", filePath.c_str());
+		} else if (!fileIsValid(&fd, filePath)) {
+			valid = false;
+			LOG_INFO("Removing invalid file: %s", filePath.c_str());
+			if (!removeFile(filePath)) {
+				LOG_ERROR("Failed removing %s, aborting", filePath.c_str());
+				return false;
+			}
+		}
+	}
+
+	return valid;
 }
 
 bool CFileSystem::extractEngine(const std::string& filename,

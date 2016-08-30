@@ -100,6 +100,7 @@ if (PRD_SHAREDLIB)
 			LIBRARY DESTINATION ${PRD_LIBDIR}
 			ARCHIVE DESTINATION ${PRD_LIBDIR} )
 	endif()
+	target_include_directories(${PRDOWNLOADER_SHARED} PRIVATE ${pr-downloader_SOURCE_DIR}/src)
 	target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
 endif()
 
@@ -115,6 +116,7 @@ if (PRD_STATICLIB)
 			LIBRARY DESTINATION ${PRD_LIBDIR}
 			ARCHIVE DESTINATION ${PRD_LIBDIR} )
 	endif()
+	target_include_directories(${PRDOWNLOADER_STATIC} PRIVATE ${pr-downloader_SOURCE_DIR}/src)
 	target_link_libraries( ${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} ${CMAKE_DL_LIBS})
 endif()
 

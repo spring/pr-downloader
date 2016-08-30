@@ -3,13 +3,14 @@
 #ifndef _SDP_H
 #define _SDP_H
 
+#include "FileSystem/FileData.h"
+
 #include <string>
 #include <list>
 
 #define LENGTH_SIZE 4
 
 class IDownload;
-class FileData;
 class CFile;
 
 class CSdp
@@ -17,14 +18,18 @@ class CSdp
 public:
 	CSdp(const std::string& shortname, const std::string& md5,
 	     const std::string& name, const std::string& depends,
-	     const std::string& url);
+	     const std::string& baseUrl);
 	~CSdp();
 	/**
           download a game, we already know the host where to download from + the
      md5 of the sdp file
           we have to download the sdp + parse it + download associated files
   */
-	bool download(IDownload* download);
+	bool download(IDownload* dl);
+	/**
+          download the sdp file if it doesn't exist yet
+  */
+	bool downloadSelf(IDownload* dl);
 	/**
           returns md5 of a repo
   */
@@ -55,8 +60,8 @@ public:
 	}
 	IDownload* m_download;
 	bool downloadInitialized;
-	std::list<FileData*>::iterator list_it;
-	std::list<FileData*>* globalFiles; // list with all files of an sdp
+	std::list<FileData>::iterator list_it;
+	std::list<FileData>* files; // list with all files of an sdp
 	CFile* file_handle;
 	std::string file_name;
 
@@ -94,13 +99,14 @@ private:
   T 192.168.1.2:33202 -> 94.23.170.70:80 [AP]
   ......zL..c`..`d.....K.n/....
   */
-	bool downloadStream(const std::string& url, std::list<FileData*> files);
+	bool downloadStream();
+
 	std::string name;
 	std::string md5;
 	std::string shortname;
-	std::string url;
-	std::string filename;
+	std::string baseUrl;
 	std::string depends;
+	std::string sdpPath;
 	bool downloaded;
 };
 

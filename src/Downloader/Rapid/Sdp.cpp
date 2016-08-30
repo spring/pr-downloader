@@ -18,10 +18,9 @@
 
 CSdp::CSdp(const std::string& shortname, const std::string& md5,
 	   const std::string& name, const std::string& depends,
-	   const std::string& url)
+	   const std::string& baseUrl)
     : m_download(NULL)
     , downloadInitialized(false)
-    , globalFiles(NULL)
     , file_handle(NULL)
     , file_pos(0)
     , skipped(false)
@@ -29,11 +28,18 @@ CSdp::CSdp(const std::string& shortname, const std::string& md5,
     , name(name)
     , md5(md5)
     , shortname(shortname)
-    , url(url)
+    , baseUrl(baseUrl)
     , depends(depends)
     , downloaded(false)
 {
-	memset(this->cursize_buf, 0, LENGTH_SIZE);
+	memset(cursize_buf, 0, LENGTH_SIZE);
+	std::string dir =
+	    fileSystem->getSpringDir() + PATH_DELIMITER + "packages" + PATH_DELIMITER;
+	LOG_DEBUG("%s", dir.c_str());
+	if (!fileSystem->directoryExists(dir)) {
+		fileSystem->createSubdirs(dir);
+	}
+	sdpPath = dir + md5 + ".sdp";
 }
 
 CSdp::~CSdp()
@@ -59,54 +65,62 @@ bool createPoolDirs(const std::string& root)
 	return true;
 }
 
-bool CSdp::download(IDownload* download)
+bool CSdp::downloadSelf(IDownload* dl)
+{
+	if (!fileSystem->fileExists(sdpPath)) { //.sdp isn't avaiable, download it
+		const std::string tmpFile = sdpPath + ".tmp";
+		IDownload dl(tmpFile);
+		dl.addMirror(baseUrl + "/packages/" + md5 + ".sdp");
+		if(!httpDownload->download(&dl)) {
+			LOG_ERROR("Couldn't download %s", (md5 + ".sdp").c_str());
+			return false;
+		}
+
+		if (!fileSystem->Rename(tmpFile, sdpPath)) {
+			LOG_ERROR("Couldn't rename %s to %s", tmpFile.c_str(), sdpPath.c_str());
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool CSdp::download(IDownload* dl)
 {
 	if (downloaded) // allow download only once of the same sdp
 		return true;
-	m_download = download;
-	filename =
-	    fileSystem->getSpringDir() + PATH_DELIMITER + "packages" + PATH_DELIMITER;
-	LOG_DEBUG("%s", filename.c_str());
-	if (!fileSystem->directoryExists(filename)) {
-		fileSystem->createSubdirs(filename);
-	}
-	int count = 0;
-	filename += this->md5 + ".sdp";
-	const std::string tmpFile = filename + ".tmp";
-	std::list<FileData*> files;
+	m_download = dl;
 
-	bool rename = false;
-	if (!fileSystem->fileExists(filename)) { //.sdp isn't avaiable, download it
-		IDownload dl(tmpFile);
-		dl.addMirror(url + "/packages/" + this->md5 + ".sdp");
-		httpDownload->download(&dl);
-		fileSystem->parseSdp(tmpFile, files); // parse downloaded file
-		rename = true;
-	} else {
-		fileSystem->parseSdp(filename, files); // parse downloaded file
-	}
+	if (!downloadSelf(dl))
+		return false;
 
-	HashMD5 md5 = HashMD5();
-	FileData tmp = FileData();
+	std::list<FileData> tmpFiles;
+	files = &tmpFiles;
+
+	if (!fileSystem->parseSdp(sdpPath, *files))// parse downloaded file
+		return false;
+
 	int i = 0;
-	for (FileData* filedata : files) { // check which file are available on local
-					   // disk -> create list of files to download
+	int count = 0;
+	for (FileData& filedata: *files) { // check which file are available on local
+	                                   // disk -> create list of files to download
+		HashMD5 fileMd5;
 		i++;
-		md5.Set(filedata->md5, sizeof(filedata->md5));
+		fileMd5.Set(filedata.md5, sizeof(filedata.md5));
 		std::string file;
-		fileSystem->getPoolFilename(md5.toString(), file);
+		fileSystem->getPoolFilename(fileMd5.toString(), file);
 		if (!fileSystem->fileExists(
 			file)) { // add non-existing files to download list
 			count++;
-			filedata->download = true;
+			filedata.download = true;
 		} else {
-			filedata->download = false;
+			filedata.download = false;
 		}
 		if (i % 30 == 0) {
-			LOG_DEBUG("\r%d/%d checked", i, (int)files.size());
+			LOG_DEBUG("\r%d/%d checked", i, (int)files->size());
 		}
 	}
-	LOG_DEBUG("\r%d/%d need to download %d files", i, (unsigned int)files.size(),
+	LOG_DEBUG("\r%d/%d need to download %d files", i, (int)files->size(),
 		  count);
 
 	std::string root = fileSystem->getSpringDir();
@@ -118,12 +132,10 @@ bool CSdp::download(IDownload* download)
 		count = 0;
 	}
 	if (count > 0) {
-		downloaded =
-		    downloadStream(this->url + "/streamer.cgi?" + this->md5, files);
+		downloaded = downloadStream();
 		if (!downloaded) {
-			LOG_ERROR("Couldn't download files for %s", this->md5.c_str());
-			fileSystem->removeFile(tmpFile);
-			fileSystem->removeFile(filename);
+			LOG_ERROR("Couldn't download files for %s", md5.c_str());
+			fileSystem->removeFile(sdpPath);
 			return false;
 		}
 		LOG_DEBUG("Sucessfully downloaded %d files: %s %s", count,
@@ -133,15 +145,8 @@ bool CSdp::download(IDownload* download)
 		downloaded = true;
 	}
 
-	for (FileData* filedata : files) { // free memory
-		delete filedata;
-	}
-	if ((rename) && (!fileSystem->Rename(tmpFile, filename))) {
-		LOG_ERROR("Couldn't rename %s to %s", tmpFile.c_str(), filename.c_str());
-		return false;
-	}
 	if (downloaded) {
-		download->state = IDownload::STATE_FINISHED;
+		dl->state = IDownload::STATE_FINISHED;
 	}
 	return downloaded;
 }
@@ -158,7 +163,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
 	char buf[CURL_MAX_WRITE_SIZE];
 	memcpy(&buf, tmp, CURL_MAX_WRITE_SIZE);
 	if (!sdp->downloadInitialized) {
-		sdp->list_it = sdp->globalFiles->begin();
+		sdp->list_it = sdp->files->begin();
 		sdp->downloadInitialized = true;
 		sdp->file_handle = NULL;
 		sdp->file_name = "";
@@ -170,22 +175,26 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
 
 	while (buf_pos < buf_end) {		// all bytes written?
 		if (sdp->file_handle == NULL) { // no open file, create one
-			while ((!(*sdp->list_it)->download == true) &&
-			       (sdp->list_it != sdp->globalFiles->end())) { // get file
+			while (!sdp->list_it->download) { // get file
 				++sdp->list_it;
 			}
-			HashMD5 md5;
-			md5.Set((*sdp->list_it)->md5, sizeof((*sdp->list_it)->md5));
-			fileSystem->getPoolFilename(md5.toString(), sdp->file_name);
+			assert(sdp->list_it != sdp->files->end());
+
+			FileData& fd = *(sdp->list_it);
+			HashMD5 fileMd5;
+
+			fileMd5.Set(fd.md5, sizeof(fd.md5));
+			fileSystem->getPoolFilename(fileMd5.toString(), sdp->file_name);
 			sdp->file_handle = new CFile();
 			if (sdp->file_handle == NULL) {
-				LOG_ERROR("couldn't open %s", (*sdp->list_it)->name.c_str());
+				LOG_ERROR("couldn't open %s", fd.name.c_str());
 				return -1;
 			}
 			sdp->file_handle->Open(sdp->file_name);
 			sdp->file_pos = 0;
 		}
 		assert(sdp->file_handle != NULL);
+		FileData& fd = *(sdp->list_it);
 		if (sdp->skipped < LENGTH_SIZE) { // check if we skipped all 4 bytes for
 						  // file length, if not so, skip them
 			const int toskip =
@@ -198,13 +207,13 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
 			sdp->skipped += toskip;
 			buf_pos += toskip;
 			if (sdp->skipped == LENGTH_SIZE) { // all length bytes read, parse
-				(*sdp->list_it)->compsize = parse_int32(sdp->cursize_buf);
-				assert((*sdp->list_it)->size + 2000 >= (*sdp->list_it)->compsize);
+				fd.compsize = parse_int32(sdp->cursize_buf);
+				assert(fd.size + 2000 >= fd.compsize);
 			}
 		}
 		if (sdp->skipped == LENGTH_SIZE) { // length bytes read
 			const int towrite =
-			    intmin((*sdp->list_it)->compsize -
+			    intmin(fd.compsize -
 				       sdp->file_pos, // minimum of bytes to write left in file
 						      // and bytes to write left in buf
 				   buf_end - buf_pos);
@@ -222,11 +231,11 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
 			sdp->file_pos += res;
 
 			if (sdp->file_pos >=
-			    (*sdp->list_it)->compsize) { // file finished -> next file
+			    fd.compsize) { // file finished -> next file
 				sdp->file_handle->Close();
 				delete sdp->file_handle;
 				sdp->file_handle = NULL;
-				if (!fileSystem->fileIsValid(*sdp->list_it, sdp->file_name.c_str())) {
+				if (!fileSystem->fileIsValid(&fd, sdp->file_name.c_str())) {
 					LOG_ERROR("File is broken?!: %s", sdp->file_name.c_str());
 					fileSystem->removeFile(sdp->file_name.c_str());
 					return -1;
@@ -243,29 +252,29 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
 /** *
         draw a nice download status-bar
 */
-static int progress_func(CSdp& csdp, double TotalToDownload,
+static int progress_func(CSdp& sdp, double TotalToDownload,
 			 double NowDownloaded, double TotalToUpload,
 			 double NowUploaded)
 {
 
-	(void)csdp;
+	(void)sdp;
 	(void)TotalToUpload;
 	(void)NowUploaded; // remove unused warning
-	csdp.m_download->rapid_size[&csdp] = TotalToDownload;
-	csdp.m_download->map_rapid_progress[&csdp] = NowDownloaded;
+	sdp.m_download->rapid_size[&sdp] = TotalToDownload;
+	sdp.m_download->map_rapid_progress[&sdp] = NowDownloaded;
 	uint64_t total = 0;
-	for (auto it : csdp.m_download->rapid_size) {
+	for (auto it : sdp.m_download->rapid_size) {
 		total += it.second;
 	}
-	csdp.m_download->size = total;
+	sdp.m_download->size = total;
 	if (IDownloader::listener != nullptr) {
 		IDownloader::listener(NowDownloaded, TotalToDownload);
 	}
 	total = 0;
-	for (auto it : csdp.m_download->map_rapid_progress) {
+	for (auto it : sdp.m_download->map_rapid_progress) {
 		total += it.second;
 	}
-	csdp.m_download->progress = total;
+	sdp.m_download->progress = total;
 	if (TotalToDownload == NowDownloaded) // force output when download is
 					      // finished
 		LOG_PROGRESS(NowDownloaded, TotalToDownload, true);
@@ -274,56 +283,48 @@ static int progress_func(CSdp& csdp, double TotalToDownload,
 	return 0;
 }
 
-bool CSdp::downloadStream(const std::string& url, std::list<FileData*> files)
+bool CSdp::downloadStream()
 {
-	CurlWrapper* curlw = new CurlWrapper();
-	if (!curlw) {
-		return false;
-	}
+	std::string downloadUrl = baseUrl + "/streamer.cgi?" + md5;
+	CurlWrapper curlw;
+
 	CURLcode res;
 	LOG_INFO("Using rapid");
-	LOG_INFO(url.c_str());
+	LOG_INFO(downloadUrl.c_str());
 
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_URL, downloadUrl.c_str());
 
-	int buflen = files.size() / 8;
-	if (files.size() % 8 != 0)
-		buflen++;
-	char* buf =
-	    (char*)malloc(buflen); // FIXME: compress blockwise and not all at once
-	memset(buf, 0, buflen);
-	int destlen = files.size() * 2;
-	LOG_DEBUG("%d %d %d", (int)files.size(), buflen, destlen);
+	const int buflen = (files->size() + 7) / 8;
+	std::vector<char> buf(buflen, 0);
+
 	int i = 0;
-	for (FileData* it : files) {
-		if (it->download == true) {
+	for (FileData& fd: *files) {
+		if (fd.download) {
 			buf[i / 8] |= (1 << (i % 8));
 		}
 		i++;
 	}
-	char* dest = (char*)malloc(destlen);
 
-	gzip_str(buf, buflen, dest, &destlen);
+	int destlen = files->size() * 2;
+	std::vector<char> dest(destlen, 0);
+	LOG_DEBUG("%d %d %d", (int)files->size(), buflen, destlen);
 
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEFUNCTION,
+	gzip_str(&buf[0], buflen, &dest[0], &destlen);
+
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEFUNCTION,
 			 write_streamed_data);
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEDATA, this);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEDATA, this);
 
-	globalFiles = &files;
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_POSTFIELDS, dest);
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_POSTFIELDSIZE, destlen);
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_NOPROGRESS, 0L);
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_PROGRESSFUNCTION, progress_func);
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_PROGRESSDATA, this);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_POSTFIELDS, &dest[0]);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_POSTFIELDSIZE, destlen);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_NOPROGRESS, 0L);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_PROGRESSFUNCTION, progress_func);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_PROGRESSDATA, this);
 
-	res = curl_easy_perform(curlw->GetHandle());
-	free(dest);
-	free(buf);
+	res = curl_easy_perform(curlw.GetHandle());
 	/* always cleanup */
-	delete curlw;
-	curlw = NULL;
 	if (res != CURLE_OK) {
-		LOG_ERROR("Curl cleanup error: %s", curl_easy_strerror(res));
+		LOG_ERROR("Curl error: %s", curl_easy_strerror(res));
 		return false;
 	}
 	return true;

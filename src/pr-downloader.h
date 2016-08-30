@@ -81,6 +81,11 @@ extern bool DownloadRapidValidate(bool deletebroken);
 extern bool DownloadDumpSDP(const char* path);
 
 /**
+* validate sdp files
+*/
+extern bool ValidateSDP(const char* path);
+
+/**
 * control printing to stdout
 */
 extern void DownloadDisableLogging(bool disableLogging);
