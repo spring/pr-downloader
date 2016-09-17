@@ -5,6 +5,7 @@ compiler:
 
 sudo: required
 dist: trusty
+cache: ccache
 
 install:
   - sudo apt-get install -y gcc-4.7 g++-4.7 cmake libcurl4-openssl-dev libjsoncpp-dev
