@@ -195,6 +195,7 @@ bool CRapidDownloader::parse()
 	}
 	gzFile fp = gzdopen(fileno(f), "rb");
 	if (fp == Z_NULL) {
+		fclose(f);
 		LOG_ERROR("Could not open %s", path.c_str());
 		return false;
 	}
