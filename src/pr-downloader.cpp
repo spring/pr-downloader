@@ -145,6 +145,7 @@ bool DownloadGetInfo(int id, downloadInfo& info)
 	if (dl != NULL) {
 		strncpy(info.filename, dl->name.c_str(),
 			NAME_LEN - 1); // -1 because of 0 termination
+		info.cat = dl->cat;
 		return true;
 	}
 	return false;
