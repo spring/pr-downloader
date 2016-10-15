@@ -293,8 +293,8 @@ void DownloadDisableLogging(bool disableLogging)
 char* CalcHash(const char* str, int size, int type)
 {
 	const unsigned char* hash;
+	MD5_CTX ctx;
 	if (type == 0) {
-		MD5_CTX ctx;
 		MD5Init(&ctx);
 		MD5Update(&ctx, (unsigned char*)str, size);
 		MD5Final(&ctx);
