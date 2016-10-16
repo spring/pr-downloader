@@ -94,6 +94,7 @@ bool CFileSystem::parseSdp(const std::string& filename,
 	gzFile in = gzdopen(fileno(f), "rb");
 	if (in == Z_NULL) {
 		LOG_ERROR("Could not open %s", filename.c_str());
+		fclose(f);
 		return false;
 	}
 	files.clear();
@@ -104,6 +105,7 @@ bool CFileSystem::parseSdp(const std::string& filename,
 			}
 			LOG_ERROR("Unexpected eof in %s", filename.c_str());
 			gzclose(in);
+			fclose(f);
 			return false;
 		}
 		if (!((gzread(in, &c_name, length)) && (gzread(in, &c_md5, 16)) &&
