@@ -29,9 +29,9 @@ void IDownloader::Shutdown()
 	curl_global_cleanup();
 }
 static bool abortDownloads = false;
-void IDownloader::SetAbortDownloads()
+void IDownloader::SetAbortDownloads(bool value)
 {
-	abortDownloads = true;
+	abortDownloads = value;
 }
 
 bool IDownloader::AbortDownloads()

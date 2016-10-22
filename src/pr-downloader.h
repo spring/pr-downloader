@@ -105,6 +105,6 @@ extern char* CalcHash(const char* str, int size, int type);
 * abort all downloads - must be called before shutting down,
 * all downloads must return before calling shutdown
 */
-extern void SetAbortDownloads();
+extern void SetAbortDownloads(bool value);
 
 #endif

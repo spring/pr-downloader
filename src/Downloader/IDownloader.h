@@ -32,7 +32,7 @@ public:
 	/**
 	 * Aborts all ongoing downloads
 	 */
-	static void SetAbortDownloads();
+	static void SetAbortDownloads(bool value);
 	static bool AbortDownloads();
 
 	/**

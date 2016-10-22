@@ -310,7 +310,7 @@ char* CalcHash(const char* str, int size, int type)
 	return ret;
 }
 
-void SetAbortDownloads()
+void SetAbortDownloads(bool value)
 {
-	IDownloader::SetAbortDownloads();
+	IDownloader::SetAbortDownloads(value);
 }
