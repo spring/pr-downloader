@@ -160,6 +160,8 @@ bool CSdp::download(IDownload* dl)
 static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
 				  CSdp* sdp)
 {
+	if (IDownloader::AbortDownloads())
+		return -1;
 	char buf[CURL_MAX_WRITE_SIZE];
 	memcpy(&buf, tmp, CURL_MAX_WRITE_SIZE);
 	if (!sdp->downloadInitialized) {
@@ -256,7 +258,8 @@ static int progress_func(CSdp& sdp, double TotalToDownload,
 			 double NowDownloaded, double TotalToUpload,
 			 double NowUploaded)
 {
-
+	if (IDownloader::AbortDownloads())
+		return -1;
 	(void)sdp;
 	(void)TotalToUpload;
 	(void)NowUploaded; // remove unused warning

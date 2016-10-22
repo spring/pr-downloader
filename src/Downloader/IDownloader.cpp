@@ -28,6 +28,16 @@ void IDownloader::Shutdown()
 	rapiddl = NULL;
 	curl_global_cleanup();
 }
+static bool abortDownloads = false;
+void IDownloader::SetAbortDownloads()
+{
+	abortDownloads = true;
+}
+
+bool IDownloader::AbortDownloads()
+{
+	return abortDownloads;
+}
 
 IDownloader* IDownloader::GetHttpInstance()
 {

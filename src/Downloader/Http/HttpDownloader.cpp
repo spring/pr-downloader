@@ -37,6 +37,9 @@ CHttpDownloader::~CHttpDownloader()
 static size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb,
 				  void* userp)
 {
+	if (IDownloader::AbortDownloads())
+		return -1;
+
 	const size_t realsize = size * nmemb;
 	std::string* res = static_cast<std::string*>(userp);
 	res->append((char*)contents, realsize);
@@ -46,6 +49,9 @@ static size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb,
 static int progress_func(DownloadData* data, double total, double done, double,
 			 double)
 {
+	if (IDownloader::AbortDownloads())
+		return -1;
+
 	data->download->progress = done;
 	if (IDownloader::listener != NULL) {
 		IDownloader::listener(done, total);
@@ -210,6 +216,9 @@ bool CHttpDownloader::search(std::list<IDownload*>& res,
 static size_t multi_write_data(void* ptr, size_t size, size_t nmemb,
 			       DownloadData* data)
 {
+	if (IDownloader::AbortDownloads())
+		return -1;
+
 	// LOG_DEBUG("%d %d",size,  nmemb);
 	if (!data->got_ranges) {
 		LOG_INFO("Server refused ranges"); // The server refused ranges , download

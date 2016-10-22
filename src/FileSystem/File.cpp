@@ -216,7 +216,7 @@ int CFile::Write(const char* buf, int bufsize, int piece)
 
 int CFile::Seek(unsigned long pos, int piece)
 {
-	assert(piece <= (int)pieces.size());
+	assert(piece < (int)pieces.size());
 	if (piece >= 0) { // adjust position relative to piece pos
 		pos = this->piecesize * piece + pos;
 	}
@@ -273,7 +273,7 @@ int CFile::GetPiecesSize(std::vector<unsigned int> pieces) const
 int CFile::GetPieceSize(int piece) const
 {
 	if (piece >= 0) {
-		assert(piece <= (int)pieces.size());
+		assert(piece < (int)pieces.size());
 		if ((int)pieces.size() - 1 == piece) // last piece
 			return size - (piecesize * ((int)pieces.size() - 1));
 		//		LOG("GetPieceSize piece %d, pieces.size() %d piecesize: %d size %d
@@ -289,7 +289,7 @@ int CFile::GetPieceSize(int piece) const
 
 long CFile::GetPiecePos(int piece) const
 {
-	assert(piece <= (int)pieces.size());
+	assert(piece < (int)pieces.size());
 	if (piece >= 0)
 		return pieces[piece].pos;
 	return curpos;

@@ -18,17 +18,22 @@ public:
 	static IDownloader* GetRapidInstance();
 
 	/**
-          Initialize all Downloaders
-  */
+	 *Initialize all Downloaders
+	 */
 	static void Initialize();
 
 	/**
-          Shutdown all Downloaders
-  */
+	 * Shutdown all Downloaders
+	 */
 	static void Shutdown();
 	virtual ~IDownloader()
 	{
 	}
+	/**
+	 * Aborts all ongoing downloads
+	 */
+	static void SetAbortDownloads();
+	static bool AbortDownloads();
 
 	/**
           download specificed download

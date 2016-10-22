@@ -309,3 +309,8 @@ char* CalcHash(const char* str, int size, int type)
 	ret[encoded.size()] = '\0';
 	return ret;
 }
+
+void SetAbortDownloads()
+{
+	IDownloader::SetAbortDownloads();
+}

@@ -100,4 +100,11 @@ extern void SetDownloadListener(IDownloaderProcessUpdateListener listener);
  *   0 - md5
 */
 extern char* CalcHash(const char* str, int size, int type);
+
+/**
+* abort all downloads - must be called before shutting down,
+* all downloads must return before calling shutdown
+*/
+extern void SetAbortDownloads();
+
 #endif
