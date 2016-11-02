@@ -3,7 +3,7 @@
 #ifndef HTTP_DOWNLOAD_H
 #define HTTP_DOWNLOAD_H
 
-#include "../IDownloader.h"
+#include "Downloader/IDownloader.h"
 
 #include <curl/curl.h>
 #include <string>
