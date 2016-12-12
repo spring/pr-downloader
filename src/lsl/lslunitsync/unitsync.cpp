@@ -162,52 +162,38 @@ void Unitsync::PopulateArchiveList()
 	const int numMaps = susynclib().GetMapCount();
 	for (int i = 0; i < numMaps; i++) {
 		std::string name, archivename;
-		unsigned int hash;
 		try {
 			const int count = susynclib().GetMapArchiveCount(i);
 			if (count > 0) {
 				archivename = susynclib().GetMapArchiveName(0);
 			}
 			name = susynclib().GetMapName(i);
-			hash = susynclib().GetMapChecksum(i);
 			//PrefetchMap( name ); // DEBUG
 		} catch (...) {
 			continue;
 		}
-		try {
-			assert(!name.empty());
-			m_maps_list[name] = LSL::Util::ToUIntString(hash);
-			if (!archivename.empty())
-				m_maps_archive_name[name] = archivename;
-			m_map_array.push_back(name);
-		} catch (...) {
-			LslError("Found map with hash collision: %s hash: %d", name.c_str(), hash);
-		}
+		assert(!name.empty());
+		if (!archivename.empty())
+			m_maps_archive_name[name] = archivename;
+		m_map_array.push_back(name);
 		FetchUnitsyncErrors(name);
 	}
 	const int numMods = susynclib().GetPrimaryModCount();
 	for (int i = 0; i < numMods; i++) {
 		std::string name, archivename;
-		unsigned int hash;
 		try {
 			const int count = susynclib().GetPrimaryModArchiveCount(i);
 			if (count > 0) {
 				archivename = susynclib().GetPrimaryModArchive(i);
 			}
 			name = GetGameInfo(i, "name");
-			hash = susynclib().GetPrimaryModChecksumFromName(name);
 		} catch (...) {
 			continue;
 		}
-		try {
-			assert(!name.empty());
-			m_mods_list[name] = LSL::Util::ToUIntString(hash);
-			if (!archivename.empty())
-				m_mods_archive_name[name] = archivename;
-			m_mod_array.push_back(name);
-		} catch (...) {
-			LslError("Found game with hash collision: %s hash: %s", name.c_str(), hash);
-		}
+		assert(!name.empty());
+		if (!archivename.empty())
+			m_mods_archive_name[name] = archivename;
+		m_mod_array.push_back(name);
 		FetchUnitsyncErrors(name);
 	}
 	m_unsorted_mod_array = m_mod_array;
@@ -248,18 +234,27 @@ StringVector Unitsync::GetGameList() const
 	return m_mod_array;
 }
 
-bool Unitsync::GameExists(const std::string& gamename, const std::string& hash) const
+bool Unitsync::GameExists(const std::string& gamename, const std::string& hash)
 {
 	TRY_LOCK(false)
-	LocalArchivesVector::const_iterator itor = m_mods_list.find(gamename);
-	if (itor == m_mods_list.end() || itor->second.empty())
+	LocalArchivesVector::const_iterator itor = m_mods_archive_name.find(gamename);
+	if (itor == m_mods_archive_name.end() || itor->second.empty())
 		return false;
 
 	assert(!itor->second.empty()); //empty hashes are invalid
 
 	if (hash.empty())
 		return true;
-	return itor->second == hash;
+
+	itor = m_mods_list.find(gamename);
+	if (itor != m_mods_list.end()) {
+		return itor->second == hash;
+	}
+
+	const unsigned int modhash = susynclib().GetPrimaryModChecksumFromName(gamename);
+	const std::string strhash = LSL::Util::ToUIntString(modhash);
+	m_mods_list[gamename] = strhash;
+	return strhash == hash;
 }
 
 UnitsyncGame Unitsync::GetGame(const std::string& gamename)
@@ -300,17 +295,25 @@ StringVector Unitsync::GetGameValidMapList(const std::string& gamename) const
 	return ret;
 }
 
-bool Unitsync::MapExists(const std::string& mapname, const std::string& hash) const
+bool Unitsync::MapExists(const std::string& mapname, const std::string& hash)
 {
 	assert(!mapname.empty());
 	TRY_LOCK(false)
-	LocalArchivesVector::const_iterator itor = m_maps_list.find(mapname);
-	if (itor == m_maps_list.end())
+	LocalArchivesVector::const_iterator itor = m_maps_archive_name.find(mapname);
+	if (itor == m_maps_archive_name.end())
 		return false;
 	assert(!itor->second.empty()); //empty hashes are invalid
 	if (hash.empty())
 		return true;
-	return itor->second == hash;
+
+	itor = m_maps_list.find(mapname);
+	if (itor != m_maps_list.end()) {
+		return itor->second == hash;
+	}
+	const unsigned int modhash = susynclib().GetMapChecksumFromName(mapname);
+	const std::string strhash = LSL::Util::ToUIntString(modhash);
+	m_maps_list[mapname] = strhash;
+	return strhash == hash;
 }
 
 UnitsyncMap Unitsync::GetMap(int index)

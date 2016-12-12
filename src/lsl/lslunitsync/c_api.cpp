@@ -562,6 +562,12 @@ unsigned int UnitsyncLib::GetPrimaryModChecksumFromName(const std::string& name)
 	return m_get_primary_mod_checksum_from_name(name.c_str());
 }
 
+unsigned int UnitsyncLib::GetMapChecksumFromName(const std::string& name)
+{
+	InitLib(m_get_map_checksum_from_name);
+	return m_get_map_checksum_from_name(name.c_str());
+}
+
 UnitsyncLib::StringVector UnitsyncLib::GetModDeps(int index)
 {
 	const int count = GetPrimaryModArchiveCount(index);

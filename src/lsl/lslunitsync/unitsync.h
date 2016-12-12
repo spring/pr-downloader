@@ -51,7 +51,7 @@ public:
 	~Unitsync();
 
 	StringVector GetGameList() const;
-	bool GameExists(const std::string& gamename, const std::string& hash = "") const;
+	bool GameExists(const std::string& gamename, const std::string& hash = "");
 	UnitsyncGame GetGame(const std::string& gamename);
 	UnitsyncGame GetGame(int index);
 
@@ -60,7 +60,7 @@ public:
 
 	StringVector GetMapList() const;
 	StringVector GetGameValidMapList(const std::string& gamename) const;
-	bool MapExists(const std::string& mapname, const std::string& hash = "") const;
+	bool MapExists(const std::string& mapname, const std::string& hash = "");
 
 	UnitsyncMap GetMap(const std::string& mapname);
 	UnitsyncMap GetMap(int index);

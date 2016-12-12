@@ -165,6 +165,7 @@ public:
 	int GetPrimaryModArchiveCount(int index);
 	std::string GetPrimaryModArchiveList(int arnr);
 	unsigned int GetPrimaryModChecksumFromName(const std::string& name);
+	unsigned int GetMapChecksumFromName(const std::string& name);
 	StringVector GetModDeps(int index);
 
 	StringVector GetSides(const std::string& modName);
