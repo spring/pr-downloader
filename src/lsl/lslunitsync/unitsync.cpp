@@ -924,6 +924,7 @@ void Unitsync::PrefetchMap(const std::string& mapname)
 
 
 	FetchUnitsyncErrors(mapname);
+	GetMapHash(mapname);
 
 	const int index = Util::IndexInSequence(m_unsorted_map_array, mapname);
 	ASSERT_EXCEPTION(index >= 0, "Map not found");
@@ -962,6 +963,7 @@ void Unitsync::PrefetchGame(const std::string& gamename)
 {
 	assert(!gamename.empty());
 	susynclib().SetCurrentMod(gamename);
+	GetGameHash(gamename);
 	{
 		int count = susynclib().GetModOptionCount(gamename);
 		GameOptions opt;
