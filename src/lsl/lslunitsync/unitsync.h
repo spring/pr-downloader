@@ -131,6 +131,8 @@ public:
 	std::string GetUnitsCacheFilePath(const std::string& gamename) const;
 
 private:
+	std::string GetMapHash(const std::string& name);
+	std::string GetGameHash(const std::string& name);
 	bool GetImageFromCache(const std::string& cachefile, UnitsyncImage& img, ImageType imgtype);
 	UnitsyncImage GetImageFromUS(const std::string& mapname, const MapInfo& info, ImageType imgtype);
 
