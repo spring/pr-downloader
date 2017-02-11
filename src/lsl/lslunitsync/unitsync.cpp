@@ -440,6 +440,7 @@ GameOptions Unitsync::GetGameOptions(const std::string& name)
 	if (m_game_gameoptions.find(name) != m_game_gameoptions.end()) {
 		return m_game_gameoptions[name];
 	}
+	GetGameHash(name);
 	const std::string filename = GetGameOptionsPath(name);
 	if (!lslcache.Get(filename, ret)) {
 		PrefetchGame(name);
