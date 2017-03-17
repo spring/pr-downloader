@@ -469,6 +469,7 @@ StringVector Unitsync::GetSides(const std::string& gamename)
 	if (!GameExists(gamename))
 		return ret;
 	TRY_LOCK(ret);
+	GetGameHash(gamename);
 	const std::string cachefile = GetSidesCachePath(gamename);
 
 	if (!lslcache.Get(cachefile, ret) && (GameExists(gamename))) { // cache file failed, try from lsl
