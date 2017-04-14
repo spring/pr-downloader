@@ -67,19 +67,21 @@ bool createPoolDirs(const std::string& root)
 
 bool CSdp::downloadSelf(IDownload* dl)
 {
-	if (!fileSystem->fileExists(sdpPath)) { //.sdp isn't avaiable, download it
-		const std::string tmpFile = sdpPath + ".tmp";
-		IDownload dl(tmpFile);
-		dl.addMirror(baseUrl + "/packages/" + md5 + ".sdp");
-		if(!httpDownload->download(&dl)) {
-			LOG_ERROR("Couldn't download %s", (md5 + ".sdp").c_str());
-			return false;
-		}
+	if (fileSystem->fileExists(sdpPath)) { //.sdp isn't avaiable, download it
+		return true;
+	}
 
-		if (!fileSystem->Rename(tmpFile, sdpPath)) {
-			LOG_ERROR("Couldn't rename %s to %s", tmpFile.c_str(), sdpPath.c_str());
-			return false;
-		}
+	const std::string tmpFile = sdpPath + ".tmp";
+	IDownload tmpdl(tmpFile);
+	tmpdl.addMirror(baseUrl + "/packages/" + md5 + ".sdp");
+	if(!httpDownload->download(&tmpdl)) {
+		LOG_ERROR("Couldn't download %s", (md5 + ".sdp").c_str());
+		return false;
+	}
+
+	if (!fileSystem->Rename(tmpFile, sdpPath)) {
+		LOG_ERROR("Couldn't rename %s to %s", tmpFile.c_str(), sdpPath.c_str());
+		return false;
 	}
 
 	return true;
