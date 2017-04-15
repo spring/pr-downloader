@@ -16,8 +16,8 @@ public:
 	bool Set(const unsigned char* data, int size);
 	unsigned char get(int pos) const;
 	static std::string CalculateHash(const char* data, const int size);
+	const unsigned char* Data() const { return &mdContext.digest[0]; }
 
-protected:
 	int getSize() const;
 
 private:

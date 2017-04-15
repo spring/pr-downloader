@@ -67,7 +67,7 @@ bool createPoolDirs(const std::string& root)
 
 bool CSdp::downloadSelf(IDownload* dl)
 {
-	if (fileSystem->fileExists(sdpPath)) { //.sdp isn't avaiable, download it
+	if (fileSystem->validateSDP(sdpPath)) { //.sdp is already downloaded
 		return true;
 	}
 

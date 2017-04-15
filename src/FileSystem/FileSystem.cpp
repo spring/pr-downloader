@@ -491,6 +491,13 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	return true;
 }
 
+std::string getMD5fromFilename(const std::string& path)
+{
+	const size_t start = path.rfind(PATH_DELIMITER) + 1;
+	const size_t end = path.rfind(".");
+	return path.substr(start, end-start);
+}
+
 bool CFileSystem::validateSDP(const std::string& sdpPath)
 {
 	if (!fileExists(sdpPath)){
@@ -509,10 +516,20 @@ bool CFileSystem::validateSDP(const std::string& sdpPath)
 	}
 
 	bool valid = true;
+	HashMD5 sdpmd5;
+	sdpmd5.Init();
 	for (FileData& fd : files) {
+		HashMD5 nameMd5;
+		nameMd5.Init();
+		nameMd5.Update(fd.name.data(), fd.name.size());
+		nameMd5.Final();
+		assert(nameMd5.getSize() == 16);
+		assert(sizeof(fd.md5) == 16);
+		sdpmd5.Update((const char*)nameMd5.Data(), nameMd5.getSize());
+		sdpmd5.Update((const char*)&fd.md5[0], sizeof(fd.md5));
+
 		std::string filePath;
 		HashMD5 fileMd5;
-
 		fileMd5.Set(fd.md5, sizeof(fd.md5));
 		getPoolFilename(fileMd5.toString(), filePath);
 		if(!fileExists(filePath)) {
@@ -526,6 +543,13 @@ bool CFileSystem::validateSDP(const std::string& sdpPath)
 				return false;
 			}
 		}
+	}
+	sdpmd5.Final();
+	const std::string filehash = getMD5fromFilename(sdpPath);
+	if (filehash != sdpmd5.toString()) {
+		LOG_ERROR("%s is invalid, deleted (%s vs %s)", sdpPath.c_str(), filehash.c_str(), sdpmd5.toString().c_str());
+		removeFile(sdpPath);
+		return false;
 	}
 
 	return valid;
