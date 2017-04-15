@@ -17,5 +17,5 @@ before_script:
 script:
   - make -j2
   - sudo make install
-  - src/pr-downloader ba:stable
+  - src/pr-downloader devgame:test
   - src/pr-downloader --rapid-validate
