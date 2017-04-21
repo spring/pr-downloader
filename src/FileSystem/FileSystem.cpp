@@ -81,8 +81,14 @@ bool CFileSystem::fileIsValid(const FileData* mod,
 	return true;
 }
 
-bool CFileSystem::parseSdp(const std::string& filename,
-			   std::list<FileData>& files)
+std::string getMD5fromFilename(const std::string& path)
+{
+	const size_t start = path.rfind(PATH_DELIMITER) + 1;
+	const size_t end = path.find(".", start);
+	return path.substr(start, end-start);
+}
+
+bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData>& files)
 {
 	char c_name[255];
 	unsigned char c_md5[16];
@@ -98,7 +104,10 @@ bool CFileSystem::parseSdp(const std::string& filename,
 		return false;
 	}
 	files.clear();
+	HashMD5 sdpmd5;
+	sdpmd5.Init();
 	while (true) {
+
 		if (!gzread(in, &length, 1)) {
 			if (gzeof(in)) {
 				break;
@@ -121,9 +130,25 @@ bool CFileSystem::parseSdp(const std::string& filename,
 		memcpy(fd.crc32, &c_crc32, 4);
 		fd.size = parse_int32(c_size);
 		files.push_back(fd);
+		
+		HashMD5 nameMd5;
+		nameMd5.Init();
+		nameMd5.Update(fd.name.data(), fd.name.size());
+		nameMd5.Final();
+		assert(nameMd5.getSize() == 16);
+		assert(sizeof(fd.md5) == 16);
+		sdpmd5.Update((const char*)nameMd5.Data(), nameMd5.getSize());
+		sdpmd5.Update((const char*)&fd.md5[0], sizeof(fd.md5));
 	}
 	gzclose(in);
 	fclose(f);
+	sdpmd5.Final();
+	const std::string filehash = getMD5fromFilename(filename);
+	if (filehash != sdpmd5.toString()) {
+		LOG_ERROR("%s is invalid, deleted (%s vs %s)", filename.c_str(), filehash.c_str(), sdpmd5.toString().c_str());
+		removeFile(filename);
+		return false;
+	}
 	LOG_DEBUG("Parsed %s with %d files", filename.c_str(), (int)files.size());
 	return true;
 }
@@ -491,15 +516,9 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	return true;
 }
 
-std::string getMD5fromFilename(const std::string& path)
-{
-	const size_t start = path.rfind(PATH_DELIMITER) + 1;
-	const size_t end = path.rfind(".");
-	return path.substr(start, end-start);
-}
-
 bool CFileSystem::validateSDP(const std::string& sdpPath)
 {
+	LOG_DEBUG("CFileSystem::validateSDP() ...");
 	if (!fileExists(sdpPath)){
 		LOG_ERROR("SDP file doesn't exist: %s", sdpPath.c_str());
 		return false;
@@ -516,17 +535,7 @@ bool CFileSystem::validateSDP(const std::string& sdpPath)
 	}
 
 	bool valid = true;
-	HashMD5 sdpmd5;
-	sdpmd5.Init();
 	for (FileData& fd : files) {
-		HashMD5 nameMd5;
-		nameMd5.Init();
-		nameMd5.Update(fd.name.data(), fd.name.size());
-		nameMd5.Final();
-		assert(nameMd5.getSize() == 16);
-		assert(sizeof(fd.md5) == 16);
-		sdpmd5.Update((const char*)nameMd5.Data(), nameMd5.getSize());
-		sdpmd5.Update((const char*)&fd.md5[0], sizeof(fd.md5));
 
 		std::string filePath;
 		HashMD5 fileMd5;
@@ -544,14 +553,7 @@ bool CFileSystem::validateSDP(const std::string& sdpPath)
 			}
 		}
 	}
-	sdpmd5.Final();
-	const std::string filehash = getMD5fromFilename(sdpPath);
-	if (filehash != sdpmd5.toString()) {
-		LOG_ERROR("%s is invalid, deleted (%s vs %s)", sdpPath.c_str(), filehash.c_str(), sdpmd5.toString().c_str());
-		removeFile(sdpPath);
-		return false;
-	}
-
+	LOG_DEBUG("CFileSystem::validateSDP() done");
 	return valid;
 }
 

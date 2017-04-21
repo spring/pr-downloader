@@ -61,7 +61,7 @@ public:
 	IDownload* m_download;
 	bool downloadInitialized;
 	std::list<FileData>::iterator list_it;
-	std::list<FileData>* files; // list with all files of an sdp
+	std::list<FileData> files; // list with all files of an sdp
 	CFile* file_handle;
 	std::string file_name;
 
