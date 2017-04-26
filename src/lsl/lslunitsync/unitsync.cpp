@@ -333,6 +333,7 @@ UnitsyncMap Unitsync::GetMap(int index)
 	if (index < 0)
 		return m;
 	m.name = m_map_array[index];
+	GetMapHash(m.name);
 	m.hash = m_maps_list[m.name];
 	m.info = _GetMapInfoEx(m.name);
 	assert(!m.hash.empty());
