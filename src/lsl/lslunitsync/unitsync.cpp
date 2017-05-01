@@ -266,7 +266,9 @@ UnitsyncGame Unitsync::GetGame(const std::string& gamename)
 	UnitsyncGame m;
 	TRY_LOCK(m);
 	m.name = gamename;
-	m.hash = m_mods_list[gamename];
+	m.hash = GetGameHash(gamename);
+	assert(m.hash != "0");
+	assert(!m.hash.empty());
 	return m;
 }
 
@@ -276,7 +278,9 @@ UnitsyncGame Unitsync::GetGame(int index)
 	UnitsyncGame m;
 	TRY_LOCK(m);
 	m.name = m_mod_array[index];
-	m.hash = m_mods_list[m.name];
+	m.hash = GetGameHash(m.name);
+	assert(m.hash != "0");
+	assert(!m.hash.empty());
 	return m;
 }
 
@@ -333,7 +337,7 @@ UnitsyncMap Unitsync::GetMap(int index)
 	if (index < 0)
 		return m;
 	m.name = m_map_array[index];
-	m.hash = m_maps_list[m.name];
+	m.hash = GetMapHash(m.name);
 	m.info = _GetMapInfoEx(m.name);
 	assert(!m.hash.empty());
 	return m;
