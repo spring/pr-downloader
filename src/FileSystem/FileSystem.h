@@ -20,8 +20,6 @@ struct _FILETIME;
 
 class CFileSystem
 {
-	static CFileSystem* singleton;
-
 public:
 	static CFileSystem* GetInstance();
 	static void Shutdown();
@@ -40,7 +38,7 @@ public:
 	/**
           returns the spring writeable directory
   */
-	const std::string& getSpringDir();
+	const std::string getSpringDir();
 
 	/**
           checks if a directory exists

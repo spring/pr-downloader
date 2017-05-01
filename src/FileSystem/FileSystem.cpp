@@ -28,7 +28,7 @@
 #endif
 #endif
 
-CFileSystem* CFileSystem::singleton = NULL;
+static CFileSystem* singleton = NULL;
 
 FILE* CFileSystem::propen(const std::string& filename,
 			  const std::string& mode) const
@@ -216,8 +216,9 @@ void CFileSystem::Shutdown()
 	tmpFileSystem = NULL;
 }
 
-const std::string& CFileSystem::getSpringDir()
+const std::string CFileSystem::getSpringDir()
 {
+	assert(!springdir.empty());
 	if (springdir.empty())
 		(setWritePath(""));
 	return springdir;
