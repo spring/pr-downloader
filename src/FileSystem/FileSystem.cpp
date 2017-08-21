@@ -727,7 +727,7 @@ unsigned long CFileSystem::getMBsFree(const std::string& path)
 		LOG_ERROR("Error getting free disk space on %s: %d", path.c_str(), GetLastError());
 		return 0;
 	}
-	return freespace / (1024 * 1024);
+	return freespace.QuadPart / (1024 * 1024);
 #else
 	struct statvfs st;
 	const int ret = statvfs(path.c_str(), &st);
