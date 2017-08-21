@@ -26,6 +26,9 @@
 #ifndef SHGFP_TYPE_CURRENT
 #define SHGFP_TYPE_CURRENT 0
 #endif
+#else
+#include <sys/statvfs.h>
+#include <errno.h>
 #endif
 
 static CFileSystem* singleton = NULL;
@@ -714,3 +717,29 @@ std::string CFileSystem::EscapeFilename(const std::string& str)
 	}
 	return s;
 }
+
+unsigned long CFileSystem::getMBsFree(const std::string& path)
+{
+#ifdef WIN32
+	ULARGE_INTEGER freespace;
+	BOOL res = GetDiskFreeSpaceEx(path.c_str(), &freespace, nullptr, nullptr);
+	if (!res) {
+		LOG_ERROR("Error getting free disk space on %s: %d", path.c_str(), GetLastError());
+		return 0;
+	}
+	return freespace / (1024 * 1024);
+#else
+	struct statvfs st;
+	const int ret = statvfs(path.c_str(), &st);
+	if (ret != 0) {
+		const char *errstr = strerror(errno);
+		LOG_ERROR("Error getting free disk space on %s: %s", path.c_str(), errstr);
+		return 0;
+	}
+	if (st.f_frsize) {
+		return (st.f_frsize * st.f_bavail) / (1024 * 1024);
+	}
+	return (st.f_bsize * st.f_bavail) / (1024 * 1024);
+#endif
+}
+

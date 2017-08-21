@@ -166,9 +166,12 @@ void DownloadShutdown()
 bool DownloadSetConfig(CONFIG type, const void* value)
 {
 	switch (type) {
-		case CONFIG_FILESYSTEM_WRITEPATH:
-			fileSystem->setWritePath((const char*)value);
+		case CONFIG_FILESYSTEM_WRITEPATH: {
+			std::string path((const char*)value);
+			fileSystem->setWritePath(path);
+			LOG_INFO("Free disk space: %d MB", CFileSystem::getMBsFree(path));
 			return true;
+		}
 		case CONFIG_FETCH_DEPENDS:
 			fetchDepends = (const bool*)value;
 			return true;

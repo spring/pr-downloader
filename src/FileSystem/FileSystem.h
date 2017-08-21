@@ -134,6 +134,7 @@ public:
           dir/filename -> dir
   */
 	static std::string DirName(const std::string& path);
+	static unsigned long getMBsFree(const std::string& path);
 
 private:
 	bool portableDownload;
