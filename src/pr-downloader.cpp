@@ -246,7 +246,9 @@ int DownloadStart()
 	unsigned long dlsize = 0;
 	for (it = downloads.begin(); it != downloads.end(); ++it) {
 		IDownload* dl = GetIDownloadByID(searchres, *it);
-		dlsize += dl->size;
+		if (dl->size > 0) {
+			dlsize += dl->size;
+		}
 		if (dl == NULL) {
 			continue;
 		}
@@ -256,7 +258,7 @@ int DownloadStart()
 	const unsigned long MBsNeeded = (dlsize / (1024 * 1024)) + 1024;
 
 	if (MBsFree < MBsNeeded) {
-		LOG_ERROR("Insuffcient free disk space (%d MB) on %s: %d needed", MBsFree, dldir.c_str(), MBsFree);
+		LOG_ERROR("Insuffcient free disk space (%u MB) on %s: %u MB needed", MBsFree, dldir.c_str(), MBsNeeded);
 		return 5;
 	}
 
