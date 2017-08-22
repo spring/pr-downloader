@@ -258,7 +258,7 @@ int DownloadStart()
 	const unsigned long MBsNeeded = (dlsize / (1024 * 1024)) + 1024;
 
 	if (MBsFree < MBsNeeded) {
-		LOG_ERROR("Insuffcient free disk space (%u MB) on %s: %u MB needed", MBsFree, dldir.c_str(), MBsNeeded);
+		LOG_ERROR("Insuffcient free disk space (%u MiB) on %s: %u MiB needed", MBsFree, dldir.c_str(), MBsNeeded);
 		return 5;
 	}
 
