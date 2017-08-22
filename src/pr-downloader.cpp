@@ -241,13 +241,25 @@ int DownloadStart()
 	int res = 0;
 	std::list<IDownload*> dls;
 	std::list<int>::iterator it;
+	const std::string dldir = fileSystem->getSpringDir();
+	const unsigned long MBsFree = CFileSystem::getMBsFree(dldir);
+	unsigned long dlsize = 0;
 	for (it = downloads.begin(); it != downloads.end(); ++it) {
 		IDownload* dl = GetIDownloadByID(searchres, *it);
+		dlsize += dl->size;
 		if (dl == NULL) {
 			continue;
 		}
 		dls.push_back(dl);
 	}
+	// at least 1024MB free disk space are required (else fragmentation will make file access way to slow!)
+	const unsigned long MBsNeeded = (dlsize / (1024 * 1024)) + 1024;
+
+	if (MBsFree < MBsNeeded) {
+		LOG_ERROR("Insuffcient free disk space (%d MB) on %s: %d needed", MBsFree, dldir.c_str(), MBsFree);
+		return 5;
+	}
+
 	if (fetchDepends) {
 		addDepends(dls);
 	}
