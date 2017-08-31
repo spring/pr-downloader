@@ -169,6 +169,7 @@ bool DownloadSetConfig(CONFIG type, const void* value)
 		case CONFIG_FILESYSTEM_WRITEPATH: {
 			std::string path((const char*)value);
 			fileSystem->setWritePath(path);
+			path = fileSystem->getSpringDir();
 			LOG_INFO("Free disk space: %d MB", CFileSystem::getMBsFree(path));
 			return true;
 		}

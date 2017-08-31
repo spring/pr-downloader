@@ -122,6 +122,7 @@ int main(int argc, char** argv)
 
 	bool res = true;
 	bool removeinvalid = false;
+	bool fsset = false;
 
 	while (true) {
 		const int c = getopt_long(argc, argv, "", long_options, nullptr);
@@ -133,6 +134,7 @@ int main(int argc, char** argv)
 				break;
 			}
 			case FILESYSTEM_WRITEPATH: {
+				fsset = true;
 				DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, optarg);
 				break;
 			}
@@ -142,6 +144,9 @@ int main(int argc, char** argv)
 			default:
 				break;
 		}
+	}
+	if (!fsset) {
+		DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, "");
 	}
 
 	while (true) {
