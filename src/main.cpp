@@ -122,9 +122,30 @@ int main(int argc, char** argv)
 
 	bool res = true;
 	bool removeinvalid = false;
+
 	while (true) {
-		int option_index = 0;
-		int c = getopt_long(argc, argv, "", long_options, &option_index);
+		const int c = getopt_long(argc, argv, "", long_options, nullptr);
+		if (c == -1)
+			break;
+		switch(c) {
+			case RAPID_VALIDATE_DELETE: {
+				removeinvalid = true;
+				break;
+			}
+			case FILESYSTEM_WRITEPATH: {
+				DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, optarg);
+				break;
+			}
+			case DISABLE_LOGGING:
+				DownloadDisableLogging(true);
+				break;
+			default:
+				break;
+		}
+	}
+
+	while (true) {
+		const int c = getopt_long(argc, argv, "", long_options, nullptr);
 		if (c == -1)
 			break;
 		switch (c) {
@@ -136,20 +157,12 @@ int main(int argc, char** argv)
 				DownloadRapidValidate(removeinvalid);
 				break;
 			}
-			case RAPID_VALIDATE_DELETE: {
-				removeinvalid = true;
-				break;
-			}
 			case FILESYSTEM_DUMPSDP: {
 				DownloadDumpSDP(optarg);
 				break;
 			}
 			case FILESYSTEM_VALIDATESDP: {
 				ValidateSDP(optarg);
-				break;
-			}
-			case FILESYSTEM_WRITEPATH: {
-				DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, optarg);
 				break;
 			}
 			case DOWNLOAD_MAP: {
@@ -176,9 +189,6 @@ int main(int argc, char** argv)
 				}
 				break;
 			}
-			case DISABLE_LOGGING:
-				DownloadDisableLogging(true);
-				break;
 			case HELP:
 			default: {
 				show_help(argv[0]);
