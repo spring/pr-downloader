@@ -1,4 +1,6 @@
-# pr-downloader - tool to download maps and games for the Spring engine
+# pr-downloader
+
+A tool to download maps and games for the Spring engine
 
 ## Usage
 
