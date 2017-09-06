@@ -1,7 +1,35 @@
-#pr-downloader - tool to download maps and games for the Spring engine
+# pr-downloader
 
-on the springrts.com wiki you can find [compile instructions and usage](https://springrts.com/wiki/pr-downloader).
+A tool to download maps and games for the Spring engine
 
+## Usage
+
+On the springrts.com wiki you can find [usage instructions](https://springrts.com/wiki/pr-downloader).
+
+## Build Instructions
+
+```
+cmake .
+make
+```
+
+### MacOS Dependencies
+
+You may find that `cmake .` complains certain libraries are unavailable, these can be installed via homebrew amongst other methods. You might also require `cmake` itself, the following homebrew command will install these for you:
+
+```
+brew cmake install minizip jsoncpp clang-format boost
+```
+
+### Linux Dependencies
+
+@TODO: WIP
+
+### Windows Dependencies
+
+@TODO: WIP
+
+## Boost
 
 This software uses boost:
 
