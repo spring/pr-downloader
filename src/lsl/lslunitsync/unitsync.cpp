@@ -575,9 +575,9 @@ StringVector Unitsync::GetUnitsList(const std::string& gamename)
 {
 	assert(!gamename.empty());
 	StringVector cache;
-	GetGameHash(gamename);
 	if (!GameExists(gamename))
 		return cache;
+	GetGameHash(gamename);
 	const std::string cachefile = GetUnitsCacheFilePath(gamename);
 	TRY_LOCK(cache)
 
