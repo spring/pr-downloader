@@ -57,8 +57,11 @@ set(PRDOWNLOADER_LIBS
 	Downloader
 )
 
+add_library(curl UNKNOWN IMPORTED)
+set_property(TARGET curl PROPERTY IMPORTED_LOCATION "${CURL_LIBRARIES}")
+
 target_link_libraries(Downloader
-	${CURL_LIBRARIES}
+	curl
 	${OPENSSL_LIBRARIES}
 	${WIN32LIBS}
 	${PRD_JSONCPP_LIBRARIES}
