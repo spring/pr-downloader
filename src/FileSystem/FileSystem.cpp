@@ -192,8 +192,7 @@ bool CFileSystem::setWritePath(const std::string& path)
 		}
 	}
 	LOG_INFO("Using filesystem-writepath: %s", springdir.c_str());
-	createSubdirs(springdir.c_str());
-	return true;
+	return createSubdirs(springdir.c_str());
 }
 
 CFileSystem::CFileSystem()
