@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <list>
 
+// TODO: Many of these enums are not implemented.
+// e.g. RAPID_VALIDATE_DELETE, RAPID_SEARCH, WIDGET_SEARCH...
 enum {
 	RAPID_DOWNLOAD = 0,
 	RAPID_VALIDATE,
@@ -193,6 +195,10 @@ int main(int argc, char** argv)
 					LOG_ERROR("No engine version found for %s", optarg);
 					res = false;
 				}
+				break;
+			}
+			case HTTP_SEARCH: {
+				printf("Not implemented\n");
 				break;
 			}
 			case HELP: {
