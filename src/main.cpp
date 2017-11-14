@@ -149,6 +149,7 @@ int main(int argc, char** argv)
 		DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, "");
 	}
 
+	optind = 1; // reset argv scanning
 	while (true) {
 		const int c = getopt_long(argc, argv, "", long_options, nullptr);
 		if (c == -1)
@@ -194,8 +195,7 @@ int main(int argc, char** argv)
 				}
 				break;
 			}
-			case HELP:
-			default: {
+			case HELP: {
 				show_help(argv[0]);
 				break;
 			}
