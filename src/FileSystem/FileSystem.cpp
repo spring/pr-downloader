@@ -133,7 +133,7 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData>& fil
 		memcpy(fd.crc32, &c_crc32, 4);
 		fd.size = parse_int32(c_size);
 		files.push_back(fd);
-		
+
 		HashMD5 nameMd5;
 		nameMd5.Init();
 		nameMd5.Update(fd.name.data(), fd.name.size());
@@ -164,10 +164,6 @@ bool CFileSystem::setWritePath(const std::string& path)
 {
 
 	if (!path.empty()) {
-		if (!directoryExists(path)) {
-			LOG_ERROR("filesystem-writepath doesn't exist: %s", path.c_str());
-			return false;
-		}
 		springdir = path;
 	} else {
 #ifndef WIN32
@@ -196,6 +192,7 @@ bool CFileSystem::setWritePath(const std::string& path)
 		}
 	}
 	LOG_INFO("Using filesystem-writepath: %s", springdir.c_str());
+	createSubdirs(springdir.c_str());
 	return true;
 }
 
@@ -742,4 +739,3 @@ unsigned long CFileSystem::getMBsFree(const std::string& path)
 	return ((uint64_t)st.f_bsize * st.f_bavail) / (1024 * 1024);
 #endif
 }
-
