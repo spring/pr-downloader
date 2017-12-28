@@ -202,7 +202,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
 			buf_pos += toskip;
 			if (sdp->skipped == LENGTH_SIZE) { // all length bytes read, parse
 				fd.compsize = parse_int32(sdp->cursize_buf);
-				assert(fd.size + 2000 >= fd.compsize);
+				assert(fd.size + 5000 >= fd.compsize); // compressed file should be smaller than uncompressed file
 			}
 		}
 		if (sdp->skipped == LENGTH_SIZE) { // length bytes read
