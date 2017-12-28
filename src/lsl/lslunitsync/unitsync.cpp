@@ -925,6 +925,7 @@ void Unitsync::PrefetchMap(const std::string& mapname)
 		LslDebug("cache thread not initialized %s", "PrefetchMap");
 		return;
 	}
+	LslInfo("PrefetchMap %s", mapname.c_str());
 	if (supportsManualUnLoad) {
 		susynclib().AddAllArchives(mapname);
 	}
@@ -964,11 +965,13 @@ void Unitsync::PrefetchMap(const std::string& mapname)
 	if (supportsManualUnLoad) {
 		susynclib().RemoveAllArchives();
 	}
+	LslInfo("PrefetchMap done", mapname.c_str());
 }
 
 void Unitsync::PrefetchGame(const std::string& gamename)
 {
 	assert(!gamename.empty());
+	LslInfo("PrefetchGame %s", gamename.c_str());
 	susynclib().SetCurrentMod(gamename);
 	GetGameHash(gamename);
 	{
@@ -1018,6 +1021,7 @@ void Unitsync::PrefetchGame(const std::string& gamename)
 		lslcache.Set(GetUnitsCacheFilePath(gamename), units);
 	}
 	susynclib().UnSetCurrentMod();
+	LslInfo("PrefetchGame %s done", gamename.c_str());
 }
 
 boost::signals2::connection Unitsync::RegisterEvtHandler(const StringSignalSlotType& handler)
