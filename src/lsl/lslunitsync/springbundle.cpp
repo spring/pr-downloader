@@ -18,6 +18,7 @@ bool SpringBundle::GetBundleVersion()
 	if (!Util::FileExists(unitsync)) {
 		return false;
 	}
+	LslInfo("Trying to load %s", unitsync.c_str());
 	void* temphandle = _LoadLibrary(unitsync);
 	if (temphandle == nullptr)
 		return false;
