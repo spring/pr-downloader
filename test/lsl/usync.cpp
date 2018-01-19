@@ -8,15 +8,10 @@
 #include <cmath>
 #include <iostream>
 
-extern void lsllogerror(char const*, ...)
-{
-}
-extern void lsllogdebug(char const*, ...)
-{
-}
-extern void lsllogwarning(char const*, ...)
-{
-}
+extern void lsllogerror(char const*, ...){}
+extern void lsllogdebug(char const*, ...){}
+extern void lsllogwarning(char const*, ...){}
+extern void lslloginfo(char const*, ...){}
 
 void dummySync()
 {
