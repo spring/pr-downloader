@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.1)
 project(pr-downloader)
 
 
@@ -46,36 +46,8 @@ if(PRD_CLEAR_COMPILER_FLAGS)
 	SET(CMAKE_SHARED_LINKER_FLAGS "")
 endif()
 
-include(TestCXXAcceptsFlag)
-
-MACRO(AddSTDFlag FLAG)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAG} ")
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${FLAG} ")
-	set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} ${FLAG} ")
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${FLAG} ")
-	set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} ${FLAG} ")
-	set(CXX_STD0X_FLAGS "${FLAG}" )
-ENDMACRO(AddSTDFlag FLAG)
-
-if ("${CMAKE_CXX_FLAGS}" MATCHES "-std=")
-	message(STATUS "-std= flag already set!")
-else()
-	set(CXX_STD0X_FLAGS FALSE)
-	foreach(f -std=c++17 -std=c++11 -std=gnu++11 -std=c++0x)
-	        MATH(EXPR i "${i}+1") #cmake has working unset :-|
-	        CHECK_CXX_ACCEPTS_FLAG("${f}" ACCEPTSFLAG${i})
-	        if(${ACCEPTSFLAG${i}} AND NOT CXX_STD0X_FLAGS)
-	                message(STATUS "Using ${f}")
-	                AddSTDFlag("${f}")
-	                set(CXX_STD0X_FLAGS TRUE)
-			break()
-	        endif()
-	endforeach()
-endif()
-
-if(NOT CXX_STD0X_FLAGS)
-        message(FATAL_ERROR "you need a c++11 compatible compiler")
-endif()
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 MESSAGE(STATUS "PR-Downloader version: ${PR_DOWNLOADER_VERSION}")
 if   (MINGW)
