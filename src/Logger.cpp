@@ -86,9 +86,9 @@ void LOG_PROGRESS(long done, long total, bool forceOutput)
 	int dotz = percentage * totaldotz;
 	for (int i = 0; i < totaldotz; i++) {
 		if (i >= dotz)
-			printf(" "); // blank
+			L_LOG(L_RAW, " "); // blank
 		else
-			printf("="); // full
+			L_LOG(L_RAW, "="); // full
 	}
 	// and back to line begin - do not forget the fflush to avoid output buffering
 	// problems!

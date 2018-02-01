@@ -3,8 +3,6 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <stdio.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif

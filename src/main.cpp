@@ -10,7 +10,6 @@
 #include <unistd.h>
 #include <string>
 #include <getopt.h>
-#include <stdio.h>
 #include <list>
 
 // TODO: Many of these enums are not implemented.
@@ -198,7 +197,7 @@ int main(int argc, char** argv)
 				break;
 			}
 			case HTTP_SEARCH: {
-				printf("Not implemented\n");
+				LOG_ERROR("Not implemented");
 				break;
 			}
 			case HELP: {

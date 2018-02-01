@@ -4,7 +4,6 @@
 #include "FileSystem/FileSystem.h"
 #include "Logger.h"
 
-#include <stdio.h>
 #include <string.h>
 #include <zlib.h>
 #include <time.h>
