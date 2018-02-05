@@ -37,8 +37,6 @@ void L_LOG(L_LEVEL level, const char* format, ...);
 #define LOG_DEBUG(fmt, ...)
 #endif
 
-void LOG_DOWNLOAD(const char* filename);
-
 /**
 	*	output progress bar
 	*	@param done bytes already downloaded

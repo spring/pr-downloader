@@ -70,11 +70,6 @@ void L_LOG(L_LEVEL level, const char* format...)
 	va_end(args);
 }
 
-void LOG_DOWNLOAD(const char* filename)
-{
-	L_LOG(L_RAW, "[Download] %s\n", filename);
-}
-
 void LOG_PROGRESS(long done, long total, bool forceOutput)
 {
 	static unsigned long lastlogtime = 0;

@@ -83,7 +83,8 @@ bool CRapidDownloader::download_name(IDownload* download, int reccounter,
 			continue;
 		downloaded.insert(sdp.getMD5());
 
-		LOG_DOWNLOAD(sdp.getName().c_str());
+		LOG_INFO ("[Download] %s", sdp.getName().c_str());
+
 		if (!sdp.download(download)) {
 			return false;
 		}
