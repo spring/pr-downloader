@@ -154,7 +154,7 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
 {
 	if (IDownloader::AbortDownloads())
 		return -1;
-	assert(CURL_MAX_WRITE_SIZE > size);
+	assert(CURL_MAX_WRITE_SIZE > size * nmemb);
 	char buf[CURL_MAX_WRITE_SIZE];
 	memcpy(&buf, tmp, size * nmemb);
 	if (!sdp->downloadInitialized) {
