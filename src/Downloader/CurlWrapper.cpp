@@ -21,16 +21,17 @@ CurlWrapper::CurlWrapper()
 	curl_easy_setopt(handle, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(handle, CURLOPT_FOLLOWLOCATION, 1);
 
-	list = NULL;
+	list = nullptr;
 	list = curl_slist_append(list, "Cache-Control: no-cache");
 	curl_easy_setopt(handle, CURLOPT_HTTPHEADER, list);
 }
 
 CurlWrapper::~CurlWrapper()
 {
-	curl_easy_cleanup(handle);
-	handle = NULL;
 	curl_slist_free_all(list); /* free the list again */
+	curl_easy_cleanup(handle);
+	handle = nullptr;
+	list = nullptr;
 }
 
 std::string CurlWrapper::escapeUrl(const std::string& url)
