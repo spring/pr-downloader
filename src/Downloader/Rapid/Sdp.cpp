@@ -149,14 +149,11 @@ bool CSdp::download(IDownload* dl)
         the filename is read from the sdp-list (created at request start)
         filesize is read from the http-data received (could overlap!)
 */
-static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
+static size_t write_streamed_data(const void* buf, size_t size, size_t nmemb,
 				  CSdp* sdp)
 {
 	if (IDownloader::AbortDownloads())
 		return -1;
-	assert(CURL_MAX_WRITE_SIZE > size * nmemb);
-	char buf[CURL_MAX_WRITE_SIZE];
-	memcpy(&buf, tmp, size * nmemb);
 	if (!sdp->downloadInitialized) {
 		sdp->list_it = sdp->files.begin();
 		sdp->downloadInitialized = true;
@@ -164,9 +161,9 @@ static size_t write_streamed_data(const void* tmp, size_t size, size_t nmemb,
 		sdp->file_name = "";
 		sdp->skipped = 0;
 	}
-	char* buf_start = (char*)&buf;
+	const char* buf_start = (const char*)buf;
 	const char* buf_end = buf_start + size * nmemb;
-	char* buf_pos = buf_start;
+	const char* buf_pos = buf_start;
 
 	while (buf_pos < buf_end) {		// all bytes written?
 		if (sdp->file_handle == NULL) { // no open file, create one
