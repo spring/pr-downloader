@@ -6,32 +6,35 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define WEAK __attribute__((weak))
 // Logging functions in standalone mode
-
-// prdlograw is supposed to flush after printing (mostly to stdout/err
+#define WEAK __attribute__((weak))
+// prdLogRaw is supposed to flush after printing (mostly to stdout/err
 // for progress bars and such).
-void WEAK prdlograw(const char* format, va_list args)
+void WEAK prdLogRaw(const char* /*fileName*/, int /*line*/, const char* /*funcName*/,
+                    const char* format, va_list args)
 {
 	vprintf(format, args);
 	fflush(stdout);
 }
 // Normal logging
-void WEAK prdlogerror(const char* format, va_list args)
+void WEAK prdLogError(const char* fileName, int line, const char* funcName,
+                      const char* format, va_list args)
 {
-	fprintf(stderr, "[Error] ");
+	fprintf(stderr, "[Error] %s:%d:%s():", fileName, line, funcName);
 	vfprintf(stderr, format, args);
 	fprintf(stderr, "\n");
 }
-void WEAK prdloginfo(const char* format, va_list args)
+void WEAK prdLogInfo(const char* fileName, int line, const char* funcName,
+                     const char* format, va_list args)
 {
-	printf("[Info] ");
+	printf("[Info] %s:%d:%s():", fileName, line, funcName);
 	vprintf(format, args);
 	printf("\n");
 }
-void WEAK prdlogdebug(const char* format, va_list args)
+void WEAK prdLogDebug(const char* fileName, int line, const char* funcName,
+                      const char* format, va_list args)
 {
-	printf("[Debug] ");
+	printf("[Debug] %s:%d:%s():", fileName, line, funcName);
 	vprintf(format, args);
 	printf("\n");
 }
@@ -44,7 +47,8 @@ void LOG_DISABLE(bool disableLogging)
 	logEnabled = !disableLogging;
 }
 
-void L_LOG(L_LEVEL level, const char* format...)
+void L_LOG(const char* fileName, int line, const char* funName,
+           L_LEVEL level, const char* format...)
 {
 	if (!logEnabled) {
 		return;
@@ -54,17 +58,17 @@ void L_LOG(L_LEVEL level, const char* format...)
 	va_start(args, format);
 	switch (level) {
 		case L_RAW:
-			prdlograw (format, args);
+			prdLogRaw(fileName, line, funName, format, args);
 			break;
 		default:
 		case L_ERROR:
-			prdlogerror (format, args);
+			prdLogError(fileName, line, funName, format, args);
 			break;
 		case L_INFO:
-			prdloginfo (format, args);
+			prdLogInfo(fileName, line, funName, format, args);
 			break;
 		case L_DEBUG:
-			prdlogdebug (format, args);
+			prdLogDebug(fileName, line, funName, format, args);
 			break;
 	}
 	va_end(args);
@@ -100,17 +104,17 @@ void LOG_PROGRESS(long done, long total, bool forceOutput)
 		return;
 	lastPercentage = percentage;
 
-	L_LOG(L_RAW, "[Progress] %3.0f%% [", percentage * 100.0f);
+	LOG("[Progress] %3.0f%% [", percentage * 100.0f);
 	int totaldotz = 30; // how wide you want the progress meter to be
 	int dotz = percentage * totaldotz;
 	for (int i = 0; i < totaldotz; i++) {
 		if (i >= dotz)
-			L_LOG(L_RAW, " "); // blank
+			LOG(" "); // blank
 		else
-			L_LOG(L_RAW, "="); // full
+			LOG("="); // full
 	}
 	// and back to line begin - do not forget the fflush to avoid output buffering
 	// problems!
-	L_LOG(L_RAW, "] %ld/%ld ", done, total);
-	L_LOG(L_RAW, "\r");
+	LOG("] %ld/%ld ", done, total);
+	LOG("\r");
 }

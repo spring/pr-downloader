@@ -19,20 +19,21 @@ enum L_LEVEL {
 /**
 	*	plain log output
 	*/
-void L_LOG(L_LEVEL level, const char* format, ...);
+void L_LOG(const char* fileName, int line, const char* funcName,
+           L_LEVEL level, const char* format, ...);
 
 #define LOG(...) \
-	L_LOG(L_RAW, __VA_ARGS__)
+	L_LOG(__FILE__, __LINE__, __FUNCTION__, L_RAW, __VA_ARGS__)
 
-#define LOG_ERROR(fmt, ...) \
-	L_LOG(L_ERROR, "%s:%d:%s(): " fmt, __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__)
+#define LOG_ERROR(...) \
+	L_LOG(__FILE__, __LINE__, __FUNCTION__, L_ERROR, __VA_ARGS__)
 
 #define LOG_INFO(...) \
-	L_LOG(L_INFO, __VA_ARGS__)
+	L_LOG(__FILE__, __LINE__, __FUNCTION__, L_INFO, __VA_ARGS__)
 
 #ifndef NDEBUG
-#define LOG_DEBUG(fmt, ...) \
-	L_LOG(L_DEBUG, "%s:%d:%s(): " fmt, __FILE__, __LINE__, __FUNCTION__, ##__VA_ARGS__);
+#define LOG_DEBUG(...) \
+	L_LOG(__FILE__, __LINE__, __FUNCTION__, L_DEBUG, __VA_ARGS__);
 #else
 #define LOG_DEBUG(fmt, ...)
 #endif
