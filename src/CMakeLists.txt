@@ -32,7 +32,6 @@ add_library(Downloader STATIC
 	FileSystem/HashSHA1.cpp
 	FileSystem/IHash.cpp
 	Util.cpp
-	Logger.cpp
 	Version.cpp
 	lib/base64/base64.cpp
 	${archivessrc}
