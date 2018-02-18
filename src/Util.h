@@ -45,11 +45,6 @@ unsigned int intmin(int x, int y);
 */
 bool urlToPath(const std::string& url, std::string& path);
 
-/**
- *	returns the time
- */
-unsigned long getTime();
-
 /*
         convert std::wstring to std::string
 */

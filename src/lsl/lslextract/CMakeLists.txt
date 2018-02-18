@@ -24,7 +24,7 @@ TARGET_LINK_LIBRARIES(lslextract
 )
 
 target_include_directories(lslextract
-	PRIVATE ${libSpringLobby_SOURCE_DIR}/src
-	PRIVATE ${LSL_JSONCPP_INCLUDE_DIR}
+	PRIVATE ${pr-downloader_SOURCE_DIR}/src/lsl
+	PRIVATE ${PRD_JSONCPP_INCLUDE_DIR}
 )
 

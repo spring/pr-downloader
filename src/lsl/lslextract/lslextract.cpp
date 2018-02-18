@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	LSL::Util::config().ConfigurePaths(argv[1], argv[2], "");
+	LSL::Util::config().ConfigurePaths(argv[1], argv[2], "", "");
 	LSL::usync().LoadUnitSyncLib(argv[2]);
 
 	runServer("localhost", "9200", "");

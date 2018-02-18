@@ -6,7 +6,6 @@
 
 #include <string.h>
 #include <zlib.h>
-#include <time.h>
 
 std::vector<std::string> tokenizeString(const std::string& str, char c)
 {
@@ -92,11 +91,6 @@ bool urlToPath(const std::string& url, std::string& path)
 		}
 	}
 	return true;
-}
-
-unsigned long getTime()
-{
-	return time(NULL);
 }
 
 #ifdef WIN32

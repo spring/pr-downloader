@@ -13,13 +13,14 @@ enum L_LEVEL {
 	L_ERROR = 1,
 	L_RAW = 2,
 	L_INFO = 3,
-	L_DEBUG = 4
+	L_WARN = 4,
+	L_DEBUG = 5,
 };
 
 /**
 	*	plain log output
 	*/
-void L_LOG(const char* fileName, int line, const char* funcName,
+extern void L_LOG(const char* fileName, int line, const char* funcName,
            L_LEVEL level, const char* format, ...);
 
 #define LOG(...) \
@@ -30,6 +31,9 @@ void L_LOG(const char* fileName, int line, const char* funcName,
 
 #define LOG_INFO(...) \
 	L_LOG(__FILE__, __LINE__, __FUNCTION__, L_INFO, __VA_ARGS__)
+
+#define LOG_WARN(...) \
+	L_LOG(__FILE__, __LINE__, __FUNCTION__, L_WARN, __VA_ARGS__)
 
 #ifndef NDEBUG
 #define LOG_DEBUG(...) \
@@ -44,7 +48,7 @@ void L_LOG(const char* fileName, int line, const char* funcName,
 	*	@param total total bytes to download
 	*	@param forceOutput force output
 	*/
-void LOG_PROGRESS(long done, long total, bool forceOutput = false);
+extern void LOG_PROGRESS(long done, long total, bool forceOutput = false);
 
 #ifdef __cplusplus
 }

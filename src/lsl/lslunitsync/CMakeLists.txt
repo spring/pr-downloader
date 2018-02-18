@@ -10,6 +10,7 @@ SET(libUnitsyncSrc
 	"${CMAKE_CURRENT_SOURCE_DIR}/unitsync.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/unitsync_cache.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/springbundle.cpp"
+	"${CMAKE_CURRENT_SOURCE_DIR}/../../Logger.cpp"
 	)
 FILE( GLOB RECURSE libUnitsyncHeader "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
 

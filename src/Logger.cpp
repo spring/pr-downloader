@@ -1,37 +1,46 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "Logger.h"
-#include "Util.h"
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <time.h>
 
 // Logging functions in standalone mode
-#define WEAK __attribute__((weak))
 // prdLogRaw is supposed to flush after printing (mostly to stdout/err
 // for progress bars and such).
-void WEAK prdLogRaw(const char* /*fileName*/, int /*line*/, const char* /*funcName*/,
+void prdLogRaw(const char* /*fileName*/, int /*line*/, const char* /*funcName*/,
                     const char* format, va_list args)
 {
 	vprintf(format, args);
 	fflush(stdout);
 }
+
 // Normal logging
-void WEAK prdLogError(const char* fileName, int line, const char* funcName,
+void prdLogError(const char* fileName, int line, const char* funcName,
                       const char* format, va_list args)
 {
 	fprintf(stderr, "[Error] %s:%d:%s():", fileName, line, funcName);
 	vfprintf(stderr, format, args);
 	fprintf(stderr, "\n");
 }
-void WEAK prdLogInfo(const char* fileName, int line, const char* funcName,
+
+void prdLogWarn(const char* fileName, int line, const char* funcName,
+                      const char* format, va_list args)
+{
+	printf("[Warn] %s:%d:%s():", fileName, line, funcName);
+	vprintf(format, args);
+	printf("\n");
+}
+
+void prdLogInfo(const char* fileName, int line, const char* funcName,
                      const char* format, va_list args)
 {
 	printf("[Info] %s:%d:%s():", fileName, line, funcName);
 	vprintf(format, args);
 	printf("\n");
 }
-void WEAK prdLogDebug(const char* fileName, int line, const char* funcName,
+void prdLogDebug(const char* fileName, int line, const char* funcName,
                       const char* format, va_list args)
 {
 	printf("[Debug] %s:%d:%s():", fileName, line, funcName);
@@ -76,16 +85,14 @@ void L_LOG(const char* fileName, int line, const char* funName,
 
 void LOG_PROGRESS(long done, long total, bool forceOutput)
 {
-	static unsigned long lastlogtime = 0;
+	static time_t lastlogtime = 0;
 	static float lastPercentage = 0.0f;
 
 	if (!logEnabled) {
 		return;
 	}
 
-	unsigned long now = getTime(); // needs to be here atm to avoid static link
-				       // failure because of circular deps between
-				       // libs
+	const time_t now = time(nullptr);
 
 	if (lastlogtime < now) {
 		lastlogtime = now;
