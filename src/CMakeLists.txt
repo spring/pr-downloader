@@ -131,6 +131,7 @@ if (PRD_CONSOLETOOL)
 	add_executable(${PRDOWNLOADER}
 		${PRD_ICON}
 		main.cpp
+		Logger.cpp
 	)
 
 	if (PRD_LINK_STATIC)

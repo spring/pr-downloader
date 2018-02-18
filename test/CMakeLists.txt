@@ -13,6 +13,7 @@ Else()
 
 	SET(prd_testsrc
 		${CMAKE_CURRENT_SOURCE_DIR}/test.cpp
+		${pr-downloader_SOURCE_DIR}/src/Logger.cpp
 	)
 
 	ADD_EXECUTABLE(prd_test WIN32 MACOSX_BUNDLE ${prd_testsrc} )
@@ -40,6 +41,7 @@ if (PRD_ENABLE_LSL)
 SET(basic_testSrc
 	${CMAKE_CURRENT_SOURCE_DIR}/lsl/basic.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/lsl/usync.cpp
+	${pr-downloader_SOURCE_DIR}/src/Logger.cpp
 	)
 
 ADD_EXECUTABLE(libSpringLobby_test WIN32 MACOSX_BUNDLE ${basic_testSrc} )

@@ -8,6 +8,7 @@ add_executable(lslextract
 	server/request_parser.cpp
 	server/reply.cpp
 	server/mime_types.cpp
+	${pr-downloader_SOURCE_DIR}/src/Logger.cpp
 )
 FIND_PACKAGE(PNG REQUIRED)
 FIND_PACKAGE(X11 REQUIRED)
