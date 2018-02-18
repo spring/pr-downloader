@@ -73,6 +73,9 @@ void L_LOG(const char* fileName, int line, const char* funName,
 		case L_ERROR:
 			prdLogError(fileName, line, funName, format, args);
 			break;
+		case L_WARN:
+			prdLogWarn(fileName, line, funName, format, args);
+			break;
 		case L_INFO:
 			prdLogInfo(fileName, line, funName, format, args);
 			break;
