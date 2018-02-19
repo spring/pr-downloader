@@ -9,7 +9,7 @@
 // Logging functions in standalone mode
 // prdLogRaw is supposed to flush after printing (mostly to stdout/err
 // for progress bars and such).
-void prdLogRaw(const char* /*fileName*/, int /*line*/, const char* /*funcName*/,
+static void prdLogRaw(const char* /*fileName*/, int /*line*/, const char* /*funcName*/,
                     const char* format, va_list args)
 {
 	vprintf(format, args);
@@ -17,7 +17,7 @@ void prdLogRaw(const char* /*fileName*/, int /*line*/, const char* /*funcName*/,
 }
 
 // Normal logging
-void prdLogError(const char* fileName, int line, const char* funcName,
+static void prdLogError(const char* fileName, int line, const char* funcName,
                       const char* format, va_list args)
 {
 	fprintf(stderr, "[Error] %s:%d:%s():", fileName, line, funcName);
@@ -25,7 +25,7 @@ void prdLogError(const char* fileName, int line, const char* funcName,
 	fprintf(stderr, "\n");
 }
 
-void prdLogWarn(const char* fileName, int line, const char* funcName,
+static void prdLogWarn(const char* fileName, int line, const char* funcName,
                       const char* format, va_list args)
 {
 	printf("[Warn] %s:%d:%s():", fileName, line, funcName);
@@ -33,14 +33,15 @@ void prdLogWarn(const char* fileName, int line, const char* funcName,
 	printf("\n");
 }
 
-void prdLogInfo(const char* fileName, int line, const char* funcName,
+static void prdLogInfo(const char* fileName, int line, const char* funcName,
                      const char* format, va_list args)
 {
 	printf("[Info] %s:%d:%s():", fileName, line, funcName);
 	vprintf(format, args);
 	printf("\n");
 }
-void prdLogDebug(const char* fileName, int line, const char* funcName,
+
+static void prdLogDebug(const char* fileName, int line, const char* funcName,
                       const char* format, va_list args)
 {
 	printf("[Debug] %s:%d:%s():", fileName, line, funcName);
@@ -56,7 +57,7 @@ void LOG_DISABLE(bool disableLogging)
 	logEnabled = !disableLogging;
 }
 
-void L_LOG(const char* fileName, int line, const char* funName,
+extern void L_LOG(const char* fileName, int line, const char* funName,
            L_LEVEL level, const char* format...)
 {
 	if (!logEnabled) {
@@ -86,7 +87,7 @@ void L_LOG(const char* fileName, int line, const char* funName,
 	va_end(args);
 }
 
-void LOG_PROGRESS(long done, long total, bool forceOutput)
+extern void LOG_PROGRESS(long done, long total, bool forceOutput)
 {
 	static time_t lastlogtime = 0;
 	static float lastPercentage = 0.0f;

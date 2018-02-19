@@ -105,6 +105,26 @@ else()
 	find_package(ZLIB REQUIRED)
 endif()
 
+find_program(CURL_CONFIG_EXECUTABLE NAMES curl-config ONLY_CMAKE_FIND_ROOT_PATH)
+if (wxWidgets_CONFIG_EXECUTABLE-NOTFOUND)
+        message(FATAL_ERROR "couldn't find curl-config!")
+else()
+        message(STATUS "found curl-config: ${CURL_CONFIG_EXECUTABLE}")
+endif()
+
+if (PREFER_STATIC_LIBS)
+	set(CURLSTATIC "--static")
+else()
+	set(CURLSTATIC "")
+endif()
+
+execute_process(COMMAND ${CURL_CONFIG_EXECUTABLE} "--libs" ${CURLSTATIC}
+        OUTPUT_VARIABLE CURL_LD_FLAGS
+        OUTPUT_STRIP_TRAILING_WHITESPACE )
+message(STATUS "Using CURL_LD_FLAGS: ${CURL_LD_FLAGS}")
+
+
+
 if (PRD_JSONCPP_INTERNAL)
         # use bundled JsonCpp
         set(PRD_JSONCPP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/jsoncpp/include)

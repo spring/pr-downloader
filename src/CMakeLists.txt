@@ -58,6 +58,7 @@ set(PRDOWNLOADER_LIBS
 
 target_link_libraries(Downloader
 	${CURL_LIBRARIES}
+	${CURL_LD_FLAGS}
 	${OPENSSL_LIBRARIES}
 	${WIN32LIBS}
 	${PRD_JSONCPP_LIBRARIES}
@@ -81,17 +82,13 @@ set (PRDOWNLOADER "pr-downloader")
 set (PRDOWNLOADER_SHARED ${PRDOWNLOADER}_shared)
 set (PRDOWNLOADER_STATIC ${PRDOWNLOADER}_static)
 
-
-
-
-
-
 OPTION(PRD_SHAREDLIB
 	"Enables compilation of the shared lib" ON)
 
 if (PRD_SHAREDLIB)
 	add_library(${PRDOWNLOADER_SHARED} SHARED
 		pr-downloader.cpp
+		Logger.cpp
 	)
 	if(PRD_DO_INSTALL AND (PRD_DEVELOP_FILES OR (PRD_CONSOLETOOL AND NOT PRD_LINK_STATIC)))
 		INSTALL (TARGETS ${PRDOWNLOADER_SHARED}
