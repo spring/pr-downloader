@@ -251,11 +251,11 @@ bool UnitsyncImage::Load(const std::string& path) const
 		fclose(f);
 	} catch (cimg_library::CImgIOException& c) {
 		m_data_ptr->clear();
-		LslError("%s:%d (%s) %s failed: %s", __FILE__, __LINE__, __FUNCTION__, path.c_str(), c.what());
+		LslWarning("%s:%d (%s) %s failed: %s", __FILE__, __LINE__, __FUNCTION__, path.c_str(), c.what());
 		return false;
 	} catch (cimg_library::CImgException& c) {
 		m_data_ptr->clear();
-		LslError("%s:%d (%s) %s failed: %s", __FILE__, __LINE__, __FUNCTION__, path.c_str(), c.what());
+		LslWarning("%s:%d (%s) %s failed: %s", __FILE__, __LINE__, __FUNCTION__, path.c_str(), c.what());
 		return false;
 	}
 	return true;
