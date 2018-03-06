@@ -596,9 +596,10 @@ bool CHttpDownloader::download(std::list<IDownload*>& download,
 		for (int i = 0; i < count; i++) {
 			DownloadData* dlData = new DownloadData();
 			dlData->download = dl;
-			if (!setupDownload(
-				dlData)) { // no piece found (all pieces already downloaded), skip
+			// no piece found (all pieces already downloaded), skip
+			if (!setupDownload(dlData)) {
 				LOG_ERROR("Failed to setup download %d/%d", i, count);
+				delete dlData;
 				continue;
 			}
 			downloads.push_back(dlData);
