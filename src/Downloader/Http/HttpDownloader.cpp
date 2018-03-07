@@ -598,7 +598,9 @@ bool CHttpDownloader::download(std::list<IDownload*>& download,
 			dlData->download = dl;
 			// no piece found (all pieces already downloaded), skip
 			if (!setupDownload(dlData)) {
-				LOG_ERROR("Failed to setup download %d/%d", i, count);
+				if (dl->state != IDownload::STATE_FINISHED) {
+					LOG_ERROR("Failed to setup download %d/%d", i, count);
+				}
 				delete dlData;
 				continue;
 			}
