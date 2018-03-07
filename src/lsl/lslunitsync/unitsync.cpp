@@ -170,6 +170,7 @@ void Unitsync::PopulateArchiveList()
 			name = susynclib().GetMapName(i);
 			//PrefetchMap( name ); // DEBUG
 		} catch (...) {
+			LslWarning("Failed to load %s", archivename.c_str());
 			continue;
 		}
 		assert(!name.empty());
@@ -188,6 +189,7 @@ void Unitsync::PopulateArchiveList()
 			}
 			name = GetGameInfo(i, "name");
 		} catch (...) {
+			LslWarning("Failed to load %s", archivename.c_str());
 			continue;
 		}
 		assert(!name.empty());
