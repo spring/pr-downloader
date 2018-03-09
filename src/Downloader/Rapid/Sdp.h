@@ -19,7 +19,9 @@ public:
 	CSdp(const std::string& shortname, const std::string& md5,
 	     const std::string& name, const std::string& depends,
 	     const std::string& baseUrl);
+
 	~CSdp();
+	CSdp() = delete;
 	/**
           download a game, we already know the host where to download from + the
      md5 of the sdp file
@@ -59,7 +61,6 @@ public:
 		return depends;
 	}
 	IDownload* m_download;
-	bool downloadInitialized;
 	std::list<FileData>::iterator list_it;
 	std::list<FileData> files; // list with all files of an sdp
 	CFile* file_handle;

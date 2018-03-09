@@ -20,7 +20,6 @@ CSdp::CSdp(const std::string& shortname, const std::string& md5,
 	   const std::string& name, const std::string& depends,
 	   const std::string& baseUrl)
     : m_download(NULL)
-    , downloadInitialized(false)
     , file_handle(NULL)
     , file_pos(0)
     , skipped(false)
@@ -143,100 +142,148 @@ bool CSdp::download(IDownload* dl)
 	return true;
 }
 
+static bool OpenNextFile(CSdp& sdp)
+{
+	//file already open, return
+	if (sdp.file_handle != nullptr) {
+		return true;
+	}
+
+	// get next file + open it
+	while (!sdp.list_it->download) {
+		LOG_ERROR("next file");
+		sdp.list_it++;
+	}
+	assert(sdp.list_it != sdp.files.end());
+
+	HashMD5 fileMd5;
+	FileData& fd = *(sdp.list_it);
+	fileMd5.Set(fd.md5, sizeof(fd.md5));
+	fileSystem->getPoolFilename(fileMd5.toString(), sdp.file_name);
+	sdp.file_handle = new CFile();
+	if (sdp.file_handle == NULL) {
+		LOG_ERROR("couldn't open %s", fd.name.c_str());
+		return false;
+	}
+	sdp.file_handle->Open(sdp.file_name, fd.compsize);
+	sdp.file_pos = 0;
+	return true;
+}
+
+static int GetLength(CSdp& sdp, const char* const buf_pos, const char* const buf_end)
+{
+	// calculate bytes we can skip, could overlap received bufs
+	const int toskip = intmin(buf_end - buf_pos, LENGTH_SIZE - sdp.skipped);
+	assert(toskip > 0);
+	// copy bufs avaiable
+	memcpy(sdp.cursize_buf + sdp.skipped, buf_pos, toskip);
+	sdp.skipped += toskip;
+
+	if (sdp.skipped > 0) { //size was in at least two packets
+		LOG_DEBUG("%.2x %.2x %.2x %.2x", sdp.cursize_buf[0], sdp.cursize_buf[1], sdp.cursize_buf[2], sdp.cursize_buf[3]);
+	}
+
+	// all length bytes read, parse
+	if (sdp.skipped == LENGTH_SIZE) {
+		FileData& fd = *(sdp.list_it);
+		fd.compsize = parse_int32(sdp.cursize_buf);
+		LOG_DEBUG("Read length of %d, uncompressed size from sdp: %d", fd.compsize, fd.size);
+		assert(fd.size + 5000 >= fd.compsize); // compressed file should be smaller than uncompressed file
+	}
+	return toskip;
+}
+
+static int WriteData(CSdp& sdp, const char* const buf_pos, const char* const buf_end)
+{
+	// minimum of bytes to write left in file and bytes to write left in buf
+	const FileData& fd = *(sdp.list_it);
+	const long towrite = intmin(fd.compsize - sdp.file_pos, buf_end - buf_pos);
+//	LOG_DEBUG("towrite: %d total size: %d, uncomp size: %d pos: %d", towrite, fd.compsize,fd.size, sdp.file_pos);
+	assert(towrite >= 0);
+//	assert(fd.compsize > 0); //.gz are always > 0
+
+	int res = 0;
+	if (towrite > 0) {
+		res = sdp.file_handle->Write(buf_pos, towrite);
+	}
+	if (res != towrite) {
+		LOG_ERROR("fwrite error");
+		return false;
+	}
+
+	// file finished -> next file
+	if (sdp.file_pos >= fd.compsize) {
+		sdp.file_handle->Close();
+		delete sdp.file_handle;
+		sdp.file_handle = nullptr;
+		if (!fileSystem->fileIsValid(&fd, sdp.file_name.c_str())) {
+			LOG_ERROR("File is broken?!: %s", sdp.file_name.c_str());
+			fileSystem->removeFile(sdp.file_name.c_str());
+			return -1;
+		}
+		++sdp.list_it;
+		sdp.file_pos = 0;
+		sdp.skipped = 0;
+		memset(sdp.cursize_buf, 0, 4); //safety
+	}
+	return res;
+}
+
+void dump_data(CSdp& sdp, const char* const buf_pos, const char* const buf_end)
+{
+	LOG_WARN("%s %d\n", sdp.file_name.c_str(), sdp.list_it->compsize);
+}
+
+
 /**
         write the data received from curl to the rapid pool.
 
         the filename is read from the sdp-list (created at request start)
         filesize is read from the http-data received (could overlap!)
 */
-static size_t write_streamed_data(const void* buf, size_t size, size_t nmemb,
-				  CSdp* sdp)
+static size_t write_streamed_data(const void* buf, size_t size, size_t nmemb, CSdp* psdp)
 {
+	//LOG_DEBUG("write_stream_data bytes read: %d", size * nmemb);
+	if (psdp == nullptr) {
+		LOG_ERROR("nullptr in write_stream_data");
+		return -1;
+	}
+	CSdp& sdp = *psdp;
+
 	if (IDownloader::AbortDownloads())
 		return -1;
-	if (!sdp->downloadInitialized) {
-		sdp->list_it = sdp->files.begin();
-		sdp->downloadInitialized = true;
-		sdp->file_handle = NULL;
-		sdp->file_name = "";
-		sdp->skipped = 0;
-	}
 	const char* buf_start = (const char*)buf;
 	const char* buf_end = buf_start + size * nmemb;
 	const char* buf_pos = buf_start;
 
-	while (buf_pos < buf_end) {		// all bytes written?
-		if (sdp->file_handle == NULL) { // no open file, create one
-			while (!sdp->list_it->download) { // get file
-				++sdp->list_it;
-			}
-			assert(sdp->list_it != sdp->files.end());
-
-			FileData& fd = *(sdp->list_it);
-			HashMD5 fileMd5;
-
-			fileMd5.Set(fd.md5, sizeof(fd.md5));
-			fileSystem->getPoolFilename(fileMd5.toString(), sdp->file_name);
-			sdp->file_handle = new CFile();
-			if (sdp->file_handle == NULL) {
-				LOG_ERROR("couldn't open %s", fd.name.c_str());
-				return -1;
-			}
-			sdp->file_handle->Open(sdp->file_name);
-			sdp->file_pos = 0;
+	// all bytes written?
+	while (buf_pos < buf_end) {
+		// check if we skipped all 4 bytes for
+		if (sdp.skipped < LENGTH_SIZE) {
+			const int skipped = GetLength(sdp, buf_pos, buf_end);
+			buf_pos += skipped;
 		}
-		assert(sdp->file_handle != NULL);
-		FileData& fd = *(sdp->list_it);
-		if (sdp->skipped < LENGTH_SIZE) { // check if we skipped all 4 bytes for
-						  // file length, if not so, skip them
-			const int toskip =
-			    intmin(buf_end - buf_pos,
-				   LENGTH_SIZE - sdp->skipped); // calculate bytes we can skip,
-								// could overlap received bufs
-			for (int i = 0; i < toskip; i++) {      // copy bufs avaiable
-				sdp->cursize_buf[sdp->skipped + i] = buf_pos[i];
-			}
-			sdp->skipped += toskip;
-			buf_pos += toskip;
-			if (sdp->skipped == LENGTH_SIZE) { // all length bytes read, parse
-				fd.compsize = parse_int32(sdp->cursize_buf);
-				assert(fd.size + 5000 >= fd.compsize); // compressed file should be smaller than uncompressed file
-			}
+		if (sdp.skipped < LENGTH_SIZE) {
+			LOG_ERROR("packed end, skipped: %d, bytes left: %d", sdp.skipped, buf_end - buf_pos);
+			assert(buf_pos == buf_end);
+			break;
 		}
-		if (sdp->skipped == LENGTH_SIZE) { // length bytes read
-			const int towrite =
-			    intmin(fd.compsize -
-				       sdp->file_pos, // minimum of bytes to write left in file
-						      // and bytes to write left in buf
-				   buf_end - buf_pos);
-			assert(towrite >= 0);
 
-			if (towrite == 0)
-				break;
+		assert(sdp.skipped == LENGTH_SIZE);
 
-			const int res = sdp->file_handle->Write(buf_pos, towrite);
-			if (res != towrite) {
-				LOG_ERROR("fwrite error");
-				return -1;
-			}
-			buf_pos += res;
-			sdp->file_pos += res;
+		if (!OpenNextFile(sdp))
+			return -1;
 
-			if (sdp->file_pos >=
-			    fd.compsize) { // file finished -> next file
-				sdp->file_handle->Close();
-				delete sdp->file_handle;
-				sdp->file_handle = NULL;
-				if (!fileSystem->fileIsValid(&fd, sdp->file_name.c_str())) {
-					LOG_ERROR("File is broken?!: %s", sdp->file_name.c_str());
-					fileSystem->removeFile(sdp->file_name.c_str());
-					return -1;
-				}
-				++sdp->list_it;
-				sdp->file_pos = 0;
-				sdp->skipped = 0;
-			}
+		assert(sdp.file_handle != NULL);
+		assert(sdp.list_it != sdp.files.end());
+
+		const int written = WriteData(sdp, buf_pos, buf_end);
+		if (written < 0) {
+			dump_data(sdp, buf_pos, buf_end);
+			return -1;
 		}
+		buf_pos += written;
+		sdp.file_pos += written;
 	}
 	return buf_pos - buf_start;
 }
@@ -287,6 +334,11 @@ bool CSdp::downloadStream()
 
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_URL, downloadUrl.c_str());
 
+	list_it = files.begin();
+	file_handle = NULL;
+	file_name = "";
+	skipped = 0;
+
 	const int buflen = (files.size() + 7) / 8;
 	std::vector<char> buf(buflen, 0);
 
@@ -300,14 +352,12 @@ bool CSdp::downloadStream()
 
 	int destlen = files.size() * 2;
 	std::vector<char> dest(destlen, 0);
-	LOG_DEBUG("%d %d %d", (int)files.size(), buflen, destlen);
+	LOG_DEBUG("Files: %d Buflen: %d Destlen: %d", (int)files.size(), buflen, destlen);
 
 	gzip_str(&buf[0], buflen, &dest[0], &destlen);
 
-	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEFUNCTION,
-			 write_streamed_data);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEFUNCTION, write_streamed_data);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEDATA, this);
-
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_POSTFIELDS, &dest[0]);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_POSTFIELDSIZE, destlen);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_NOPROGRESS, 0L);
