@@ -151,13 +151,18 @@ static bool OpenNextFile(CSdp& sdp)
 
 	// get next file + open it
 	while (!sdp.list_it->download) {
-		LOG_ERROR("next file");
+		//LOG_ERROR("next file");
 		sdp.list_it++;
 	}
 	assert(sdp.list_it != sdp.files.end());
 
 	HashMD5 fileMd5;
 	FileData& fd = *(sdp.list_it);
+
+	fd.compsize = parse_int32(sdp.cursize_buf);
+	// LOG_DEBUG("Read length of %d, uncompressed size from sdp: %d", fd.compsize, fd.size);
+	assert(fd.size + 5000 >= fd.compsize); // compressed file should be smaller than uncompressed file
+
 	fileMd5.Set(fd.md5, sizeof(fd.md5));
 	fileSystem->getPoolFilename(fileMd5.toString(), sdp.file_name);
 	sdp.file_handle = new CFile();
@@ -179,18 +184,22 @@ static int GetLength(CSdp& sdp, const char* const buf_pos, const char* const buf
 	memcpy(sdp.cursize_buf + sdp.skipped, buf_pos, toskip);
 	sdp.skipped += toskip;
 
-	if (sdp.skipped > 0) { //size was in at least two packets
+//	if (sdp.skipped > 0) { //size was in at least two packets
 		LOG_DEBUG("%.2x %.2x %.2x %.2x", sdp.cursize_buf[0], sdp.cursize_buf[1], sdp.cursize_buf[2], sdp.cursize_buf[3]);
-	}
+//	}
 
-	// all length bytes read, parse
-	if (sdp.skipped == LENGTH_SIZE) {
-		FileData& fd = *(sdp.list_it);
-		fd.compsize = parse_int32(sdp.cursize_buf);
-		LOG_DEBUG("Read length of %d, uncompressed size from sdp: %d", fd.compsize, fd.size);
-		assert(fd.size + 5000 >= fd.compsize); // compressed file should be smaller than uncompressed file
-	}
 	return toskip;
+}
+
+static void SafeCloseFile(CSdp& sdp)
+{
+	if (sdp.file_handle == nullptr)
+		return;
+	sdp.file_handle->Close();
+	delete sdp.file_handle;
+	sdp.file_handle = nullptr;
+	sdp.file_pos = 0;
+	sdp.skipped = 0;
 }
 
 static int WriteData(CSdp& sdp, const char* const buf_pos, const char* const buf_end)
@@ -200,7 +209,7 @@ static int WriteData(CSdp& sdp, const char* const buf_pos, const char* const buf
 	const long towrite = intmin(fd.compsize - sdp.file_pos, buf_end - buf_pos);
 //	LOG_DEBUG("towrite: %d total size: %d, uncomp size: %d pos: %d", towrite, fd.compsize,fd.size, sdp.file_pos);
 	assert(towrite >= 0);
-//	assert(fd.compsize > 0); //.gz are always > 0
+	assert(fd.compsize > 0); //.gz are always > 0
 
 	int res = 0;
 	if (towrite > 0) {
@@ -213,17 +222,13 @@ static int WriteData(CSdp& sdp, const char* const buf_pos, const char* const buf
 
 	// file finished -> next file
 	if (sdp.file_pos >= fd.compsize) {
-		sdp.file_handle->Close();
-		delete sdp.file_handle;
-		sdp.file_handle = nullptr;
+		SafeCloseFile(sdp);
 		if (!fileSystem->fileIsValid(&fd, sdp.file_name.c_str())) {
 			LOG_ERROR("File is broken?!: %s", sdp.file_name.c_str());
 			fileSystem->removeFile(sdp.file_name.c_str());
 			return -1;
 		}
 		++sdp.list_it;
-		sdp.file_pos = 0;
-		sdp.skipped = 0;
 		memset(sdp.cursize_buf, 0, 4); //safety
 	}
 	return res;
@@ -334,10 +339,10 @@ bool CSdp::downloadStream()
 
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_URL, downloadUrl.c_str());
 
+	SafeCloseFile(*this);
+
 	list_it = files.begin();
-	file_handle = NULL;
 	file_name = "";
-	skipped = 0;
 
 	const int buflen = (files.size() + 7) / 8;
 	std::vector<char> buf(buflen, 0);
@@ -365,10 +370,15 @@ bool CSdp::downloadStream()
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_PROGRESSDATA, this);
 
 	res = curl_easy_perform(curlw.GetHandle());
+
+	SafeCloseFile(*this);
+
 	/* always cleanup */
 	if (res != CURLE_OK) {
 		LOG_ERROR("Curl error: %s", curl_easy_strerror(res));
 		return false;
 	}
+
+
 	return true;
 }
