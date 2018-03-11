@@ -44,6 +44,10 @@ void CFile::Close()
 {
 	if (handle != nullptr) {
 		LOG_DEBUG("closing %s", filename.c_str());
+		if ((piecesize != -1) && (size != -1)) {
+			assert(GetSizeFromHandle() == size);
+		}
+
 		fclose(handle);
 		handle = nullptr;
 		if (IsNewFile()) {
