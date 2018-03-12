@@ -215,6 +215,9 @@ static int WriteData(CSdp& sdp, const char* const buf_pos, const char* const buf
 	if (towrite > 0) {
 		res = sdp.file_handle->Write(buf_pos, towrite);
 	}
+	if (res > 0) {
+		sdp.file_pos += res;
+	}
 	if (res != towrite) {
 		LOG_ERROR("fwrite error");
 		return false;
@@ -288,7 +291,6 @@ static size_t write_streamed_data(const void* buf, size_t size, size_t nmemb, CS
 			return -1;
 		}
 		buf_pos += written;
-		sdp.file_pos += written;
 	}
 	return buf_pos - buf_start;
 }
