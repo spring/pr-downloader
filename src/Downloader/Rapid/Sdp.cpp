@@ -64,7 +64,7 @@ bool createPoolDirs(const std::string& root)
 	return true;
 }
 
-bool CSdp::downloadSelf(IDownload* dl)
+bool CSdp::downloadSelf(IDownload* /*dl*/)
 {
 
 	const std::string tmpFile = sdpPath + ".tmp";
@@ -237,7 +237,7 @@ static int WriteData(CSdp& sdp, const char* const buf_pos, const char* const buf
 	return res;
 }
 
-void dump_data(CSdp& sdp, const char* const buf_pos, const char* const buf_end)
+void dump_data(CSdp& sdp, const char* const /*buf_pos*/, const char* const /*buf_end*/)
 {
 	LOG_WARN("%s %d\n", sdp.file_name.c_str(), sdp.list_it->compsize);
 }

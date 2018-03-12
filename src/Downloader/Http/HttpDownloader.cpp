@@ -103,7 +103,7 @@ static std::string getRequestUrl(const std::string& name,
 	return url + std::string("torrent=true&springname=") + name;
 }
 
-bool CHttpDownloader::ParseResult(const std::string& name,
+bool CHttpDownloader::ParseResult(const std::string& /*name*/,
 				  const std::string& json,
 				  std::list<IDownload*>& res)
 {
