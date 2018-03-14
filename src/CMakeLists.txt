@@ -100,11 +100,18 @@ if (PRD_SHAREDLIB)
 	target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
 endif()
 
+if (PRD_DEFAULT_LOGGER)
+	set(LOGGERCPP Logger.cpp)
+else()
+	set(LOGGERCPP )
+endif()
+
 OPTION(PRD_STATICLIB
 	"Enables compilation of the static lib" ON)
 if (PRD_STATICLIB)
 	add_library(${PRDOWNLOADER_STATIC} STATIC
 		pr-downloader.cpp
+		${LOGGERCPP}
 	)
 	if(PRD_DO_INSTALL AND PRD_DEVELOP_FILES)
 		INSTALL (TARGETS ${PRDOWNLOADER_STATIC}
