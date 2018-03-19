@@ -188,10 +188,33 @@ if (RAPIDTOOLS)
 	find_package(Lua51 REQUIRED)
 	find_package(Zip REQUIRED)
 
-	set(BUILD_CLAR OFF CACHE BOOL "" FORCE)
-	add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2)
+	# On Windows use specific platform sources
+	IF (WIN32 AND NOT CYGWIN)
+		ADD_DEFINITIONS(-DWIN32 -D_WIN32_WINNT=0x0501)
+		FILE(GLOB SRC_OS ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/win32/*.c src/win32/*.h)
+	ELSEIF (AMIGA)
+		ADD_DEFINITIONS(-DNO_ADDRINFO -DNO_READDIR_R)
+		FILE(GLOB SRC_OS ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/amiga/*.c src/amiga/*.h)
+	ELSE()
+		FILE(GLOB SRC_OS ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/unix/*.c src/unix/*.h)
+	ENDIF()
+	FILE(GLOB SRC_GIT2
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/*.c
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/*.h
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/hash/hash_generic.c
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/hash/*.h
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/transports/*.c
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/transports/*.h
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/xdiff/*.c
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src/xdiff/*.h
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/deps/http-parser/*.c
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/deps/http-parser/*.h
+	)
+
 
 	add_library (Rapid
+		${SRC_GIT2}
+		${SRC_OS}
 		rapid/ArchiveEntry.cpp
 		rapid/BitArray.cpp
 		rapid/Crc32.cpp
@@ -216,17 +239,18 @@ if (RAPIDTOOLS)
 
 	target_link_libraries (Rapid
 		pr-md5
-		git2
 		${LUA_LIBRARIES}
 		${ZIP_LIBRARIES}
 		${ZLIB_LIBRARIES}
 	)
 	target_include_directories(Rapid
 		PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-		PUBLIC lib/libgit2/include
 		PUBLIC ${LUA_INCLUDE_DIR}
 		PUBLIC ${ZIP_INCLUDE_DIR}
 		PUBLIC ${ZLIB_INCLUDE_DIR}
+		PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/include
+		PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src
+		PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/deps/http-parser
 	)
 	if (MINIZIP_FOUND)
 		target_link_libraries(Rapid ${MINIZIP_LIBRARIES})
