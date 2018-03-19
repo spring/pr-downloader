@@ -137,6 +137,9 @@ if (PRD_CONSOLETOOL)
 		main.cpp
 		Logger.cpp
 	)
+	target_include_directories(${PRDOWNLOADER}
+		PRIVATE ${pr-downloader_SOURCE_DIR}/src
+	)
 
 	if (PRD_LINK_STATIC)
 		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
@@ -179,3 +182,68 @@ OPTION(PRD_ENABLE_LSL "compile lsl modules" OFF)
 if (PRD_ENABLE_LSL)
 	add_subdirectory(lsl)
 endif()
+
+OPTION(RAPIDTOOLS "compile rapid tools" OFF)
+if (RAPIDTOOLS)
+	find_package(Lua51 REQUIRED)
+	find_package(Zip REQUIRED)
+
+	set(BUILD_CLAR OFF CACHE BOOL "" FORCE)
+	add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2)
+
+	add_library (Rapid
+		rapid/ArchiveEntry.cpp
+		rapid/BitArray.cpp
+		rapid/Crc32.cpp
+		rapid/FileEntry.cpp
+		rapid/Gzip.cpp
+		rapid/Hex.cpp
+		rapid/Last.cpp
+		rapid/LastGit.cpp
+		rapid/Lua.cpp
+		rapid/Marshal.cpp
+		rapid/Md5.cpp
+		rapid/Optional.cpp
+		rapid/PoolArchive.cpp
+		rapid/PoolFile.cpp
+		rapid/ScopeGuard.cpp
+		rapid/Store.cpp
+		rapid/String.cpp
+		rapid/TempFile.cpp
+		rapid/Versions.cpp
+		rapid/Zip.cpp
+		rapid/ZipFile.cpp)
+
+	target_link_libraries (Rapid
+		pr-md5
+		git2
+		${LUA_LIBRARIES}
+		${ZIP_LIBRARIES}
+		${ZLIB_LIBRARIES}
+	)
+	target_include_directories(Rapid
+		PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+		PUBLIC lib/libgit2/include
+		PUBLIC ${LUA_INCLUDE_DIR}
+		PUBLIC ${ZIP_INCLUDE_DIR}
+		PUBLIC ${ZLIB_INCLUDE_DIR}
+	)
+	if (MINIZIP_FOUND)
+		target_link_libraries(Rapid ${MINIZIP_LIBRARIES})
+	else()
+		target_link_libraries(Rapid pr-minizip)
+	endif()
+
+	add_executable (AddZip AddZip.cpp)
+	target_link_libraries (AddZip Rapid)
+
+	add_executable (BuildGit BuildGit.cpp)
+	target_link_libraries (BuildGit Rapid)
+
+	add_executable (MakeZip MakeZip.cpp)
+	target_link_libraries (MakeZip Rapid)
+
+	add_executable (Streamer Streamer.cpp)
+	target_link_libraries (Streamer Rapid)
+endif()
+

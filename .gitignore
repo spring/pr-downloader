@@ -15,6 +15,11 @@ build/
 # output
 /src/libspringdownloader.pc
 /src/pr-downloader
+src/AddZip
+src/BuildGit
+src/MakeZip
+src/Streamer
+test/swig_test
 *.a
 *.so
 

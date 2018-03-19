@@ -1,0 +1,26 @@
+*~
+Build/
+
+# cmake temp / cache files
+/CMakeCache.txt
+Makefile
+CMakeFiles
+cmake_install.cmake
+CMakeLists.txt.user
+# executables / libs
+/AddZip
+/BuildGit
+/MakeZip
+/Streamer
+/libRapid.so
+# python cache files
+/Scripts/*.pyc
+# codeblocks project file
+/RapidTools.cbp
+/RapidTools.layout*
+# ninja files
+/rules.ninja
+/build.ninja
+/.ninja_deps
+/.ninja_log
+
