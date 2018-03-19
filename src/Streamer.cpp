@@ -68,7 +68,7 @@ void stream(std::string const & StorePath, std::string const & Hexed)
 		TotalSize += 4;
 	});
 
-	// Repond to request
+	// Respond to request
 	std::cout << "Content-Transfer-Encoding: binary\r\n";
 	std::cout << "Content-Length: " << TotalSize << "\r\n";
 	std::cout << "Content-Type: application/octet-stream\r\n";
