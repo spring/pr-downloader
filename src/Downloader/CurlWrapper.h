@@ -15,6 +15,10 @@ public:
 	static std::string escapeUrl(const std::string& url);
 
 private:
+	bool VerifyFile(const std::string& path);
+	bool ValidateCaFile();
+
 	CURL* handle;
 	struct curl_slist* list;
+	std::string cafile;
 };
