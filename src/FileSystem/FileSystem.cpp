@@ -624,7 +624,7 @@ bool CFileSystem::extract(const std::string& filename,
 		tmp += name.c_str(); // FIXME: concating UTF-16
 		createSubdirs(DirName(tmp));
 		if (fileSystem->fileExists(tmp)) {
-			LOG_ERROR("File already exists: %s", tmp.c_str());
+			LOG_WARN("File already exists: %s", tmp.c_str());
 			if (!overwrite)
 				continue;
 		}
