@@ -41,6 +41,12 @@ bool SpringBundle::GetBundleVersion()
 		version += getspringversionpatcheset();
 	}
 	_FreeLibrary(temphandle);
+
+	if (version == "98.0") {
+		LslError("Incompatible Spring version: %s", version.c_str());
+		version.clear();
+		return false;
+	}
 	return !version.empty();
 }
 
