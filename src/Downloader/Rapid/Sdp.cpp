@@ -272,7 +272,7 @@ static size_t write_streamed_data(const void* buf, size_t size, size_t nmemb, CS
 			buf_pos += skipped;
 		}
 		if (sdp.skipped < LENGTH_SIZE) {
-			LOG_ERROR("packed end, skipped: %d, bytes left: %d", sdp.skipped, buf_end - buf_pos);
+			LOG_WARN("packed end, skipped: %d, bytes left: %d", sdp.skipped, buf_end - buf_pos);
 			assert(buf_pos == buf_end);
 			break;
 		}
