@@ -386,6 +386,9 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	curl_easy_setopt(curle, CURLOPT_URL,
 			 CurlWrapper::escapeUrl(piece->mirror->url).c_str());
 
+	curl_easy_setopt(curle, CURLOPT_SSL_VERIFYPEER, piece->download->validateTLS);
+	LOG_INFO("Validating TLS: %d", piece->download->validateTLS);
+
 	if ((piece->download->size > 0) && (piece->start_piece >= 0) &&
 	    piece->download->pieces.size() > 0) { // don't set range, if size unknown
 		std::string range;

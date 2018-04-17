@@ -88,6 +88,7 @@ public:
 	unsigned int parallel_downloads;
 	DownloadData* write_only_from;
 
+	bool validateTLS = true;
 private:
 	std::vector<Mirror*> mirrors;
 	static void initCategories();
