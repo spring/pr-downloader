@@ -42,7 +42,7 @@ void* _LoadLibrary(const std::string& libpath)
 		return res;
 	}
 #else
-	res = dlopen(libpath.c_str(), RTLD_LAZY | RTLD_LOCAL);
+	res = dlopen(libpath.c_str(), RTLD_NOW | RTLD_LOCAL);
 	if (res == nullptr) {
 		const char* errmsg = dlerror();
 		LslError("Couldn't load the library %s: %s", libpath.c_str(), errmsg);
