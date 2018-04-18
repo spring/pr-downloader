@@ -31,10 +31,6 @@ ENDIF(WIN32)
 
 # Here we define the executable lsl-server ( or on Windows libSpringLobby.exe )
 
-#ignore warnings about macosx app bundle output dir
-cmake_policy(SET CMP0006 OLD)
-
-
 OPTION(LSLSERVER
 	"Compile and install lsl-server (broken)" OFF)
 
