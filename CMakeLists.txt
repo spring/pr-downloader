@@ -114,12 +114,12 @@ else()
 endif()
 
 if (PREFER_STATIC_LIBS)
-	set(CURLSTATIC "--static-libs")
+	set(CURLCONFIGFLAGS "--static-libs")
 else()
-	set(CURLSTATIC "")
+	set(CURLCONFIGFLAGS "--libs")
 endif()
 
-execute_process(COMMAND ${CURL_CONFIG_EXECUTABLE} "--libs" ${CURLSTATIC}
+execute_process(COMMAND ${CURL_CONFIG_EXECUTABLE} ${CURLCONFIGFLAGS}
         OUTPUT_VARIABLE CURL_LD_FLAGS
         OUTPUT_STRIP_TRAILING_WHITESPACE )
 message(STATUS "Using CURL_LD_FLAGS: ${CURL_LD_FLAGS}")
