@@ -64,7 +64,7 @@ void* GetLibFuncPtr(void* libhandle, const std::string& name)
 #endif // else defined _WIN32
 
 	if (p == nullptr) {
-		LslError("Couldn't load %s from unitsync library", name.c_str());
+		LslWarning("Couldn't load %s from unitsync library", name.c_str());
 	}
 	return p;
 }
