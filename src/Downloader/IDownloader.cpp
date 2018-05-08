@@ -19,6 +19,7 @@ IDownloaderProcessUpdateListener IDownloader::listener = nullptr;
 
 static void DumpTLSInfo()
 {
+#if CURL_AT_LEAST_VERSION(7,56,0)
 	const curl_ssl_backend **list;
 	int i;
 	const int res = curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
@@ -29,6 +30,7 @@ static void DumpTLSInfo()
 	} else {
 		LOG_WARN("Cannot enumerate ssl backends");
 	}
+#endif
 }
 
 
