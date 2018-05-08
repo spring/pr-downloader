@@ -13,7 +13,8 @@ public:
 		return handle;
 	}
 	static std::string escapeUrl(const std::string& url);
-
+	static void InitCurl();
+	static void KillCurl();
 private:
 	bool VerifyFile(const std::string& path);
 	bool ValidateCaFile();

@@ -4,11 +4,10 @@
 #include "Download.h"
 #include "Http/HttpDownloader.h"
 #include "Rapid/RapidDownloader.h"
+#include "CurlWrapper.h"
 #include "Util.h"
 #include "Logger.h"
 #include "Mirror.h"
-#include <curl/curl.h>
-#include <cassert>
 
 class IDownloader;
 
@@ -17,47 +16,11 @@ IDownloader* IDownloader::rapiddl = NULL;
 IDownloaderProcessUpdateListener IDownloader::listener = nullptr;
 
 
-#ifndef CURL_VERSION_BITS
-#define CURL_VERSION_BITS(x,y,z) ((x)<<16|(y)<<8|z)
-#endif
 
-#ifndef CURL_AT_LEAST_VERSION
-#define CURL_AT_LEAST_VERSION(x,y,z) \
-  (LIBCURL_VERSION_NUM >= CURL_VERSION_BITS(x, y, z))
-#endif
-
-static void DumpTLSInfo()
-{
-#if CURL_AT_LEAST_VERSION(7,56,0)
-	const curl_ssl_backend **list;
-	int i;
-	const int res = curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
-	if (res == CURLSSLSET_UNKNOWN_BACKEND) {
-			for(i = 0; list[i]; i++) {
-			LOG_INFO("SSL backend #%d: '%s' (ID: %d)\n", i, list[i]->name, list[i]->id);
-		}
-	} else {
-		LOG_WARN("Cannot enumerate ssl backends");
-	}
-#endif
-}
-
-
-
-static void DumpVersion()
-{
-	const curl_version_info_data* ver = curl_version_info(CURLVERSION_NOW);
-	if ((ver != nullptr) && (ver->age > 0)) {
-		LOG_INFO("libcurl %s %s", ver->version, ver->ssl_version);
-	}
-}
 
 void IDownloader::Initialize()
 {
-
-	DumpVersion();
-	DumpTLSInfo();
-	curl_global_init(CURL_GLOBAL_ALL);
+	CurlWrapper::InitCurl();
 }
 
 void IDownloader::Shutdown()
@@ -66,7 +29,7 @@ void IDownloader::Shutdown()
 	httpdl = NULL;
 	delete (rapiddl);
 	rapiddl = NULL;
-	curl_global_cleanup();
+	CurlWrapper::KillCurl();
 }
 static bool abortDownloads = false;
 void IDownloader::SetAbortDownloads(bool value)

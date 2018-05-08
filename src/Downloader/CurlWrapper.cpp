@@ -15,6 +15,41 @@ constexpr const char* cacertfile = "cacert.pem";
 constexpr const char* cacertsha1 = "f8d2bb6dde84f58b2c8caf584eaf0c040e7afc97";
 
 
+#ifndef CURL_VERSION_BITS
+#define CURL_VERSION_BITS(x,y,z) ((x)<<16|(y)<<8|z)
+#endif
+
+#ifndef CURL_AT_LEAST_VERSION
+#define CURL_AT_LEAST_VERSION(x,y,z) \
+  (LIBCURL_VERSION_NUM >= CURL_VERSION_BITS(x, y, z))
+#endif
+
+static void DumpTLSInfo()
+{
+#if CURL_AT_LEAST_VERSION(7,56,0)
+	const curl_ssl_backend **list;
+	int i;
+	const int res = curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
+	if (res == CURLSSLSET_UNKNOWN_BACKEND) {
+			for(i = 0; list[i]; i++) {
+			LOG_INFO("SSL backend #%d: '%s' (ID: %d)\n", i, list[i]->name, list[i]->id);
+		}
+	} else {
+		LOG_WARN("Cannot enumerate ssl backends");
+	}
+#endif
+}
+
+
+
+static void DumpVersion()
+{
+	const curl_version_info_data* ver = curl_version_info(CURLVERSION_NOW);
+	if ((ver != nullptr) && (ver->age > 0)) {
+		LOG_INFO("libcurl %s %s", ver->version, ver->ssl_version);
+	}
+}
+
 bool CurlWrapper::VerifyFile(const std::string& path)
 {
 	if (!fileSystem->fileExists(path))
@@ -110,3 +145,16 @@ std::string CurlWrapper::escapeUrl(const std::string& url)
 	}
 	return res;
 }
+
+void CurlWrapper::InitCurl()
+{
+	DumpVersion();
+	DumpTLSInfo();
+	curl_global_init(CURL_GLOBAL_ALL);
+}
+
+void CurlWrapper::KillCurl()
+{
+	curl_global_cleanup();
+}
+
