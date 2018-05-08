@@ -8,6 +8,7 @@
 #include "Logger.h"
 #include "Mirror.h"
 #include <curl/curl.h>
+#include <cassert>
 
 class IDownloader;
 
@@ -15,8 +16,36 @@ IDownloader* IDownloader::httpdl = NULL;
 IDownloader* IDownloader::rapiddl = NULL;
 IDownloaderProcessUpdateListener IDownloader::listener = nullptr;
 
+
+static void DumpTLSInfo()
+{
+	const curl_ssl_backend **list;
+	int i;
+	const int res = curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
+	if (res == CURLSSLSET_UNKNOWN_BACKEND) {
+			for(i = 0; list[i]; i++) {
+			LOG_INFO("SSL backend #%d: '%s' (ID: %d)\n", i, list[i]->name, list[i]->id);
+		}
+	} else {
+		LOG_WARN("Cannot enumerate ssl backends");
+	}
+}
+
+
+
+static void DumpVersion()
+{
+	const curl_version_info_data* ver = curl_version_info(CURLVERSION_NOW);
+	if ((ver != nullptr) && (ver->age > 0)) {
+		LOG_INFO("libcurl %s %s", ver->version, ver->ssl_version);
+	}
+}
+
 void IDownloader::Initialize()
 {
+
+	DumpVersion();
+	DumpTLSInfo();
 	curl_global_init(CURL_GLOBAL_ALL);
 }
 
