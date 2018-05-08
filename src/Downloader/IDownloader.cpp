@@ -17,6 +17,15 @@ IDownloader* IDownloader::rapiddl = NULL;
 IDownloaderProcessUpdateListener IDownloader::listener = nullptr;
 
 
+#ifndef CURL_VERSION_BITS
+#define CURL_VERSION_BITS(x,y,z) ((x)<<16|(y)<<8|z)
+#endif
+
+#ifndef CURL_AT_LEAST_VERSION
+#define CURL_AT_LEAST_VERSION(x,y,z) \
+  (LIBCURL_VERSION_NUM >= CURL_VERSION_BITS(x, y, z))
+#endif
+
 static void DumpTLSInfo()
 {
 #if CURL_AT_LEAST_VERSION(7,56,0)
