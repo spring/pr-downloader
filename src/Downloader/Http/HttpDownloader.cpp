@@ -65,7 +65,7 @@ static int progress_func(DownloadData* data, double total, double done, double,
 // downloads url into res
 bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 {
-	CurlWrapper* curlw = new CurlWrapper();
+	CurlWrapper curlw;
 	DownloadData d;
 	d.got_ranges = false;
 	d.download = new IDownload();
@@ -73,22 +73,19 @@ bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 	d.download->name = url;
 	d.download->origin_name = url;
 
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_URL,
-			 CurlWrapper::escapeUrl(url).c_str());
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEFUNCTION,
-			 WriteMemoryCallback);
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_WRITEDATA, (void*)&res);
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_PROGRESSDATA, &d);
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_PROGRESSFUNCTION, progress_func);
-	curl_easy_setopt(curlw->GetHandle(), CURLOPT_NOPROGRESS, 0L);
-	CURLcode curlres = curl_easy_perform(curlw->GetHandle());
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_URL, CurlWrapper::escapeUrl(url).c_str());
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEDATA, (void*)&res);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_PROGRESSDATA, &d);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_PROGRESSFUNCTION, progress_func);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_NOPROGRESS, 0L);
+	CURLcode curlres = curl_easy_perform(curlw.GetHandle());
 
 	delete d.download;
 	d.download = nullptr;
 	if (curlres != CURLE_OK) {
 		LOG_ERROR("Error in curl %s", curl_easy_strerror(curlres));
 	}
-	delete curlw;
 	return curlres == CURLE_OK;
 }
 
