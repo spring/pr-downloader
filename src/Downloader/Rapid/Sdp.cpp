@@ -111,10 +111,10 @@ bool CSdp::download(IDownload* dl)
 			filedata.download = false;
 		}
 		if (i % 30 == 0) {
-			LOG_DEBUG("\r%d/%d checked", i, (int)files.size());
+			LOG_DEBUG("%d/%d checked", i, (int)files.size());
 		}
 	}
-	LOG_DEBUG("\r%d/%d need to download %d files", i, (int)files.size(),
+	LOG_DEBUG("%d/%d need to download %d files", i, (int)files.size(),
 		  count);
 
 	std::string root = fileSystem->getSpringDir();
