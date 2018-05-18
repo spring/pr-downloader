@@ -976,6 +976,7 @@ void Unitsync::PrefetchGame(const std::string& gamename)
 	LslInfo("PrefetchGame %s", gamename.c_str());
 	susynclib().SetCurrentMod(gamename);
 	GetGameHash(gamename);
+	FetchUnitsyncErrors(gamename);
 	{
 		int count = susynclib().GetModOptionCount(gamename);
 		GameOptions opt;
