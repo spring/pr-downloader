@@ -102,10 +102,12 @@ CurlWrapper::CurlWrapper()
 	}
 
 	handle = curl_easy_init();
+#ifndef WIN32
 	if (fileSystem->fileExists(cafile)) {
 		LOG_INFO("Using certstore %s", cafile.c_str());
 		curl_easy_setopt(handle, CURLOPT_CAINFO, cafile.c_str());
 	}
+#endif
 
 	curl_easy_setopt(handle, CURLOPT_CONNECTTIMEOUT, 30);
 
