@@ -29,13 +29,9 @@ static void DumpTLSInfo()
 #if CURL_AT_LEAST_VERSION(7,56,0)
 	const curl_ssl_backend **list;
 	int i;
-	const int res = curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
-	if (res == CURLSSLSET_UNKNOWN_BACKEND) {
-			for(i = 0; list[i]; i++) {
-			LOG_INFO("SSL backend #%d: '%s' (ID: %d)\n", i, list[i]->name, list[i]->id);
-		}
-	} else {
-		LOG_WARN("Cannot enumerate ssl backends");
+	curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
+	for(i = 0; list[i]; i++) {
+		LOG_INFO("SSL backend #%d: '%s' (ID: %d)", i, list[i]->name, list[i]->id);
 	}
 #endif
 }
