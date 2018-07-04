@@ -16,10 +16,9 @@ public:
 	static void InitCurl();
 	static void KillCurl();
 private:
-	bool VerifyFile(const std::string& path);
-	bool ValidateCaFile();
+	static bool VerifyFile(const std::string& path);
+	static bool ValidateCaFile(const std::string& cafile);
 
 	CURL* handle;
 	struct curl_slist* list;
-	std::string cafile;
 };

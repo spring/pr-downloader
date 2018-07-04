@@ -24,13 +24,17 @@ constexpr const char* cacertsha1 = "f8d2bb6dde84f58b2c8caf584eaf0c040e7afc97";
   (LIBCURL_VERSION_NUM >= CURL_VERSION_BITS(x, y, z))
 #endif
 
+static std::string GetCAFilePath()
+{
+	return fileSystem->getSpringDir() + PATH_DELIMITER + cacertfile;
+}
+
 static void DumpTLSInfo()
 {
 #if CURL_AT_LEAST_VERSION(7,56,0)
 	const curl_ssl_backend **list;
-	int i;
 	curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
-	for(i = 0; list[i]; i++) {
+	for(int i = 0; list[i]; i++) {
 		LOG_INFO("SSL backend #%d: '%s' (ID: %d)", i, list[i]->name, list[i]->id);
 	}
 #endif
@@ -70,9 +74,8 @@ bool CurlWrapper::VerifyFile(const std::string& path)
 	return false;
 }
 
-bool CurlWrapper::ValidateCaFile()
+bool CurlWrapper::ValidateCaFile(const std::string& cafile)
 {
-	cafile = fileSystem->getSpringDir() + PATH_DELIMITER + cacertfile;
 	if (VerifyFile(cafile))
 		return true;
 
@@ -91,19 +94,17 @@ bool CurlWrapper::ValidateCaFile()
 
 CurlWrapper::CurlWrapper()
 {
-	static bool fetched = false;
-	if (!fetched) {
-		fetched = true;
-		ValidateCaFile();
-	}
 
 	handle = curl_easy_init();
-#ifndef WIN32
-	if (fileSystem->fileExists(cafile)) {
-		LOG_INFO("Using certstore %s", cafile.c_str());
-		curl_easy_setopt(handle, CURLOPT_CAINFO, cafile.c_str());
+
+	const std::string cafile = GetCAFilePath();
+	if (!fileSystem->fileExists(cafile)) {
+		LOG_WARN("Certstore doesn't exist: %s", cafile.c_str());
 	}
-#endif
+	const int res = curl_easy_setopt(handle, CURLOPT_CAINFO, cafile.c_str());
+	if (res != CURLE_OK) {
+		LOG_ERROR("Error setting CURLOPT_CAINFO: %d", res);
+	}
 
 	curl_easy_setopt(handle, CURLOPT_CONNECTTIMEOUT, 30);
 
@@ -149,6 +150,7 @@ void CurlWrapper::InitCurl()
 	DumpVersion();
 	DumpTLSInfo();
 	curl_global_init(CURL_GLOBAL_ALL);
+	ValidateCaFile(GetCAFilePath());
 }
 
 void CurlWrapper::KillCurl()
