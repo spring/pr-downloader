@@ -31,7 +31,7 @@ static std::string GetCAFilePath()
 
 static void DumpTLSInfo()
 {
-#if CURL_AT_LEAST_VERSION(7,56,0)
+#if CURL_AT_LEAST_VERSION(7,60,0)
 	const curl_ssl_backend **list;
 	curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
 	for(int i = 0; list[i]; i++) {
