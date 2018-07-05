@@ -10,9 +10,9 @@
 #include "IDownloader.h"
 #include "Logger.h"
 
-constexpr const char* cacertpem = "https://curl.haxx.se/ca/cacert-2018-03-07.pem";
+constexpr const char* cacertpem = "https://curl.haxx.se/ca/cacert-2018-06-20.pem";
 constexpr const char* cacertfile = "cacert.pem";
-constexpr const char* cacertsha1 = "f8d2bb6dde84f58b2c8caf584eaf0c040e7afc97";
+constexpr const char* cacertsha1 = "fe1e06f7048b78dbe7015c1c043de957251181db";
 
 
 #ifndef CURL_VERSION_BITS
