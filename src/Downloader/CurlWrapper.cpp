@@ -96,10 +96,10 @@ bool CurlWrapper::ValidateCaFile(const std::string& cafile)
 static void SetCAOptions(CURL* handle)
 {
 	if (fileSystem->directoryExists(capath)) {
-		LOG_INFO("Using capath: %s", capath);
+		LOG_DEBUG("Using capath: %s", capath);
 		const int res = curl_easy_setopt(handle, CURLOPT_CAPATH, capath);
 		if (res != CURLE_OK) {
-			LOG_ERROR("Error setting CURLOPT_CAPATH: %d", res);
+			LOG_WARN("Error setting CURLOPT_CAPATH: %d", res);
 		}
 		return;
 	}
@@ -110,7 +110,7 @@ static void SetCAOptions(CURL* handle)
 	}
 	const int res = curl_easy_setopt(handle, CURLOPT_CAINFO, cafile.c_str());
 	if (res != CURLE_OK) {
-		LOG_ERROR("Error setting CURLOPT_CAINFO: %d", res);
+		LOG_WARN("Error setting CURLOPT_CAINFO: %d", res);
 	}
 }
 
