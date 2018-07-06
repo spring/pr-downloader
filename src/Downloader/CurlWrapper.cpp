@@ -95,7 +95,8 @@ bool CurlWrapper::ValidateCaFile(const std::string& cafile)
 
 static void SetCAOptions(CURL* handle)
 {
-	if (fileSystem->directoryExists("/etc/ssl/certs")) {
+	if (fileSystem->directoryExists(capath)) {
+		LOG_INFO("Using capath: %s", capath);
 		const int res = curl_easy_setopt(handle, CURLOPT_CAPATH, capath);
 		if (res != CURLE_OK) {
 			LOG_ERROR("Error setting CURLOPT_CAPATH: %d", res);
