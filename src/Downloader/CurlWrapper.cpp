@@ -13,6 +13,7 @@
 constexpr const char* cacertpem = "https://curl.haxx.se/ca/cacert-2018-06-20.pem";
 constexpr const char* cacertfile = "cacert.pem";
 constexpr const char* cacertsha1 = "fe1e06f7048b78dbe7015c1c043de957251181db";
+constexpr const char* capath = "/etc/ssl/certs";
 
 
 #ifndef CURL_VERSION_BITS
@@ -92,10 +93,15 @@ bool CurlWrapper::ValidateCaFile(const std::string& cafile)
 	return false;
 }
 
-CurlWrapper::CurlWrapper()
+static void SetCAOptions(CURL* handle)
 {
-
-	handle = curl_easy_init();
+	if (fileSystem->directoryExists("/etc/ssl/certs")) {
+		const int res = curl_easy_setopt(handle, CURLOPT_CAPATH, capath);
+		if (res != CURLE_OK) {
+			LOG_ERROR("Error setting CURLOPT_CAPATH: %d", res);
+		}
+		return;
+	}
 
 	const std::string cafile = GetCAFilePath();
 	if (!fileSystem->fileExists(cafile)) {
@@ -105,6 +111,14 @@ CurlWrapper::CurlWrapper()
 	if (res != CURLE_OK) {
 		LOG_ERROR("Error setting CURLOPT_CAINFO: %d", res);
 	}
+}
+
+CurlWrapper::CurlWrapper()
+{
+
+	handle = curl_easy_init();
+
+	SetCAOptions(handle);
 
 	curl_easy_setopt(handle, CURLOPT_CONNECTTIMEOUT, 30);
 
@@ -113,8 +127,7 @@ CurlWrapper::CurlWrapper()
 	curl_easy_setopt(handle, CURLOPT_LOW_SPEED_LIMIT, 10);
 	curl_easy_setopt(handle, CURLOPT_LOW_SPEED_TIME, 30);
 	curl_easy_setopt(handle, CURLOPT_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
-	curl_easy_setopt(handle, CURLOPT_REDIR_PROTOCOLS,
-			 CURLPROTO_HTTP | CURLPROTO_HTTPS);
+	curl_easy_setopt(handle, CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTP | CURLPROTO_HTTPS);
 	curl_easy_setopt(handle, CURLOPT_USERAGENT, getVersion());
 	curl_easy_setopt(handle, CURLOPT_FAILONERROR, true);
 	curl_easy_setopt(handle, CURLOPT_FOLLOWLOCATION, 1);

@@ -119,7 +119,6 @@ int main(int argc, char** argv)
 	show_version();
 	if (argc < 2)
 		show_help(argv[0]);
-	DownloadInit();
 
 	bool res = true;
 	bool removeinvalid = false;
@@ -149,6 +148,8 @@ int main(int argc, char** argv)
 	if (!fsset) {
 		DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, "");
 	}
+
+	DownloadInit();
 
 	optind = 1; // reset argv scanning
 	while (true) {
