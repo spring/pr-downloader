@@ -50,11 +50,10 @@ CSdp::~CSdp()
 
 bool createPoolDirs(const std::string& root)
 {
-	char buf[1024];
-	const int pos = snprintf(buf, sizeof(buf), "%s", root.c_str());
 	for (int i = 0; i < 256; i++) {
-		snprintf(buf + pos, 4, "%02x%c", i, PATH_DELIMITER);
-		std::string tmp(buf, pos + 3);
+		char buf[1024];
+		const int len = snprintf(buf, sizeof(buf), "%s%02x%c", root.c_str(), i, PATH_DELIMITER);
+		std::string tmp(buf, len);
 		if ((!fileSystem->directoryExists(tmp)) &&
 		    (!fileSystem->createSubdirs(tmp))) {
 			LOG_ERROR("Couldn't create %s", tmp.c_str());
