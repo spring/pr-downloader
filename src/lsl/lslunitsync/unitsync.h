@@ -37,7 +37,7 @@ enum ImageType {
 	IMAGE_HEIGHTMAP,
 };
 
-class Unitsync : public boost::noncopyable
+class Unitsync
 {
 private:
 	typedef boost::signals2::signal<void(std::string)>
@@ -48,6 +48,8 @@ public:
 	    StringSignalSlotType;
 
 	Unitsync();
+	Unitsync(const Unitsync&) = delete;
+	Unitsync& operator=(const Unitsync&) = delete;
 	~Unitsync();
 
 	StringVector GetGameList() const;

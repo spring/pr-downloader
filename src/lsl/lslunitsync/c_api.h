@@ -9,7 +9,6 @@
 #include "data.h"
 #include "signatures.h"
 #include <lslutils/type_forwards.h>
-#include <boost/noncopyable.hpp>
 #include <boost/thread/mutex.hpp>
 
 namespace LSL
@@ -73,7 +72,7 @@ struct SpringMapInfo
  * so often there is a need for running multiple unitsync methods while
  * holding a single lock continuously.
  */
-class UnitsyncLib : public boost::noncopyable
+class UnitsyncLib
 {
 	//! we use this to offload the mind numblingly boring pointer loading
 	friend struct UnitsyncFunctionLoader;
@@ -83,6 +82,8 @@ public:
 	 * Constructor.
 	 */
 	UnitsyncLib();
+	UnitsyncLib(const UnitsyncLib&) = delete;
+	UnitsyncLib& operator=(const UnitsyncLib&) = delete;
 
 	/**
 	 * Destructor, unloads unitsync if loaded.
