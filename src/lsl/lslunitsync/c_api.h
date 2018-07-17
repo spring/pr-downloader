@@ -311,7 +311,6 @@ public:
 
 
 private:
-	UnitsyncLib(const UnitsyncLib&);
 	//! Keeps track if unitsync is loaded or not.
 	bool m_loaded;
 
