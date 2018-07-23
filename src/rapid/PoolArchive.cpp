@@ -4,6 +4,7 @@
 #include "Marshal.h"
 #include "Gzip.h"
 #include "TempFile.h"
+#include "Logger.h"
 
 #include <algorithm>
 #include <cctype>
@@ -208,8 +209,14 @@ ssize_t handleZip(void * State, void * Data, std::size_t Length, enum zip_source
 
 	case ZIP_SOURCE_OPEN:
 	{
-		UserData.File = gzopen(UserData.Store.getPoolPath(UserData.Entry.Digest).c_str(), "rb");
-		if (UserData.File == nullptr) return -1;
+		const std::string filename = UserData.Store.getPoolPath(UserData.Entry.Digest);
+		UserData.File = gzopen(filename.c_str(), "rb");
+		if (UserData.File == nullptr)
+		{
+			LOG_ERROR("Couldn't open %s", filename.c_str());
+			throw std::runtime_error(filename);
+			return -1;
+		}
 		else return 0;
 	} break;
 
@@ -233,6 +240,8 @@ ssize_t handleZip(void * State, void * Data, std::size_t Length, enum zip_source
 
 	case ZIP_SOURCE_ERROR:
 	{
+		LOG_ERROR("ZIP_SOURCE_ERROR");
+		throw std::runtime_error{"Error in handleZip()"};
 		return sizeof(int) * 2;
 	} break;
 
@@ -242,9 +251,15 @@ ssize_t handleZip(void * State, void * Data, std::size_t Length, enum zip_source
 		return 0;
 	} break;
 
-	// Unnecessary, but squelches a GCC warning
-	default: return 0;
+	case ZIP_SOURCE_SUPPORTS:
+	{
+		return zip_source_make_command_bitmap(ZIP_SOURCE_OPEN, ZIP_SOURCE_READ, ZIP_SOURCE_CLOSE, ZIP_SOURCE_STAT, ZIP_SOURCE_ERROR, ZIP_SOURCE_FREE);
+	}
 
+	// Unnecessary, but squelches a GCC warning
+	default:
+		LOG_ERROR("Unknown command: %d", Cmd);
+		return 0;
 	}
 }
 
@@ -260,15 +275,24 @@ void PoolArchiveT::makeZip(std::string const & Path)
 	// Begin exception free zone (except new)
 	for (auto & Pair : mEntries)
 	{
-		auto UserData = new UserDataT{nullptr, mStore, Pair.second};
+		UserDataT* UserData = new UserDataT{nullptr, mStore, Pair.second};
 		auto Source = zip_source_function(Zip, &handleZip, UserData);
-		zip_add(Zip, Pair.first.c_str(), Source);
+		if (zip_file_add(Zip, Pair.first.c_str(), Source, ZIP_FL_OVERWRITE) < 0) {
+			throw std::runtime_error{"Unable addinf file to zip"};
+		}
 	}
 
 	Error = zip_close(Zip);
 	// End exception free zone
-	if (Error != 0) throw std::runtime_error{"Unable to create zip"};
-
+	if (Error != 0)
+	{
+		zip_error_t error;
+		zip_error_init_with_code(&error, Error);
+		LOG_ERROR("%s", zip_error_strerror(&error));
+		zip_error_fini(&error);
+		throw std::runtime_error{"Unable to close zip"};
+	}
 }
+
 
 }

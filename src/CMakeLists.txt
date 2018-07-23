@@ -235,7 +235,9 @@ if (RAPIDTOOLS)
 		rapid/TempFile.cpp
 		rapid/Versions.cpp
 		rapid/Zip.cpp
-		rapid/ZipFile.cpp)
+		rapid/ZipFile.cpp
+		Logger.cpp
+	)
 
 	target_link_libraries (Rapid
 		pr-md5
