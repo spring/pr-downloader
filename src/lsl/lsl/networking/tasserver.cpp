@@ -205,7 +205,7 @@ std::string ServerImpl::GetPasswordHash(const std::string& pass) const
 void ServerImpl::Login(const std::string& user, const std::string& password)
 {
 	const std::string pass = GetPasswordHash(password);
-	const std::string protocol = "\t" + Util::ToIntString(m_crc.GetCRC());
+	const std::string protocol = "\t 0.37";
 	std::string localaddr = m_sock->GetLocalAddress();
 	//    m_id_transmission = false;
 	if (localaddr.length() < 1)
@@ -888,11 +888,6 @@ void ServerImpl::OnChannelJoinUserList(const std::string& channel_name, const st
 void ServerImpl::OnJoinedBattle(const int battleid, const std::string& msg)
 {
 	assert(false);
-}
-
-void ServerImpl::OnGetHandle()
-{
-	SendCmd("USERID", Util::ToIntString(m_crc.GetCRC()));
 }
 
 void ServerImpl::OnLogin(const std::string& msg)

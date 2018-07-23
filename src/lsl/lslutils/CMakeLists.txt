@@ -2,7 +2,6 @@
 SET(libSpringLobbyUtilsSrc
 	"${CMAKE_CURRENT_SOURCE_DIR}/misc.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/config.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/crc.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/thread.cpp" 
 	"${CMAKE_CURRENT_SOURCE_DIR}/net.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/globalsmanager.cpp"

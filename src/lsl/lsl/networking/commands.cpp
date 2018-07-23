@@ -81,7 +81,6 @@ CommandDictionary::CommandDictionary(ServerImpl* tas)
 	NEWCMD("JOINBATTLEFAILED", OnJoinBattleFailed, All);
 	NEWCMD("OPENBATTLEFAILED", OnOpenBattleFailed, All);
 	NEWCMD("JOINFAILED", OnJoinChannelFailed, Word, All);
-	NEWCMD("ACQUIREUSERID", OnGetHandle, NoToken);
 	NEWCMD("FORCELEAVECHANNEL", OnKickedFromChannel, Word, Word, All);
 	NEWCMD("DENIED", OnLoginFailed, All);
 	NEWCMD("HOSTPORT", OnHostExternalUdpPort, Int);

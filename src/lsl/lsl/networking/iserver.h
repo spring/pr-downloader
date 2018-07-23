@@ -10,7 +10,6 @@
 #include <boost/enable_shared_from_this.hpp>
 
 #include <lslutils/mutexwrapper.h>
-#include <lslutils/crc.h>
 #include <lsl/battle/enum.h>
 #include <lsl/container/battlelist.h>
 #include <lsl/container/channellist.h>

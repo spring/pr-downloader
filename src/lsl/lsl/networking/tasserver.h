@@ -155,7 +155,6 @@ private:
 	void OnChannelJoin(const std::string& name, const std::string& who);
 	void OnChannelJoinUserList(const std::string& channel, const std::string& usernames);
 	void OnJoinedBattle(const int battleid, const std::string& msg);
-	void OnGetHandle();
 	void OnLogin(const std::string& msg);
 	void OnUserJoinedChannel(const std::string& channel_name, const std::string& who);
 	void OnChannelSaid(const std::string& channel, const std::string& who, const std::string& message);
@@ -240,7 +239,7 @@ private:
 	UserPtr m_relay_host_manager;
 
 	UserVector m_relay_masters;
-	CRC m_crc;
+	// CRC m_crc;
 	IBattlePtr m_current_battle;
 	UserPtr m_relay_host_bot;
 	int m_message_size_limit; //! in bytes

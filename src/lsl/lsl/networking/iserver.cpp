@@ -37,10 +37,10 @@ void Server::Connect(const std::string& /*servername */, const std::string& addr
 	m_impl->m_online = false;
 	//    m_redirecting = false;
 	//    m_agreement = "";
-	m_impl->m_crc.ResetCRC();
+	//m_impl->m_crc.ResetCRC();
 	std::string handle = m_impl->m_sock->GetHandle();
-	if (handle.length() > 0)
-		m_impl->m_crc.UpdateData(handle + addr);
+	//if (handle.length() > 0)
+	//	m_impl->m_crc.UpdateData(handle + addr);
 }
 
 void Server::Disconnect(const std::string& reason)
