@@ -251,11 +251,13 @@ ssize_t handleZip(void * State, void * Data, std::size_t Length, enum zip_source
 		return 0;
 	} break;
 
+#if LIBZIP_VERSION_MAJOR >= 1
 	case ZIP_SOURCE_SUPPORTS:
 	{
 		return zip_source_make_command_bitmap(ZIP_SOURCE_OPEN, ZIP_SOURCE_READ, ZIP_SOURCE_CLOSE, ZIP_SOURCE_STAT, ZIP_SOURCE_ERROR, ZIP_SOURCE_FREE);
 	}
 
+#endif
 	// Unnecessary, but squelches a GCC warning
 	default:
 		LOG_ERROR("Unknown command: %d", Cmd);
@@ -286,10 +288,12 @@ void PoolArchiveT::makeZip(std::string const & Path)
 	// End exception free zone
 	if (Error != 0)
 	{
+#if LIBZIP_VERSION_MAJOR >= 1
 		zip_error_t error;
 		zip_error_init_with_code(&error, Error);
 		LOG_ERROR("%s", zip_error_strerror(&error));
 		zip_error_fini(&error);
+#endif
 		throw std::runtime_error{"Unable to close zip"};
 	}
 }
