@@ -279,9 +279,13 @@ void PoolArchiveT::makeZip(std::string const & Path)
 	{
 		UserDataT* UserData = new UserDataT{nullptr, mStore, Pair.second};
 		auto Source = zip_source_function(Zip, &handleZip, UserData);
-		if (zip_file_add(Zip, Pair.first.c_str(), Source, 0) < 0) {
+#if LIBZIP_VERSION_MAJOR >= 1
+		if (zip_file_add(Zip, Pair.first.c_str(), Source, ZIP_FL_OVERWRITE | ZIP_FL_ENC_UTF_8) < 0) {
 			throw std::runtime_error{"Unable addinf file to zip"};
 		}
+#else
+		zip_add(Zip, Pair.first.c_str(), Source);
+#endif
 	}
 
 	Error = zip_close(Zip);
