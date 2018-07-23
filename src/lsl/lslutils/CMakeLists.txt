@@ -6,7 +6,6 @@ SET(libSpringLobbyUtilsSrc
 	"${CMAKE_CURRENT_SOURCE_DIR}/thread.cpp" 
 	"${CMAKE_CURRENT_SOURCE_DIR}/net.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/globalsmanager.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/md5.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/conversion.cpp"
 	)
 	
@@ -28,7 +27,7 @@ if(WIN32)
 		)
 endif()
 ADD_LIBRARY(lsl-utils STATIC ${libSpringLobbyHeader} ${libSpringLobbyUtilsSrc} )
-TARGET_LINK_LIBRARIES(lsl-utils ${Boost_THREAD_LIBRARY})
+TARGET_LINK_LIBRARIES(lsl-utils ${Boost_THREAD_LIBRARY} pr-md5)
 target_include_directories(lsl-utils
 		PRIVATE ${Boost_INCLUDE_DIRS}
 		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lsl

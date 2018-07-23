@@ -29,7 +29,10 @@ set_source_files_properties(  ${libSpringLobbyHeader} PROPERTIES HEADER_FILE_ONL
 
 ADD_LIBRARY(lsl-server STATIC ${libSpringLobbyHeader} ${libSpringLobbySrc} ${libSpringLobby_RC_FILE} )
 TARGET_LINK_LIBRARIES(lsl-server lsl-utils ${Boost_SYSTEM} ${Boost_THREAD_LIBRARY} )
-target_include_directories(lsl-server PRIVATE ${libSpringLobby_SOURCE_DIR}/src)
+target_include_directories(lsl-server PRIVATE
+	${pr-downloader_SOURCE_DIR}/src/lsl
+	${pr-downloader_SOURCE_DIR}/src/
+)
 
 IF(MINGW)
 	TARGET_LINK_LIBRARIES( lsl-server iphlpapi )

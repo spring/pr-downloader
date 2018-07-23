@@ -6,7 +6,7 @@
 #include <lslunitsync/optionswrapper.h>
 
 #include <lslutils/base64.h>
-#include <lslutils/md5.h>
+#include <lib/md5/md5.h>
 #include <lslutils/conversion.h>
 #include <lslutils/debug.h>
 #include <lsl/battle/battle.h>
@@ -42,7 +42,8 @@ ServerImpl::ServerImpl(Server* serv)
     , m_udp_reply_timeout(0)
     , m_iface(serv)
 {
-	m_sock->sig_dataReceived.connect(boost::bind(&ServerImpl::ExecuteCommand, this, _1, _2));
+// FIXME:
+// m_sock->sig_dataReceived.connect(boost::bind(&ServerImpl::ExecuteCommand, this, _1, _2));
 }
 
 void ServerImpl::ExecuteCommand(const std::string& cmd, std::string& inparams, int replyid)
@@ -189,21 +190,16 @@ std::string ServerImpl::GetPasswordHash(const std::string& pass) const
 	if (IsPasswordHash(pass))
 		return pass;
 
-	md5_state_t state;
-	md5_byte_t digest[16];
-	//	char hex_output[16*2 + 1];
+	MD5_CTX state;
 	int di;
 
-	char* cstr = new char[pass.size() + 1];
-	strcpy(cstr, pass.c_str());
-
-	md5_init(&state);
-	md5_append(&state, (const md5_byte_t*)cstr, strlen(cstr));
-	md5_finish(&state, digest);
+	MD5Init(&state);
+	MD5Update(&state, (unsigned char*)pass.data(), pass.size());
+	MD5Final(&state);
 	/*	for (di = 0; di < 16; ++di)
 		sprintf(hex_output + di * 2, "%02x", digest[di]);
 */
-	return base64::encode(digest, 16);
+	return base64::encode(state.digest, 16);
 }
 
 void ServerImpl::Login(const std::string& user, const std::string& password)
@@ -254,9 +250,8 @@ void ServerImpl::SendCmd(const std::string& cmd, const std::string& param)
 		msg = msg + cmd + "\n";
 	else
 		msg = msg + cmd + " " + param + "\n";
-	bool send_success = m_sock->SendData(msg);
-	assert(send_success);
-	//	sig_SentMessage(send_success, msg, GetLastID());
+	/*bool send_success =*/ m_sock->SendData(msg);
+	//assert(send_success);
 }
 
 void ServerImpl::JoinChannel(const std::string& channel, const std::string& key)
