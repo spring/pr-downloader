@@ -5,7 +5,7 @@
 #include <boost/algorithm/string.hpp>
 #include <lslunitsync/optionswrapper.h>
 
-#include <lslutils/base64.h>
+#include <lib/base64/base64.h>
 #include <lib/md5/md5.h>
 #include <lslutils/conversion.h>
 #include <lslutils/debug.h>
@@ -199,7 +199,7 @@ std::string ServerImpl::GetPasswordHash(const std::string& pass) const
 	/*	for (di = 0; di < 16; ++di)
 		sprintf(hex_output + di * 2, "%02x", digest[di]);
 */
-	return base64::encode(state.digest, 16);
+	return base64_encode(state.digest, 16);
 }
 
 void ServerImpl::Login(const std::string& user, const std::string& password)
