@@ -213,7 +213,6 @@ public:
 	void OnUserJoinedChannel(const ChannelPtr channel, const UserPtr user);
 	void OnAcceptAgreement(const std::string& agreement);
 	void OnRing(const UserPtr from);
-	void OnFileDownload(bool autolaunch, bool autoclose, bool /*disconnectonrefuse*/, const std::string& FileName, const std::string& url, const std::string& description);
 	void OnMuteList(const ChannelPtr channel, const MuteList& mutelist);
 	void OnUserInternalUdpPort(const CommonUserPtr user, int udpport);
 	void OnUserExternalUdpPort(const CommonUserPtr user, int udpport);

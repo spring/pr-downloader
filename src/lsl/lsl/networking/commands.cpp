@@ -97,7 +97,6 @@ CommandDictionary::CommandDictionary(ServerImpl* tas)
 	NEWCMD("MUTELISTBEGIN", OnMutelistBegin, All);
 	NEWCMD("MUTELIST", OnMutelistItem, Word, All);
 	NEWCMD("MUTELISTEND", OnMutelistEnd, NoToken);
-	NEWCMD("OFFERFILE", OnFileDownload, Int, Sentence, Sentence, All);
 }
 
 void CommandDictionary::Process(const std::string& cmd, std::string& params) const

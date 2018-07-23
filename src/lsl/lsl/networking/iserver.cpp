@@ -740,13 +740,6 @@ void Server::OnBattleStartRectRemove(const IBattlePtr battle, int allyno)
 	battle->StartRectRemoved(allyno);
 }
 
-void Server::OnFileDownload(bool autolaunch, bool autoclose, bool /*disconnectonrefuse*/, const std::string& FileName, const std::string& url, const std::string& description)
-{
-	// HUH?
-	//	UTASOfferFileData parsingdata;
-	//	parsingdata.data = GetIntParam( params );
-}
-
 void Server::OnBattleScript(const IBattlePtr battle, const std::string& script)
 {
 	if (!battle)

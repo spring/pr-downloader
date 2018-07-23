@@ -189,7 +189,6 @@ private:
 	void OnBattleAddBot(int battleid, const std::string& nick, const std::string& owner, int intstatus, int intcolor, const std::string& aidll);
 	void OnBattleUpdateBot(int battleid, const std::string& nick, int intstatus, int intcolor);
 	void OnBattleRemoveBot(int battleid, const std::string& nick);
-	void OnFileDownload(int intdata, const std::string& FileName, const std::string& url, const std::string& description);
 
 	void RelayCmd(const std::string& command, const std::string& param = "");
 	void RelayCmd(const std::string& command, const boost::format& param);

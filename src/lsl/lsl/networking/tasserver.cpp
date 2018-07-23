@@ -1211,14 +1211,6 @@ void ServerImpl::OnBattleRemoveBot(int battleid, const std::string& nick)
 		m_iface->OnUserQuit(user);
 }
 
-void ServerImpl::OnFileDownload(int intdata, const std::string& FileName, const std::string& url, const std::string& description)
-{
-	UTASOfferFileData parsingdata;
-	parsingdata.data = intdata;
-	m_iface->OnFileDownload(parsingdata.tasdata.autoopen, parsingdata.tasdata.closelobbyondownload,
-				parsingdata.tasdata.disconnectonrefuse, FileName, url, description);
-}
-
 void ServerImpl::SendCmd(const std::string& command, const boost::format& param)
 {
 	SendCmd(command, param.str());
