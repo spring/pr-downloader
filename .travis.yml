@@ -13,7 +13,8 @@ install:
   - sudo apt-get install -y liblua5.1-0-dev libzip-dev zlib1g-dev
 
 before_script:
-  - cmake . -DPRD_DEVELOP_FILES:BOOL=ON -DBUILD_TESTS=ON -DPRD_ENABLE_LSL=ON -DRAPIDTOOLS:BOOL=ON -DLSLSERVER:BOOL=ON -DLSL_EXTRACT:BOOL=ON
+  - cmake . -DPRD_DEVELOP_FILES:BOOL=ON -DBUILD_TESTS=ON -DPRD_ENABLE_LSL=ON -DRAPIDTOOLS:BOOL=ON -DLSLSERVER:BOOL=ON 
+# -DLSL_EXTRACT:BOOL=ON
 
 script:
   - make -j2
