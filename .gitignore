@@ -20,6 +20,7 @@ src/BuildGit
 src/MakeZip
 src/Streamer
 test/swig_test
+test/libSpringLobby_test
 *.a
 *.so
 

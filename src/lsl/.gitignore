@@ -18,7 +18,7 @@ CMakeFiles/
 /libSpringLobby.cbp
 /libSpringLobby_config.h
 *.swp
-/src/lslextract/lslextract
+/lslextract/lslextract
 /build.ninja
 /rules.ninja
 /.ninja_deps
