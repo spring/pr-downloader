@@ -32,14 +32,14 @@ ServerImpl::ServerImpl(Server* serv)
     , m_ping_timeout(40)
     , m_ping_interval(10)
     , m_server_rate_limit(800)
-    , m_udp_private_port(0)
+    , m_buffer("")
     , m_id_transmission(true)
-    , m_message_size_limit(1024)
     , m_redirecting(false)
     , m_connected(false)
     , m_online(false)
-    , m_buffer("")
+    , m_udp_private_port(0)
     , m_udp_reply_timeout(0)
+    , m_message_size_limit(1024)
     , m_iface(serv)
 {
 // FIXME:
@@ -191,12 +191,11 @@ std::string ServerImpl::GetPasswordHash(const std::string& pass) const
 		return pass;
 
 	MD5_CTX state;
-	int di;
 
 	MD5Init(&state);
 	MD5Update(&state, (unsigned char*)pass.data(), pass.size());
 	MD5Final(&state);
-	/*	for (di = 0; di < 16; ++di)
+	/*	for (int di = 0; di < 16; ++di)
 		sprintf(hex_output + di * 2, "%02x", digest[di]);
 */
 	return base64_encode(state.digest, 16);

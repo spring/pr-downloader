@@ -546,7 +546,7 @@ void Unitsync::UnSetCurrentArchive()
 #endif
 	try {
 		susynclib().UnSetCurrentMod();
-	} catch (std::runtime_error) {
+	} catch (std::runtime_error&) {
 	}
 }
 
@@ -556,7 +556,7 @@ StringVector Unitsync::GetAIInfos(int index) const
 	TRY_LOCK(ret);
 	try {
 		ret = susynclib().GetAIInfo(index);
-	} catch (std::runtime_error) {
+	} catch (std::runtime_error&) {
 	}
 	return ret;
 }
@@ -726,7 +726,7 @@ std::string Unitsync::GetFileCachePath(const std::string& name, bool IsMod, bool
 	ret += "-";
 	try {
 		ret += IsMod ? m_mods_list.at(name) : m_maps_list.at(name);
-	} catch (std::out_of_range) {
+	} catch (std::out_of_range&) {
 		LslWarning("Hash of %s doesn't exist!", name.c_str());
 		assert(false);
 	}
