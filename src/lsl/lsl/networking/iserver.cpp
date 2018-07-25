@@ -465,7 +465,7 @@ void Server::OnUserStatus(const UserPtr user, UserStatus status)
 {
 	if (!user)
 		return;
-	UserStatus oldStatus = user->Status();
+	// UserStatus oldStatus = user->Status();
 	user->SetStatus(status);
 	//TODO: event
 }
