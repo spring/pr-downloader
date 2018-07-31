@@ -34,13 +34,12 @@ FILE=/etc/apache2/sites-enabled/001-$TAG.repo.springrts.com.conf
 echo "Creating $FILE"
 cat >$FILE << EOF
 
-#Automaticly created with $(pwd)/$0, don't edit!
+# don't edit! automaticly created with $(realpath $0)
 <VirtualHost *:80>
     AssignUserID packages packages
     ServerName $TAG.repo.springrts.com
     ErrorLog /var/log/apache2/$TAG.repo.springrts.com-error.log
     CustomLog /var/log/apache2/$TAG.repo.springrts.com-access.log combined
-#    CustomLog /dev/null combined
     DocumentRoot $WWWROOT/$TAG
    <Directory $WWWROOT/$TAG>
         Require all granted
@@ -60,6 +59,5 @@ EOF
 mkdir -p $WWWROOT/$TAG
 chown packages:packages $WWWROOT/*
 ln -svf $STREAMER_BIN $WWWROOT/$TAG/streamer.cgi
-ln -svf $STREAMER_BIN $WWWROOT/$TAG/nph-streamer2.cgi
 
 done
