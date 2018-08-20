@@ -2,7 +2,7 @@
 
 on the springrts.com wiki you can find [compile instructions and usage](https://springrts.com/wiki/pr-downloader).
 
-help for RapidTools can be found at http://springrts.com/wiki/RapidTools
+help for RapidTools can be found at https://springrts.com/wiki/RapidTools
 
 
 This software uses boost:
