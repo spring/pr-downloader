@@ -93,13 +93,11 @@ bool CurlWrapper::ValidateCaFile(const std::string& cafile)
 	tmpdl.addMirror(cacertpem);
 	tmpdl.validateTLS = false;
 	LOG_INFO("Downloading %s", cacertpem);
-        if(!httpDownload->download(&tmpdl))
+        if(!httpDownload->download(&tmpdl)) {
+		LOG_ERROR("Download of %s to %s failed, please manually download!", cacertpem, GetCAFilePath().c_str());
 		return false;
-	if (VerifyFile(cafile)) {
-		return true;
 	}
-	LOG_ERROR("Verification of downloaded %s failed, please delete for automatic redownload", cafile.c_str());
-	return false;
+	return true;
 }
 
 static void SetCAOptions(CURL* handle)
