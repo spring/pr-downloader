@@ -34,7 +34,7 @@
 static CFileSystem* singleton = NULL;
 
 FILE* CFileSystem::propen(const std::string& filename,
-			  const std::string& mode) const
+			  const std::string& mode)
 {
 	FILE* ret;
 #ifdef WIN32
@@ -737,4 +737,16 @@ unsigned long CFileSystem::getMBsFree(const std::string& path)
 	}
 	return ((uint64_t)st.f_bsize * st.f_bavail) / (1024 * 1024);
 #endif
+}
+
+
+long CFileSystem::getFileSize(const std::string& path)
+{
+	FILE* f = propen(path.c_str(), "rb");
+	if (f == nullptr)
+		return -1;
+	fseek(f, 0, SEEK_END);
+	long size = ftell(f);
+	fclose(f);
+	return size;
 }

@@ -10,7 +10,7 @@
 #include "IDownloader.h"
 #include "Logger.h"
 
-constexpr const char* cacertpem = "https://curl.haxx.se/ca/cacert-2018-06-20.pem";
+constexpr const char* cacertpem = "https://springrts.com/dl/cacert.pem";
 constexpr const char* cacertfile = "cacert.pem";
 constexpr const char* cacertsha1 = "fe1e06f7048b78dbe7015c1c043de957251181db";
 constexpr const char* capath = "/etc/ssl/certs";
@@ -55,6 +55,13 @@ bool CurlWrapper::VerifyFile(const std::string& path)
 {
 	if (!fileSystem->fileExists(path))
 		return false;
+	if (fileSystem->getFileSize(path) <= 0)
+		return false;
+	if (fileSystem->isOlder(path, 604800)) {
+		LOG_INFO("%s is to old, redownloading" ,path.c_str());
+		return false;
+	}
+/*
 	HashSHA1 hash;
 	hash.Init();
 
@@ -73,6 +80,8 @@ bool CurlWrapper::VerifyFile(const std::string& path)
 
 	LOG_INFO("%s compare failed: %s != %s", path.c_str(), cacertsha1, hash.toString().c_str());
 	return false;
+*/
+	return true;
 }
 
 bool CurlWrapper::ValidateCaFile(const std::string& cafile)

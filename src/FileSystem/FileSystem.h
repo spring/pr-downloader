@@ -119,7 +119,7 @@ public:
   */
 	static std::string EscapeFilename(const std::string& path);
 
-	FILE* propen(const std::string& filename, const std::string& mode) const;
+	static FILE* propen(const std::string& filename, const std::string& mode);
 
 #ifdef WIN32
 	long FiletimeToTimestamp(const _FILETIME& time);
@@ -135,6 +135,8 @@ public:
   */
 	static std::string DirName(const std::string& path);
 	static unsigned long getMBsFree(const std::string& path);
+
+	static long getFileSize(const std::string& path);
 
 private:
 	bool portableDownload;
