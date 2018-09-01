@@ -58,7 +58,7 @@ bool CurlWrapper::VerifyFile(const std::string& path)
 	if (fileSystem->getFileSize(path) <= 0)
 		return false;
 	if (fileSystem->isOlder(path, 604800)) {
-		LOG_INFO("%s is to old, redownloading" ,path.c_str());
+		LOG_INFO("%s is older than a month, redownloading" ,path.c_str());
 		return false;
 	}
 /*
