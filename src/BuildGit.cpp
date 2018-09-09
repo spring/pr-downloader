@@ -6,6 +6,7 @@
 #include "rapid/Store.h"
 #include "rapid/String.h"
 #include "rapid/Versions.h"
+#include "Logger.h"
 
 #include <algorithm>
 #include <cassert>
@@ -156,6 +157,7 @@ void processDiff(git_diff *Diff, StoreT& Store, PoolArchiveT& Archive, git_repos
 		switch (Delta->status) {
 			case GIT_DELTA_ADDED: {
 				switch(Delta->new_file.mode) {
+					case GIT_FILEMODE_BLOB_EXECUTABLE:
 					case GIT_FILEMODE_BLOB: {
 						std::cout << "A\t" << fullPath << "\n";
 						add(Delta, fullPath);
@@ -167,6 +169,7 @@ void processDiff(git_diff *Diff, StoreT& Store, PoolArchiveT& Archive, git_repos
 						std::cout << "A\t" << fullPath << " " << buffer << "\n";
 					} break;
 					default:
+						LOG_ERROR("GIT_DELTA_ADDED: Unsupported mode for %s: %d", fullPath.c_str(), Delta->new_file.mode);
 						throw std::runtime_error{"Unsupported mode"};
 
 				}
@@ -175,6 +178,7 @@ void processDiff(git_diff *Diff, StoreT& Store, PoolArchiveT& Archive, git_repos
 			case GIT_DELTA_MODIFIED:
 			{
 				switch(Delta->new_file.mode) {
+					case GIT_FILEMODE_BLOB_EXECUTABLE:
 					case GIT_FILEMODE_BLOB: {
 						std::cout << "M\t" << fullPath << "\n";
 						add(Delta, fullPath);
@@ -188,6 +192,7 @@ void processDiff(git_diff *Diff, StoreT& Store, PoolArchiveT& Archive, git_repos
 						std::cout << "M\t" << fullPath << " " << buffer1 << " => " << buffer2 << "\n";
 					} break;
 					default:
+						LOG_ERROR("GIT_DELTA_MODIFIED: Unsupported mode for %s: %d", fullPath.c_str(), Delta->new_file.mode);
 						throw std::runtime_error{"Unsupported mode"};
 
 				}
@@ -196,6 +201,7 @@ void processDiff(git_diff *Diff, StoreT& Store, PoolArchiveT& Archive, git_repos
 			case GIT_DELTA_DELETED:
 			{
 				switch(Delta->old_file.mode) {
+					case GIT_FILEMODE_BLOB_EXECUTABLE:
 					case GIT_FILEMODE_BLOB: {
 						std::cout << "D\t" << fullPath << "\n";
 						Archive.remove(Delta->new_file.path);
@@ -205,6 +211,7 @@ void processDiff(git_diff *Diff, StoreT& Store, PoolArchiveT& Archive, git_repos
 						Archive.removePrefix(fullPath);
 					} break;
 					default:
+						LOG_ERROR("GIT_DELTA_DELETED: Unsupported mode for %s: %d", fullPath.c_str(), Delta->new_file.mode);
 						throw std::runtime_error{"Unsupported mode"};
 
 				}
