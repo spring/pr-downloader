@@ -385,9 +385,10 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 #else
 	time(&t);
 #endif
-	LOG_DEBUG("%s is %d seconds old, redownloading at %d", filename.c_str(),
-		  (int)(t - sb.st_ctime), secs);
-	return (t < sb.st_ctime + secs);
+	const int diff = t - sb.st_ctime;
+
+	LOG_DEBUG("%s is %ds old, redownloading in %ds", filename.c_str(), diff, secs - diff);
+	return (diff > secs);
 }
 
 bool CFileSystem::fileExists(const std::string& path)
