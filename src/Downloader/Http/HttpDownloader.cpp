@@ -542,12 +542,10 @@ static void CleanupDownloads(std::list<IDownload*>& download,
 	for (size_t i = 0; i < downloads.size(); i++) {
 		long timestamp = 0;
 		if ((downloads[i]->curlw != nullptr) &&
-		    curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME,
-				      &timestamp) == CURLE_OK) {
+		    curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
 			if (timestamp > 0) {
-				if (downloads[i]->download->state !=
-				    IDownload::STATE_FINISHED) // decrease local timestamp if download
-							       // failed to force redownload next time
+				// decrease local timestamp if download failed to force redownload next time
+				if (downloads[i]->download->state != IDownload::STATE_FINISHED)
 					timestamp--;
 				downloads[i]->download->file->SetTimestamp(timestamp);
 			}
