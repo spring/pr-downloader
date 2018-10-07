@@ -385,9 +385,13 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 #else
 	time(&t);
 #endif
-	const int diff = t - sb.st_ctime;
+	struct tm lt;
+	localtime_r(&sb.st_ctime, &lt);
 
-	LOG_DEBUG("%s is %ds old, redownloading in %ds", filename.c_str(), diff, secs - diff);
+	const time_t filetime = mktime(&lt);
+	const double diff = difftime(t, filetime);
+
+	LOG_DEBUG("checking time: %s  %.0fs >  %ds res: %d", filename.c_str(), diff, secs, (bool)(diff > secs));
 	return (diff > secs);
 }
 

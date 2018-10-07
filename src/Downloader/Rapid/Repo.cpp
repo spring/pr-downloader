@@ -33,9 +33,9 @@ bool CRepo::getDownload(IDownload& dl)
 		  PATH_DELIMITER + tmp + PATH_DELIMITER + "versions.gz";
 	fileSystem->createSubdirs(CFileSystem::DirName(tmpFile));
 	// first try already downloaded file, as repo master file rarely changes
-	if ((fileSystem->fileExists(tmpFile)) &&
-	    fileSystem->isOlder(tmpFile, REPO_RECHECK_TIME))
+	if ((fileSystem->fileExists(tmpFile)) && !fileSystem->isOlder(tmpFile, REPO_RECHECK_TIME))
 		return false;
+
 	dl = IDownload(tmpFile);
 	dl.addMirror(repourl + "/versions.gz");
 	return true;
