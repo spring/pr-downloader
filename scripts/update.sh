@@ -27,6 +27,7 @@ for REPO in $REPOS; do
 		if [ "$LOCAL" != "$REMOTE" ]; then
 			TAG=$(basename $REPO)
 			(
+			echo Stated: $(date)
 			echo Updateing $REPO from $(git config --get remote.origin.url)
 			git pull
 			git checkout master
@@ -34,6 +35,7 @@ for REPO in $REPOS; do
 			git submodule sync --recursive
 			git submodule update --recursive --remote --init
 			~/bin/BuildGit "$REPO" "$MODROOT" "$MODINFO" "$PACKAGES/$TAG" "$REMOTE" "$TAG"
+			echo Finished: $(date)
 			) &> $PACKAGES/$TAG/log.txt
 			git log -1 --pretty=format:"%an commited %h: %s" | ~/bin/loggit.py "$TAG"
 		fi
