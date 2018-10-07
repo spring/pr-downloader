@@ -386,7 +386,7 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 	time(&t);
 #endif
 	struct tm lt;
-	localtime_r(&sb.st_ctime, &lt);
+	localtime_r(&sb.st_mtime, &lt);
 
 	const time_t filetime = mktime(&lt);
 	const double diff = difftime(t, filetime);
