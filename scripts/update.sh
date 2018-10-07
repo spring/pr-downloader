@@ -27,7 +27,7 @@ for REPO in $REPOS; do
 		if [ "$LOCAL" != "$REMOTE" ]; then
 			TAG=$(basename $REPO)
 			(
-			echo Updateing $REPO
+			echo Updateing $REPO from $(git config --get remote.origin.url)
 			git pull
 			git checkout master
 			git reset --hard origin/master
