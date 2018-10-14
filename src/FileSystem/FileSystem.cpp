@@ -375,16 +375,18 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 	if (stat(filename.c_str(), &sb) < 0) {
 		return true;
 	}
-	time_t t;
 #ifdef WIN32
 	SYSTEMTIME pTime;
 	FILETIME pFTime;
 	GetSystemTime(&pTime);
 	SystemTimeToFileTime(&pTime, &pFTime);
-	t = FiletimeToTimestamp(pFTime);
+	const time_t = t = FiletimeToTimestamp(pFTime);
+	LOG_DEBUG("%s is %d seconds old, redownloading at %d", filename.c_str(), (int)(t - sb.st_ctime), secs);
+	return (t < sb.st_ctime + secs);
+
 #else
+	time_t t;
 	time(&t);
-#endif
 	struct tm lt;
 	localtime_r(&sb.st_mtime, &lt);
 
@@ -393,6 +395,7 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 
 	LOG_DEBUG("checking time: %s  %.0fs >  %ds res: %d", filename.c_str(), diff, secs, (bool)(diff > secs));
 	return (diff > secs);
+#endif
 }
 
 bool CFileSystem::fileExists(const std::string& path)
