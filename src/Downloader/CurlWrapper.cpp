@@ -1,6 +1,7 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include <curl/curl.h>
+#include <cstring>
 
 #include "CurlWrapper.h"
 #include "Version.h"
@@ -125,6 +126,8 @@ CurlWrapper::CurlWrapper()
 {
 
 	handle = curl_easy_init();
+	errbuf = (char*)malloc(sizeof(char) * CURL_ERROR_SIZE);
+	curl_easy_setopt(handle, CURLOPT_ERRORBUFFER, errbuf);
 
 	SetCAOptions(handle);
 
@@ -151,6 +154,8 @@ CurlWrapper::~CurlWrapper()
 	curl_easy_cleanup(handle);
 	handle = nullptr;
 	list = nullptr;
+	free(errbuf);
+	errbuf = nullptr;
 }
 
 std::string CurlWrapper::escapeUrl(const std::string& url)
@@ -177,5 +182,12 @@ void CurlWrapper::InitCurl()
 void CurlWrapper::KillCurl()
 {
 	curl_global_cleanup();
+}
+
+std::string CurlWrapper::GetError()
+{
+	if (errbuf == nullptr)
+		return "";
+	return std::string(errbuf, strlen(errbuf));
 }
 

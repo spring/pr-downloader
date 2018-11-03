@@ -12,6 +12,7 @@ public:
 	{
 		return handle;
 	}
+	std::string GetError();
 	static std::string escapeUrl(const std::string& url);
 	static void InitCurl();
 	static void KillCurl();
@@ -20,5 +21,6 @@ private:
 	static bool ValidateCaFile(const std::string& cafile);
 
 	CURL* handle;
+	char* errbuf;
 	struct curl_slist* list;
 };

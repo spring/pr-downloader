@@ -84,7 +84,7 @@ bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 	delete d.download;
 	d.download = nullptr;
 	if (curlres != CURLE_OK) {
-		LOG_ERROR("Error in curl %s", curl_easy_strerror(curlres));
+		LOG_ERROR("Error in curl %s (%s)", curl_easy_strerror(curlres), curlw.GetError().c_str());
 	}
 	return curlres == CURLE_OK;
 }
