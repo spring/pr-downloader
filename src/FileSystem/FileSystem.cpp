@@ -371,6 +371,8 @@ int CFileSystem::validatePool(const std::string& path, bool deletebroken)
 
 bool CFileSystem::isOlder(const std::string& filename, int secs)
 {
+	if (secs <= 0)
+		return true;
 	struct stat sb;
 	if (stat(filename.c_str(), &sb) < 0) {
 		return true;
