@@ -23,7 +23,6 @@
 
 CRapidDownloader::CRapidDownloader()
     : url(REPO_MASTER)
-    , reposLoaded(false)
 {
 }
 
@@ -149,11 +148,9 @@ bool CRapidDownloader::setOption(const std::string& key,
 {
 	if (key == "masterurl") {
 		url = value;
-		reposLoaded = false;
 		return true;
 	}
 	if (key == "forceupdate") {
-		reposLoaded = false;
 		return true;
 	}
 	return IDownloader::setOption(key, value);
@@ -216,10 +213,6 @@ bool CRapidDownloader::parse()
 
 bool CRapidDownloader::updateRepos(const std::string& searchstr)
 {
-	if (reposLoaded)
-		return true;
-	reposLoaded = true;
-
 	std::string::size_type pos = searchstr.find(':');
 	std::string tag;
 	if (pos != std::string::npos) { // a tag is found, set it
