@@ -380,7 +380,7 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 	FILETIME pFTime;
 	GetSystemTime(&pTime);
 	SystemTimeToFileTime(&pTime, &pFTime);
-	const time_t = t = FiletimeToTimestamp(pFTime);
+	const time_t t = FiletimeToTimestamp(pFTime);
 	LOG_DEBUG("%s is %d seconds old, redownloading at %d", filename.c_str(), (int)(t - sb.st_ctime), secs);
 	return (t < sb.st_ctime + secs);
 
