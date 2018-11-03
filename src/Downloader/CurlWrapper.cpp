@@ -127,6 +127,7 @@ CurlWrapper::CurlWrapper()
 
 	handle = curl_easy_init();
 	errbuf = (char*)malloc(sizeof(char) * CURL_ERROR_SIZE);
+	errbuf[0] = 0;
 	curl_easy_setopt(handle, CURLOPT_ERRORBUFFER, errbuf);
 
 	SetCAOptions(handle);
