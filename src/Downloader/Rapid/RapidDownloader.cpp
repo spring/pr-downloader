@@ -55,14 +55,6 @@ bool CRapidDownloader::list_compare(CSdp& first, CSdp& second)
 	return false;
 }
 
-bool CRapidDownloader::reloadRepos(const std::string& searchstr)
-{
-	if (reposLoaded)
-		return true;
-	reposLoaded = true;
-	return updateRepos(searchstr);
-}
-
 bool CRapidDownloader::download_name(IDownload* download, int reccounter,
 				     std::string name)
 {
@@ -102,7 +94,7 @@ bool CRapidDownloader::search(std::list<IDownload*>& result,
 			      DownloadEnum::Category cat)
 {
 	LOG_DEBUG("%s", name.c_str());
-	reloadRepos(name);
+	updateRepos(name);
 	sdps.sort(list_compare);
 	for (CSdp& sdp : sdps) {
 		if (match_download_name(sdp.getShortName(), name) ||
@@ -123,7 +115,7 @@ bool CRapidDownloader::download(IDownload* download, int /*max_parallel*/)
 		LOG_DEBUG("skipping non rapid-dl");
 		return true;
 	}
-	reloadRepos(download->origin_name);
+	updateRepos(download->origin_name);
 	return download_name(download, 0);
 }
 
@@ -224,6 +216,9 @@ bool CRapidDownloader::parse()
 
 bool CRapidDownloader::updateRepos(const std::string& searchstr)
 {
+	if (reposLoaded)
+		return true;
+	reposLoaded = true;
 
 	std::string::size_type pos = searchstr.find(':');
 	std::string tag;

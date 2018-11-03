@@ -64,7 +64,6 @@ private:
 	/**
           update all repos from the web
   */
-	bool reloadRepos(const std::string& searchstr);
 	bool reposLoaded;
 	/**
           helper function for sort
