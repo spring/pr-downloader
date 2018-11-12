@@ -488,7 +488,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm,
 							p.state = IDownload::STATE_NONE;
 							data->mirror->status = Mirror::STATUS_BROKEN;
 							// FIXME: cleanup curl handle here + process next dl
-							LOG_ERROR("Piece %d is invalid", idx);
+							LOG_WARN("Piece %d is invalid", idx);
 						}
 					} else {
 						LOG_INFO("sha1 checksum seems to be not set, can't check received "
