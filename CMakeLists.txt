@@ -98,7 +98,6 @@ endif()
 
 if (PREFER_STATIC_LIBS)
 	#curl dependency
-	find_package_static(OpenSSL REQUIRED)
 	find_package_static(CURL REQUIRED)
 	find_package_static(ZLIB REQUIRED)
 
