@@ -101,30 +101,22 @@ if (PREFER_STATIC_LIBS)
 	find_package_static(OpenSSL REQUIRED)
 	find_package_static(CURL REQUIRED)
 	find_package_static(ZLIB REQUIRED)
+
+	find_program(CURL_CONFIG_EXECUTABLE NAMES curl-config ONLY_CMAKE_FIND_ROOT_PATH)
+	if (CURL_CONFIG_EXECUTABLE-NOTFOUND)
+		 message(FATAL_ERROR "couldn't find curl-config!")
+	else()
+	        message(STATUS "found curl-config: ${CURL_CONFIG_EXECUTABLE}")
+	endif()
+
+	execute_process(COMMAND ${CURL_CONFIG_EXECUTABLE} --static-libs
+		OUTPUT_VARIABLE CURL_LD_FLAGS
+		OUTPUT_STRIP_TRAILING_WHITESPACE )
+	message(STATUS "Using CURL_LD_FLAGS: ${CURL_LD_FLAGS}")
 else()
 	find_package(CURL REQUIRED)
 	find_package(ZLIB REQUIRED)
 endif()
-
-
-
-#find_program(CURL_CONFIG_EXECUTABLE NAMES curl-config ONLY_CMAKE_FIND_ROOT_PATH)
-#if (CURL_CONFIG_EXECUTABLE-NOTFOUND)
-#        message(FATAL_ERROR "couldn't find curl-config!")
-#else()
-#        message(STATUS "found curl-config: ${CURL_CONFIG_EXECUTABLE}")
-#endif()
-#
-#	set(CURLCONFIGFLAGS "--static-libs")
-#else()
-#	set(CURLCONFIGFLAGS "--libs")
-#endif()
-#
-#execute_process(COMMAND ${CURL_CONFIG_EXECUTABLE} ${CURLCONFIGFLAGS}
-#        OUTPUT_VARIABLE CURL_LD_FLAGS
-#        OUTPUT_STRIP_TRAILING_WHITESPACE )
-#message(STATUS "Using CURL_LD_FLAGS: ${CURL_LD_FLAGS}")
-
 
 if (PRD_JSONCPP_INTERNAL)
         # use bundled JsonCpp
