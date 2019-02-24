@@ -98,20 +98,8 @@ endif()
 
 if (PREFER_STATIC_LIBS)
 	#curl dependency
-	find_package_static(CURL REQUIRED)
-	find_package_static(ZLIB REQUIRED)
-
-	find_program(CURL_CONFIG_EXECUTABLE NAMES curl-config ONLY_CMAKE_FIND_ROOT_PATH)
-	if (CURL_CONFIG_EXECUTABLE-NOTFOUND)
-		 message(FATAL_ERROR "couldn't find curl-config!")
-	else()
-	        message(STATUS "found curl-config: ${CURL_CONFIG_EXECUTABLE}")
-	endif()
-
-	execute_process(COMMAND ${CURL_CONFIG_EXECUTABLE} --static-libs
-		OUTPUT_VARIABLE CURL_LD_FLAGS
-		OUTPUT_STRIP_TRAILING_WHITESPACE )
-	message(STATUS "Using CURL_LD_FLAGS: ${CURL_LD_FLAGS}")
+	pkg_check_modules(CURL REQUIRED libcurl)
+	pkg_check_modules(ZLIB REQUIRED zlib)
 else()
 	find_package(CURL REQUIRED)
 	find_package(ZLIB REQUIRED)

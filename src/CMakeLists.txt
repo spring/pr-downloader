@@ -57,8 +57,6 @@ set(PRDOWNLOADER_LIBS
 )
 
 target_link_libraries(Downloader
-	${CURL_LIBRARIES}
-	${CURL_LD_FLAGS}
 	${WIN32LIBS}
 	${PRD_JSONCPP_LIBRARIES}
 	${ZLIB_LIBRARIES}
@@ -67,6 +65,13 @@ target_link_libraries(Downloader
 	bencode
 	${archiveslib}
 )
+if (PREFER_STATIC_LIBS)
+	target_link_libraries(Downloader ${CURL_STATIC_LIBRARIES})
+	target_compile_options(Downloader PRIVATE ${CURL_LD_FLAGS})
+else()
+	target_link_libraries(Downloader ${CURL_LIBRARIES})
+	target_compile_options(Downloader PRIVATE ${CURL_LD_FLAGS})
+endif()
 
 if(PRD_ARCHIVE_SUPPORT)
 	if (MINIZIP_FOUND)
