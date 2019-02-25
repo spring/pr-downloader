@@ -96,14 +96,8 @@ if(MSVC)
 	add_definitions(-DWIN32_LEAN_AND_MEAN -DNOMINMAX)
 endif()
 
-if (PREFER_STATIC_LIBS)
-	#curl dependency
-	pkg_check_modules(CURL REQUIRED libcurl)
-	pkg_check_modules(ZLIB REQUIRED zlib)
-else()
-	find_package(CURL REQUIRED)
-	find_package(ZLIB REQUIRED)
-endif()
+pkg_check_modules(CURL REQUIRED libcurl)
+pkg_check_modules(ZLIB REQUIRED zlib)
 
 if (PRD_JSONCPP_INTERNAL)
         # use bundled JsonCpp
