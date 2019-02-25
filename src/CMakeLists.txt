@@ -57,6 +57,9 @@ set(PRDOWNLOADER_LIBS
 )
 
 target_link_libraries(Downloader
+	${CURL_LIBRARIES}
+	${CURL_LD_FLAGS}
+	${OPENSSL_LIBRARIES}
 	${WIN32LIBS}
 	${PRD_JSONCPP_LIBRARIES}
 	${ZLIB_LIBRARIES}
@@ -65,8 +68,6 @@ target_link_libraries(Downloader
 	bencode
 	${archiveslib}
 )
-target_link_libraries(Downloader ${CURL_LIBRARIES})
-target_compile_options(Downloader PRIVATE ${CURL_LD_FLAGS})
 
 if(PRD_ARCHIVE_SUPPORT)
 	if (MINIZIP_FOUND)
@@ -141,7 +142,7 @@ if (PRD_CONSOLETOOL)
 	)
 
 	if (PRD_LINK_STATIC)
-		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} ${CURL_LIBRARIES})
+		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
 	else  ()
 		# hack arround "make install" doesn't generate libpr-downloader_shared.so
 		add_dependencies(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED})
