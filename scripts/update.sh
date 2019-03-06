@@ -14,7 +14,7 @@ fi
 # checks all 
 MODROOT=/
 MODINFO=modinfo.lua
-PACKAGES=/home/packages/www
+PACKAGES=/home/packages/www/repos.springrts.com
 
 REPOS=$(find /home/packages/git -maxdepth 1 -mindepth 1 -type d)
 
