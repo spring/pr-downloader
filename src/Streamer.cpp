@@ -91,47 +91,21 @@ void stream(std::string const & StorePath, std::string const & Hexed)
 
 }
 
-std::string GetStorePath(const std::string DocumentRoot, const std::string& ScriptPath)
-{
-	const size_t pos = ScriptPath.find_last_of("/");
-	return DocumentRoot + ScriptPath.substr(0, pos);
-
-}
-
 int main(int argc, char const * const * argv, char const * const * env)
 {
 	umask(0002);
 
-	const char* DocumentRoot = getenv("DOCUMENT_ROOT");
 	const char* QueryString = getenv("QUERY_STRING");
-	const char* ScriptPath = getenv("SCRIPT_PATH");
-
-	if (DocumentRoot == nullptr)
-	{
-		std::cerr << "DOCUMENT_ROOT not set\n";
-		return 1;
-	}
 
 	if (QueryString == nullptr)
 	{
 		std::cerr << "QUERY_STRING isn't set\n";
 		return 1;
 	}
-	if (ScriptPath == nullptr) {
-		std::cerr << "SCRIPT_PATH isn't set\n";
-		return 1;
-	}
-
-	const std::string StorePath = GetStorePath(DocumentRoot, ScriptPath);
-
-	if (StorePath.find(".") != std::string::npos) {
-		std::cerr << "Invalid StorePath\n";
-		return 1;
-	}
 
 	try
 	{
-		stream(StorePath, QueryString);
+		stream(".", QueryString);
 	}
 	catch (std::exception const & Exception)
 	{
