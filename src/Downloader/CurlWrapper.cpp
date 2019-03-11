@@ -31,13 +31,20 @@ static std::string GetCAFilePath()
 	return fileSystem->getSpringDir() + PATH_DELIMITER + cacertfile;
 }
 
-static void DumpTLSInfo()
+curl_sslbackend backend = CURLSSLBACKEND_NONE;
+
+static void GetTLSBackend()
 {
 #if CURL_AT_LEAST_VERSION(7,60,0)
 	const curl_ssl_backend **list;
 	curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
 	for(int i = 0; list[i]; i++) {
 		LOG_INFO("SSL backend #%d: '%s' (ID: %d)", i, list[i]->name, list[i]->id);
+		if (backend == CURLSSLBACKEND_NONE) { // use first as res
+			backend = list[i]->id;
+		} else {
+			LOG_WARN("Multiple SSL backends, this will very likely fail!");
+		}
 	}
 #endif
 }
@@ -130,7 +137,9 @@ CurlWrapper::CurlWrapper()
 	errbuf[0] = 0;
 	curl_easy_setopt(handle, CURLOPT_ERRORBUFFER, errbuf);
 
-	SetCAOptions(handle);
+	if (backend != CURLSSLBACKEND_SCHANNEL) {
+		SetCAOptions(handle);
+	}
 
 	curl_easy_setopt(handle, CURLOPT_CONNECTTIMEOUT, 30);
 
@@ -175,9 +184,11 @@ std::string CurlWrapper::escapeUrl(const std::string& url)
 void CurlWrapper::InitCurl()
 {
 	DumpVersion();
-	DumpTLSInfo();
+	GetTLSBackend();
 	curl_global_init(CURL_GLOBAL_ALL);
-	ValidateCaFile(GetCAFilePath());
+	if (backend != CURLSSLBACKEND_SCHANNEL) {
+		ValidateCaFile(GetCAFilePath());
+	}
 }
 
 void CurlWrapper::KillCurl()
