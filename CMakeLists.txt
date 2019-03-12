@@ -106,6 +106,10 @@ else()
 	find_package(ZLIB REQUIRED)
 endif()
 
+set(CURL_MIN_VER 7.60)
+if (CURL_VERSION_STRING VERSION_LESS ${CURL_MIN_VER})
+	message(FATAL_ERROR "libcurl ${CURL_VERSION_STRING} found but ${CURL_MIN_VER} is required!")
+endif()
 
 
 #find_program(CURL_CONFIG_EXECUTABLE NAMES curl-config ONLY_CMAKE_FIND_ROOT_PATH)
