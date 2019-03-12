@@ -108,7 +108,7 @@ endif()
 
 set(CURL_MIN_VER 7.60)
 if (CURL_VERSION_STRING VERSION_LESS ${CURL_MIN_VER})
-	message(FATAL_ERROR "libcurl ${CURL_VERSION_STRING} found but ${CURL_MIN_VER} is required!")
+	message(WARNING "libcurl ${CURL_VERSION_STRING} found but ${CURL_MIN_VER} is required!")
 endif()
 
 

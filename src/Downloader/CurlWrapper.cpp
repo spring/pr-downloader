@@ -17,15 +17,25 @@ constexpr const char* cacertsha1 = "fe1e06f7048b78dbe7015c1c043de957251181db";
 constexpr const char* capath = "/etc/ssl/certs";
 
 
+#ifndef CURL_VERSION_BITS
+#define CURL_VERSION_BITS(x,y,z) ((x)<<16|(y)<<8|z)
+#endif
+
+#ifndef CURL_AT_LEAST_VERSION
+#define CURL_AT_LEAST_VERSION(x,y,z) \
+  (LIBCURL_VERSION_NUM >= CURL_VERSION_BITS(x, y, z))
+#endif
+
 static std::string GetCAFilePath()
 {
 	return fileSystem->getSpringDir() + PATH_DELIMITER + cacertfile;
 }
 
-curl_sslbackend backend = CURLSSLBACKEND_NONE;
+static curl_sslbackend backend = CURLSSLBACKEND_NONE;
 
 static void GetTLSBackend()
 {
+#if CURL_AT_LEAST_VERSION(7,60,0)
 	const curl_ssl_backend **list;
 	curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
 	for(int i = 0; list[i]; i++) {
@@ -36,6 +46,9 @@ static void GetTLSBackend()
 			LOG_WARN("Multiple SSL backends, this will very likely fail!");
 		}
 	}
+#else
+#warning Compiling without full curl support: please upgrade to libcurl >= 7.60
+#endif
 }
 
 
