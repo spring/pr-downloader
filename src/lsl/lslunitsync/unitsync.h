@@ -91,6 +91,9 @@ public:
 	void SetSpringDataPath(const std::string& path);
 	bool GetSpringDataPath(std::string& path);
 
+	std::string GetMac();
+	std::string GetSys();
+
 	bool GetPlaybackList(std::set<std::string>& files, bool ReplayType = true) const; //savegames otehrwise
 
 	std::string GetArchivePath(const std::string& name) const;

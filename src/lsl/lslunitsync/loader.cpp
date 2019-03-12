@@ -130,6 +130,8 @@ bool UnitsyncFunctionLoader::BindFunctions(UnitsyncLib* s)
 	BIND(GetMapChecksumFromNamePtr, "GetMapChecksumFromName", m_get_map_checksum_from_name);
 
 	//Basic stuff
+	BIND_OPTIONAL(GetSysHashPtr, "GetSysInfoHash", m_sys_hash);
+	BIND_OPTIONAL(GetMacHashPtr, "GetMacAddrHash", m_mac_hash);
 
 	BIND(InitPtr, "Init", m_init);
 	BIND(UnInitPtr, "UnInit", m_uninit);
@@ -317,6 +319,8 @@ void UnitsyncFunctionLoader::UnbindFunctions(UnitsyncLib* s)
 	s->m_get_map_checksum_from_name = nullptr;
 
 	//Basic stuff
+	s->m_sys_hash = nullptr;
+	s->m_mac_hash = nullptr;
 
 	s->m_init = nullptr;
 	s->m_uninit = nullptr;

@@ -157,6 +157,9 @@ FUNC(const char*, GetInfoValuePtr, int);
 FUNC(const char*, GetInfoDescriptionPtr, int);
 FUNC(const char*, GetInfoType, int);
 
+FUNC(const char*, GetSysHashPtr);
+FUNC(const char*, GetMacHashPtr);
+
 /// Unitsync functions wrapping lua parser
 /** @} */
 FUNC(void, lpClosePtr);

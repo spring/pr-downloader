@@ -1227,6 +1227,21 @@ void UnitsyncLib::DeleteSpringConfigKey(const std::string& key)
 	m_delete_spring_config_key(key.c_str());
 }
 
+std::string UnitsyncLib::GetMacHash()
+{
+	if (m_mac_hash == nullptr)
+		return "0";
+	InitLib(m_mac_hash);
+	return Util::SafeString(m_mac_hash());
+}
+
+std::string UnitsyncLib::GetSysHash()
+{
+	if (m_sys_hash == nullptr)
+		return "0";
+	InitLib(m_sys_hash);
+	return Util::SafeString(m_sys_hash());
+}
 
 UnitsyncLib& susynclib()
 {

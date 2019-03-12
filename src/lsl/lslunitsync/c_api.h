@@ -307,6 +307,9 @@ public:
 	float GetInfoValueFloat(int index);
 	bool GetInfoValueBool(int index);
 
+	std::string GetSysHash();
+	std::string GetMacHash();
+
 	void RemoveAllArchives();
 
 
@@ -480,6 +483,9 @@ private:
 	GetInfoValueFloatPtr m_get_info_value_float;
 	GetInfoValueBoolPtr m_get_info_value_bool;
 	GetPrimaryModInfoCountPtr m_get_primary_mod_info_count;
+
+	GetSysHashPtr m_sys_hash;
+	GetMacHashPtr m_mac_hash;
 
 	// lua parser section
 

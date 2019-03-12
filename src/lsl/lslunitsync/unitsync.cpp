@@ -716,6 +716,18 @@ bool Unitsync::GetSpringDataPath(std::string& path)
 	return !path.empty();
 }
 
+std::string Unitsync::GetSys()
+{
+	std::string res(susynclib().GetSysHash());
+	return res;
+}
+
+std::string Unitsync::GetMac()
+{
+	std::string res(susynclib().GetMacHash());
+	return res;
+}
+
 std::string Unitsync::GetFileCachePath(const std::string& name, bool IsMod, bool usehash) const
 {
 	assert(!name.empty());
