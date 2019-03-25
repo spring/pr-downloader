@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# updates repos.gz
+
 import gzip
 import os
 
