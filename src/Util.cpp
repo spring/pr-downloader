@@ -48,9 +48,10 @@ int gzip_str(const char* in, const int inlen, char* out, int* outlen)
 	} while (res == Z_OK);
 	deflateEnd(&zlibStreamStruct);
 	*outlen = zlibStreamStruct.total_out;
-	if (zlibStreamStruct.avail_in != 0)
+	if (zlibStreamStruct.avail_in != 0) {
 		LOG_ERROR("Couldn'T compress string");
 		return -1;
+	}
 	return Z_OK;
 }
 
