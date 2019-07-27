@@ -26,7 +26,7 @@ std::vector<std::string> tokenizeString(const std::string& str, char c);
 /**
 * decompresses in to out
 */
-void gzip_str(const char* in, const int inlen, char* out, int* outlen);
+int gzip_str(const char* in, const int inlen, char* out, int* outlen);
 
 /**
         parses an int, read from file or network

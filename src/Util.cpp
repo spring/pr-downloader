@@ -28,24 +28,19 @@ std::vector<std::string> tokenizeString(const std::string& str, char c)
 	return res;
 }
 
-void gzip_str(const char* in, const int inlen, char* out, int* outlen)
+int gzip_str(const char* in, const int inlen, char* out, int* outlen)
 {
 	z_stream zlibStreamStruct;
-	zlibStreamStruct.zalloc =
-	    Z_NULL; // Set zalloc, zfree, and opaque to Z_NULL so
-	zlibStreamStruct.zfree =
-	    Z_NULL; // that when we call deflateInit2 they will be
-	zlibStreamStruct.opaque =
-	    Z_NULL; // updated to use default allocation functions.
-	zlibStreamStruct.total_out =
-	    0;				       // Total number of output bytes produced so far
+	zlibStreamStruct.zalloc = Z_NULL;      // Set zalloc, zfree, and opaque to Z_NULL so
+	zlibStreamStruct.zfree =  Z_NULL;      // that when we call deflateInit2 they will be
+	zlibStreamStruct.opaque = Z_NULL;      // updated to use default allocation functions.
+	zlibStreamStruct.total_out = 0;        // Total number of output bytes produced so far
 	zlibStreamStruct.next_in = (Bytef*)in; // Pointer to input bytes
 	zlibStreamStruct.avail_in = inlen;     // Number
 
-	int res = deflateInit2(&zlibStreamStruct, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
-			       (15 + 16), 8, Z_DEFAULT_STRATEGY);
+	int res = deflateInit2(&zlibStreamStruct, Z_DEFAULT_COMPRESSION, Z_DEFLATED, (15 + 16), 8, Z_DEFAULT_STRATEGY);
 	if (res != Z_OK)
-		return;
+		return res;
 	do {
 		zlibStreamStruct.next_out = (Bytef*)out + zlibStreamStruct.total_out;
 		zlibStreamStruct.avail_out = *outlen - zlibStreamStruct.total_out;
@@ -53,6 +48,10 @@ void gzip_str(const char* in, const int inlen, char* out, int* outlen)
 	} while (res == Z_OK);
 	deflateEnd(&zlibStreamStruct);
 	*outlen = zlibStreamStruct.total_out;
+	if (zlibStreamStruct.avail_in != 0)
+		LOG_ERROR("Couldn'T compress string");
+		return -1;
+	return Z_OK;
 }
 
 unsigned int parse_int32(unsigned char c[4])

@@ -345,7 +345,7 @@ bool CSdp::downloadStream()
 	list_it = files.begin();
 	file_name = "";
 
-	const int buflen = (files.size() + 7) / 8;
+	const int buflen = (files.size() / 8) + 1;
 	std::vector<char> buf(buflen, 0);
 
 	int i = 0;
@@ -356,7 +356,7 @@ bool CSdp::downloadStream()
 		i++;
 	}
 
-	int destlen = files.size() * 2;
+	int destlen = files.size() * 2 + 1024;
 	std::vector<char> dest(destlen, 0);
 	LOG_DEBUG("Files: %d Buflen: %d Destlen: %d", (int)files.size(), buflen, destlen);
 
