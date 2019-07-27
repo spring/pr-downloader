@@ -28,7 +28,7 @@ for REPO in $REPOS; do
 			TAG=$(basename $REPO)
 			(
 			echo Stated: $(date)
-			echo Updateing $REPO from $(git config --get remote.origin.url)
+			echo Updating $REPO from $(git config --get remote.origin.url)
 			git pull
 			git checkout master
 			git reset --hard origin/master
