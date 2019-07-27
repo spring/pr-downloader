@@ -38,7 +38,10 @@ void stream(std::string const & StorePath, std::string const & Hexed)
 	{
 		auto Bytes = gzread(File, Buffer, 4096);
 		if (Bytes < 0) throw std::runtime_error{"Error reading bit array"};
-		if (Bytes == 0) break;
+		if (Bytes == 0) {
+			if (gzeof(File)) break;
+			LOG_ERROR("Error calling gzread from POST data: %s", gzerror(File, NULL));
+		}
 		Bits.append(Buffer, Bytes);
 	}
 

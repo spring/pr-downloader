@@ -6,6 +6,7 @@
 #include "Md5.h"
 #include "FileEntry.h"
 #include "Store.h"
+#include "Logger.h"
 
 #include <map>
 #include <string>
@@ -36,7 +37,10 @@ class PoolArchiveT
 	template<typename FunctorT>
 	void iterate(BitArrayT const & Bits, FunctorT Functor)
 	{
-		if (Bits.size() < mEntries.size()) throw std::runtime_error{"Not enough bits"};
+		if (Bits.size() < mEntries.size()) {
+			LOG_ERROR("To few bits received: %d < %d", Bits.size(), mEntries.size());
+			throw std::runtime_error{"Not enough bits"};
+		}
 
 		auto BitIndex = 0;
 		for (auto & Pair : mEntries)
