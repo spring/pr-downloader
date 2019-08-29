@@ -168,8 +168,7 @@ void CRapidDownloader::downloadbyname(const std::string& name)
 	fileSystem->createSubdirs(CFileSystem::DirName(path));
 	LOG_DEBUG("%s", name.c_str());
 	// first try already downloaded file, as repo master file rarely changes
-	if ((fileSystem->fileExists(path)) &&
-	    (fileSystem->isOlder(path, REPO_MASTER_RECHECK_TIME)) && parse())
+	if ((fileSystem->fileExists(path)) && (!fileSystem->isOlder(path, REPO_MASTER_RECHECK_TIME)) && parse())
 		return;
 	IDownload dl(path);
 	dl.addMirror(name);
