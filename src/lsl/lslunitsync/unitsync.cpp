@@ -718,6 +718,9 @@ bool Unitsync::GetSpringDataPath(std::string& path)
 
 std::string Unitsync::GetSys()
 {
+	if (!IsLoaded()) {
+		return "0";
+	}
 	std::string res(susynclib().GetSysHash());
 	return res;
 }
