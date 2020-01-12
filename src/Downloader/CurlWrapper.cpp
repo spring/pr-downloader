@@ -13,7 +13,7 @@
 
 constexpr const char* cacertpem = "https://springrts.com/dl/cacert.pem";
 constexpr const char* cacertfile = "cacert.pem";
-constexpr const char* cacertsha1 = "fe1e06f7048b78dbe7015c1c043de957251181db";
+//constexpr const char* cacertsha1 = "fe1e06f7048b78dbe7015c1c043de957251181db";
 constexpr const char* capath = "/etc/ssl/certs";
 
 
