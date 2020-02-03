@@ -15,7 +15,7 @@ server::server(const std::string& address, const std::string& port,
     , acceptor_(io_service_)
     , connection_manager_()
     , socket_(io_service_)
-    , request_handler_(password)
+    , request_handler_(password, this)
 {
 	// Register to handle the signals that indicate when the server should exit.
 	// It is safe to register for the same signal multiple times in a program,
@@ -78,6 +78,11 @@ void server::do_await_stop()
 		    acceptor_.close();
 		    connection_manager_.stop_all();
 	    });
+}
+
+void server::stop()
+{
+	io_service_.stop();
 }
 
 } // namespace server

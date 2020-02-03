@@ -2,9 +2,11 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <boost/asio.hpp>
 #include "mime_types.h"
 #include "reply.h"
 #include "request.h"
+#include "server.h"
 #include "lslunitsync/unitsync.h"
 #include "lslunitsync/image.h"
 #include "lslutils/misc.h"
@@ -15,12 +17,13 @@ namespace http
 namespace server
 {
 
-request_handler::request_handler(const std::string& doc_root)
+request_handler::request_handler(const std::string& doc_root, server* server)
     : doc_root_(doc_root)
+    , server_(server)
 {
 }
 
-static void reply_http_ok(reply& rep, const std::string& mimetype)
+void request_handler::reply_http_ok(reply& rep, const std::string& mimetype)
 {
 	rep.status = reply::ok;
 	rep.headers.resize(2);
@@ -30,7 +33,7 @@ static void reply_http_ok(reply& rep, const std::string& mimetype)
 	rep.headers[1].value = mimetype;
 }
 
-static void create_file_list(reply& rep, const LSL::StringVector& items, const std::string& type)
+void request_handler::create_file_list(reply& rep, const LSL::StringVector& items, const std::string& type)
 {
 	Json::Value root;
 	for (const std::string item : items) {
@@ -42,7 +45,7 @@ static void create_file_list(reply& rep, const LSL::StringVector& items, const s
 }
 
 
-static bool gameinfo_request(const LSL::StringVector& params, reply& rep)
+bool request_handler::gameinfo_request(const LSL::StringVector& params, reply& rep)
 {
 	if (params.size() == 1) {
 		const LSL::StringVector games = LSL::usync().GetGameList();
@@ -65,7 +68,7 @@ static bool gameinfo_request(const LSL::StringVector& params, reply& rep)
 	return false;
 }
 
-static bool serve_file(reply& rep, const std::string& path, const std::string& mimetype = "")
+bool request_handler::serve_file(reply& rep, const std::string& path, const std::string& mimetype = "")
 {
 	// Open the file to send back.
 	std::ifstream is(path.c_str(), std::ios::in | std::ios::binary);
@@ -99,13 +102,13 @@ static bool serve_file(reply& rep, const std::string& path, const std::string& m
 	return true;
 }
 
-static bool root_request(LSL::StringVector params, reply& rep)
+bool request_handler::root_request(LSL::StringVector params, reply& rep)
 {
 	serve_file(rep, "index.html", "text/html");
 	return true;
 }
 
-static bool mapinfo_request(const LSL::StringVector& params, reply& rep)
+bool request_handler::mapinfo_request(const LSL::StringVector& params, reply& rep)
 {
 	if (params.size() == 1) {
 		const LSL::StringVector maps = LSL::usync().GetMapList();
@@ -152,11 +155,12 @@ static bool mapinfo_request(const LSL::StringVector& params, reply& rep)
 	return false;
 }
 
-bool system_requests(const LSL::StringVector& params, reply& rep)
+bool request_handler::system_requests(const LSL::StringVector& params, reply& rep)
 {
 	if (params.size() == 1) {
 		LSL::StringVector types;
 		types.push_back("reload");
+		types.push_back("exit");
 		create_file_list(rep, types, "system/");
 		reply_http_ok(rep, "text/html");
 		return true;
@@ -165,6 +169,10 @@ bool system_requests(const LSL::StringVector& params, reply& rep)
 		if (params[1] == "reload") {
 			LSL::usync().ReloadUnitSyncLib();
 			reply_http_ok(rep, "text/html");
+			return true;
+		}
+		if (params[1] == "exit") {
+			server_->stop();
 			return true;
 		}
 	}
