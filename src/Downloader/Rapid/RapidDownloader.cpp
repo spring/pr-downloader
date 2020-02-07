@@ -198,6 +198,7 @@ bool CRapidDownloader::parse()
 			gzclose(fp);
 			fclose(f);
 			LOG_ERROR("Parse Error %s, Line %d: %s", path.c_str(), i, buf);
+			CFileSystem::removeFile(path);
 			return false;
 		}
 		i++;
