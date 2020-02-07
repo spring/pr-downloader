@@ -75,7 +75,9 @@ bool CRepo::parse()
 		std::vector<std::string> items = tokenizeString(line, ',');
 		if (items.size() < 4) {
 			LOG_ERROR("Invalid line: %s", line.c_str());
-			continue;
+			gzclose(fp);
+			fclose(f);
+			return false;
 		}
 
 		// create new repo from url
