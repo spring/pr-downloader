@@ -22,7 +22,7 @@
 #undef max
 
 CRapidDownloader::CRapidDownloader()
-    : url(REPO_MASTER)
+    : reposgzurl(REPO_MASTER)
 {
 }
 
@@ -146,8 +146,9 @@ bool CRapidDownloader::match_download_name(const std::string& str1,
 bool CRapidDownloader::setOption(const std::string& key,
 				 const std::string& value)
 {
+	LOG_INFO("setOption %s = %s", key.c_str(), value.c_str());
 	if (key == "masterurl") {
-		url = value;
+		reposgzurl = value;
 		return true;
 	}
 	if (key == "forceupdate") {
@@ -156,24 +157,23 @@ bool CRapidDownloader::setOption(const std::string& key,
 	return IDownloader::setOption(key, value);
 }
 
-void CRapidDownloader::downloadbyname(const std::string& name)
+bool CRapidDownloader::UpdateReposGZ()
 {
 	std::string tmp;
-	if (!urlToPath(name, tmp)) {
+	if (!urlToPath(reposgzurl, tmp)) {
 		LOG_ERROR("Invalid path: %s", tmp.c_str());
-		return;
+		return false;
 	}
 	path = fileSystem->getSpringDir() + PATH_DELIMITER + "rapid" +
 	       PATH_DELIMITER + tmp;
 	fileSystem->createSubdirs(CFileSystem::DirName(path));
-	LOG_DEBUG("%s", name.c_str());
+	LOG_DEBUG("%s", reposgzurl.c_str());
 	// first try already downloaded file, as repo master file rarely changes
 	if ((fileSystem->fileExists(path)) && (!fileSystem->isOlder(path, REPO_MASTER_RECHECK_TIME)) && parse())
-		return;
+		return true;
 	IDownload dl(path);
-	dl.addMirror(name);
-	httpDownload->download(&dl);
-	parse();
+	dl.addMirror(reposgzurl);
+	return httpDownload->download(&dl) && parse();
 }
 
 bool CRapidDownloader::parse()
@@ -225,28 +225,22 @@ bool CRapidDownloader::updateRepos(const std::string& searchstr)
 	}
 
 	LOG_DEBUG("%s", "Updating repos...");
-	downloadbyname(url);
+	if (!UpdateReposGZ()) {
+		return false;
+	}
 
 	std::list<IDownload*> dls;
 	std::list<CRepo*> usedrepos;
 	for (CRepo& repo : repos) {
 		IDownload* dl = new IDownload();
-		if (repo.getDownload(*dl)) {
-			if (repo.getShortName() == tag) { // matching repo exists, update this
-							  // only
-				IDownloader::freeResult(dls);
-				usedrepos.clear();
-				usedrepos.push_back(&repo);
-				dls.push_back(dl);
-				break;
-			}
-			usedrepos.push_back(&repo);
-			dls.push_back(dl);
-		} else {
+		if (!repo.getDownload(*dl)) {
 			delete dl;
+			continue;
 		}
+		usedrepos.push_back(&repo);
+		dls.push_back(dl);
 	}
-
+	LOG_DEBUG("Downloading ...");
 	httpDownload->download(dls);
 	for (CRepo* repo : usedrepos) {
 		repo->parse();

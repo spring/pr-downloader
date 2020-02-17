@@ -51,9 +51,9 @@ private:
 	void downloadRepo(const std::string& url);
 	bool updateRepos(const std::string& searchstr);
 	bool parse();
-	void downloadbyname(const std::string& name);
+	bool UpdateReposGZ();
 	std::string path;
-	std::string url;
+	std::string reposgzurl;
 	std::list<CRepo> repos;
 
 	/**
