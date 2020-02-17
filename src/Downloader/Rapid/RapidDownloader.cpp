@@ -176,44 +176,51 @@ bool CRapidDownloader::UpdateReposGZ()
 	return httpDownload->download(&dl) && parse();
 }
 
+static bool ParseFD(FILE* f, const std::string& path, std::list<CRepo>& repos, CRapidDownloader* rapid)
+{
+	repos.clear();
+	gzFile fp = gzdopen(fileno(f), "rb");
+	if (fp == Z_NULL) {
+		LOG_ERROR("Could not open %s", path.c_str());
+		return false;
+	}
+	char buf[IO_BUF_SIZE];
+	int i = 0;
+	while (gzgets(fp, buf, sizeof(buf)) != Z_NULL) {
+		const std::string line = buf;
+		const std::vector<std::string> items = tokenizeString(line, ',');
+		if (items.size() <= 2) { // create new repo from url
+			LOG_ERROR("Parse Error %s, Line %d: %s", path.c_str(), i, buf);
+			gzclose(fp);
+			return false;
+		}
+		i++;
+		CRepo repotmp = CRepo(items[1], items[0], rapid);
+		repos.push_back(repotmp);
+	}
+	gzclose(fp);
+	if (i <= 0) {
+		LOG_ERROR("Broken %s: %d", path.c_str(), i);
+		return false;
+	}
+	LOG_INFO("Found %d repos in %s", repos.size(), path.c_str());
+	return true;
+}
+
 bool CRapidDownloader::parse()
 {
 	FILE* f = fileSystem->propen(path, "rb");
 	if (f == NULL) {
 		return false;
 	}
-	gzFile fp = gzdopen(fileno(f), "rb");
-	if (fp == Z_NULL) {
-		fclose(f);
-		LOG_ERROR("Could not open %s", path.c_str());
-		return false;
-	}
-	char buf[IO_BUF_SIZE];
-	repos.clear();
-	int i = 0;
-	while (gzgets(fp, buf, sizeof(buf)) != Z_NULL) {
-		const std::string line = buf;
-		const std::vector<std::string> items = tokenizeString(line, ',');
-		if (items.size() <= 2) { // create new repo from url
-			gzclose(fp);
-			fclose(f);
-			LOG_ERROR("Parse Error %s, Line %d: %s", path.c_str(), i, buf);
-			CFileSystem::removeFile(path);
-			return false;
-		}
-		i++;
-		CRepo repotmp = CRepo(items[1], items[0], this);
-		repos.push_back(repotmp);
-	}
-	gzclose(fp);
+
+	const bool res = ParseFD(f, path, repos, this);
 	fclose(f);
-	if (i <= 0) {
-		LOG_ERROR("Broken %s: %d", path.c_str(), i);
+	if (!res) {
 		CFileSystem::removeFile(path);
-		return false;
 	}
-	LOG_INFO("Found %d repos in %s", repos.size(), path.c_str());
-	return true;
+
+	return res;
 }
 
 bool CRapidDownloader::updateRepos(const std::string& searchstr)
