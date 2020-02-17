@@ -207,6 +207,11 @@ bool CRapidDownloader::parse()
 	}
 	gzclose(fp);
 	fclose(f);
+	if (i <= 0) {
+		LOG_ERROR("Broken %s: %d", path.c_str(), i);
+		CFileSystem::removeFile(path);
+		return false;
+	}
 	LOG_INFO("Found %d repos in %s", repos.size(), path.c_str());
 	return true;
 }
