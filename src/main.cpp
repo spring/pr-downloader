@@ -217,11 +217,11 @@ int main(int argc, char** argv)
 		}
 	}
 	const int dlres = DownloadStart();
+	DownloadShutdown();
 	if (dlres != 0) {
 		LOG_ERROR("Error occurred while downloading: %d", dlres);
-	} else {
-		LOG_INFO("Download complete!");
+		return dlres;
 	}
-	DownloadShutdown();
-	return dlres;
+	LOG_INFO("Download complete!");
+	return res;
 }
