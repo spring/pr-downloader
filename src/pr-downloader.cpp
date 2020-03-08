@@ -239,7 +239,6 @@ bool addDepends(std::list<IDownload*>& dls)
 
 int DownloadStart()
 {
-	int res = 0;
 	std::list<IDownload*> dls;
 	std::list<int>::iterator it;
 	const std::string dldir = fileSystem->getSpringDir();
@@ -269,17 +268,18 @@ int DownloadStart()
 
 	if (dls.empty()) {
 		LOG_DEBUG("Nothing to do, did you forget to call DownloadAdd()?");
-		res = 1;
-		return res;
+		return 1;
 	}
-	if (!rapidDownload->download(dls))
-		res = 2;
-	if (!httpDownload->download(dls, 1))
-		res = 3;
-	if (!download_engine(dls))
-		res = 4;
-
+	rapidDownload->download(dls);
+	httpDownload->download(dls, 1);
+	download_engine(dls);
 	IDownloader::freeResult(searchres);
+	int res = 0;
+	for (const IDownload* dl: dls) {
+		if (dl->state != IDownload::STATE_FINISHED) {
+			res = 2;
+		}
+	}
 	dls.clear();
 	return res;
 }
