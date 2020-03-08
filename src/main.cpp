@@ -217,7 +217,7 @@ int main(int argc, char** argv)
 		}
 	}
 	const int dlres = DownloadStart();
-	if (dlres > 1) {
+	if (dlres > 0) {
 		LOG_ERROR("Error occurred while downloading: %d", dlres);
 	} else {
 		LOG_INFO("Download complete!");
