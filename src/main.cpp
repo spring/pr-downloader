@@ -152,12 +152,14 @@ int main(int argc, char** argv)
 	DownloadInit();
 
 	optind = 1; // reset argv scanning
+	bool hasdownload = false; // a download is done
 	while (true) {
 		const int c = getopt_long(argc, argv, "", long_options, nullptr);
 		if (c == -1)
 			break;
 		switch (c) {
 			case RAPID_DOWNLOAD: {
+				hasdownload = true;
 				download(DownloadEnum::CAT_GAME, optarg);
 				break;
 			}
@@ -174,6 +176,7 @@ int main(int argc, char** argv)
 				break;
 			}
 			case DOWNLOAD_MAP: {
+				hasdownload = true;
 				if (!download(DownloadEnum::CAT_MAP, optarg)) {
 					LOG_ERROR("No map found for %s", optarg);
 					res = false;
@@ -181,6 +184,7 @@ int main(int argc, char** argv)
 				break;
 			}
 			case DOWNLOAD_GAME: {
+				hasdownload = true;
 				if (!download(DownloadEnum::CAT_GAME, optarg)) {
 					LOG_ERROR("No game found for %s", optarg);
 					res = false;
@@ -191,6 +195,7 @@ int main(int argc, char** argv)
 				show_version();
 				break;
 			case DOWNLOAD_ENGINE: {
+				hasdownload = true;
 				if (!download(DownloadEnum::CAT_ENGINE, optarg)) {
 					LOG_ERROR("No engine version found for %s", optarg);
 					res = false;
@@ -209,6 +214,7 @@ int main(int argc, char** argv)
 	}
 	if (optind < argc) {
 		while (optind < argc) {
+			hasdownload = true;
 			if (!download(DownloadEnum::CAT_NONE, argv[optind])) {
 				LOG_ERROR("No file found for %s", argv[optind]);
 				res = false;
@@ -216,12 +222,15 @@ int main(int argc, char** argv)
 			optind++;
 		}
 	}
+	if (!hasdownload) {
+		return res;
+	}
 	const int dlres = DownloadStart();
 	DownloadShutdown();
-	if (dlres != 0) {
+	if (dlres == 0) {
+		LOG_INFO("Download complete!");
+	} else {
 		LOG_ERROR("Error occurred while downloading: %d", dlres);
-		return dlres;
 	}
-	LOG_INFO("Download complete!");
-	return res;
+	return dlres;
 }
