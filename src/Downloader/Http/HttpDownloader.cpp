@@ -437,6 +437,33 @@ CHttpDownloader::getDataByHandle(const std::vector<DownloadData*>& downloads,
 	return NULL;
 }
 
+void CHttpDownloader::VerifyPieces(DownloadData& data, HashSHA1& sha1)
+{
+	for (size_t idx = 0; idx < data.pieces.size(); idx++) {
+		IDownload::piece& p = data.download->pieces[idx];
+		if (p.sha->isSet()) {
+			data.download->file->Hash(sha1, idx);
+
+			if (sha1.compare(p.sha)) { // piece valid
+				p.state = IDownload::STATE_FINISHED;
+				showProcess(data.download, true);
+				// LOG("piece %d verified!", idx);
+			} else { // piece download broken, mark mirror as broken (for this
+				 // file)
+				p.state = IDownload::STATE_NONE;
+				data.mirror->status = Mirror::STATUS_BROKEN;
+				// FIXME: cleanup curl handle here + process next dl
+				LOG_WARN("Piece %d is invalid", idx);
+			}
+		} else {
+			LOG_INFO("sha1 checksum seems to be not set, can't check received "
+				 "piece %d-%d",
+				 data.start_piece, data.pieces.size());
+		}
+	}
+}
+
+
 bool CHttpDownloader::processMessages(CURLM* curlm,
 				      std::vector<DownloadData*>& downloads)
 {
@@ -474,28 +501,9 @@ bool CHttpDownloader::processMessages(CURLM* curlm,
 				}
 				assert(data->download->file != NULL);
 				assert(data->start_piece < (int)data->download->pieces.size());
-				for (size_t idx = 0; idx < data->pieces.size(); idx++) {
-					IDownload::piece& p = data->download->pieces[idx];
-					if (p.sha->isSet()) {
-						data->download->file->Hash(sha1, idx);
 
-						if (sha1.compare(p.sha)) { // piece valid
-							p.state = IDownload::STATE_FINISHED;
-							showProcess(data->download, true);
-							// LOG("piece %d verified!", idx);
-						} else { // piece download broken, mark mirror as broken (for this
-							 // file)
-							p.state = IDownload::STATE_NONE;
-							data->mirror->status = Mirror::STATUS_BROKEN;
-							// FIXME: cleanup curl handle here + process next dl
-							LOG_WARN("Piece %d is invalid", idx);
-						}
-					} else {
-						LOG_INFO("sha1 checksum seems to be not set, can't check received "
-							 "piece %d-%d",
-							 data->start_piece, data->pieces.size());
-					}
-				}
+				VerifyPieces(*data, sha1);
+
 				// get speed at which this piece was downloaded + update mirror info
 				double dlSpeed;
 				curl_easy_getinfo(data->curlw->GetHandle(), CURLINFO_SPEED_DOWNLOAD,

@@ -78,6 +78,7 @@ private:
 	bool processMessages(CURLM* curlm, std::vector<DownloadData*>& downloads);
 	DownloadData* getDataByHandle(const std::vector<DownloadData*>& downloads,
 				      const CURL* easy_handle) const;
+	void VerifyPieces(DownloadData& data, HashSHA1& sha1);
 };
 
 #endif
