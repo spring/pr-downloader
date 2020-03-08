@@ -120,7 +120,6 @@ int main(int argc, char** argv)
 	if (argc < 2)
 		show_help(argv[0]);
 
-	bool res = true;
 	bool removeinvalid = false;
 	bool fsset = false;
 
@@ -149,10 +148,11 @@ int main(int argc, char** argv)
 		DownloadSetConfig(CONFIG_FILESYSTEM_WRITEPATH, "");
 	}
 
-	DownloadInit();
 
+	DownloadInit();
 	optind = 1; // reset argv scanning
 	bool hasdownload = false; // a download is done
+	bool res = true;
 	while (true) {
 		const int c = getopt_long(argc, argv, "", long_options, nullptr);
 		if (c == -1)
@@ -164,11 +164,17 @@ int main(int argc, char** argv)
 				break;
 			}
 			case RAPID_VALIDATE: {
-				DownloadRapidValidate(removeinvalid);
+				if (!DownloadRapidValidate(removeinvalid)) {
+					LOG_ERROR("Validation of the rapid pool failed");
+					res = false;
+				}
 				break;
 			}
 			case FILESYSTEM_DUMPSDP: {
-				DownloadDumpSDP(optarg);
+				if (!DownloadDumpSDP(optarg)) {
+					LOG_ERROR("Error dumping sdp");
+					res = false;
+				}
 				break;
 			}
 			case FILESYSTEM_VALIDATESDP: {
@@ -204,6 +210,7 @@ int main(int argc, char** argv)
 			}
 			case HTTP_SEARCH: {
 				LOG_ERROR("Not implemented");
+				res = false;
 				break;
 			}
 			case HELP: {
@@ -223,7 +230,7 @@ int main(int argc, char** argv)
 		}
 	}
 	if (!hasdownload) {
-		return res;
+		return !res;
 	}
 	const int dlres = DownloadStart();
 	DownloadShutdown();
