@@ -1,5 +1,11 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
+#include <string>
+#include <string.h>
+#include <stdio.h>
+#include <curl/curl.h>
+#include <stdlib.h>
+
 #include "Sdp.h"
 #include "RapidDownloader.h"
 #include "Util.h"
@@ -10,26 +16,15 @@
 #include "FileSystem/File.h"
 #include "Downloader/CurlWrapper.h"
 #include "Downloader/Download.h"
-#include <string>
-#include <string.h>
-#include <stdio.h>
-#include <curl/curl.h>
-#include <stdlib.h>
 
 CSdp::CSdp(const std::string& shortname, const std::string& md5,
 	   const std::string& name, const std::string& depends,
 	   const std::string& baseUrl)
-    : m_download(NULL)
-    , file_handle(NULL)
-    , file_pos(0)
-    , skipped(false)
-    , cursize(0)
-    , name(name)
+    : name(name)
     , md5(md5)
     , shortname(shortname)
     , baseUrl(baseUrl)
     , depends(depends)
-    , downloaded(false)
 {
 	memset(cursize_buf, 0, LENGTH_SIZE);
 	const std::string dir =
@@ -41,19 +36,16 @@ CSdp::CSdp(const std::string& shortname, const std::string& md5,
 	LOG_DEBUG("%s", sdpPath.c_str());
 }
 
-CSdp::~CSdp()
-{
-	if (file_handle != NULL) {
-		delete file_handle;
-	}
-}
+CSdp::CSdp(CSdp&& sdp) = default;
+
+CSdp::~CSdp() = default;
 
 bool createPoolDirs(const std::string& root)
 {
 	for (int i = 0; i < 256; i++) {
 		char buf[1024];
 		const int len = snprintf(buf, sizeof(buf), "%s%02x%c", root.c_str(), i, PATH_DELIMITER);
-		std::string tmp(buf, len);
+		const std::string tmp(buf, len);
 		if ((!fileSystem->directoryExists(tmp)) &&
 		    (!fileSystem->createSubdirs(tmp))) {
 			LOG_ERROR("Couldn't create %s", tmp.c_str());
@@ -65,7 +57,6 @@ bool createPoolDirs(const std::string& root)
 
 bool CSdp::downloadSelf(IDownload* /*dl*/)
 {
-
 	const std::string tmpFile = sdpPath + ".tmp";
 	IDownload tmpdl(tmpFile);
 	tmpdl.addMirror(baseUrl + "/packages/" + md5 + ".sdp");
@@ -73,7 +64,7 @@ bool CSdp::downloadSelf(IDownload* /*dl*/)
 		LOG_ERROR("Couldn't download %s", (md5 + ".sdp").c_str());
 		return false;
 	}
-	
+
 
 	if (!fileSystem->Rename(tmpFile, sdpPath)) {
 		LOG_ERROR("Couldn't rename %s to %s", tmpFile.c_str(), sdpPath.c_str());
@@ -101,8 +92,7 @@ bool CSdp::download(IDownload* dl)
 		HashMD5 fileMd5;
 		i++;
 		fileMd5.Set(filedata.md5, sizeof(filedata.md5));
-		std::string file;
-		fileSystem->getPoolFilename(fileMd5.toString(), file);
+		const std::string file = fileSystem->getPoolFilename(fileMd5.toString());
 		if (!fileSystem->fileExists(file)) { // add non-existing files to download list
 			count++;
 			filedata.download = true;
@@ -116,10 +106,7 @@ bool CSdp::download(IDownload* dl)
 	LOG_DEBUG("%d/%d need to download %d files", i, (int)files.size(),
 		  count);
 
-	std::string root = fileSystem->getSpringDir();
-	root += PATH_DELIMITER;
-	root += "pool";
-	root += PATH_DELIMITER;
+	const std::string root = fileSystem->getSpringDir() + PATH_DELIMITER + "pool" + PATH_DELIMITER;
 	if (!createPoolDirs(root)) {
 		LOG_ERROR("Creating pool directories failed");
 		return false;
@@ -163,9 +150,9 @@ static bool OpenNextFile(CSdp& sdp)
 	assert(fd.size + 5000 >= fd.compsize); // compressed file should be smaller than uncompressed file
 
 	fileMd5.Set(fd.md5, sizeof(fd.md5));
-	fileSystem->getPoolFilename(fileMd5.toString(), sdp.file_name);
-	sdp.file_handle = new CFile();
-	if (sdp.file_handle == NULL) {
+	sdp.file_name = fileSystem->getPoolFilename(fileMd5.toString());
+	sdp.file_handle = std::unique_ptr<CFile>(new CFile());
+	if (sdp.file_handle == nullptr) {
 		LOG_ERROR("couldn't open %s", fd.name.c_str());
 		return false;
 	}
@@ -194,8 +181,8 @@ static void SafeCloseFile(CSdp& sdp)
 {
 	if (sdp.file_handle == nullptr)
 		return;
+
 	sdp.file_handle->Close();
-	delete sdp.file_handle;
 	sdp.file_handle = nullptr;
 	sdp.file_pos = 0;
 	sdp.skipped = 0;
@@ -281,7 +268,7 @@ static size_t write_streamed_data(const void* buf, size_t size, size_t nmemb, CS
 		if (!OpenNextFile(sdp))
 			return -1;
 
-		assert(sdp.file_handle != NULL);
+		assert(sdp.file_handle != nullptr);
 		assert(sdp.list_it != sdp.files.end());
 
 		const int written = WriteData(sdp, buf_pos, buf_end);
@@ -303,7 +290,6 @@ static int progress_func(CSdp& sdp, double TotalToDownload,
 {
 	if (IDownloader::AbortDownloads())
 		return -1;
-	(void)sdp;
 	(void)TotalToUpload;
 	(void)NowUploaded; // remove unused warning
 	sdp.m_download->rapid_size[&sdp] = TotalToDownload;

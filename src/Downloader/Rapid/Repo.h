@@ -15,7 +15,6 @@ class CRepo
 public:
 	CRepo(const std::string& repourl, const std::string& shortname,
 	      CRapidDownloader* rapid);
-	~CRepo();
 
 	/**
           returns download for a repo file
@@ -31,7 +30,8 @@ public:
   <tag>,<md5>,<depends on (descriptive name)>,<descriptive name>
   */
 	bool parse();
-	const std::string& getShortName()
+
+	const std::string& getShortName() const
 	{
 		return shortname;
 	}

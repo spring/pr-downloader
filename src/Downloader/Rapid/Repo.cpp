@@ -20,10 +20,6 @@ CRepo::CRepo(const std::string& repourl, const std::string& _shortname,
 {
 }
 
-CRepo::~CRepo()
-{
-}
-
 bool CRepo::getDownload(IDownload& dl)
 {
 	std::string tmp;
@@ -72,7 +68,7 @@ bool CRepo::parse()
 		}
 
 		const std::string line = buf;
-		std::vector<std::string> items = tokenizeString(line, ',');
+		const std::vector<std::string> items = tokenizeString(line, ',');
 		if (items.size() < 4) {
 			LOG_ERROR("Invalid line: %s", line.c_str());
 			gzclose(fp);
@@ -81,8 +77,7 @@ bool CRepo::parse()
 		}
 
 		// create new repo from url
-		CSdp sdptmp = CSdp(items[0], items[1], items[3], items[2], repourl);
-		rapid->addRemoteSdp(sdptmp);
+		rapid->addRemoteSdp(CSdp { items[0], items[1], items[3], items[2], repourl });
 	}
 	int errnum = Z_OK;
 	const char* errstr = gzerror(fp, &errnum);

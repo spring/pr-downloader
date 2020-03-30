@@ -3,10 +3,11 @@
 #ifndef _SDP_H
 #define _SDP_H
 
-#include "FileSystem/FileData.h"
-
-#include <string>
 #include <list>
+#include <memory>
+#include <string>
+
+#include "FileSystem/FileData.h"
 
 #define LENGTH_SIZE 4
 
@@ -19,9 +20,9 @@ public:
 	CSdp(const std::string& shortname, const std::string& md5,
 	     const std::string& name, const std::string& depends,
 	     const std::string& baseUrl);
+	CSdp(CSdp&& sdp);
 
 	~CSdp();
-	CSdp() = delete;
 	/**
           download a game, we already know the host where to download from + the
      md5 of the sdp file
@@ -35,41 +36,42 @@ public:
 	/**
           returns md5 of a repo
   */
-	const std::string& getMD5()
+	const std::string& getMD5() const
 	{
 		return md5;
 	}
 	/**
           returns the descriptional name
   */
-	const std::string& getName()
+	const std::string& getName() const
 	{
 		return name;
 	}
 	/**
           returns the shortname, for example ba:stable
   */
-	const std::string& getShortName()
+	const std::string& getShortName() const
 	{
 		return shortname;
 	}
 	/**
           returns the shortname, for example ba:stable
   */
-	const std::string& getDepends()
+	const std::string& getDepends() const
 	{
 		return depends;
 	}
-	IDownload* m_download;
+
+	IDownload* m_download = nullptr;
 	std::list<FileData>::iterator list_it;
 	std::list<FileData> files; // list with all files of an sdp
-	CFile* file_handle;
+	std::unique_ptr<CFile> file_handle;
 	std::string file_name;
 
-	unsigned int file_pos;
-	unsigned int skipped;
+	unsigned int file_pos = 0;
+	unsigned int skipped = 0;
 	unsigned char cursize_buf[LENGTH_SIZE];
-	unsigned int cursize;
+	unsigned int cursize = 0;
 
 private:
 	void parse();
@@ -108,7 +110,7 @@ private:
 	std::string baseUrl;
 	std::string depends;
 	std::string sdpPath;
-	bool downloaded;
+	bool downloaded = false;
 };
 
 #endif

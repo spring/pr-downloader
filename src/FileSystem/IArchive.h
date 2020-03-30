@@ -18,14 +18,11 @@
 class IArchive
 {
 protected:
-	explicit IArchive(const std::string& /*archiveName*/)
-	{
-	}
+   // FIXME: unused archiveName, wtf?
+	explicit IArchive(const std::string& /*archiveName*/) {}
 
 public:
-	virtual ~IArchive()
-	{
-	}
+	virtual ~IArchive() = default;
 
 	// virtual bool IsOpen() = 0;
 	const std::string& GetArchiveName() const;

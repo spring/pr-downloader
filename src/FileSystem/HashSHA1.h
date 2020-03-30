@@ -9,7 +9,6 @@
 class HashSHA1 : public IHash
 {
 public:
-	HashSHA1();
 	void Init();
 	void Final();
 	void Update(const char* data, const int size);
@@ -20,7 +19,7 @@ protected:
 	unsigned char get(int pos) const;
 
 private:
-	SHA1Context sha1Context;
+	SHA1Context sha1Context = {};
 };
 
 #endif

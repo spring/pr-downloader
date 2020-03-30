@@ -26,9 +26,8 @@ public:
 	 * Shutdown all Downloaders
 	 */
 	static void Shutdown();
-	virtual ~IDownloader()
-	{
-	}
+	virtual ~IDownloader() = default;
+
 	/**
 	 * Aborts all ongoing downloads
 	 */

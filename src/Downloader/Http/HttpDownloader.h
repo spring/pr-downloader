@@ -9,19 +9,13 @@
 #include <string>
 #include <list>
 
-class HashMD5;
 class HashSHA1;
 class CFile;
-class FileData;
 class DownloadData;
 
 class CHttpDownloader : public IDownloader
 {
-
 public:
-	CHttpDownloader();
-	~CHttpDownloader();
-
 	/**
           downloads a file from Url to filename
   */

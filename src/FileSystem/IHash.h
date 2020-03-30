@@ -16,9 +16,7 @@ public:
 	/**
   * abstract base classes should always have virtual dtors
   */
-	virtual ~IHash()
-	{
-	}
+	virtual ~IHash() = default;
 	/**
   *	Finalize Hash
   */
@@ -30,18 +28,18 @@ public:
 	/**
   *	return human readable hash string
   */
-	virtual const std::string toString(const unsigned char* data = NULL,
-					   int size = 0);
+	virtual const std::string toString(const unsigned char* data = nullptr,
+					   int size = 0) const;
 	/**
   *	compare this hash
   *	@return true, when both hashes are identical
   */
-	virtual bool compare(const IHash* checksum);
+	virtual bool compare(const IHash* checksum) const;
 	/**
   *	compare this hash
   *	@return true, when both hashes are identical
   */
-	virtual bool compare(const unsigned char* data, int size);
+	virtual bool compare(const unsigned char* data, int size) const;
 	/**
   * Set the md5 hash
   */
@@ -55,14 +53,14 @@ public:
 	/**
   *	returns true, if a hash is set/calculated
   */
-	virtual bool isSet();
+	virtual bool isSet() const;
 	/**
   *	@return part of binary hash store for comparison
   */
 	virtual unsigned char get(int pos) const = 0;
 
 protected:
-	bool isset;
+	bool isset = false;
 
 private:
 	/**

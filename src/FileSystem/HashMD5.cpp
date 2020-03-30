@@ -5,12 +5,6 @@
 #include <assert.h>
 #include <string.h>
 
-HashMD5::HashMD5()
-{
-	isset = false;
-	memset(&mdContext, 0, sizeof(mdContext));
-}
-
 void HashMD5::Init()
 {
 	isset = false;

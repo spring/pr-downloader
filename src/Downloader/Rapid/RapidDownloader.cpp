@@ -26,27 +26,17 @@ CRapidDownloader::CRapidDownloader()
 {
 }
 
-CRapidDownloader::~CRapidDownloader()
+void CRapidDownloader::addRemoteSdp(CSdp&& sdp)
 {
-	sdps.clear();
+	sdps.push_back(std::move(sdp));
 }
 
-void CRapidDownloader::addRemoteSdp(CSdp& sdp)
+bool CRapidDownloader::list_compare(const CSdp& first, const CSdp& second)
 {
-	sdps.push_back(sdp);
-}
-
-bool CRapidDownloader::list_compare(CSdp& first, CSdp& second)
-{
-	std::string name1;
-	std::string name2;
-	name1.clear();
-	name2.clear();
-	name1 = (first.getShortName());
-	name2 = (second.getShortName());
-	unsigned int len;
-	len = std::min(name1.size(), name2.size());
-	for (unsigned int i = 0; i < len; i++) {
+	const std::string name1 = first.getShortName();
+	const std::string name2 = second.getShortName();
+	const unsigned len = std::min(name1.size(), name2.size());
+	for (unsigned i = 0; i < len; i++) {
 		if (tolower(name1[i]) < tolower(name2[i])) {
 			return true;
 		}
@@ -65,13 +55,14 @@ bool CRapidDownloader::download_name(IDownload* download, int reccounter,
 
 	for (CSdp& sdp : sdps) {
 		if (!match_download_name(sdp.getName(),
-					 name.empty() ? download->name : name))
+					 name.empty() ? download->name : name)) {
 			continue;
+		}
 
-		if (downloaded.find(sdp.getMD5()) !=
-		    downloaded.end()) // already downloaded, skip (i.e. stable entries are
-				      // twice in versions.gz)
+		// already downloaded, skip (i.e. stable entries are // twice in versions.gz)
+		if (downloaded.find(sdp.getMD5()) != downloaded.end()) {
 			continue;
+		}
 		downloaded.insert(sdp.getMD5());
 
 		LOG_INFO ("[Download] %s", sdp.getName().c_str());
@@ -79,8 +70,9 @@ bool CRapidDownloader::download_name(IDownload* download, int reccounter,
 		if (!sdp.download(download)) {
 			return false;
 		}
-		if (sdp.getDepends().empty())
+		if (sdp.getDepends().empty()) {
 			continue;
+		}
 		if (!download_name(download, reccounter + 1, sdp.getDepends())) {
 			return false;
 		}
@@ -95,7 +87,7 @@ bool CRapidDownloader::search(std::list<IDownload*>& result,
 	LOG_DEBUG("%s", name.c_str());
 	updateRepos(name);
 	sdps.sort(list_compare);
-	for (CSdp& sdp : sdps) {
+	for (const CSdp& sdp : sdps) {
 		if (match_download_name(sdp.getShortName(), name) ||
 		    (match_download_name(sdp.getName(), name))) {
 			IDownload* dl =
@@ -121,18 +113,13 @@ bool CRapidDownloader::download(IDownload* download, int /*max_parallel*/)
 bool CRapidDownloader::match_download_name(const std::string& str1,
 					   const std::string& str2)
 {
-	if (str2 == "")
-		return true;
-	if (str1 == str2)
-		return true;
-	if (str2 == "*")
-		return true;
+	return str2 == "" || str1 == str2 || str2 == "*";
 	// FIXME: add regex support for win32
 	/*
   #ifndef WIN32
           regex_t regex;
           if (regcomp(&regex, str2.c_str(), 0)==0) {
-                  int res=regexec(&regex, str1.c_str(),0, NULL, 0 );
+                  int res=regexec(&regex, str1.c_str(),0, nullptr, 0 );
                   regfree(&regex);
                   if (res==0) {
                           return true;
@@ -140,7 +127,6 @@ bool CRapidDownloader::match_download_name(const std::string& str1,
           }
   #endif
   */
-	return false;
 }
 
 bool CRapidDownloader::setOption(const std::string& key,
@@ -210,7 +196,7 @@ static bool ParseFD(FILE* f, const std::string& path, std::list<CRepo>& repos, C
 bool CRapidDownloader::parse()
 {
 	FILE* f = fileSystem->propen(path, "rb");
-	if (f == NULL) {
+	if (f == nullptr) {
 		return false;
 	}
 
@@ -225,10 +211,10 @@ bool CRapidDownloader::parse()
 
 bool CRapidDownloader::updateRepos(const std::string& searchstr)
 {
-	std::string::size_type pos = searchstr.find(':');
-	std::string tag;
+	const std::string::size_type pos = searchstr.find(':');
 	if (pos != std::string::npos) { // a tag is found, set it
-		tag = searchstr.substr(0, pos);
+		const std::string tag = searchstr.substr(0, pos);
+		// FIXME: tag isn't used??
 	}
 
 	LOG_DEBUG("%s", "Updating repos...");

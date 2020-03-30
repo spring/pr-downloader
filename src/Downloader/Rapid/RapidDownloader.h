@@ -8,6 +8,7 @@
 #include <string>
 #include <list>
 #include <stdio.h>
+
 #define REPO_MASTER_RECHECK_TIME \
 	86400 // how long to cache the repo-master file in secs without rechecking
 #define REPO_RECHECK_TIME 0
@@ -22,7 +23,6 @@ class CRapidDownloader : public IDownloader
 {
 public:
 	CRapidDownloader();
-	~CRapidDownloader();
 
 	/**
           search for a mod, searches for the short + long name
@@ -36,7 +36,7 @@ public:
 
 	bool setOption(const std::string& key, const std::string& value) override;
 
-	void addRemoteSdp(CSdp& dsp);
+	void addRemoteSdp(CSdp&& dsp);
 	/**
           parses a rep master-file
   */
@@ -75,7 +75,7 @@ private:
 	static bool match_download_name(const std::string& str1,
 					const std::string& str2);
 
-	static bool list_compare(CSdp& first, CSdp& second);
+	static bool list_compare(const CSdp& first, const CSdp& second);
 	std::list<CSdp> sdps;
 };
 

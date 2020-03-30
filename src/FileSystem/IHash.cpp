@@ -5,10 +5,10 @@
 
 #include <stdio.h>
 
-bool IHash::compare(const IHash* checksum)
+bool IHash::compare(const IHash* checksum) const
 {
 	assert(getSize() > 0 && checksum->getSize() > 0);
-	if (checksum == NULL) // can't compare, so guess checksums are fine
+	if (checksum == nullptr) // can't compare, so guess checksums are fine
 		return true;
 	if (checksum->getSize() != getSize())
 		return false;
@@ -19,7 +19,7 @@ bool IHash::compare(const IHash* checksum)
 	return true;
 }
 
-bool IHash::compare(const unsigned char* data, int size)
+bool IHash::compare(const unsigned char* data, int size) const
 {
 	assert(getSize() > 0 && size > 0);
 	if (getSize() != size)
@@ -35,11 +35,11 @@ bool IHash::compare(const unsigned char* data, int size)
 	return true;
 }
 
-const std::string IHash::toString(const unsigned char* data, int size)
+const std::string IHash::toString(const unsigned char* data, int size) const
 {
 	std::string str;
 	char buf[3];
-	if (data == NULL) {
+	if (data == nullptr) {
 		for (int i = 0; i < getSize(); i++) {
 			snprintf(buf, sizeof(buf), "%.2x", get(i));
 			str.append(buf);
@@ -86,7 +86,7 @@ bool IHash::Set(const std::string& hash)
 	return true;
 }
 
-bool IHash::isSet()
+bool IHash::isSet() const
 {
 	return isset;
 }

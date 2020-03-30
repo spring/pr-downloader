@@ -133,7 +133,6 @@ static void SetCAOptions(CURL* handle)
 
 CurlWrapper::CurlWrapper()
 {
-
 	handle = curl_easy_init();
 	errbuf = (char*)malloc(sizeof(char) * CURL_ERROR_SIZE);
 	errbuf[0] = 0;
@@ -198,7 +197,7 @@ void CurlWrapper::KillCurl()
 	curl_global_cleanup();
 }
 
-std::string CurlWrapper::GetError()
+std::string CurlWrapper::GetError() const
 {
 	if (errbuf == nullptr)
 		return "";

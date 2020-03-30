@@ -25,21 +25,12 @@
 #include <windows.h>
 #endif
 
-CFile::CFile()
-    : handle(nullptr)
-    , piecesize(-1)
-    , size(-1)
-    , curpos(0)
-    , isnewfile(true)
-    , timestamp(0)
-{
-}
-
 CFile::~CFile()
 {
 	// TODO: write buffered data
 	Close();
 }
+
 void CFile::Close()
 {
 	if (handle != nullptr) {
@@ -198,7 +189,7 @@ int CFile::Write(const char* buf, int bufsize, int piece)
 	//	LOG("Write() bufsize %d piece %d handle %d", bufsize, piece,
 	// fileno(handle));
 	static int const PIECES = 1;
-	int res = fwrite(buf, bufsize, PIECES, handle);
+	const int res = fwrite(buf, bufsize, PIECES, handle);
 	if (res != PIECES)
 		LOG_ERROR("write error %s (%d):  %s", filename.c_str(), res,
 			  strerror(errno));
@@ -315,12 +306,12 @@ long CFile::GetSizeFromHandle() const
 	return sb.st_size;
 }
 
-bool CFile::IsNewFile()
+bool CFile::IsNewFile() const
 {
 	return isnewfile;
 }
 
-long CFile::GetTimestamp()
+long CFile::GetTimestamp() const
 {
 	return timestamp;
 }
@@ -332,17 +323,17 @@ bool CFile::SetTimestamp(long timestamp)
 	HANDLE h;
 	bool close = false;
 	if (handle == nullptr) {
-		h = CreateFile(s2ws(filename).c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,
-			       OPEN_EXISTING, 0, NULL);
+		h = CreateFile(s2ws(filename).c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr,
+			       OPEN_EXISTING, 0, nullptr);
 		close = true;
 	} else {
 		h = (HANDLE)_get_osfhandle(fileno(handle));
 	}
-	if (h == NULL) {
+	if (h == nullptr) {
 		return false;
 	}
 	fileSystem->TimestampToFiletime(timestamp, ftime);
-	bool ret = SetFileTime(h, NULL, NULL, &ftime);
+	bool ret = SetFileTime(h, nullptr, nullptr, &ftime);
 	if (close) { // close opened file
 		CloseHandle(h);
 	}
