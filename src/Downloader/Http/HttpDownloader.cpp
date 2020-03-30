@@ -1,6 +1,19 @@
 /* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #include "HttpDownloader.h"
+
+#include <algorithm>
+#include <stdio.h>
+#include <string>
+#include <sstream>
+#include <stdlib.h>
+
+#ifdef WIN32
+#include <winsock2.h>
+#else
+#include <sys/select.h>
+#endif
+
 #include <json/reader.h>
 
 #include "DownloadData.h"
@@ -14,31 +27,12 @@
 #include "Downloader/CurlWrapper.h"
 #include "lib/base64/base64.h"
 
-#ifdef WIN32
-#include <winsock2.h>
-#else
-#include <sys/select.h>
-#endif
-
-#include <stdio.h>
-#include <string>
-#include <sstream>
-#include <stdlib.h>
-#include <algorithm> //std::min, std::max
-
-CHttpDownloader::CHttpDownloader()
-{
-}
-
-CHttpDownloader::~CHttpDownloader()
-{
-}
-
 static size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb,
 				  void* userp)
 {
-	if (IDownloader::AbortDownloads())
+	if (IDownloader::AbortDownloads()) {
 		return -1;
+	}
 
 	const size_t realsize = size * nmemb;
 	std::string* res = static_cast<std::string*>(userp);
@@ -49,11 +43,12 @@ static size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb,
 static int progress_func(DownloadData* data, double total, double done, double,
 			 double)
 {
-	if (IDownloader::AbortDownloads())
+	if (IDownloader::AbortDownloads()) {
 		return -1;
+	}
 
 	data->download->progress = done;
-	if (IDownloader::listener != NULL) {
+	if (IDownloader::listener != nullptr) {
 		IDownloader::listener(done, total);
 	}
 	if (data->got_ranges) {
@@ -65,7 +60,6 @@ static int progress_func(DownloadData* data, double total, double done, double,
 // downloads url into res
 bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 {
-	CurlWrapper curlw;
 	DownloadData d;
 	d.got_ranges = false;
 	d.download = new IDownload();
@@ -73,13 +67,14 @@ bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 	d.download->name = url;
 	d.download->origin_name = url;
 
+	CurlWrapper curlw;
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_URL, CurlWrapper::escapeUrl(url).c_str());
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEDATA, (void*)&res);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_PROGRESSDATA, &d);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_PROGRESSFUNCTION, progress_func);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_NOPROGRESS, 0L);
-	CURLcode curlres = curl_easy_perform(curlw.GetHandle());
+	const CURLcode curlres = curl_easy_perform(curlw.GetHandle());
 
 	delete d.download;
 	d.download = nullptr;
@@ -92,7 +87,6 @@ bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 static std::string getRequestUrl(const std::string& name,
 				 DownloadEnum::Category cat)
 {
-
 	std::string url = HTTP_SEARCH_URL + std::string("?");
 	if (cat != DownloadEnum::CAT_NONE) {
 		url += "category=" + DownloadEnum::getCat(cat) + std::string("&");
@@ -119,7 +113,7 @@ bool CHttpDownloader::ParseResult(const std::string& /*name*/,
 	}
 
 	for (Json::Value::ArrayIndex i = 0; i < result.size(); i++) {
-		Json::Value resfile = result[i];
+		const Json::Value resfile = result[i];
 
 		if (!resfile.isObject()) {
 			LOG_ERROR("Entry isn't object!");
@@ -134,7 +128,7 @@ bool CHttpDownloader::ParseResult(const std::string& /*name*/,
 			return false;
 		}
 		std::string filename = fileSystem->getSpringDir();
-		std::string category = resfile["category"].asString();
+		const std::string category = resfile["category"].asString();
 		const std::string springname = resfile["springname"].asString();
 		filename += PATH_DELIMITER;
 
@@ -158,7 +152,7 @@ bool CHttpDownloader::ParseResult(const std::string& /*name*/,
 
 		const DownloadEnum::Category cat = DownloadEnum::getCatFromStr(category);
 		IDownload* dl = new IDownload(filename, springname, cat);
-		Json::Value mirrors = resfile["mirrors"];
+		const Json::Value mirrors = resfile["mirrors"];
 		for (Json::Value::ArrayIndex j = 0; j < mirrors.size(); j++) {
 			if (!mirrors[j].isString()) {
 				LOG_ERROR("Invalid type in result");
@@ -225,10 +219,10 @@ static size_t multi_write_data(void* ptr, size_t size, size_t nmemb,
 		data->download->write_only_from = data;
 		data->got_ranges = true; // Silence the error
 	}
-	if (data->download->write_only_from != NULL &&
+	if (data->download->write_only_from != nullptr &&
 	    data->download->write_only_from != data)
 		return size * nmemb;
-	else if (data->download->write_only_from != NULL) {
+	else if (data->download->write_only_from != nullptr) {
 		return data->download->file->Write((const char*)ptr, size * nmemb, 0);
 	}
 	return data->download->file->Write((const char*)ptr, size * nmemb,
@@ -238,8 +232,8 @@ static size_t multi_write_data(void* ptr, size_t size, size_t nmemb,
 static size_t multiHeader(void* ptr, size_t size, size_t nmemb,
 			  DownloadData* data)
 {
-	if (data->download->pieces
-		.empty()) { // no chunked transfer, don't check headers
+	// no chunked transfer, don't check headers
+	if (data->download->pieces.empty()) {
 		LOG_DEBUG("Unchunked transfer!");
 		data->got_ranges = true;
 		return size * nmemb;
@@ -274,9 +268,9 @@ bool CHttpDownloader::getRange(std::string& range, int start_piece,
 
 void CHttpDownloader::showProcess(IDownload* download, bool force)
 {
-	int done = download->getProgress();
-	int size = download->size;
-	if (listener != NULL) {
+	const int done = download->getProgress();
+	const int size = download->size;
+	if (listener != nullptr) {
 		listener(done, size);
 	}
 	LOG_PROGRESS(done, size, force);
@@ -290,9 +284,9 @@ CHttpDownloader::verifyAndGetNextPieces(CFile& file, IDownload* download)
 		return pieces;
 	}
 	// verify file by md5 if pieces.size == 0
-	if ((download->pieces.empty()) && (download->hash != NULL) &&
+	if ((download->pieces.empty()) && (download->hash != nullptr) &&
 	    (download->hash->isSet())) {
-		HashMD5 md5 = HashMD5();
+		HashMD5 md5;
 		file.Hash(md5);
 		if (md5.compare(download->hash)) {
 			LOG_INFO("md5 correct: %s", md5.toString().c_str());
@@ -305,7 +299,7 @@ CHttpDownloader::verifyAndGetNextPieces(CFile& file, IDownload* download)
 		}
 	}
 
-	HashSHA1 sha1 = HashSHA1();
+	HashSHA1 sha1;
 	unsigned alreadyDl = 0;
 	for (unsigned i = 0; i < download->pieces.size();
 	     i++) { // find first not downloaded piece
@@ -361,16 +355,11 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	piece->start_piece = pieces.size() > 0 ? pieces[0] : -1;
 	assert(piece->download->pieces.size() <= 0 || piece->start_piece >= 0);
 	piece->pieces = pieces;
-	if (piece->curlw == NULL) {
-		piece->curlw = new CurlWrapper();
-	} else {
-		delete piece->curlw;
-		piece->curlw = new CurlWrapper();
-	}
+	piece->curlw = std::unique_ptr<CurlWrapper>(new CurlWrapper());
 
 	CURL* curle = piece->curlw->GetHandle();
 	piece->mirror = piece->download->getFastestMirror();
-	if (piece->mirror == NULL) {
+	if (piece->mirror == nullptr) {
 		LOG_ERROR("No mirror found for %s", piece->download->name.c_str());
 		return false;
 	}
@@ -421,12 +410,11 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	return true;
 }
 
-DownloadData*
-CHttpDownloader::getDataByHandle(const std::vector<DownloadData*>& downloads,
+DownloadData* CHttpDownloader::getDataByHandle(const std::vector<DownloadData*>& downloads,
 				 const CURL* easy_handle) const
 {
-	for (size_t i = 0; i < downloads.size();
-	     i++) {				      // search corresponding data structure
+	// search corresponding data structure
+	for (size_t i = 0; i < downloads.size(); i++) {
 		if (downloads[i]->curlw == nullptr) { // inactive download
 			continue;
 		}
@@ -434,7 +422,7 @@ CHttpDownloader::getDataByHandle(const std::vector<DownloadData*>& downloads,
 			return downloads[i];
 		}
 	}
-	return NULL;
+	return nullptr;
 }
 
 void CHttpDownloader::VerifyPieces(DownloadData& data, HashSHA1& sha1)
@@ -492,14 +480,14 @@ bool CHttpDownloader::processMessages(CURLM* curlm,
 						data->mirror->status = Mirror::STATUS_BROKEN;
 						// FIXME: cleanup curl handle here + process next dl
 				}
-				if (data == NULL) {
+				if (data == nullptr) {
 					LOG_ERROR("Couldn't find download in download list");
 					return false;
 				}
 				if (data->start_piece < 0) { // download without pieces
 					return false;
 				}
-				assert(data->download->file != NULL);
+				assert(data->download->file != nullptr);
 				assert(data->start_piece < (int)data->download->pieces.size());
 
 				VerifyPieces(*data, sha1);
@@ -515,8 +503,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm,
 
 				// remove easy handle, as its finished
 				curl_multi_remove_handle(curlm, data->curlw->GetHandle());
-				delete data->curlw;
-				data->curlw = NULL;
+				data->curlw = nullptr;
 				LOG_INFO("piece finished");
 				// piece finished / failed, try a new one
 				if (!setupDownload(data)) {
@@ -524,7 +511,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm,
 					    "No piece found, all pieces finished / currently downloading");
 					break;
 				}
-				int ret = curl_multi_add_handle(curlm, data->curlw->GetHandle());
+				const int ret = curl_multi_add_handle(curlm, data->curlw->GetHandle());
 				if (ret != CURLM_OK) {
 					LOG_ERROR("curl_multi_perform_error: %d %d", ret,
 						  CURLM_BAD_EASY_HANDLE);
@@ -620,8 +607,9 @@ bool CHttpDownloader::download(std::list<IDownload*>& download,
 	}
 
 	bool aborted = false;
-	int running = 1, last = -1;
-	while ((running > 0) && (!aborted)) {
+	int running = 1;
+	int last = -1;
+	while (running > 0 && !aborted) {
 		CURLMcode ret = CURLM_CALL_MULTI_PERFORM;
 		while (ret == CURLM_CALL_MULTI_PERFORM) {
 			ret = curl_multi_perform(curlm, &running);
@@ -645,7 +633,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download,
 		FD_ZERO(&wSet);
 		FD_ZERO(&eSet);
 		int count = 0;
-		struct timeval t;
+		timeval t;
 		t.tv_sec = 1;
 		t.tv_usec = 0;
 		curl_multi_fdset(curlm, &rSet, &wSet, &eSet, &count);

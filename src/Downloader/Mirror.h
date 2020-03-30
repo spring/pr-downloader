@@ -8,14 +8,15 @@
 class Mirror
 {
 public:
-	Mirror(const std::string& url);
+	Mirror(const std::string& url_);
 	void UpdateSpeed(int speed);
 
 	enum MIRROR_STATUS { STATUS_BROKEN,
 			     STATUS_OK,
-			     STATUS_UNKNOWN } status;
+			     STATUS_UNKNOWN };
+	MIRROR_STATUS status = STATUS_UNKNOWN;
 	std::string url;
-	int maxspeed;
+	int maxspeed = -1;
 };
 
 #endif

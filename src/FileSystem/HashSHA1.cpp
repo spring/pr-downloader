@@ -6,12 +6,6 @@
 #include <assert.h>
 #include <string.h>
 
-HashSHA1::HashSHA1()
-{
-	isset = false;
-	memset(&sha1Context, 0, sizeof(sha1Context));
-}
-
 void HashSHA1::Init()
 {
 	isset = false;
@@ -31,9 +25,7 @@ void HashSHA1::Final()
 
 unsigned char HashSHA1::get(int pos) const
 {
-	unsigned char res;
-	res = ((unsigned char*)&sha1Context.Message_Digest[pos / 4])[3 - pos % 4];
-	return res;
+	return ((unsigned char*)&sha1Context.Message_Digest[pos / 4])[3 - pos % 4];
 }
 
 int HashSHA1::getSize() const

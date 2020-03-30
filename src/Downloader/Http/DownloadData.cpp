@@ -3,17 +3,7 @@
 #include "DownloadData.h"
 #include "Downloader/CurlWrapper.h"
 
-DownloadData::DownloadData()
+DownloadData::DownloadData() :
+	curlw(new CurlWrapper())
 {
-	start_piece = 0;
-	mirror = NULL;
-	download = NULL;
-	curlw = new CurlWrapper();
-	got_ranges = false;
-}
-
-DownloadData::~DownloadData()
-{
-	delete curlw;
-	curlw = NULL;
 }

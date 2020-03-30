@@ -12,7 +12,7 @@ public:
 	{
 		return handle;
 	}
-	std::string GetError();
+	std::string GetError() const;
 	static std::string escapeUrl(const std::string& url);
 	static void InitCurl();
 	static void KillCurl();
@@ -22,5 +22,5 @@ private:
 
 	CURL* handle;
 	char* errbuf;
-	struct curl_slist* list;
+	curl_slist* list;
 };

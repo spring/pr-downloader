@@ -41,14 +41,14 @@ public:
 				       /**
                                   *	returns first url
                                   */
-	const std::string getUrl();
+	std::string getUrl() const;
 	Mirror* getMirror(unsigned i) const;
 	Mirror* getFastestMirror();
 	int getMirrorCount() const;
 	/**
   *	size of pieces, last piece size can be different
   */
-	int piecesize;
+	int piecesize = 0;
 	enum PIECE_STATE {
 		STATE_NONE,	// nothing was done with this piece
 		STATE_DOWNLOADING, // piece is currently downloaded
@@ -63,30 +63,30 @@ public:
    *	sha1 sum of pieces
    */
 	std::vector<struct piece> pieces; // FIXME: make private
-	IHash* hash;
-	CFile* file;
+	IHash* hash = nullptr;
+	CFile* file = nullptr;
 
 	/**
    *	file size
    */
-	int size;
+	int size = -1;
 
 	std::map<CSdp*, uint64_t> rapid_size;
 	std::map<CSdp*, uint64_t> map_rapid_progress;
 
-	int progress;
+	int progress = 0;
 	/**
    *	state for whole file
    */
-	PIECE_STATE state;
+	PIECE_STATE state = IDownload::STATE_NONE;
 	/**
    *	returns number of bytes downloaded
    */
 	unsigned int getProgress() const;
 	std::string version;
 
-	unsigned int parallel_downloads;
-	DownloadData* write_only_from;
+	unsigned int parallel_downloads = 0;
+	DownloadData* write_only_from = nullptr;
 
 	bool validateTLS = true;
 private:

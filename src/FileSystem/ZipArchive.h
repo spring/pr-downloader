@@ -18,7 +18,7 @@ public:
 	explicit CZipArchive(const std::string& archiveName);
 	virtual ~CZipArchive();
 
-	virtual bool IsOpen();
+	virtual bool IsOpen() const;
 
 	virtual unsigned int NumFiles() const;
 	virtual void FileInfo(unsigned int fid, std::string& name, int& size,

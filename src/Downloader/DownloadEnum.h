@@ -7,6 +7,7 @@
 
 namespace DownloadEnum
 {
+
 enum Category {
 	CAT_NONE = 0,
 	CAT_MAP,
@@ -24,8 +25,9 @@ enum Category {
 /**
  *	returns the string name of a category
  */
-extern const std::string getCat(DownloadEnum::Category cat);
-extern DownloadEnum::Category getCatFromStr(const std::string& str);
+extern std::string getCat(Category cat);
+extern Category getCatFromStr(const std::string& str);
+
 }
 
 #endif

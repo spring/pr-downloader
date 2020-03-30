@@ -75,7 +75,7 @@ IDownload* GetIDownloadByID(std::list<IDownload*>& dllist, int id)
 		pos++;
 	}
 	LOG_ERROR("%s: Couln't find dl %d", __FUNCTION__, id);
-	return NULL;
+	return nullptr;
 }
 
 std::list<IDownload*> searchres;
@@ -142,7 +142,7 @@ int DownloadSearch(DownloadEnum::Category cat, const char* name)
 bool DownloadGetInfo(int id, downloadInfo& info)
 {
 	IDownload* dl = GetIDownloadByID(searchres, id);
-	if (dl != NULL) {
+	if (dl != nullptr) {
 		strncpy(info.filename, dl->name.c_str(),
 			NAME_LEN - 1); // -1 because of 0 termination
 		info.cat = dl->cat;
@@ -201,7 +201,7 @@ bool DownloadGetConfig(CONFIG type, const void** value)
 
 bool DownloadAdd(unsigned int id)
 {
-	if ((id > searchres.size())) {
+	if (id > searchres.size()) {
 		LOG_ERROR("%s Invalid id %d", __FUNCTION__, id);
 		return false;
 	}
@@ -249,7 +249,7 @@ int DownloadStart()
 		if (dl->size > 0) {
 			dlsize += dl->size;
 		}
-		if (dl == NULL) {
+		if (dl == nullptr) {
 			continue;
 		}
 		dls.push_back(dl);
@@ -286,9 +286,7 @@ int DownloadStart()
 
 bool DownloadRapidValidate(bool deletebroken)
 {
-	std::string path = fileSystem->getSpringDir();
-	path += PATH_DELIMITER;
-	path += "pool";
+	const std::string path = fileSystem->getSpringDir() + PATH_DELIMITER + "pool";
 	return fileSystem->validatePool(path, deletebroken);
 }
 
@@ -318,10 +316,10 @@ char* CalcHash(const char* str, int size, int type)
 		MD5Final(&ctx);
 		hash = ctx.digest;
 	} else {
-		return NULL;
+		return nullptr;
 	}
 
-	std::string encoded = base64_encode(hash, 16);
+	const std::string encoded = base64_encode(hash, 16);
 	char* ret = (char*)malloc((encoded.size() + 1) * sizeof(char));
 	strncpy(ret, encoded.c_str(), encoded.size());
 	ret[encoded.size()] = '\0';

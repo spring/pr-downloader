@@ -24,8 +24,6 @@ public:
 	static CFileSystem* GetInstance();
 	static void Shutdown();
 
-	CFileSystem();
-	~CFileSystem();
 	/**
           parses the file for a mod and creates
   */
@@ -107,7 +105,7 @@ public:
 	/**
   *	returns full filename for pool file from md5
   */
-	void getPoolFilename(const std::string& md5str, std::string& path);
+	std::string getPoolFilename(const std::string& md5str) const;
 
 	/**
   *	tries to rename a file, copies if rename fails
@@ -139,7 +137,7 @@ public:
 	static long getFileSize(const std::string& path);
 
 private:
-	bool portableDownload;
+	bool portableDownload = false;
 	std::list<FileData> mods;
 	bool parse_repository_line(char* str, SRepository* repository, int size);
 	std::string springdir;

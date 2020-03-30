@@ -21,6 +21,7 @@ PointerBindsToType: true
 PointerAlignment: Left
 SpacesBeforeTrailingComments: 1
 Standard:        Auto
+SortIncludes:	true
 IndentWidth:     8
 UseTab:          Always
 BreakBeforeBraces: Linux

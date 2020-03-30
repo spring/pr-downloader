@@ -110,9 +110,9 @@ std::string ws2s(const std::wstring& s)
 {
 	const size_t slength = s.length();
 	const int len =
-	    WideCharToMultiByte(CP_UTF8, 0, s.c_str(), slength, NULL, 0, NULL, NULL);
+	    WideCharToMultiByte(CP_UTF8, 0, s.c_str(), slength, nullptr, 0, nullptr, nullptr);
 	char* buf = new char[len];
-	WideCharToMultiByte(CP_UTF8, 0, s.c_str(), slength, buf, len, NULL, NULL);
+	WideCharToMultiByte(CP_UTF8, 0, s.c_str(), slength, buf, len, nullptr, nullptr);
 	std::string r(buf, len);
 	delete[] buf;
 	return r;

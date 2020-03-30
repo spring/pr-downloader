@@ -11,8 +11,8 @@
 
 class IDownloader;
 
-IDownloader* IDownloader::httpdl = NULL;
-IDownloader* IDownloader::rapiddl = NULL;
+IDownloader* IDownloader::httpdl = nullptr;
+IDownloader* IDownloader::rapiddl = nullptr;
 IDownloaderProcessUpdateListener IDownloader::listener = nullptr;
 
 
@@ -26,9 +26,9 @@ void IDownloader::Initialize()
 void IDownloader::Shutdown()
 {
 	delete (httpdl);
-	httpdl = NULL;
+	httpdl = nullptr;
 	delete (rapiddl);
-	rapiddl = NULL;
+	rapiddl = nullptr;
 	CurlWrapper::KillCurl();
 }
 static bool abortDownloads = false;
@@ -44,13 +44,13 @@ bool IDownloader::AbortDownloads()
 
 IDownloader* IDownloader::GetHttpInstance()
 {
-	if (httpdl == NULL)
+	if (httpdl == nullptr)
 		httpdl = new CHttpDownloader();
 	return httpdl;
 }
 IDownloader* IDownloader::GetRapidInstance()
 {
-	if (rapiddl == NULL)
+	if (rapiddl == nullptr)
 		rapiddl = new CRapidDownloader();
 	return rapiddl;
 }

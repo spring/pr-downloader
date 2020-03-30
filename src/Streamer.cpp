@@ -40,7 +40,7 @@ void stream(std::string const & StorePath, std::string const & Hexed)
 		if (Bytes < 0) throw std::runtime_error{"Error reading bit array"};
 		if (Bytes == 0) {
 			if (gzeof(File)) break;
-			LOG_ERROR("Error calling gzread from POST data: %s", gzerror(File, NULL));
+			LOG_ERROR("Error calling gzread from POST data: %s", gzerror(File, nullptr));
 		}
 		Bits.append(Buffer, Bytes);
 	}

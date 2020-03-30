@@ -39,7 +39,6 @@ public:
   *	@param size of the filename, -1 will read it from file or create a new
   *one
   */
-	CFile();
 	~CFile();
 	/**
   *	hashes a piece with given hashes (or complete file, if piece<=0)
@@ -74,10 +73,10 @@ public:
   *	gets the read/write position of piece
   */
 	long GetPiecePos(int piece = -1) const;
-	bool IsNewFile();
+	bool IsNewFile() const;
 
 	// FIXME: move to filesystem?!
-	long GetTimestamp();
+	long GetTimestamp() const;
 	bool SetTimestamp(long timestamp);
 
 private:
@@ -101,14 +100,14 @@ private:
 	long GetSizeFromHandle() const;
 	std::string filename;
 	std::string tmpfile;
-	FILE* handle;			     // file handle
-	int piecesize;			     // size of a piece
-	long size;			     // file size
-	unsigned long curpos;		     // current file pointer absolute position
+	FILE* handle = nullptr;			     // file handle
+	int piecesize = -1;			     // size of a piece
+	long size = -1;			     // file size
+	unsigned long curpos = 0;		     // current file pointer absolute position
 	std::vector<CFilePiece> pieces;      // pieces of the file
 	std::map<std::string, IHash*> hashs; // checksums for the complete file
-	bool isnewfile;
-	long timestamp;
+	bool isnewfile = true;
+	long timestamp = 0;
 };
 
 #endif

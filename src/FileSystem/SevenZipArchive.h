@@ -28,9 +28,9 @@ public:
 	virtual unsigned GetCrc32(unsigned int fid);
 
 private:
-	UInt32 blockIndex;
-	Byte* outBuffer;
-	size_t outBufferSize;
+	UInt32 blockIndex = 0xFFFFFFFF;
+	Byte* outBuffer = nullptr;
+	size_t outBufferSize = 0;
 
 	struct FileData
 	{
@@ -69,8 +69,8 @@ private:
 	const char* GetErrorStr(int res);
 
 	std::vector<FileData> fileData;
-	UInt16* tempBuf;
-	size_t tempBufSize;
+	UInt16* tempBuf = nullptr;
+	size_t tempBufSize = 0;
 
 	CFileInStream archiveStream;
 	CSzArEx db;

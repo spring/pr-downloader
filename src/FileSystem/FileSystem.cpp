@@ -31,18 +31,17 @@
 #include <errno.h>
 #endif
 
-static CFileSystem* singleton = NULL;
+static CFileSystem* singleton = nullptr;
 
 FILE* CFileSystem::propen(const std::string& filename,
 			  const std::string& mode)
 {
-	FILE* ret;
 #ifdef WIN32
-	ret = _wfopen(s2ws(filename).c_str(), s2ws(mode).c_str());
+	FILE* ret = _wfopen(s2ws(filename).c_str(), s2ws(mode).c_str());
 #else
-	ret = fopen(filename.c_str(), mode.c_str());
+	FILE* ret = fopen(filename.c_str(), mode.c_str());
 #endif
-	if (ret == NULL) {
+	if (ret == nullptr) {
 		LOG_ERROR("Couldn't open %s", filename.c_str());
 	}
 	return ret;
@@ -51,18 +50,18 @@ FILE* CFileSystem::propen(const std::string& filename,
 bool CFileSystem::fileIsValid(const FileData* mod,
 			      const std::string& filename) const
 {
-	HashMD5 md5hash;
-	int bytes;
 	unsigned char data[IO_BUF_SIZE];
 	FILE* f = propen(filename, "rb");
 	gzFile inFile = gzdopen(fileno(f), "rb");
-	if (inFile == NULL) { // file can't be opened
+	if (inFile == nullptr) { // file can't be opened
 		fclose(f);
 		LOG_ERROR("Could not open file %s", filename.c_str());
 		return false;
 	}
+	HashMD5 md5hash;
 	md5hash.Init();
 	//	unsigned long filesize=0;
+	int bytes;
 	while ((bytes = gzread(inFile, data, IO_BUF_SIZE)) > 0) {
 		md5hash.Update((char*)data, bytes);
 		//		filesize=filesize+bytes;
@@ -156,10 +155,6 @@ bool CFileSystem::parseSdp(const std::string& filename, std::list<FileData>& fil
 	return true;
 }
 
-CFileSystem::~CFileSystem()
-{
-}
-
 bool CFileSystem::setWritePath(const std::string& path)
 {
 
@@ -167,9 +162,8 @@ bool CFileSystem::setWritePath(const std::string& path)
 		springdir = path;
 	} else {
 #ifndef WIN32
-		char* buf;
-		buf = getenv("HOME");
-		if (buf != NULL) {
+		const char* buf = getenv("HOME");
+		if (buf != nullptr) {
 			springdir = buf;
 			springdir.append("/.spring");
 		} else { // no home: use cwd
@@ -178,7 +172,7 @@ bool CFileSystem::setWritePath(const std::string& path)
 		}
 #else
 		wchar_t my_documents[MAX_PATH];
-		HRESULT result = SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL,
+		HRESULT result = SHGetFolderPathW(nullptr, CSIDL_PERSONAL, nullptr,
 						  SHGFP_TYPE_CURRENT, my_documents);
 		if (result == S_OK) {
 			springdir = ws2s(my_documents);
@@ -195,24 +189,18 @@ bool CFileSystem::setWritePath(const std::string& path)
 	return createSubdirs(springdir.c_str());
 }
 
-CFileSystem::CFileSystem()
-    : portableDownload(false)
-{
-}
-
 CFileSystem* CFileSystem::GetInstance()
 {
-	if (singleton == NULL)
+	if (singleton == nullptr) {
 		singleton = new CFileSystem();
+	}
 	return singleton;
 }
 
 void CFileSystem::Shutdown()
 {
-	CFileSystem* tmpFileSystem = singleton;
-	singleton = NULL;
-	delete tmpFileSystem;
-	tmpFileSystem = NULL;
+	delete singleton;
+	singleton = nullptr;
 }
 
 const std::string CFileSystem::getSpringDir()
@@ -243,7 +231,7 @@ bool CreateDir(const std::string& path)
 {
 	assert(!path.empty());
 #ifdef WIN32
-	return CreateDirectory(s2ws(path).c_str(), NULL);
+	return CreateDirectory(s2ws(path).c_str(), nullptr);
 #else
 	return mkdir(path.c_str(), 0755) == 0;
 #endif
@@ -283,18 +271,17 @@ bool CFileSystem::createSubdirs(const std::string& path)
 	return CreateDir(path);
 }
 
-void CFileSystem::getPoolFilename(const std::string& md5str,
-				  std::string& path)
+std::string CFileSystem::getPoolFilename(const std::string& md5str) const
 {
-	path = fileSystem->getSpringDir();
-	path += PATH_DELIMITER;
-	path += "pool";
-	path += PATH_DELIMITER;
-	path += md5str.at(0);
-	path += md5str.at(1);
-	path += PATH_DELIMITER;
-	path += md5str.substr(2);
-	path += ".gz";
+	return fileSystem->getSpringDir()
+	 + PATH_DELIMITER
+	 + "pool"
+	 + PATH_DELIMITER
+	 + md5str.at(0)
+	 + md5str.at(1)
+	 + PATH_DELIMITER
+	 + md5str.substr(2)
+	 + ".gz";
 }
 
 int CFileSystem::validatePool(const std::string& path, bool deletebroken)
@@ -306,58 +293,59 @@ int CFileSystem::validatePool(const std::string& path, bool deletebroken)
 	int res = 0;
 	std::list<std::string> dirs;
 	dirs.push_back(path);
-	int maxdirs = 257; // FIXME: unknown dirs in pool will break bar
+	const int maxdirs = 257; // FIXME: unknown dirs in pool will break bar
 	int finished = 0;
 	IHash* md5 = new HashMD5();
 	while (!dirs.empty()) {
-		struct dirent* dentry;
-		DIR* d;
 		const std::string dir = dirs.front();
 		dirs.pop_front();
-		d = opendir(dir.c_str());
-		while ((dentry = readdir(d)) != NULL) {
+		DIR* d = opendir(dir.c_str());
+		dirent* dentry;
+		while ((dentry = readdir(d)) != nullptr) {
 			LOG_PROGRESS(finished, maxdirs);
-			std::string absname = dir;
-			absname += PATH_DELIMITER;
-			absname += dentry->d_name;
-			if (dentry->d_name[0] != '.') { // don't check hidden files / . / ..
+			const std::string absname = dir + PATH_DELIMITER + dentry->d_name;
+			// don't check hidden files / . / ..
+			if (dentry->d_name[0] == '.') {
+				continue;
+			}
 #ifndef WIN32
-				if ((dentry->d_type & DT_DIR) != 0) { // directory
+			if ((dentry->d_type & DT_DIR) != 0) { // directory
 #else
-				struct stat sb;
-				stat(absname.c_str(), &sb);
-				if ((sb.st_mode & S_IFDIR) != 0) {
+			struct stat sb;
+			stat(absname.c_str(), &sb);
+			if ((sb.st_mode & S_IFDIR) != 0) {
 #endif
-					dirs.push_back(absname);
-				} else {
-					FileData filedata = FileData();
-					int len = absname.length();
-					if (len < 36) { // file length has at least to be
-							// <md5[0]><md5[1]>/<md5[2-30]>.gz
-						LOG_ERROR("Invalid file: %s", absname.c_str());
-					} else {
-						std::string md5str = "";
-						md5str.push_back(
-						    absname.at(len - 36)); // get md5 from path + filename
-						md5str.push_back(absname.at(len - 35));
-						md5str.append(absname.substr(len - 33, 30));
-						md5->Set(md5str);
-						for (unsigned i = 0; i < 16; i++) {
-							filedata.md5[i] = md5->get(i);
-						}
+				dirs.push_back(absname);
+				continue;
+			}
 
-						if (!fileIsValid(&filedata, absname)) { // check if md5 in filename
-											// is the same as in
-											// filename
-							LOG_ERROR("Invalid File in pool: %s", absname.c_str());
-							if (deletebroken) {
-								removeFile(absname);
-							}
-						} else {
-							res++;
-						}
-					}
+			const int len = absname.length();
+			if (len < 36) { // file length has at least to be
+					// <md5[0]><md5[1]>/<md5[2-30]>.gz
+				LOG_ERROR("Invalid file: %s", absname.c_str());
+				continue;
+			}
+
+			std::string md5str;
+			 // get md5 from path + filename
+			md5str.push_back(absname.at(len - 36));
+			md5str.push_back(absname.at(len - 35));
+			md5str.append(absname.substr(len - 33, 30));
+			md5->Set(md5str);
+			FileData filedata;
+			for (unsigned i = 0; i < 16; i++) {
+				filedata.md5[i] = md5->get(i);
+			}
+
+			if (!fileIsValid(&filedata, absname)) { // check if md5 in filename
+								// is the same as in
+								// filename
+				LOG_ERROR("Invalid File in pool: %s", absname.c_str());
+				if (deletebroken) {
+					removeFile(absname);
 				}
+			} else {
+				res++;
 			}
 		}
 		finished++;
@@ -441,11 +429,11 @@ bool CFileSystem::removeDir(const std::string& path)
 
 bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 {
-	struct be_node* node = be_decoden(data, size);
+	be_node* node = be_decoden(data, size);
 	//#ifdef DEBUG
 	//	be_dump(node);
 	//#endif
-	if (node == NULL) {
+	if (node == nullptr) {
 		LOG_ERROR("couldn't parse torrent");
 		return false;
 	}
@@ -454,23 +442,22 @@ bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
 		be_free(node);
 		return false;
 	}
-	int i;
-	struct be_node* infonode = NULL;
-	for (i = 0; node->val.d[i].val; ++i) { // search for a dict with name info
+
+	be_node* infonode = nullptr;
+	for (int i = 0; node->val.d[i].val; ++i) { // search for a dict with name info
 		if ((node->type == BE_DICT) && (strcmp(node->val.d[i].key, "info") == 0)) {
 			infonode = node->val.d[i].val;
 			break;
 		}
 	}
-	if (infonode == NULL) {
+	if (infonode == nullptr) {
 		LOG_ERROR("couldn't find info node in be dict");
 		be_free(node);
 		return false;
 	}
-	for (i = 0; infonode->val.d[i].val;
-	     ++i) { // fetch needed data from dict and fill into dl
-		struct be_node* datanode;
-		datanode = infonode->val.d[i].val;
+	for (int i = 0; infonode->val.d[i].val; ++i) {
+		// fetch needed data from dict and fill into dl
+		be_node* datanode = infonode->val.d[i].val;
 		switch (datanode->type) {
 			case BE_STR: // current value is a string
 				if ((strcmp("name", infonode->val.d[i].key) == 0) &&
@@ -516,7 +503,6 @@ bool CFileSystem::dumpSDP(const std::string& filename)
 	if (!parseSdp(filename, files))
 		return false;
 	LOG_INFO("md5 (filename in pool)           crc32        size filename");
-	std::list<FileData*>::iterator it;
 	HashMD5 md5;
 	for (const FileData& fd: files) {
 		md5.Set(fd.md5, sizeof(fd.md5));
@@ -546,11 +532,9 @@ bool CFileSystem::validateSDP(const std::string& sdpPath)
 
 	bool valid = true;
 	for (FileData& fd : files) {
-
-		std::string filePath;
 		HashMD5 fileMd5;
 		fileMd5.Set(fd.md5, sizeof(fd.md5));
-		getPoolFilename(fileMd5.toString(), filePath);
+		const std::string filePath = getPoolFilename(fileMd5.toString());
 		if(!fileExists(filePath)) {
 			valid = false;
 			LOG_INFO("Missing file: %s", filePath.c_str());
@@ -640,7 +624,7 @@ bool CFileSystem::extract(const std::string& filename,
 		}
 		LOG_INFO("extracting (%s)", tmp.c_str());
 		FILE* f = propen(tmp, "wb+");
-		if (f == NULL) {
+		if (f == nullptr) {
 			LOG_ERROR("Error creating %s", tmp.c_str());
 			delete archive;
 			return false;

@@ -16,14 +16,6 @@ IDownload::IDownload(const std::string& name, const std::string& origin_name,
     , dltype(typ)
     , name(name)
     , origin_name(origin_name)
-    , piecesize(0)
-    , hash(NULL)
-    , file(NULL)
-    , size(-1)
-    , progress(0)
-    , state(IDownload::STATE_NONE)
-    , parallel_downloads(0)
-    , write_only_from(NULL)
 {
 }
 
@@ -36,21 +28,18 @@ IDownload::~IDownload()
 	for (unsigned i = 0; i < mirrors.size(); i++) {
 		delete mirrors[i];
 	}
-	if (hash != NULL)
+	if (hash != nullptr)
 		delete hash;
-	hash = NULL;
-	if (file != NULL) {
+	hash = nullptr;
+	if (file != nullptr) {
 		delete file;
-		file = NULL;
+		file = nullptr;
 	}
 }
 
-const std::string IDownload::getUrl()
+std::string IDownload::getUrl() const
 {
-	const std::string empty = "";
-	if (!mirrors.empty())
-		return mirrors[0]->url;
-	return empty;
+	return mirrors.empty() ? "" : mirrors[0]->url;
 }
 
 Mirror* IDownload::getMirror(unsigned i) const
@@ -81,7 +70,7 @@ Mirror* IDownload::getFastestMirror()
 	}
 	if (pos < 0) {
 		LOG_DEBUG("no mirror selected");
-		return NULL;
+		return nullptr;
 	}
 	LOG_DEBUG("Fastest mirror %d: (%d): %s", pos, mirrors[pos]->maxspeed,
 		  mirrors[pos]->url.c_str());

@@ -22,7 +22,7 @@ CZipArchive::CZipArchive(const std::string& archiveName)
 		unz_file_info info;
 		char fName[512];
 
-		unzGetCurrentFileInfo(zip, &info, fName, 512, NULL, 0, NULL, 0);
+		unzGetCurrentFileInfo(zip, &info, fName, 512, nullptr, 0, nullptr, 0);
 
 		const std::string fLowerName = fName;
 		if (fLowerName.empty()) {
@@ -54,9 +54,9 @@ CZipArchive::~CZipArchive()
 	}
 }
 
-bool CZipArchive::IsOpen()
+bool CZipArchive::IsOpen() const
 {
-	return (zip != NULL);
+	return zip != nullptr;
 }
 
 unsigned int CZipArchive::NumFiles() const
@@ -96,7 +96,7 @@ bool CZipArchive::GetFile(unsigned int fid,
 	unzGoToFilePos(zip, &fileData[fid].fp);
 
 	unz_file_info fi;
-	unzGetCurrentFileInfo(zip, &fi, NULL, 0, NULL, 0, NULL, 0);
+	unzGetCurrentFileInfo(zip, &fi, nullptr, 0, nullptr, 0, nullptr, 0);
 
 	if (unzOpenCurrentFile(zip) != UNZ_OK) {
 		return false;

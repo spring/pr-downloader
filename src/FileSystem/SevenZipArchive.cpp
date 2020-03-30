@@ -22,12 +22,11 @@ static Bool Utf16_To_Utf8(char* dest, size_t* destLen, const UInt16* src,
 	size_t destPos = 0, srcPos = 0;
 	for (;;) {
 		unsigned numAdds;
-		UInt32 value;
 		if (srcPos == srcLen) {
 			*destLen = destPos;
 			return True;
 		}
-		value = src[srcPos++];
+		UInt32 value = src[srcPos++];
 		if (value < 0x80) {
 			if (dest)
 				dest[destPos] = (char)value;
@@ -35,10 +34,9 @@ static Bool Utf16_To_Utf8(char* dest, size_t* destLen, const UInt16* src,
 			continue;
 		}
 		if (value >= 0xD800 && value < 0xE000) {
-			UInt32 c2;
 			if (value >= 0xDC00 || srcPos == srcLen)
 				break;
-			c2 = src[srcPos++];
+			const UInt32 c2 = src[srcPos++];
 			if (c2 < 0xDC00 || c2 >= 0xE000)
 				break;
 			value = (((value - 0xD800) << 10) | (c2 - 0xDC00)) + 0x10000;
@@ -63,12 +61,12 @@ static Bool Utf16_To_Utf8(char* dest, size_t* destLen, const UInt16* src,
 
 int CSevenZipArchive::GetFileName(const CSzArEx* db, int i)
 {
-	size_t len = SzArEx_GetFileNameUtf16(db, i, NULL);
+	const size_t len = SzArEx_GetFileNameUtf16(db, i, nullptr);
 
 	if (len > tempBufSize) {
-		SzFree(NULL, tempBuf);
+		SzFree(nullptr, tempBuf);
 		tempBufSize = len;
-		tempBuf = (UInt16*)SzAlloc(NULL, tempBufSize * sizeof(tempBuf[0]));
+		tempBuf = (UInt16*)SzAlloc(nullptr, tempBufSize * sizeof(tempBuf[0]));
 		if (tempBuf == 0) {
 			return SZ_ERROR_MEM;
 		}
@@ -99,12 +97,7 @@ const char* CSevenZipArchive::GetErrorStr(int res)
 }
 
 CSevenZipArchive::CSevenZipArchive(const std::string& name)
-    : IArchive(name)
-    , blockIndex(0xFFFFFFFF)
-    , outBuffer(NULL)
-    , outBufferSize(0)
-    , tempBuf(NULL)
-    , tempBufSize(0)
+	: IArchive(name)
 {
 	allocImp.Alloc = SzAlloc;
 	allocImp.Free = SzFree;
@@ -150,46 +143,47 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name)
 	// Get contents of archive and store name->int mapping
 	for (unsigned int i = 0; i < db.db.NumFiles; ++i) {
 		CSzFileItem* f = db.db.Files + i;
-		if (!f->IsDir) {
-			int written = GetFileName(&db, i);
-			if (written <= 0) {
-				LOG_ERROR(
-				    "Error getting filename in Archive: %s %d, file skipped in %s",
-				    GetErrorStr(res), res, name.c_str());
-				continue;
-			}
-
-			char buf[1024];
-			size_t dstlen = sizeof(buf);
-
-			Utf16_To_Utf8(buf, &dstlen, tempBuf, written);
-
-			FileData fd;
-
-			fd.origName = buf;
-			fd.fp = i;
-			fd.size = f->Size;
-			fd.crc = (f->Size > 0) ? f->Crc : 0;
-			if (f->AttribDefined) { // FIXME: this is incomplete
-				if (f->Attrib & 1 << 16)
-					fd.mode = 0755;
-				else
-					fd.mode = 0644;
-			}
-			const UInt32 folderIndex = db.FileIndexToFolderIndexMap[i];
-			if (folderIndex == ((UInt32)-1)) {
-				// file has no folder assigned
-				fd.unpackedSize = f->Size;
-				fd.packedSize = f->Size;
-			} else {
-				fd.unpackedSize = folderUnpackSizes[folderIndex];
-				fd.packedSize = db.db.PackSizes[folderIndex];
-			}
-
-			//			StringToLowerInPlace(fileName);
-			fileData.push_back(fd);
-			//			lcNameIndex[fileName] = fileData.size()-1;
+		if (f->IsDir) {
+			continue;
 		}
+
+		const int written = GetFileName(&db, i);
+		if (written <= 0) {
+			LOG_ERROR(
+				"Error getting filename in Archive: %s %d, file skipped in %s",
+				GetErrorStr(res), res, name.c_str());
+			continue;
+		}
+
+		char buf[1024];
+		size_t dstlen = sizeof(buf);
+
+		Utf16_To_Utf8(buf, &dstlen, tempBuf, written);
+
+		FileData fd;
+		fd.origName = buf;
+		fd.fp = i;
+		fd.size = f->Size;
+		fd.crc = (f->Size > 0) ? f->Crc : 0;
+		if (f->AttribDefined) { // FIXME: this is incomplete
+			if (f->Attrib & 1 << 16)
+				fd.mode = 0755;
+			else
+				fd.mode = 0644;
+		}
+		const UInt32 folderIndex = db.FileIndexToFolderIndexMap[i];
+		if (folderIndex == ((UInt32)-1)) {
+			// file has no folder assigned
+			fd.unpackedSize = f->Size;
+			fd.packedSize = f->Size;
+		} else {
+			fd.unpackedSize = folderUnpackSizes[folderIndex];
+			fd.packedSize = db.db.PackSizes[folderIndex];
+		}
+
+		//			StringToLowerInPlace(fileName);
+		fileData.push_back(fd);
+		//			lcNameIndex[fileName] = fileData.size()-1;
 	}
 
 	delete[] folderUnpackSizes;
@@ -204,9 +198,7 @@ CSevenZipArchive::~CSevenZipArchive()
 		File_Close(&archiveStream.file);
 	}
 	SzArEx_Free(&db, &allocImp);
-	SzFree(NULL, tempBuf);
-	tempBuf = NULL;
-	tempBufSize = 0;
+	SzFree(nullptr, tempBuf);
 }
 
 unsigned int CSevenZipArchive::NumFiles() const
@@ -217,13 +209,10 @@ unsigned int CSevenZipArchive::NumFiles() const
 bool CSevenZipArchive::GetFile(unsigned int fid,
 			       std::vector<unsigned char>& buffer)
 {
-
 	// Get 7zip to decompress it
 	size_t offset;
 	size_t outSizeProcessed;
-	SRes res;
-
-	res = SzArEx_Extract(&db, &lookStream.s, fileData[fid].fp, &blockIndex,
+	const SRes res = SzArEx_Extract(&db, &lookStream.s, fileData[fid].fp, &blockIndex,
 			     &outBuffer, &outBufferSize, &offset, &outSizeProcessed,
 			     &allocImp, &allocTempImp);
 	if (res == SZ_OK) {
