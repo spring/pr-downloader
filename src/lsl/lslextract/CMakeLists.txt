@@ -17,6 +17,7 @@ remove_definitions(-DHAVE_WX -D__WXDEBUG__ -D__WXGTK__ -DHAVE_SPRINGLOBBY=1 -DHA
 TARGET_LINK_LIBRARIES(lslextract
 	lsl-unitsync
 	lsl-utils
+	Downloader
 	${Boost_LIBRARIES}
 	${PNG_LIBRARY}
 	${X11_LIBRARIES}
