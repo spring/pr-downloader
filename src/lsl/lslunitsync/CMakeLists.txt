@@ -40,6 +40,7 @@ endif()
 
 TARGET_LINK_LIBRARIES(lsl-unitsync lsl-utils ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${PNG_LIBRARY} ${X11_LIBRARIES} ${CMAKE_DL_LIBS} ${RT_LIBRARY} ${PRD_JSONCPP_LIBRARIES})
 target_include_directories(lsl-unitsync
+		PRIVATE ${pr-downloader_SOURCE_DIR}/src
 		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lsl
 		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lib
 		PRIVATE ${PRD_JSONCPP_INCLUDE_DIR}

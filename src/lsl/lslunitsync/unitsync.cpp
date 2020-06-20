@@ -22,6 +22,7 @@
 #include "lslutils/misc.h"
 #include "lslutils/globalsmanager.h"
 #include "lslutils/thread.h"
+#include "FileSystem/FileSystem.h"
 
 #ifndef WIN32
 #include <sys/stat.h>
@@ -734,7 +735,7 @@ std::string Unitsync::GetMac()
 std::string Unitsync::GetFileCachePath(const std::string& name, bool IsMod, bool usehash) const
 {
 	assert(!name.empty());
-	std::string ret = m_cache_path + name;
+	std::string ret = m_cache_path + CFileSystem::EscapeFilename(name);
 	if (!usehash)
 		return ret;
 
