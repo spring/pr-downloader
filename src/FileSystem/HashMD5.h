@@ -9,15 +9,15 @@
 class HashMD5 : public IHash
 {
 public:
-	void Init();
-	void Final();
-	void Update(const char* data, const int size);
-	bool Set(const unsigned char* data, int size);
-	unsigned char get(int pos) const;
+	void Init() override;
+	void Final() override;
+	void Update(const char* data, const int size) override;
+	bool Set(const unsigned char* data, int size) override;
+	unsigned char get(int pos) const override;
 	static std::string CalculateHash(const char* data, const int size);
 	const unsigned char* Data() const { return &mdContext.digest[0]; }
 
-	int getSize() const;
+	int getSize() const override;
 
 private:
 	MD5_CTX mdContext = {};

@@ -28,9 +28,9 @@ public:
 	unsigned int getCount();
 	const std::string& getCacheFile(const std::string& url);
 	virtual bool search(std::list<IDownload*>& result, const std::string& name,
-			    DownloadEnum::Category = DownloadEnum::CAT_NONE);
+			    DownloadEnum::Category = DownloadEnum::CAT_NONE) override;
 	virtual bool download(std::list<IDownload*>& download,
-			      int max_parallel = 10);
+			      int max_parallel = 10) override;
 	void showProcess(IDownload* download, bool forceOutput);
 	static bool DownloadUrl(const std::string& url, std::string& res);
 	static bool ParseResult(const std::string& name, const std::string& json,

@@ -20,11 +20,10 @@ public:
 
 	virtual bool IsOpen() const;
 
-	virtual unsigned int NumFiles() const;
-	virtual void FileInfo(unsigned int fid, std::string& name, int& size,
-			      int& mode) const;
+	virtual unsigned int NumFiles() const override;
+	virtual void FileInfo(unsigned int fid, std::string& name, int& size, int& mode) const override;
 	virtual unsigned int GetCrc32(unsigned int fid);
-	bool GetFile(unsigned int fid, std::vector<unsigned char>& buffer);
+	bool GetFile(unsigned int fid, std::vector<unsigned char>& buffer) override;
 
 protected:
 	unzFile zip;

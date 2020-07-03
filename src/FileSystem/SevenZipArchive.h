@@ -21,10 +21,9 @@ public:
 	explicit CSevenZipArchive(const std::string& name);
 	virtual ~CSevenZipArchive();
 
-	virtual unsigned int NumFiles() const;
-	virtual bool GetFile(unsigned int fid, std::vector<unsigned char>& buffer);
-	virtual void FileInfo(unsigned int fid, std::string& name, int& size,
-			      int& mode) const;
+	virtual unsigned int NumFiles() const override;
+	virtual bool GetFile(unsigned int fid, std::vector<unsigned char>& buffer) override;
+	virtual void FileInfo(unsigned int fid, std::string& name, int& size, int& mode) const override;
 	virtual unsigned GetCrc32(unsigned int fid);
 
 private:

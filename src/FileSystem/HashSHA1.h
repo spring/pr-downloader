@@ -9,14 +9,14 @@
 class HashSHA1 : public IHash
 {
 public:
-	void Init();
-	void Final();
-	void Update(const char* data, const int size);
-	bool Set(const unsigned char* data, int size);
+	void Init() override;
+	void Final() override;
+	void Update(const char* data, const int size) override;
+	bool Set(const unsigned char* data, int size) override;
 
 protected:
-	int getSize() const;
-	unsigned char get(int pos) const;
+	int getSize() const override;
+	unsigned char get(int pos) const override;
 
 private:
 	SHA1Context sha1Context = {};
