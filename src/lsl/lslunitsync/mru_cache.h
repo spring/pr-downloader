@@ -7,7 +7,7 @@
 #include <string>
 #include <boost/thread/mutex.hpp>
 #include "lslutils/logging.h"
-#ifdef WIN32 //undefine windows header pollution
+#ifdef _WIN32 //undefine windows header pollution
 #ifdef GetUserName
 #undef GetUserName
 #endif

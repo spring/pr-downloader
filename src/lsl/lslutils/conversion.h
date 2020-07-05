@@ -25,7 +25,7 @@ std::string MakeHashSigned(const std::string& hash);
 // convert const char* to std::string, as std::string(NULL) crashes
 std::string SafeString(const char* str);
 
-#ifdef WIN32
+#ifdef _WIN32
 // convert std::string to std::wstring
 std::wstring s2ws(const std::string& s);
 std::string ws2s(const std::wstring& s);

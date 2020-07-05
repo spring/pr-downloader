@@ -22,7 +22,7 @@
 #include <stdio.h> //fmemopen
 
 
-#if defined(WIN32)
+#if defined(_WIN32)
 
 std::FILE* fmemopen(void* data, size_t size, const char* mode)
 {

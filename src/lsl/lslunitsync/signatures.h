@@ -13,7 +13,7 @@ struct SpringMapInfo;
 */
 
 
-#ifdef WIN32
+#ifdef _WIN32
 #define USYNC_CALLCONV __stdcall
 #else
 #define USYNC_CALLCONV

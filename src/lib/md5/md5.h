@@ -40,7 +40,7 @@
  **********************************************************************
  */
 
-#ifdef WIN32
+#ifdef _WIN32
 typedef unsigned int UINT4;
 #else
 #include <sys/types.h> //typedef of u_int32_t

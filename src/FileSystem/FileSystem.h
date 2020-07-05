@@ -12,7 +12,7 @@ class SRepository;
 class CRepo;
 class IDownload;
 
-#ifdef WIN32
+#ifdef _WIN32
 struct _FILETIME;
 #endif
 
@@ -119,7 +119,7 @@ public:
 
 	static FILE* propen(const std::string& filename, const std::string& mode);
 
-#ifdef WIN32
+#ifdef _WIN32
 	long FiletimeToTimestamp(const _FILETIME& time);
 	void TimestampToFiletime(const time_t t, _FILETIME& pft);
 #endif
@@ -145,7 +145,7 @@ private:
 
 #define fileSystem CFileSystem::GetInstance()
 
-#ifdef WIN32
+#ifdef _WIN32
 #define PATH_DELIMITER '\\'
 #else
 #define PATH_DELIMITER '/'
