@@ -8,7 +8,7 @@
 #include <fstream>
 #include <cmath>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #else
 #include <sys/stat.h>
@@ -21,7 +21,7 @@ namespace Util
 
 FILE* lslopen(const std::string& filename, const std::string& mode)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	return _wfopen(Util::s2ws(filename).c_str(), Util::s2ws(mode).c_str());
 #else
 	return fopen(filename.c_str(), mode.c_str());
@@ -37,7 +37,7 @@ bool FileExists(const std::string& path)
 {
 	if (path.empty())
 		return false;
-#ifdef WIN32
+#ifdef _WIN32
 	const std::wstring wpath = s2ws(path);
 	DWORD dwAttrib = GetFileAttributesW(wpath.c_str());
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES);
@@ -71,7 +71,7 @@ namespace Lib
 
 std::string GetDllExt()
 {
-#if defined(WIN32)
+#if defined(_WIN32)
 	return ".dll";
 #elif defined(__DARWIN__)
 	return ".bundle";

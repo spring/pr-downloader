@@ -5,7 +5,7 @@
 
 #include <string>
 #include "lslutils/logging.h"
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <lslutils/conversion.h>
 #include <lslutils/misc.h>
@@ -20,7 +20,7 @@ void _FreeLibrary(void* handle)
 {
 	if (handle == nullptr)
 		return;
-#ifdef WIN32
+#ifdef _WIN32
 	FreeLibrary((HMODULE)handle);
 #else
 	dlclose(handle);
@@ -30,7 +30,7 @@ void _FreeLibrary(void* handle)
 void* _LoadLibrary(const std::string& libpath)
 {
 	void* res = nullptr;
-#ifdef WIN32
+#ifdef _WIN32
 	const std::wstring wparentpath = Util::s2ws(LSL::Util::ParentPath(libpath));
 	const std::wstring wlibpath = Util::s2ws(libpath);
 	SetDllDirectory(nullptr);

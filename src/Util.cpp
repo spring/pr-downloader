@@ -93,7 +93,7 @@ bool urlToPath(const std::string& url, std::string& path)
 	return true;
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 std::wstring s2ws(const std::string& s)
 {

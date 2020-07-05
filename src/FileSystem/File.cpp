@@ -21,7 +21,7 @@
 #endif
 #include <algorithm> //std::min
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -318,7 +318,7 @@ long CFile::GetTimestamp() const
 
 bool CFile::SetTimestamp(long timestamp)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	FILETIME ftime;
 	HANDLE h;
 	bool close = false;

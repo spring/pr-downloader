@@ -10,7 +10,7 @@
 #include <boost/system/error_code.hpp>
 #include <sstream>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <iphlpapi.h>
 #endif
 
@@ -94,7 +94,7 @@ void Socket::ReceiveCallback(const boost::system::error_code& error, size_t byte
 std::string Socket::GetHandle() const
 {
 	std::string handle;
-#ifdef WIN32
+#ifdef _WIN32
 
 	IP_ADAPTER_INFO AdapterInfo[16];      // Allocate information for 16 cards
 	DWORD dwBufLen = sizeof(AdapterInfo); // Save memory size of buffer

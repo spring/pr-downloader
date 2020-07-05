@@ -19,7 +19,7 @@
 #include <dirent.h>
 #include <stdlib.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <shlobj.h>
 #include <math.h>
@@ -36,7 +36,7 @@ static CFileSystem* singleton = nullptr;
 FILE* CFileSystem::propen(const std::string& filename,
 			  const std::string& mode)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	FILE* ret = _wfopen(s2ws(filename).c_str(), s2ws(mode).c_str());
 #else
 	FILE* ret = fopen(filename.c_str(), mode.c_str());
@@ -161,7 +161,7 @@ bool CFileSystem::setWritePath(const std::string& path)
 	if (!path.empty()) {
 		springdir = path;
 	} else {
-#ifndef WIN32
+#ifndef _WIN32
 		const char* buf = getenv("HOME");
 		if (buf != nullptr) {
 			springdir = buf;
@@ -215,7 +215,7 @@ bool CFileSystem::directoryExists(const std::string& path)
 {
 	if (path.empty())
 		return false;
-#ifdef WIN32
+#ifdef _WIN32
 	const std::wstring wpath = s2ws(path);
 	DWORD dwAttrib = GetFileAttributesW(wpath.c_str());
 	return ((dwAttrib != INVALID_FILE_ATTRIBUTES) &&
@@ -230,7 +230,7 @@ bool CFileSystem::directoryExists(const std::string& path)
 bool CreateDir(const std::string& path)
 {
 	assert(!path.empty());
-#ifdef WIN32
+#ifdef _WIN32
 	return CreateDirectory(s2ws(path).c_str(), nullptr);
 #else
 	return mkdir(path.c_str(), 0755) == 0;
@@ -245,7 +245,7 @@ bool CFileSystem::createSubdirs(const std::string& path)
 	}
 	for (size_t i = 2; i < path.size(); i++) {
 		char c = path.at(i);
-#ifdef WIN32
+#ifdef _WIN32
 		/* skip for example mkdir(C:\) */
 		if ((i == 2) && (c == PATH_DELIMITER))
 			continue;
@@ -308,7 +308,7 @@ int CFileSystem::validatePool(const std::string& path, bool deletebroken)
 			if (dentry->d_name[0] == '.') {
 				continue;
 			}
-#ifndef WIN32
+#ifndef _WIN32
 			if ((dentry->d_type & DT_DIR) != 0) { // directory
 #else
 			struct stat sb;
@@ -365,7 +365,7 @@ bool CFileSystem::isOlder(const std::string& filename, int secs)
 	if (stat(filename.c_str(), &sb) < 0) {
 		return true;
 	}
-#ifdef WIN32
+#ifdef _WIN32
 	SYSTEMTIME pTime;
 	FILETIME pFTime;
 	GetSystemTime(&pTime);
@@ -392,7 +392,7 @@ bool CFileSystem::fileExists(const std::string& path)
 {
 	if (path.empty())
 		return false;
-#ifdef WIN32
+#ifdef _WIN32
 	DWORD dwAttrib = GetFileAttributesW(s2ws(path).c_str());
 	return (dwAttrib != INVALID_FILE_ATTRIBUTES);
 #else
@@ -403,7 +403,7 @@ bool CFileSystem::fileExists(const std::string& path)
 
 bool CFileSystem::removeFile(const std::string& path)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	const bool res = _wunlink(s2ws(path).c_str()) == 0;
 #else
 	const bool res = unlink(path.c_str()) == 0;
@@ -416,7 +416,7 @@ bool CFileSystem::removeFile(const std::string& path)
 
 bool CFileSystem::removeDir(const std::string& path)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	const bool res = _wrmdir(s2ws(path).c_str()) == 0;
 #else
 	const bool res = rmdir(path.c_str()) == 0;
@@ -602,7 +602,7 @@ bool CFileSystem::extract(const std::string& filename,
 			delete archive;
 			return false;
 		}
-#ifdef WIN32
+#ifdef _WIN32
 		for (unsigned int i = 0; i < name.length();
 		     i++) { // replace / with \ on win32
 			if (name[i] == '/')
@@ -632,7 +632,7 @@ bool CFileSystem::extract(const std::string& filename,
 		int res = 1;
 		if (!buf.empty())
 			res = fwrite(&buf[0], buf.size(), 1, f);
-#ifndef WIN32
+#ifndef _WIN32
 		fchmod(fileno(f), mode);
 #endif
 		if (res <= 0) {
@@ -656,7 +656,7 @@ bool CFileSystem::extract(const std::string& filename,
 bool CFileSystem::Rename(const std::string& source,
 			 const std::string& destination)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	return MoveFileW(s2ws(source).c_str(), s2ws(destination).c_str());
 #else
 	int res = rename(source.c_str(), destination.c_str());
@@ -674,7 +674,7 @@ std::string CFileSystem::DirName(const std::string& path)
 	}
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 long CFileSystem::FiletimeToTimestamp(const _FILETIME& time)
 {
 	LARGE_INTEGER date, adjust;
@@ -710,7 +710,7 @@ std::string CFileSystem::EscapeFilename(const std::string& str)
 
 unsigned long CFileSystem::getMBsFree(const std::string& path)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	ULARGE_INTEGER freespace;
 	BOOL res = GetDiskFreeSpaceEx(s2ws(path).c_str(), &freespace, nullptr, nullptr);
 	if (!res) {

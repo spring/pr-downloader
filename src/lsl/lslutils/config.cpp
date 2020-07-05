@@ -7,7 +7,7 @@
 #include "misc.h"
 #include "globalsmanager.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef _POSIX_
 #undef _POSIX_
 #endif

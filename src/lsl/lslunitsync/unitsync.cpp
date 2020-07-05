@@ -24,7 +24,7 @@
 #include "lslutils/thread.h"
 #include "FileSystem/FileSystem.h"
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <sys/stat.h>
 #endif
 

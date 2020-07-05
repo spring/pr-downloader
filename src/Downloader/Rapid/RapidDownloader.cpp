@@ -15,7 +15,7 @@
 #include <algorithm> //std::min
 #include <set>
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <regex.h>
 #endif
 #undef min
@@ -116,7 +116,7 @@ bool CRapidDownloader::match_download_name(const std::string& str1,
 	return str2 == "" || str1 == str2 || str2 == "*";
 	// FIXME: add regex support for win32
 	/*
-  #ifndef WIN32
+  #ifndef _WIN32
           regex_t regex;
           if (regcomp(&regex, str2.c_str(), 0)==0) {
                   int res=regexec(&regex, str1.c_str(),0, nullptr, 0 );

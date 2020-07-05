@@ -125,7 +125,7 @@ std::string ToLower(const std::string& s)
 }
 
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <string>
 
@@ -161,7 +161,7 @@ std::string geterrormsg()
 	return std::string(lpBuffer, len);
 }
 
-#endif //WIN32
+#endif //_WIN32
 
 } // namespace Util
 } // namespace LSL

@@ -29,7 +29,7 @@ DownloadEnum::Category getPlatformEngineCat()
 {
 #ifdef _WIN64
 	return DownloadEnum::CAT_ENGINE_WINDOWS64;
-#elif defined WIN32
+#elif defined _WIN32
 	return DownloadEnum::CAT_ENGINE_WINDOWS;
 #elif defined(__APPLE__)
 	return DownloadEnum::CAT_ENGINE_MACOSX;
