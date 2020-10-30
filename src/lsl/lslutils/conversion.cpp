@@ -157,7 +157,7 @@ std::string geterrormsg()
 	const int code = GetLastError();
 	static const int bufsize = 256;
 	char lpBuffer[bufsize];
-	const int len = FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, code, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), lpBuffer, bufsize - 1, NULL);
+	const int len = FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM, NULL, code, 0, lpBuffer, bufsize - 1, NULL);
 	return std::string(lpBuffer, len);
 }
 

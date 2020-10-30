@@ -37,8 +37,7 @@ void* _LoadLibrary(const std::string& libpath)
 	SetDllDirectory(wparentpath.c_str());
 	res = LoadLibrary(wlibpath.c_str());
 	if (res == nullptr) {
-		const std::string errmsg = Util::geterrormsg().c_str();
-		LslError("Couldn't load the library %s: %s", libpath.c_str(), errmsg.c_str());
+		LslError("Couldn't load the library %s: %s", libpath.c_str(), Util::geterrormsg().c_str());
 		return res;
 	}
 #else
