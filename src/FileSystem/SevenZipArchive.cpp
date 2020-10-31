@@ -220,7 +220,7 @@ bool CSevenZipArchive::GetFile(unsigned int fid,
 		memcpy(&buffer[0], (char*)outBuffer + offset, outSizeProcessed);
 		return true;
 	} else {
-		LOG_ERROR("Error extracting %s: %s", fileData[fid].origName, GetErrorStr(res));
+		LOG_ERROR("Error extracting %s: %s", fileData[fid].origName.c_str(), GetErrorStr(res));
 		return false;
 	}
 }
