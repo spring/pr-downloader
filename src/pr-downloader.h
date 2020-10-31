@@ -107,4 +107,10 @@ extern char* CalcHash(const char* str, int size, int type);
 */
 extern void SetAbortDownloads(bool value);
 
+/**
+* return the platform dependant engine category
+*/
+extern DownloadEnum::Category getPlatformEngineCat();
+
+
 #endif

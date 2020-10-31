@@ -203,7 +203,7 @@ int main(int argc, char** argv)
 			case DOWNLOAD_ENGINE: {
 				hasdownload = true;
 				if (!download(DownloadEnum::CAT_ENGINE, optarg)) {
-					LOG_ERROR("No engine version found for %s", optarg);
+					LOG_ERROR("No engine version found for %s (%s)", optarg, DownloadEnum::getCat(getPlatformEngineCat()).c_str());
 					res = false;
 				}
 				break;
