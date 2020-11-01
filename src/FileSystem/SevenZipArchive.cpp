@@ -7,7 +7,7 @@
 #include <string.h> //memcpy
 
 extern "C" {
-#include "lib/7z/Types.h"
+#include "lib/7z/7zTypes.h"
 #include "lib/7z/7zAlloc.h"
 #include "lib/7z/7zCrc.h"
 }
@@ -16,7 +16,7 @@ extern "C" {
 #include "Util.h"
 
 static Byte kUtf8Limits[5] = {0xC0, 0xE0, 0xF0, 0xF8, 0xFC};
-static Bool Utf16_To_Utf8(char* dest, size_t* destLen, const UInt16* src,
+static bool Utf16_To_Utf8(char* dest, size_t* destLen, const UInt16* src,
 			  size_t srcLen)
 {
 	size_t destPos = 0, srcPos = 0;
@@ -56,7 +56,7 @@ static Bool Utf16_To_Utf8(char* dest, size_t* destLen, const UInt16* src,
 		} while (numAdds != 0);
 	}
 	*destLen = destPos;
-	return False;
+	return false;
 }
 
 int CSevenZipArchive::GetFileName(const CSzArEx* db, int i)
@@ -103,6 +103,7 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name)
 	allocImp.Free = SzFree;
 	allocTempImp.Alloc = SzAllocTemp;
 	allocTempImp.Free = SzFreeTemp;
+	constexpr const size_t kInputBufSize ((size_t)1 << 18);
 
 	SzArEx_Init(&db);
 
@@ -117,14 +118,17 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name)
 	}
 
 	FileInStream_CreateVTable(&archiveStream);
-	LookToRead_CreateVTable(&lookStream, False);
+	LookToRead2_CreateVTable(&lookStream, False);
 
-	lookStream.realStream = &archiveStream.s;
-	LookToRead_Init(&lookStream);
+	lookStream.realStream = &archiveStream.vt;
+	LookToRead2_Init(&lookStream);
+	lookStream.buf = NULL;
+	lookStream.buf = (Byte *)ISzAlloc_Alloc(&allocImp, kInputBufSize);
 
 	CrcGenerateTable();
+	SzArEx_Init(&db);
 
-	SRes res = SzArEx_Open(&db, &lookStream.s, &allocImp, &allocTempImp);
+	SRes res = SzArEx_Open(&db, &lookStream.vt, &allocImp, &allocTempImp);
 	if (res == SZ_OK) {
 		isOpen = true;
 	} else {
@@ -133,17 +137,11 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name)
 		return;
 	}
 
-	// In 7zip talk, folders are pack-units (solid blocks),
-	// not related to file-system folders.
-	UInt64* folderUnpackSizes = new UInt64[db.db.NumFolders];
-	for (unsigned int fi = 0; fi < db.db.NumFolders; fi++) {
-		folderUnpackSizes[fi] = SzFolder_GetUnpackSize(db.db.Folders + fi);
-	}
-
 	// Get contents of archive and store name->int mapping
-	for (unsigned int i = 0; i < db.db.NumFiles; ++i) {
-		CSzFileItem* f = db.db.Files + i;
-		if (f->IsDir) {
+	for (unsigned int i = 0; i < db.NumFiles; ++i) {
+		const bool isDir = SzArEx_IsDir(&db, i);
+
+		if (isDir) {
 			continue;
 		}
 
@@ -163,30 +161,15 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name)
 		FileData fd;
 		fd.origName = buf;
 		fd.fp = i;
-		fd.size = f->Size;
-		fd.crc = (f->Size > 0) ? f->Crc : 0;
-		if (f->AttribDefined) { // FIXME: this is incomplete
-			if (f->Attrib & 1 << 16)
-				fd.mode = 0755;
-			else
-				fd.mode = 0644;
-		}
-		const UInt32 folderIndex = db.FileIndexToFolderIndexMap[i];
-		if (folderIndex == ((UInt32)-1)) {
-			// file has no folder assigned
-			fd.unpackedSize = f->Size;
-			fd.packedSize = f->Size;
-		} else {
-			fd.unpackedSize = folderUnpackSizes[folderIndex];
-			fd.packedSize = db.db.PackSizes[folderIndex];
-		}
-
-		//			StringToLowerInPlace(fileName);
+		fd.size = SzArEx_GetFileSize(&db, i);
+		fd.crc = 0; //; (f->Size > 0) ? f->Crc : 0;
+		if (SzBitWithVals_Check(&db.Attribs, i) & 1 << 16)
+			fd.mode = 0755;
+		else
+			fd.mode = 0644;
 		fileData.push_back(fd);
-		//			lcNameIndex[fileName] = fileData.size()-1;
 	}
 
-	delete[] folderUnpackSizes;
 }
 
 CSevenZipArchive::~CSevenZipArchive()
@@ -199,6 +182,7 @@ CSevenZipArchive::~CSevenZipArchive()
 	}
 	SzArEx_Free(&db, &allocImp);
 	SzFree(nullptr, tempBuf);
+	ISzAlloc_Free(&allocImp, lookStream.buf);
 }
 
 unsigned int CSevenZipArchive::NumFiles() const
@@ -212,7 +196,7 @@ bool CSevenZipArchive::GetFile(unsigned int fid,
 	// Get 7zip to decompress it
 	size_t offset;
 	size_t outSizeProcessed;
-	const SRes res = SzArEx_Extract(&db, &lookStream.s, fileData[fid].fp, &blockIndex,
+	const SRes res = SzArEx_Extract(&db, &lookStream.vt, fileData[fid].fp, &blockIndex,
 			     &outBuffer, &outBufferSize, &offset, &outSizeProcessed,
 			     &allocImp, &allocTempImp);
 	if (res == SZ_OK) {

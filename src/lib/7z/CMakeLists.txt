@@ -4,13 +4,16 @@ endif()
 
 add_library(pr-7z STATIC
 	7zAlloc.c
+	7zArcIn.c
 	7zBuf.c
 	7zBuf2.c
 	7zCrc.c
 	7zCrcOpt.c
 	7zDec.c
-	7zIn.c
+	7zStream.c
+	BraIA64.c
 	CpuArch.c
+	Delta.c
 	LzmaDec.c
 	Lzma2Dec.c
 	Bra.c

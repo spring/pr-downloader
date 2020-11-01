@@ -4,6 +4,7 @@
 #define _7ZIP_ARCHIVE_H
 
 extern "C" {
+#include "lib/7z/7zTypes.h"
 #include "lib/7z/7zFile.h"
 #include "lib/7z/7z.h"
 }
@@ -73,7 +74,7 @@ private:
 
 	CFileInStream archiveStream;
 	CSzArEx db;
-	CLookToRead lookStream;
+	CLookToRead2 lookStream;
 	ISzAlloc allocImp;
 	ISzAlloc allocTempImp;
 
