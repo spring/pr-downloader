@@ -56,7 +56,7 @@ bool download_engine(std::list<IDownload*>& dllist)
 
 	httpDownload->download(enginedls);
 	for (const IDownload* dl : enginedls) {
-		if (!fileSystem->extractEngine(dl->name, dl->version, LSL::Util::GetPlatformString(LSL::Util::GetPlatform()))) {
+		if (!fileSystem->extractEngine(dl->name, dl->version, LSL::Util::GetCurrentPlatformString())) {
 			LOG_ERROR("Failed to extract engine %s", dl->version.c_str());
 			res = false;
 		}
