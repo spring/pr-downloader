@@ -95,7 +95,7 @@ public:
 	/**
   *	extract engine download
   */
-	bool extractEngine(const std::string& filename, const std::string& version);
+	bool extractEngine(const std::string& filename, const std::string& version, const std::string& platform);
 	bool setWritePath(const std::string& path);
 	void setEnginePortableDownload(const bool portable)
 	{

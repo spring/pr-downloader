@@ -552,11 +552,10 @@ bool CFileSystem::validateSDP(const std::string& sdpPath)
 }
 
 bool CFileSystem::extractEngine(const std::string& filename,
-				const std::string& version)
+				const std::string& version, const std::string& platform)
 {
 #ifdef ARCHIVE_SUPPORT
-	const std::string output = getSpringDir() + PATH_DELIMITER + "engine" +
-				   PATH_DELIMITER +
+	const std::string output = getSpringDir() + PATH_DELIMITER + "engine" + PATH_DELIMITER + platform + PATH_DELIMITER +
 				   CFileSystem::EscapeFilename(version);
 	if (!extract(filename, output)) {
 		LOG_DEBUG("Failed to extract %s %s", filename.c_str(), output.c_str());

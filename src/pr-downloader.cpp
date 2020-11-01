@@ -4,6 +4,7 @@
 #include "Logger.h"
 #include "lib/md5/md5.h"
 #include "lib/base64/base64.h"
+#include "lsl/lslutils/platform.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -27,17 +28,17 @@ bool isEngineDownload(DownloadEnum::Category cat)
 
 DownloadEnum::Category getPlatformEngineCat()
 {
-#ifdef _WIN64
-	return DownloadEnum::CAT_ENGINE_WINDOWS64;
-#elif defined _WIN32
-	return DownloadEnum::CAT_ENGINE_WINDOWS;
-#elif defined(__APPLE__)
-	return DownloadEnum::CAT_ENGINE_MACOSX;
-#elif defined(__x86_64__) || defined(__e2k__)
+	switch (LSL::Util::GetPlatform()){
+		case LSL::Util::Platform::kLinux32:   return DownloadEnum::CAT_ENGINE_LINUX;
+		case LSL::Util::Platform::kLinux64:   return DownloadEnum::CAT_ENGINE_LINUX64;
+		case LSL::Util::Platform::kWindows32: return DownloadEnum::CAT_ENGINE_WINDOWS;
+		case LSL::Util::Platform::kWindows64: return DownloadEnum::CAT_ENGINE_WINDOWS64;
+		case LSL::Util::Platform::kMacosx:    return DownloadEnum::CAT_ENGINE_MACOSX;
+		default:
+			assert(false);
+	}
+	assert(false);
 	return DownloadEnum::CAT_ENGINE_LINUX64;
-#else
-	return DownloadEnum::CAT_ENGINE_LINUX;
-#endif
 }
 
 bool download_engine(std::list<IDownload*>& dllist)
@@ -55,7 +56,7 @@ bool download_engine(std::list<IDownload*>& dllist)
 
 	httpDownload->download(enginedls);
 	for (const IDownload* dl : enginedls) {
-		if (!fileSystem->extractEngine(dl->name, dl->version)) {
+		if (!fileSystem->extractEngine(dl->name, dl->version, LSL::Util::GetPlatformString(LSL::Util::GetPlatform()))) {
 			LOG_ERROR("Failed to extract engine %s", dl->version.c_str());
 			res = false;
 		}
