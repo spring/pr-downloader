@@ -274,7 +274,6 @@ int DownloadStart()
 	rapidDownload->download(dls);
 	httpDownload->download(dls, 1);
 	download_engine(dls);
-	IDownloader::freeResult(searchres);
 	int res = 0;
 	for (const IDownload* dl: dls) {
 		if (dl->state != IDownload::STATE_FINISHED) {
