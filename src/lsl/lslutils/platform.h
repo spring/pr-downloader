@@ -11,6 +11,7 @@ enum class Platform {
 
 enum Platform GetPlatform();
 const char* GetPlatformString(enum Platform platform);
+const char* GetCurrentPlatformString();
 
 } //namespace Util
 } //Namespace LSL

@@ -15,7 +15,7 @@ enum Platform GetPlatform()
 #elif defined(__APPLE__)
         return Platform::kMacosx;
 #elif defined(__x86_64__) || defined(__e2k__)
-        return Platform::kLinux64;
+        return Platform::kWindows64;
 #else
         return Platform::kLinux32;
 #endif
@@ -36,6 +36,10 @@ const char* GetPlatformString(enum Platform platform)
 	}
 }
 
+const char* GetCurrentPlatformString()
+{
+	return GetPlatformString(GetPlatform());
+}
 
 } // namespace Util
 } // namespace LSL
