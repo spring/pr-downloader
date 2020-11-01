@@ -28,8 +28,8 @@ const char* GetPlatformString(enum Platform platform)
 		case Platform::kLinux32:   return "linux32";
 		case Platform::kLinux64:   return "linux64";
 		case Platform::kMacosx:    return "osx";
-		case Platform::kWindows32: return "win32";
-		case Platform::kWindows64: return "win64";
+		case Platform::kWindows32: return "windows32";
+		case Platform::kWindows64: return "windows64";
 		default:
 			assert(False);
 			return "";
