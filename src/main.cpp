@@ -5,6 +5,7 @@
 #include "Logger.h"
 #include "pr-downloader.h"
 
+#include <lsl/lslutils/platform.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -54,7 +55,7 @@ static struct option long_options[] = {
 
 void show_version()
 {
-	LOG("pr-downloader %s\n", getVersion());
+	LOG("pr-downloader %s (%s)\n", getVersion(), LSL::Util::GetCurrentPlatformString());
 }
 
 void show_help(const char* cmd)
