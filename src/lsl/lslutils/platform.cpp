@@ -32,7 +32,7 @@ const char* GetPlatformString(enum Platform platform)
 		case Platform::kWindows32: return "windows32";
 		case Platform::kWindows64: return "windows64";
 		default:
-			assert(False);
+			assert(false);
 			return "";
 	}
 }
