@@ -400,6 +400,7 @@ GameOptions Unitsync::GetMapOptions(const std::string& name)
 	}
 
 	if (MapExists(name)) {
+		GetMapHash(name);
 		const std::string filename = GetMapOptionsPath(name);
 		if (!lslcache.Get(filename, ret)) {
 			PrefetchMap(name);
