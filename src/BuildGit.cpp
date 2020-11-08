@@ -139,7 +139,7 @@ void processDiff(git_diff *Diff, StoreT& Store, PoolArchiveT& Archive, git_repos
 		PoolFileT File{Store};
 		git_blob * Blob;
 
-		checkRet(git_blob_lookup(&Blob, Repo, &Delta->new_file.oid), "git_blob_lookup");
+		checkRet(git_blob_lookup(&Blob, Repo, &Delta->new_file.id), "git_blob_lookup");
 		auto && BlobGuard = makeScopeGuard([&] { git_blob_free(Blob); });
 		auto Size = git_blob_rawsize(Blob);
 		auto Pointer = static_cast<char const *>(git_blob_rawcontent(Blob));
@@ -164,7 +164,7 @@ void processDiff(git_diff *Diff, StoreT& Store, PoolArchiveT& Archive, git_repos
 					} break;
 					case GIT_FILEMODE_COMMIT: {
 						char buffer[128];
-						git_oid_tostr(buffer, 128, &Delta->new_file.oid);
+						git_oid_tostr(buffer, 128, &Delta->new_file.id);
 						submoduleHashes[std::string(Delta->new_file.path)] = {"" , buffer};
 						std::cout << "A\t" << fullPath << " " << buffer << "\n";
 					} break;
@@ -186,8 +186,8 @@ void processDiff(git_diff *Diff, StoreT& Store, PoolArchiveT& Archive, git_repos
 					case GIT_FILEMODE_COMMIT: {
 						char buffer1[128];
 						char buffer2[128];
-						git_oid_tostr(buffer1, 128, &Delta->old_file.oid);
-						git_oid_tostr(buffer2, 128, &Delta->new_file.oid);
+						git_oid_tostr(buffer1, 128, &Delta->old_file.id);
+						git_oid_tostr(buffer2, 128, &Delta->new_file.id);
 						submoduleHashes[std::string(Delta->new_file.path)] = {buffer1 , buffer2};
 						std::cout << "M\t" << fullPath << " " << buffer1 << " => " << buffer2 << "\n";
 					} break;
@@ -278,8 +278,8 @@ void buildGit(
 	std::string const & Prefix)
 {
 	// Initialize libgit2
-	checkRet(git_threads_init(), "git_threads_init()");
-	auto && ThreadsGuard = makeScopeGuard([&] { git_threads_shutdown(); });
+	checkRet(git_libgit2_init(), "git_libgit2_init()");
+	auto && ThreadsGuard = makeScopeGuard([&] { git_libgit2_shutdown(); });
 
 	// Load the git repo
 	git_repository * Repo;
