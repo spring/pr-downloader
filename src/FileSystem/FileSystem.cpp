@@ -42,7 +42,7 @@ FILE* CFileSystem::propen(const std::string& filename,
 	FILE* ret = fopen(filename.c_str(), mode.c_str());
 #endif
 	if (ret == nullptr) {
-		LOG_ERROR("Couldn't open %s", filename.c_str());
+		LOG_ERROR("Couldn't open %s: %s", filename.c_str(), strerror(errno));
 	}
 	return ret;
 }

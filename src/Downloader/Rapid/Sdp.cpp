@@ -67,7 +67,7 @@ bool CSdp::downloadSelf(IDownload* /*dl*/)
 
 
 	if (!fileSystem->Rename(tmpFile, sdpPath)) {
-		LOG_ERROR("Couldn't rename %s to %s", tmpFile.c_str(), sdpPath.c_str());
+		LOG_ERROR("Couldn't rename %s to %s: %s", tmpFile.c_str(), sdpPath.c_str(), strerror(errno));
 		return false;
 	}
 
