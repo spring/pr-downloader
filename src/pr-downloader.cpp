@@ -19,7 +19,8 @@ void SetDownloadListener(IDownloaderProcessUpdateListener listener)
 
 bool isEngineDownload(DownloadEnum::Category cat)
 {
-	return (cat == DownloadEnum::CAT_ENGINE_LINUX) ||
+	return (cat == DownloadEnum::CAT_ENGINE) ||
+	       (cat == DownloadEnum::CAT_ENGINE_LINUX) ||
 	       (cat == DownloadEnum::CAT_ENGINE_LINUX64) ||
 	       (cat == DownloadEnum::CAT_ENGINE_MACOSX) ||
 	       (cat == DownloadEnum::CAT_ENGINE_WINDOWS) ||
@@ -97,6 +98,7 @@ bool search(DownloadEnum::Category cat, const char* name,
 	std::string searchname = name;
 
 	if (cat == DownloadEnum::CAT_ENGINE) {
+		// no platform specified, "translate" to current platform
 		cat = getPlatformEngineCat();
 	}
 
