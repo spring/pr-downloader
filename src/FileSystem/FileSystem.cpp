@@ -29,7 +29,6 @@
 #else
 #include <sys/statvfs.h>
 #include <errno.h>
-#include <sys/stat.h>
 #endif
 
 static CFileSystem* singleton = nullptr;
@@ -566,17 +565,8 @@ bool CFileSystem::extractEngine(const std::string& filename,
 		return true;
 	const std::string cfg = output + PATH_DELIMITER + "springsettings.cfg";
 	if (fileExists(cfg)) {
-		removeFile(cfg);
+		return removeFile(cfg);
 	}
-#ifndef _WIN32
-	const std::vector<std::string> executables = {"spring", "spring-dedicated", "spring-headles"};
-	for (const std::string executable  : executables) {
-		const std::string exe = output + PATH_DELIMITER + executable;
-		LOG_DEBUG("chmod %s 0755", exe.c_str());
-		chmod(exe.c_str(), 0755);
-	}
-#endif
-
 	return true;
 #else
 	LOG_ERROR("no archive support!");
