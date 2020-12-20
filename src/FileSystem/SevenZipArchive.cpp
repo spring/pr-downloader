@@ -163,10 +163,13 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name)
 		fd.fp = i;
 		fd.size = SzArEx_GetFileSize(&db, i);
 		fd.crc = 0; //; (f->Size > 0) ? f->Crc : 0;
-		if (SzBitWithVals_Check(&db.Attribs, i) & 1 << 16)
-			fd.mode = 0755;
-		else
-			fd.mode = 0644;
+		if (SzBitWithVals_Check(&db.Attribs, i)) {
+			// LOG_DEBUG("%s %d", fd.origName.c_str(), db.Attribs.Vals[i])
+			if (db.Attribs.Vals[i] & 1 << 16)
+				fd.mode = 0755;
+			else
+				fd.mode = 0644;
+		}
 		fileData.push_back(fd);
 	}
 
