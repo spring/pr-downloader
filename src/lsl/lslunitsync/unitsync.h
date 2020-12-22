@@ -8,8 +8,8 @@
 #include <lslutils/type_forwards.h>
 #include "image.h"
 
-#include <boost/thread/mutex.hpp>
 #include <boost/signals2/signal.hpp>
+#include <mutex>
 #include <map>
 #include <set>
 
@@ -175,7 +175,7 @@ private:
 	std::map<std::string, GameOptions> m_map_gameoptions;
 	std::map<std::string, GameOptions> m_game_gameoptions;
 
-	mutable boost::mutex m_lock;
+	std::mutex m_lock;
 	WorkerThread* m_cache_thread;
 	StringSignalType m_async_ops_complete_sig;
 

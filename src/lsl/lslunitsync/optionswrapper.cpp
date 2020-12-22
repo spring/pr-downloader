@@ -5,7 +5,6 @@
 #include "unitsync.h"
 #include "lslutils/conversion.h"
 #include "lslutils/logging.h"
-#include <boost/shared_ptr.hpp>
 
 #include <stdexcept>
 #include <clocale>

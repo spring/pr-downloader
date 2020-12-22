@@ -67,11 +67,11 @@ private:
 
 #define LOCK_UNITSYNC                                  \
 	ScopedTime scopedtime(__FUNCTION__, __LINE__); \
-	boost::mutex::scoped_lock lock_criticalsection(m_lock);
+	std::scoped_lock lock_criticalsection(m_lock);
 
 #else
 #define LOCK_UNITSYNC \
-	boost::mutex::scoped_lock lock_criticalsection(m_lock);
+	std::scoped_lock lock_criticalsection(m_lock);
 #endif // __linux__
 
 
@@ -215,7 +215,7 @@ std::vector<std::string> UnitsyncLib::GetUnitsyncErrors() const
 	}
 }
 
-bool UnitsyncLib::VersionSupports(LSL::GameFeature feature) const
+bool UnitsyncLib::VersionSupports(LSL::GameFeature feature)
 {
 	LOCK_UNITSYNC;
 	switch (feature) {

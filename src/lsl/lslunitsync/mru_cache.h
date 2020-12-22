@@ -5,7 +5,7 @@
 
 
 #include <string>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include "lslutils/logging.h"
 #ifdef _WIN32 //undefine windows header pollution
 #ifdef GetUserName
@@ -39,7 +39,7 @@ public:
 
 	void Add(const std::string& name, const TValue& img)
 	{
-		boost::mutex::scoped_lock lock(m_lock);
+		std::scoped_lock lock(m_lock);
 		if (m_itemnames.size() > m_max_size) {
 			m_items.erase(m_itemnames.back());
 			m_itemnames.pop_back();
@@ -50,7 +50,7 @@ public:
 
 	bool TryGet(const std::string& name, TValue& img)
 	{
-		boost::mutex::scoped_lock lock(m_lock);
+		std::scoped_lock lock(m_lock);
 
 		auto it = m_items.find(name);
 		if (it == m_items.end()) {
@@ -67,13 +67,13 @@ public:
 
 	void Clear()
 	{
-		boost::mutex::scoped_lock lock(m_lock);
+		std::scoped_lock lock(m_lock);
 		m_items.clear();
 		m_itemnames.clear();
 	}
 
 private:
-	mutable boost::mutex m_lock;
+	mutable std::mutex m_lock;
 	std::list<std::string> m_itemnames;
 	std::map<std::string, TValue> m_items;
 	const size_t m_max_size;

@@ -9,7 +9,7 @@
 #include "data.h"
 #include "signatures.h"
 #include <lslutils/type_forwards.h>
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 
 namespace LSL
 {
@@ -114,7 +114,7 @@ public:
 	 */
 	std::vector<std::string> GetUnitsyncErrors() const;
 
-	bool VersionSupports(LSL::GameFeature feature) const;
+	bool VersionSupports(LSL::GameFeature feature);
 
 
 	int GetModIndex(const std::string& name);
@@ -321,7 +321,7 @@ private:
 	void* m_libhandle;
 
 	//! Critical section controlling access to unitsync functions.
-	mutable boost::mutex m_lock;
+	std::mutex m_lock;
 
 	//! Path to unitsync.
 	std::string m_path;

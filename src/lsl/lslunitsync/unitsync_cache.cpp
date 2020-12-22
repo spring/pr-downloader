@@ -9,7 +9,6 @@
 #include <lslutils/misc.h>
 #include <lslutils/logging.h>
 #include <sstream>
-#include <boost/format.hpp>
 
 
 namespace LSL

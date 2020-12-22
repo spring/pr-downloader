@@ -28,12 +28,12 @@
 #include <sys/stat.h>
 #endif
 
-#define LOCK_UNITSYNC boost::mutex::scoped_lock lock_criticalsection(m_lock)
+#define LOCK_UNITSYNC std::scoped_lock lock_criticalsection(m_lock)
 
 #define ASYNC_LOAD 0 //FIXME: repair/set to 1!
 #if ASYNC_LOAD
 #define TRY_LOCK(ret)                                                   \
-	boost::mutex::scoped_try_lock lock_criticalsection(m_lock);     \
+	std::scoped_try_lock lock_criticalsection(m_lock);     \
 	if (!lock_criticalsection.owns_lock()) {                        \
 		LslDebug("Lock failed: %s:%d", __FUNCTION__, __LINE__); \
 		return ret;                                             \
