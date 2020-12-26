@@ -63,7 +63,7 @@ bool IDownloader::download(std::list<IDownload*>& download, int max_parallel)
 	}
 	bool res = true;
 	for (IDownload* dl : download) {
-		if (dl->state == IDownload::STATE_FINISHED) // don't download twice
+		if (dl->isFinished()) // don't download twice
 			continue;
 
 		if (!this->download(dl, max_parallel))

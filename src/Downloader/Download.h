@@ -34,6 +34,7 @@ public:
    */
 	bool addMirror(const std::string& url);
 	bool addDepend(const std::string& depend);
+	bool isFinished() const { return state == STATE_FINISHED; }
 	std::string name;	// name, in most cases the filename to save to
 	std::string origin_name; // name of object. Not the filename
 

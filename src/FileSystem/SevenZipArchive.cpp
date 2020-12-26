@@ -99,6 +99,7 @@ const char* CSevenZipArchive::GetErrorStr(int res)
 CSevenZipArchive::CSevenZipArchive(const std::string& name)
 	: IArchive(name)
 {
+	isOpen = false;
 	allocImp.Alloc = SzAlloc;
 	allocImp.Free = SzFree;
 	allocTempImp.Alloc = SzAllocTemp;
@@ -132,7 +133,6 @@ CSevenZipArchive::CSevenZipArchive(const std::string& name)
 	if (res == SZ_OK) {
 		isOpen = true;
 	} else {
-		isOpen = false;
 		LOG_ERROR("Error opening %s: %s", name.c_str(), GetErrorStr(res));
 		return;
 	}
@@ -182,10 +182,10 @@ CSevenZipArchive::~CSevenZipArchive()
 	}
 	if (isOpen) {
 		File_Close(&archiveStream.file);
+		ISzAlloc_Free(&allocImp, lookStream.buf);
 	}
 	SzArEx_Free(&db, &allocImp);
 	SzFree(nullptr, tempBuf);
-	ISzAlloc_Free(&allocImp, lookStream.buf);
 }
 
 unsigned int CSevenZipArchive::NumFiles() const

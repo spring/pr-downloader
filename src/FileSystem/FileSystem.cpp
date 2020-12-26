@@ -589,6 +589,8 @@ bool CFileSystem::extract(const std::string& filename,
 
 	const unsigned int num = archive->NumFiles();
 	if (num <= 0) {
+		LOG_WARN("Empty archive:  %s", filename.c_str());
+		delete archive;
 		return false;
 	}
 	for (unsigned int i = 0; i < num; i++) {

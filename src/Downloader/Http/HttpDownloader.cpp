@@ -280,7 +280,7 @@ std::vector<unsigned int>
 CHttpDownloader::verifyAndGetNextPieces(CFile& file, IDownload* download)
 {
 	std::vector<unsigned int> pieces;
-	if (download->state == IDownload::STATE_FINISHED) {
+	if (download->isFinished()) {
 		return pieces;
 	}
 	// verify file by md5 if pieces.size == 0
@@ -346,7 +346,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 {
 	std::vector<unsigned int> pieces =
 	    verifyAndGetNextPieces(*(piece->download->file), piece->download);
-	if (piece->download->state == IDownload::STATE_FINISHED)
+	if (piece->download->isFinished())
 		return false;
 	if (piece->download->file) {
 		piece->download->size = piece->download->file->GetPieceSize(-1);
@@ -540,7 +540,7 @@ static void CleanupDownloads(std::list<IDownload*>& download,
 		    curl_easy_getinfo(downloads[i]->curlw->GetHandle(), CURLINFO_FILETIME, &timestamp) == CURLE_OK) {
 			if (timestamp > 0) {
 				// decrease local timestamp if download failed to force redownload next time
-				if (downloads[i]->download->state != IDownload::STATE_FINISHED)
+				if (!downloads[i]->download->isFinished())
 					timestamp--;
 				downloads[i]->download->file->SetTimestamp(timestamp);
 			}
@@ -559,7 +559,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download,
 	std::vector<DownloadData*> downloads;
 	CURLM* curlm = curl_multi_init();
 	for (IDownload* dl : download) {
-		if (dl->state == IDownload::STATE_FINISHED) {
+		if (dl->isFinished()) {
 			continue;
 		}
 		if (dl->dltype != IDownload::TYP_HTTP) {
@@ -572,7 +572,7 @@ bool CHttpDownloader::download(std::list<IDownload*>& download,
 			1, std::min((int)dl->pieces.size(),
 				    dl->getMirrorCount()))); // count of parallel downloads
 		if (dl->getMirrorCount() <= 0) {
-			LOG_ERROR("No mirrors found");
+			LOG_WARN("No mirrors found");
 			return false;
 		}
 		LOG_DEBUG("Using %d parallel downloads", count);
