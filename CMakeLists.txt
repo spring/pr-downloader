@@ -142,7 +142,7 @@ endif()
 
 
 # MINIZIP_FOUND is used in lib & FileSystem
-find_package(MiniZip)
+find_package(MINIZIP)
 if(NOT MINIZIP_FOUND)
 	message(STATUS "libminizip was not found, using integrated")
 	set(MINIZIP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/lib)
