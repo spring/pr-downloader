@@ -3,7 +3,7 @@
 #ifndef LSL_MUTEXWRAPPER_H
 #define LSL_MUTEXWRAPPER_H
 
-#include <boost/thread/mutex.hpp>
+#include <mutex>
 #include "logging.h"
 
 namespace LSL

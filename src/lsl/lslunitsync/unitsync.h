@@ -175,7 +175,7 @@ private:
 	std::map<std::string, GameOptions> m_map_gameoptions;
 	std::map<std::string, GameOptions> m_game_gameoptions;
 
-	std::mutex m_lock;
+	mutable std::mutex m_lock;
 	WorkerThread* m_cache_thread;
 	StringSignalType m_async_ops_complete_sig;
 

@@ -3,9 +3,8 @@
 #ifndef LIBUNITSYNCPP_THREAD_H
 #define LIBUNITSYNCPP_THREAD_H
 
-#include <boost/thread/thread.hpp>
-#include <boost/thread/condition_variable.hpp>
-#include <boost/thread/mutex.hpp>
+#include <thread>
+#include <condition_variable>
 #include <boost/noncopyable.hpp>
 #include <vector>
 
@@ -79,12 +78,12 @@ private:
 	WorkItem* Pop();
 
 private:
-	friend class boost::thread;
+	friend class std::thread;
 	void CleanupWorkItem(WorkItem* item);
 
-	boost::mutex m_mutex;
-	boost::mutex m_lock;
-	boost::condition_variable m_cond;
+	std::mutex m_mutex;
+	std::mutex m_lock;
+	std::condition_variable m_cond;
 	// this is a priority queue maintained as a heap stored in a vector :o
 	std::vector<WorkItem*> m_queue;
 	bool m_dying;
@@ -103,10 +102,10 @@ public:
 	void Wait();
 
 private:
-	friend class boost::thread;
+	friend class std::thread;
 	WorkItemQueue m_workeritemqueue;
-	boost::thread* m_thread;
-	boost::mutex m_mutex;
+	std::thread* m_thread;
+	std::mutex m_mutex;
 };
 
 } // namespace LSL

@@ -321,7 +321,7 @@ private:
 	void* m_libhandle;
 
 	//! Critical section controlling access to unitsync functions.
-	std::mutex m_lock;
+	mutable std::mutex m_lock;
 
 	//! Path to unitsync.
 	std::string m_path;

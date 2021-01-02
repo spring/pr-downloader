@@ -2,6 +2,7 @@
 
 #include "thread.h"
 #include <algorithm>
+#include <mutex>
 #include <lslutils/logging.h>
 
 namespace
@@ -30,7 +31,7 @@ void WorkItemQueue::Push(WorkItem* item)
 {
 	if (item == NULL)
 		return;
-	boost::mutex::scoped_lock lock(m_lock);
+	std::scoped_lock lock(m_lock);
 	m_queue.push_back(item);
 	std::push_heap(m_queue.begin(), m_queue.end(), WorkItemCompare());
 	item->m_queue = this;
@@ -39,7 +40,7 @@ void WorkItemQueue::Push(WorkItem* item)
 
 WorkItem* WorkItemQueue::Pop()
 {
-	boost::mutex::scoped_lock lock(m_lock);
+	std::scoped_lock lock(m_lock);
 	if (m_queue.empty())
 		return NULL;
 	WorkItem* item = m_queue.front();
@@ -51,7 +52,7 @@ WorkItem* WorkItemQueue::Pop()
 
 bool WorkItemQueue::Remove(WorkItem* item)
 {
-	boost::mutex::scoped_lock lock(m_lock);
+	std::scoped_lock lock(m_lock);
 	if (m_queue.empty())
 		return false;
 	// WARNING: this destroys the heap...
@@ -75,7 +76,7 @@ void WorkItemQueue::Cancel()
 
 
 WorkerThread::WorkerThread()
-    : m_thread(new boost::thread(&WorkItemQueue::Process, &m_workeritemqueue))
+    : m_thread(new std::thread(&WorkItemQueue::Process, &m_workeritemqueue))
 {
 }
 
@@ -116,7 +117,7 @@ void WorkItemQueue::Process()
 {
 	while (!m_dying) {
 		WorkItem* item = NULL;
-		boost::unique_lock<boost::mutex> lock(m_mutex);
+		std::unique_lock<std::mutex> lock(m_mutex);
 		while ((!m_dying) && (item = Pop())) {
 			try {
 				//                LslDebug( "running WorkItem %p, prio = %d", item, item->m_priority );
