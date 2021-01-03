@@ -964,6 +964,7 @@ void Unitsync::PrefetchMap(const std::string& mapname)
 		for (int i = 0; i < count; ++i) {
 			GetOptionEntry(i, opt);
 		}
+		FetchUnitsyncErrors(mapname);
 		lslcache.Set(GetMapOptionsPath(mapname), opt);
 	}
 	{
