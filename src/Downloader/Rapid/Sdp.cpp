@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <curl/curl.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #include "Sdp.h"
 #include "RapidDownloader.h"
