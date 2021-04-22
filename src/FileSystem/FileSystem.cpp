@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #ifdef _WIN32
 #include <windows.h>
