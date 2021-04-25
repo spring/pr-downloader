@@ -4,13 +4,24 @@ compiler:
   - gcc
 
 sudo: required
-dist: trusty
+dist: bionic
 cache: ccache
 
-install:
-  - sudo apt-get install -y gcc-4.7 g++-4.7 cmake libcurl4-openssl-dev libjsoncpp-dev
-  - sudo apt-get install -y libboost-thread1.55-dev libboost-system1.55-dev libboost-filesystem1.55-dev spring libjsoncpp-dev
-  - sudo apt-get install -y liblua5.1-0-dev libzip-dev zlib1g-dev
+addons:
+  apt:
+    packages:
+      - cmake
+      - libalure-dev
+      - libboost-thread1.65-dev
+      - libboost-system1.65-dev
+      - libboost-filesystem1.65-dev
+      - libcurl4-openssl-dev
+      - libjsoncpp-dev
+      - liblua5.1-0-dev
+      - libssl-dev
+      - libzip-dev
+      - spring
+      - zlib1g-dev
 
 before_script:
   - cmake . -DPRD_DEVELOP_FILES:BOOL=ON -DBUILD_TESTS=ON -DPRD_ENABLE_LSL=ON -DRAPIDTOOLS:BOOL=ON -DLSLSERVER:BOOL=ON 
