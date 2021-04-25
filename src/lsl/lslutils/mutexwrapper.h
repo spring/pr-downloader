@@ -70,7 +70,7 @@ class ScopedLocker
 template <class T>
 class MutexWrapper : public AbstractMutexWrapper
 {
-	boost::mutex mutex; /// critical section is same as mutex except on windows it only works within one process (i.e. program). I'm gonna call it mutex.
+	std::mutex mutex; /// critical section is same as mutex except on windows it only works within one process (i.e. program). I'm gonna call it mutex.
 	T data;
 	bool locked;
 
