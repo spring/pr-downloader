@@ -71,7 +71,7 @@ target_link_libraries(Downloader
 
 if(PRD_ARCHIVE_SUPPORT)
 	if (MINIZIP_FOUND)
-		target_link_libraries(Downloader ${MINIZIP_LIBRARIES})
+		target_link_libraries(Downloader ${MINIZIP_LIBRARIES} ${LZMA_LIBRARY})
 	else()
 		target_link_libraries(Downloader pr-minizip)
 	endif()
