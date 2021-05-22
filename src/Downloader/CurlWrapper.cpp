@@ -47,7 +47,9 @@ static void GetTLSBackend()
 		}
 	}
 #else
-#warning Compiling without full curl support: please upgrade to libcurl >= 7.60
+	#ifndef _MSVC_LANG
+		#warning Compiling without full curl support: please upgrade to libcurl >= 7.60
+	#endif // !_MSVC_LANG
 #endif
 }
 
