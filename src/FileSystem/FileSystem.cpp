@@ -206,7 +206,6 @@ void CFileSystem::Shutdown()
 
 const std::string CFileSystem::getSpringDir()
 {
-	assert(!springdir.empty());
 	if (springdir.empty())
 		(setWritePath(""));
 	return springdir;
