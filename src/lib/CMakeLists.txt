@@ -15,5 +15,5 @@ if (NOT Libgit2_FOUND AND RAPIDTOOLS)
 	set(BUILD_SHARED_LIBS FALSE CACHE BOOL "" FORCE)
 	set(BUILD_CLAR FALSE CACHE BOOL "" FORCE)
 
-	add_subdirectory(libgit2)
+	add_subdirectory(libgit2 EXCLUDE_FROM_ALL)
 endif()
