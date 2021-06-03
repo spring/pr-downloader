@@ -18,7 +18,6 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -28,6 +27,7 @@
 #define SHGFP_TYPE_CURRENT 0
 #endif
 #else
+#include <unistd.h>
 #include <sys/statvfs.h>
 #include <errno.h>
 #endif
