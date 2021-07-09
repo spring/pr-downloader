@@ -21,7 +21,7 @@ REPOS=$(find /home/packages/git -maxdepth 1 -mindepth 1 -type d)
 
 for REPO in $REPOS; do
 	cd $REPO
-	if git fetch &>/dev/null; then
+	if git fetch --prune &>/dev/null; then
 		LOCAL=$(git rev-parse HEAD)
 		REMOTE=$(git rev-parse @{u})
 		if [ "$LOCAL" != "$REMOTE" ]; then
