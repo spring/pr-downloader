@@ -548,6 +548,17 @@ static void CleanupDownloads(std::list<IDownload*>& download,
 	downloads.clear();
 }
 
+void VerifySinglePieceDownload(IDownload& dl)
+{
+	if ((dl.hash == nullptr) || (dl.file == nullptr))
+		return;
+
+	if (dl.file->Hash(*dl.hash)) {
+		dl.state = IDownload::STATE_FINISHED;
+	}
+
+}
+
 bool CHttpDownloader::download(std::list<IDownload*>& download,
 			       int max_parallel)
 {
@@ -634,6 +645,10 @@ bool CHttpDownloader::download(std::list<IDownload*>& download,
 		curl_multi_fdset(curlm, &rSet, &wSet, &eSet, &count);
 		// sleep for one sec / until something happened
 		select(count + 1, &rSet, &wSet, &eSet, &t);
+	}
+
+	for (IDownload* download: download) {
+		VerifySinglePieceDownload(*download);
 	}
 
 	LOG("\n");
