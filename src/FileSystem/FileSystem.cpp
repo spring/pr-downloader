@@ -9,7 +9,6 @@
 #include "Logger.h"
 #include "SevenZipArchive.h"
 #include "ZipArchive.h"
-#include "lib/bencode/bencode.h"
 
 #include <zlib.h>
 #include <string.h>
@@ -425,76 +424,6 @@ bool CFileSystem::removeDir(const std::string& path)
 		LOG_ERROR("Couldn't delete dir %s", path.c_str());
 	}
 	return res;
-}
-
-bool CFileSystem::parseTorrent(const char* data, int size, IDownload* dl)
-{
-	be_node* node = be_decoden(data, size);
-	//#ifdef DEBUG
-	//	be_dump(node);
-	//#endif
-	if (node == nullptr) {
-		LOG_ERROR("couldn't parse torrent");
-		return false;
-	}
-	if (node->type != BE_DICT) {
-		LOG_ERROR("Error in torrent data");
-		be_free(node);
-		return false;
-	}
-
-	be_node* infonode = nullptr;
-	for (int i = 0; node->val.d[i].val; ++i) { // search for a dict with name info
-		if ((node->type == BE_DICT) && (strcmp(node->val.d[i].key, "info") == 0)) {
-			infonode = node->val.d[i].val;
-			break;
-		}
-	}
-	if (infonode == nullptr) {
-		LOG_ERROR("couldn't find info node in be dict");
-		be_free(node);
-		return false;
-	}
-	for (int i = 0; infonode->val.d[i].val; ++i) {
-		// fetch needed data from dict and fill into dl
-		be_node* datanode = infonode->val.d[i].val;
-		switch (datanode->type) {
-			case BE_STR: // current value is a string
-				if ((strcmp("name", infonode->val.d[i].key) == 0) &&
-				    (dl->name.empty())) { // set filename if not already set
-					dl->name = datanode->val.s;
-				} else if (!strcmp("pieces",
-						   infonode->val.d[i].key)) { // hash sum of a piece
-					const int count =
-					    be_str_len(datanode) / 20; // one sha1 sum is 5 * 4 bytes long
-					for (int i = 0; i < count; i++) {
-						struct IDownload::piece piece;
-						const unsigned char* data = (unsigned char*)&datanode->val.s[i * 20];
-						piece.sha = new HashSHA1();
-						if (!piece.sha->Set(data, 20)) {
-							LOG_ERROR("Error setting sha1");
-						}
-						piece.state = IDownload::STATE_NONE;
-						dl->pieces.push_back(piece);
-					}
-				}
-				break;
-			case BE_INT:						     // current value is a int
-				if (strcmp("length", infonode->val.d[i].key) == 0) { // filesize
-					dl->size = datanode->val.i;
-				} else if (!strcmp("piece length",
-						   infonode->val.d[i].key)) { // length of a piece
-					dl->piecesize = datanode->val.i;
-					LOG_DEBUG("dl->piecesize: %d", dl->piecesize);
-				}
-				break;
-			default:
-				break;
-		}
-	}
-	LOG_DEBUG("Parsed torrent data: %s %d", dl->name.c_str(), dl->piecesize);
-	be_free(node);
-	return true;
 }
 
 bool CFileSystem::dumpSDP(const std::string& filename)

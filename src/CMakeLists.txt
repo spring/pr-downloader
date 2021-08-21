@@ -36,7 +36,6 @@ add_library(Downloader STATIC
 	FileSystem/IHash.cpp
 	Util.cpp
 	Version.cpp
-	lib/base64/base64.cpp
 	lsl/lslutils/platform.cpp
 	${archivessrc}
 	${jsonlibcppsrc}
@@ -69,7 +68,6 @@ target_link_libraries(Downloader
 	${ZLIB_LIBRARIES}
 	pr-md5
 	pr-sha1
-	bencode
 	${archiveslib}
 )
 

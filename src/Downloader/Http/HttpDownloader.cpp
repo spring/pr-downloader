@@ -25,7 +25,6 @@
 #include "Logger.h"
 #include "Downloader/Mirror.h"
 #include "Downloader/CurlWrapper.h"
-#include "lib/base64/base64.h"
 
 static size_t WriteMemoryCallback(void* contents, size_t size, size_t nmemb,
 				  void* userp)
@@ -91,7 +90,7 @@ static std::string getRequestUrl(const std::string& name,
 	if (cat != DownloadEnum::CAT_NONE) {
 		url += "category=" + DownloadEnum::getCat(cat) + std::string("&");
 	}
-	return url + std::string("torrent=true&springname=") + name;
+	return url + std::string("springname=") + name;
 }
 
 bool CHttpDownloader::ParseResult(const std::string& /*name*/,
@@ -161,10 +160,6 @@ bool CHttpDownloader::ParseResult(const std::string& /*name*/,
 			}
 		}
 
-		if (resfile["torrent"].isString()) {
-			const std::string torrent = base64_decode(resfile["torrent"].asString());
-			fileSystem->parseTorrent(&torrent[0], torrent.size(), dl);
-		}
 		if (resfile["version"].isString()) {
 			const std::string& version = resfile["version"].asString();
 			dl->version = version;
