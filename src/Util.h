@@ -3,7 +3,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#define HTTP_SEARCH_URL "https://api.springfiles.com/json.php"
+#define HTTP_SEARCH_URL "https://springfiles.springrts.com/json.php"
 #define MAX_PARALLEL_DOWNLOADS 10
 
 #include <string>
