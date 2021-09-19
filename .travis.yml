@@ -30,5 +30,5 @@ before_script:
 script:
   - make -j2
   - sudo make install
-  - src/pr-downloader devgame:test
+  - src/pr-downloader dev-game:test
   - src/pr-downloader --rapid-validate
