@@ -6,10 +6,10 @@ import gzip
 import os
 
 wwwroot = "/home/packages/www/repos.springrts.com"
-prefix = "http://repos.springrts.com/"
+prefix = "https://repos.springrts.com/"
 streamer = "/home/packages/bin/Streamer"
 repos = {
-	"main": "http://packages.springrts.com"
+	"main": "https://packages.springrts.com"
 }
 
 assert(os.path.isfile(streamer))
