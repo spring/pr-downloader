@@ -11,7 +11,7 @@
 #include "IDownloader.h"
 #include "Logger.h"
 
-constexpr const char* cacertpem = "https://springrts.com/dl/cacert.pem";
+constexpr const char* cacertpem = "https://curl.se/ca/cacert.pem"; // The old URL was broken: https://springrts.com/dl/cacert.pem
 constexpr const char* cacertfile = "cacert.pem";
 //constexpr const char* cacertsha1 = "fe1e06f7048b78dbe7015c1c043de957251181db";
 constexpr const char* capath = "/etc/ssl/certs";
@@ -23,7 +23,7 @@ constexpr const char* capath = "/etc/ssl/certs";
 
 #ifndef CURL_AT_LEAST_VERSION
 #define CURL_AT_LEAST_VERSION(x,y,z) \
-  (LIBCURL_VERSION_NUM >= CURL_VERSION_BITS(x, y, z))
+	(LIBCURL_VERSION_NUM >= CURL_VERSION_BITS(x, y, z))
 #endif
 
 static std::string GetCAFilePath()
@@ -67,10 +67,14 @@ bool CurlWrapper::VerifyFile(const std::string& path)
 {
 	if (!fileSystem->fileExists(path))
 		return false;
-	if (fileSystem->getFileSize(path) <= 0)
+	if (fileSystem->getFileSize(path) <= 5120) { // With a broken URL the downloaded file contains an HTML document with Apache redirect
+		LOG_INFO("%s file size is too small (probably broken), redownloading" ,path.c_str());
+		fileSystem->removeFile(path); // Just downloading the file again doesn't overwrite it
 		return false;
+	}
 	if (fileSystem->isOlder(path, 15552000)) {
 		LOG_INFO("%s is older than half a year, redownloading" ,path.c_str());
+		fileSystem->removeFile(path); // Just downloading the file again doesn't overwrite it
 		return false;
 	}
 /*
@@ -105,7 +109,7 @@ bool CurlWrapper::ValidateCaFile(const std::string& cafile)
 	tmpdl.addMirror(cacertpem);
 	tmpdl.validateTLS = false;
 	LOG_INFO("Downloading %s", cacertpem);
-        if(!httpDownload->download(&tmpdl)) {
+	if(!httpDownload->download(&tmpdl)) {
 		LOG_ERROR("Download of %s to %s failed, please manually download!", cacertpem, GetCAFilePath().c_str());
 		return false;
 	}
@@ -114,6 +118,7 @@ bool CurlWrapper::ValidateCaFile(const std::string& cafile)
 
 static void SetCAOptions(CURL* handle)
 {
+	// If the default certificate directory exists on this system, adding it to curl options
 	if (fileSystem->directoryExists(capath)) {
 		LOG_DEBUG("Using capath: %s", capath);
 		const int res = curl_easy_setopt(handle, CURLOPT_CAPATH, capath);
@@ -123,9 +128,11 @@ static void SetCAOptions(CURL* handle)
 		return;
 	}
 
+	// Alternatively, using a local downloaded certificate file in curl options
 	const std::string cafile = GetCAFilePath();
 	if (!fileSystem->fileExists(cafile)) {
 		LOG_WARN("Certstore doesn't exist: %s", cafile.c_str());
+		return;
 	}
 	const int res = curl_easy_setopt(handle, CURLOPT_CAINFO, cafile.c_str());
 	if (res != CURLE_OK) {
