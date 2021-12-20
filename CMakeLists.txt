@@ -154,15 +154,9 @@ add_subdirectory(src)
 
 find_program(CLANG_FORMAT_BINARY NAMES clang-format-3.7 clang-format-3.6 clang-format-3.5 clang-format-3.4 clang-format)
 if (EXISTS ${CLANG_FORMAT_BINARY})
-        file(GLOB_RECURSE files {CMAKE_CURRENT_SOURCE_DIR} *.cpp *.hpp *.h)
-
-        foreach(exclude src/lib ) # exclude some files
-                foreach(file in ${files})
-                        if (file MATCHES "^${CMAKE_CURRENT_SOURCE_DIR}/${exclude}")
-                                list(REMOVE_ITEM files ${file})
-                        endif()
-                endforeach()
-        endforeach()
+        file(GLOB_RECURSE files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/src src/*.cpp src/*.hpp src/*.h)
+        list(FILTER files EXCLUDE REGEX ^lib/)  # exclude some files
+        list(TRANSFORM files PREPEND ${CMAKE_CURRENT_SOURCE_DIR}/src/)
         add_custom_target(format-prd COMMAND ${CLANG_FORMAT_BINARY} -i ${files})
 else()
         message(WARNING "clang-format not found")
