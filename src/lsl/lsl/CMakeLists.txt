@@ -1,4 +1,4 @@
-SET(libSpringLobbySrc 
+SET(libSpringLobbySrc
 	"${CMAKE_CURRENT_SOURCE_DIR}/container/userlist.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/container/channellist.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/container/battlelist.cpp"
@@ -13,11 +13,11 @@ SET(libSpringLobbySrc
 	"${CMAKE_CURRENT_SOURCE_DIR}/networking/tasserver.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/battle/ibattle.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/battle/battle.cpp"
-	"${CMAKE_CURRENT_SOURCE_DIR}/battle/tdfcontainer.cpp" 
+	"${CMAKE_CURRENT_SOURCE_DIR}/battle/tdfcontainer.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/spring/spring.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/spring/springprocess.cpp"
 	)
-	
+
 FILE( GLOB RECURSE libSpringLobbyHeader "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
 
 #grep -lR cc\"$ src/* | sed -e "s/\.h/\.cc/g"

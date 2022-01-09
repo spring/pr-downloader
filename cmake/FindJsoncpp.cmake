@@ -9,9 +9,9 @@
 
 # Use pkg-config to get hints about paths
 INCLUDE(FindPkgConfig)
-if(PKG_CONFIG_FOUND)
+if (PKG_CONFIG_FOUND)
 	pkg_check_modules(Jsoncpp_PKGCONF jsoncpp)
-endif()
+endif ()
 # Include dir
 find_path(Jsoncpp_INCLUDE_DIR
   NAMES json/json.h

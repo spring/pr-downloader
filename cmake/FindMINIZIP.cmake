@@ -9,10 +9,10 @@
 
 Include(FindPackageHandleStandardArgs)
 
-if     (MINIZIP_INCLUDE_DIR)
+if (MINIZIP_INCLUDE_DIR)
 	# Already in cache, be silent
 	Set(MINIZIP_FIND_QUIETLY TRUE)
-endif()
+endif ()
 
 Find_Path(MINIZIP_INCLUDE_DIR minizip/zip.h)
 
