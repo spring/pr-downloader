@@ -24,7 +24,7 @@ if(WIN32)
 			-DBOOST_THREAD_USE_LIB
 			-DMINGW_HAS_SECURE_API=1
 		)
-endif()
+endif ()
 ADD_LIBRARY(lsl-utils STATIC ${libSpringLobbyHeader} ${libSpringLobbyUtilsSrc} )
 TARGET_LINK_LIBRARIES(lsl-utils ${Boost_THREAD_LIBRARY} pr-md5)
 target_include_directories(lsl-utils

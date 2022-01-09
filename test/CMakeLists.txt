@@ -56,7 +56,7 @@ IF( NOT WIN32 )
 	TARGET_LINK_LIBRARIES(libSpringLobby_test X11 )
 ENDIF()
 
-endif(PRD_ENABLE_LSL)
+endif ()
 
 ################################################################################
 ### swig

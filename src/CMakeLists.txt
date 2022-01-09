@@ -4,7 +4,7 @@ if(PRD_ARCHIVE_SUPPORT)
 	set(archivessrc FileSystem/SevenZipArchive.cpp FileSystem/ZipArchive.cpp)
 	set(archiveslib pr-7z)
 	add_definitions(-DARCHIVE_SUPPORT)
-endif()
+endif ()
 
 if (PRD_JSONCPP_INTERNAL)
 	set(jsonlibcppsrc
@@ -12,7 +12,7 @@ if (PRD_JSONCPP_INTERNAL)
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/jsoncpp/src/lib_json/json_reader.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/jsoncpp/src/lib_json/json_writer.cpp
 	)
-endif()
+endif ()
 
 add_library(Downloader STATIC
 	Downloader/Rapid/RapidDownloader.cpp
@@ -71,10 +71,10 @@ target_link_libraries(Downloader
 if(PRD_ARCHIVE_SUPPORT)
 	if (MINIZIP_FOUND)
 		target_link_libraries(Downloader ${MINIZIP_LIBRARIES} ${LZMA_LIBRARY})
-	else()
+	else ()
 		target_link_libraries(Downloader pr-minizip)
-	endif()
-endif()
+	endif ()
+endif ()
 
 
 set (PRDOWNLOADER "pr-downloader")
@@ -94,16 +94,16 @@ if (PRD_SHAREDLIB)
 			RUNTIME DESTINATION ${PRD_BINDIR}
 			LIBRARY DESTINATION ${PRD_LIBDIR}
 			ARCHIVE DESTINATION ${PRD_LIBDIR} )
-	endif()
+	endif ()
 	target_include_directories(${PRDOWNLOADER_SHARED} PRIVATE ${pr-downloader_SOURCE_DIR}/src)
 	target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
-endif()
+endif ()
 
 if (PRD_DEFAULT_LOGGER)
 	set(LOGGERCPP Logger.cpp)
-else()
+else ()
 	set(LOGGERCPP )
-endif()
+endif ()
 
 OPTION(PRD_STATICLIB
 	"Enables compilation of the static lib" ON)
@@ -117,10 +117,10 @@ if (PRD_STATICLIB)
 			RUNTIME DESTINATION ${PRD_BINDIR}
 			LIBRARY DESTINATION ${PRD_LIBDIR}
 			ARCHIVE DESTINATION ${PRD_LIBDIR} )
-	endif()
+	endif ()
 	target_include_directories(${PRDOWNLOADER_STATIC} PRIVATE ${pr-downloader_SOURCE_DIR}/src)
 	target_link_libraries( ${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} ${CMAKE_DL_LIBS})
-endif()
+endif ()
 
 OPTION(PRD_CONSOLETOOL
         "Enables compilation and installation of the console tool ${PRDOWNLOADER}" ON)
@@ -129,7 +129,7 @@ if (PRD_CONSOLETOOL)
 	### Add icon and manifest to exe using windres
 	if(WIN32 AND MINGW)
 	        set(PRD_ICON "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc")
-	endif()
+	endif ()
 
 	add_executable(${PRDOWNLOADER}
 		${PRD_ICON}
@@ -142,21 +142,21 @@ if (PRD_CONSOLETOOL)
 
 	if (PRD_LINK_STATIC)
 		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
-	else  ()
+	else ()
 		# hack arround "make install" doesn't generate libpr-downloader_shared.so
 		add_dependencies(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED})
 		target_link_libraries(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
 	endif ()
 	if (WIN32)
 		set_target_properties(${PRDOWNLOADER} PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")
-	endif()
+	endif ()
 	if (PRD_DO_INSTALL)
 		INSTALL (TARGETS ${PRDOWNLOADER}
 			RUNTIME DESTINATION ${PRD_BINDIR}
 			LIBRARY DESTINATION ${PRD_LIBDIR}
 			ARCHIVE DESTINATION ${PRD_LIBDIR} )
-	endif()
-endif()
+	endif ()
+endif ()
 
 FILE( GLOB_RECURSE header "*.h" )
 
@@ -168,19 +168,19 @@ if(NOT WIN32 AND PRD_DEVELOP_FILES)
 	               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
 	if (PRD_DO_INSTALL)
 		install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${PRD_LIBDIR}/pkgconfig")
-	endif()
-endif()
+	endif ()
+endif ()
 
 if(PRD_DO_INSTALL AND PRD_DEVELOP_FILES)
 	install(FILES
 		pr-downloader.h
 	        DESTINATION ${PRD_INCLUDE_DIR}/Downloader COMPONENT Devel )
-endif()
+endif ()
 
 OPTION(PRD_ENABLE_LSL "compile lsl modules" OFF)
 if (PRD_ENABLE_LSL)
 	add_subdirectory(lsl)
-endif()
+endif ()
 
 OPTION(RAPIDTOOLS "compile rapid tools" OFF)
 if (RAPIDTOOLS)
@@ -224,14 +224,14 @@ if (RAPIDTOOLS)
 	if (Libgit2_FOUND)
 		target_link_libraries(Rapid ${LIBGIT2_LIBRARIES})
 		target_include_directories(Rapid PRIVATE ${LIBGIT2_HEADERS})
-	else()
+	else ()
 		target_link_libraries(Rapid git2)
 		target_include_directories(Rapid
 			PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/include
 			PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src
 			PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/deps/http-parser
 		)
-	endif()
+	endif ()
 
 	target_include_directories(Rapid
 		PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
@@ -241,9 +241,9 @@ if (RAPIDTOOLS)
 	)
 	if(MINIZIP_FOUND)
 		target_link_libraries(Rapid ${MINIZIP_LIBRARIES})
-	else()
+	else ()
 		target_link_libraries(Rapid pr-minizip)
-	endif()
+	endif ()
 
 	add_executable(AddZip AddZip.cpp)
 	target_link_libraries(AddZip Rapid)
@@ -256,5 +256,5 @@ if (RAPIDTOOLS)
 
 	add_executable(Streamer Streamer.cpp)
 	target_link_libraries(Streamer Rapid)
-endif()
+endif ()
 

@@ -1,6 +1,6 @@
 if(WIN32)
         add_definitions(-DUNICODE -D_UNICODE)
-endif()
+endif ()
 
 add_library(pr-7z STATIC
 	7zAlloc.c
