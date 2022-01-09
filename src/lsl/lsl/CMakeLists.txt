@@ -34,18 +34,18 @@ target_include_directories(lsl-server PRIVATE
 	${pr-downloader_SOURCE_DIR}/src/
 )
 
-IF(MINGW)
+if (MINGW)
 	TARGET_LINK_LIBRARIES( lsl-server iphlpapi )
-ENDIF(MINGW)
+endif ()
 
-if(LSLSERVER)
-	IF (WIN32)
+if (LSLSERVER)
+	if (WIN32)
 	    install(TARGETS lsl-server DESTINATION . )
-	ELSE (WIN32)
+	else ()
 	    install(TARGETS lsl-server
 			LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
 			ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib )
-	ENDIF (WIN32)
+	endif ()
 endif ()
 
 

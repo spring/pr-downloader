@@ -16,7 +16,7 @@
 Set(Git_FIND_QUIETLY TRUE)
 Find_Package(Git)
 
-If    (GIT_FOUND)
+if (GIT_FOUND)
 
 	# Executes a git command plus arguments.
 	Macro    (Git_Util_Command var dir command)
@@ -33,13 +33,13 @@ If    (GIT_FOUND)
 				ERROR_STRIP_TRAILING_WHITESPACE
 			)
 
-		If    (NOT ${CMD_RET_VAL} EQUAL 0)
+		if (NOT ${CMD_RET_VAL} EQUAL 0)
 			Set(${var})
 			Set(${var}-NOTFOUND "1")
-			If    (NOT GIT_UTIL_FIND_QUIETLY)
+			if (NOT GIT_UTIL_FIND_QUIETLY)
 				Message(STATUS "Command \"${CMD_GIT}\" in directory ${dir} failed with output:\n\"${GIT_ERROR}\"")
-			EndIf (NOT GIT_UTIL_FIND_QUIETLY)
-		EndIf (NOT ${CMD_RET_VAL} EQUAL 0)
+			endif ()
+		endif ()
 	EndMacro (Git_Util_Command)
 
 
@@ -106,10 +106,10 @@ If    (GIT_FOUND)
 		# Fetch ${prefix}_GIT_REVISION_NAME
 		Set(${prefix}_GIT_REVISION_NAME)
 		Set(${prefix}_GIT_REVISION_NAME-NOTFOUND)
-		If    (${prefix}_GIT_REVISION_HASH)
+		if (${prefix}_GIT_REVISION_HASH)
 			Git_Util_Command(${prefix}_GIT_REVISION_NAME "${dir}"
 					name-rev --name-only --tags --no-undefined --always ${${prefix}_GIT_REVISION_HASH})
-		EndIf (${prefix}_GIT_REVISION_HASH)
+		endif ()
 
 
 		# Fetch ${prefix}_GIT_DESCRIBE
@@ -141,7 +141,7 @@ If    (GIT_FOUND)
 
 		Git_Util_Command(${prefix}_GIT_STATUS_OUT "${dir}" status --porcelain)
 
-		If    (${prefix}_GIT_STATUS_OUT)
+		if (${prefix}_GIT_STATUS_OUT)
 			# convert the raw command output to a list like:
 			# "M;M;M;M;M;A;D;D;??;??;??"
 			String(REGEX REPLACE
@@ -155,37 +155,37 @@ If    (GIT_FOUND)
 			Set(${prefix}_GIT_FILES_DELETED     0)
 			Set(${prefix}_GIT_FILES_UNVERSIONED 0)
 			ForEach    (type ${${prefix}_GIT_STATUS_OUT_LIST_NO_PATHS})
-				If     ("${type}" STREQUAL "M")
+				if ("${type}" STREQUAL "M")
 					Math(EXPR ${prefix}_GIT_FILES_MODIFIED    "${${prefix}_GIT_FILES_MODIFIED}    + 1")
-				ElseIf ("${type}" STREQUAL "A")
+				elseif("${type}" STREQUAL "A")
 					Math(EXPR ${prefix}_GIT_FILES_ADDED       "${${prefix}_GIT_FILES_ADDED}       + 1")
-				ElseIf ("${type}" STREQUAL "D")
+				elseif ("${type}" STREQUAL "D")
 					Math(EXPR ${prefix}_GIT_FILES_DELETED     "${${prefix}_GIT_FILES_DELETED}     + 1")
-				ElseIf ("${type}" STREQUAL "??")
+				elseif ("${type}" STREQUAL "??")
 					Math(EXPR ${prefix}_GIT_FILES_UNVERSIONED "${${prefix}_GIT_FILES_UNVERSIONED} + 1")
-				EndIf  ()
+				endif ()
 			EndForEach (type)
 			Math(EXPR ${prefix}_GIT_FILES_CHANGES
 					"${${prefix}_GIT_FILES_MODIFIED} + ${${prefix}_GIT_FILES_ADDED} + ${${prefix}_GIT_FILES_DELETED} + ${${prefix}_GIT_FILES_UNVERSIONED}")
 
-			If    (${${prefix}_GIT_FILES_MODIFIED} EQUAL 0)
+			if (${${prefix}_GIT_FILES_MODIFIED} EQUAL 0)
 				Set(${prefix}_GIT_FILES_CLEAN TRUE)
-			Else  ()
+			else ()
 				Set(${prefix}_GIT_FILES_CLEAN FALSE)
-			EndIf ()
-			If    (${${prefix}_GIT_FILES_CHANGES} EQUAL 0)
+			endif ()
+			if    (${${prefix}_GIT_FILES_CHANGES} EQUAL 0)
 				Set(${prefix}_GIT_FILES_CLEAN_VERY TRUE)
-			Else  ()
+			else  ()
 				Set(${prefix}_GIT_FILES_CLEAN_VERY FALSE)
-			EndIf ()
-		Else  (${prefix}_GIT_STATUS_OUT)
+			endif ()
+		else  (${prefix}_GIT_STATUS_OUT)
 			Set(${prefix}_GIT_FILES_MODIFIED-NOTFOUND    "1")
 			Set(${prefix}_GIT_FILES_ADDED-NOTFOUND       "1")
 			Set(${prefix}_GIT_FILES_DELETED-NOTFOUND     "1")
 			Set(${prefix}_GIT_FILES_UNVERSIONED-NOTFOUND "1")
 			Set(${prefix}_GIT_FILES_CLEAN-NOTFOUND       "1")
 			Set(${prefix}_GIT_FILES_CLEAN_VERY-NOTFOUND  "1")
-		EndIf (${prefix}_GIT_STATUS_OUT)
+		endif ()
 	EndMacro (Git_Info)
 
 
@@ -210,5 +210,6 @@ If    (GIT_FOUND)
 		Message("    clean           : ${${prefix}_GIT_FILES_CLEAN}")
 		Message("    very clean      : ${${prefix}_GIT_FILES_CLEAN_VERY}")
 	EndMacro (Git_Print_Info)
-EndIf (GIT_FOUND)
+
+endif ()
 

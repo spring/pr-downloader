@@ -18,11 +18,11 @@ OPTION(BUILD_SHARED_LIBS "Chooses whether to link dynamic or static libraries. R
 SET( LIBSPRINGLOBBY_REV	"${PR_DOWNLOADER_VERSION}")
 
 # If we build for windows Systems, we also include the Resource-File containing the Manifest, Icon and other Resources.
-IF(WIN32)
+if (WIN32)
 	CreateResourceCompileCommand(libspringlobby_RC_FILE ${libSpringLobby_SOURCE_DIR}/src/ libSpringLobby.rc lsl_icon.o )
 	SET(libSpringLobbySrc ${libSpringLobbySrc} ${libspringlobby_RC_FILE})
 	add_definitions(-DUNICODE -D_UNICODE)
-ENDIF(WIN32)
+endif ()
 
 
 #----------------------------------------------------------------------------------------------------
