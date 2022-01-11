@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import os
 import socket
 import sys
@@ -29,15 +29,16 @@ socket = socket.socket()
 socket.settimeout(5.0)
 socket.connect(('lobby.springrts.com', 8200))
 
-socket.sendall('LOGIN ' + username + ' ' + password + ' 0 * TASClient 0.33\t0\tcl sp p\n')
+msg = 'LOGIN ' + username + ' ' + password + ' 0 * TASClient 0.33\t0\tcl sp p\n'
+socket.sendall(msg.encode())
 
 
 for i in range(0, 30):
-	data = socket.recv(1024)
+	data = socket.recv(1024).decode()
 	if data and data.lower().find("logininfoend") >= 0:
 		break
 
-socket.sendall(buf)
+socket.sendall(buf.encode())
 
 time.sleep(1.0)
 socket.close()
