@@ -16,13 +16,12 @@ constexpr const char* cacertfile = "cacert.pem";
 //constexpr const char* cacertsha1 = "fe1e06f7048b78dbe7015c1c043de957251181db";
 constexpr const char* capath = "/etc/ssl/certs";
 
-
 #ifndef CURL_VERSION_BITS
-#define CURL_VERSION_BITS(x,y,z) ((x)<<16|(y)<<8|z)
+#define CURL_VERSION_BITS(x, y, z) ((x) << 16 | (y) << 8 | (z))
 #endif
 
 #ifndef CURL_AT_LEAST_VERSION
-#define CURL_AT_LEAST_VERSION(x,y,z) \
+#define CURL_AT_LEAST_VERSION(x, y, z) \
 	(LIBCURL_VERSION_NUM >= CURL_VERSION_BITS(x, y, z))
 #endif
 
@@ -37,7 +36,12 @@ static void GetTLSBackend()
 {
 #if CURL_AT_LEAST_VERSION(7,60,0)
 	const curl_ssl_backend **list;
-	curl_global_sslset((curl_sslbackend)-1, nullptr, &list);
+	const CURLsslset res = curl_global_sslset(static_cast<curl_sslbackend>(-1), nullptr, &list);
+
+	if (res != CURLsslset::CURLSSLSET_OK) {
+		LOG_WARN("SSL backend warning/error (%d)", static_cast<int>(res));
+	}
+
 	for(int i = 0; list[i]; i++) {
 		LOG_INFO("SSL backend #%d: '%s' (ID: %d)", i, list[i]->name, list[i]->id);
 		if (backend == CURLSSLBACKEND_NONE) { // use first as res
@@ -189,6 +193,15 @@ std::string CurlWrapper::escapeUrl(const std::string& url)
 			res.append(1, url[i]);
 	}
 	return res;
+}
+
+std::string CurlWrapper::escapeCurl(const std::string& url) const
+{
+	char* s = curl_easy_escape(handle, url.c_str(), url.size());
+	std::string out(s);
+	curl_free(s);
+
+	return out;
 }
 
 void CurlWrapper::InitCurl()
