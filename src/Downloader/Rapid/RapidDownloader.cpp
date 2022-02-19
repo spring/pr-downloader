@@ -106,14 +106,14 @@ bool CRapidDownloader::download(IDownload* download, int /*max_parallel*/)
 		LOG_DEBUG("skipping non rapid-dl");
 		return true;
 	}
-	updateRepos(download->origin_name);
+	//updateRepos(download->origin_name); // Disable another repos update (one happens in search() function above, anyway called from main->download())
 	return download_name(download, 0);
 }
 
 bool CRapidDownloader::match_download_name(const std::string& str1,
 					   const std::string& str2)
 {
-	return str2 == "" || str1 == str2 || str2 == "*";
+	return str2 == "" || str2 == "*" || str1 == str2;
 	// FIXME: add regex support for win32
 	/*
   #ifndef _WIN32
@@ -211,10 +211,10 @@ bool CRapidDownloader::parse()
 
 bool CRapidDownloader::updateRepos(const std::string& searchstr)
 {
+	std::string tag = "";
 	const std::string::size_type pos = searchstr.find(':');
 	if (pos != std::string::npos) { // a tag is found, set it
-		const std::string tag = searchstr.substr(0, pos);
-		// FIXME: tag isn't used??
+		tag = searchstr.substr(0, pos);
 	}
 
 	LOG_DEBUG("%s", "Updating repos...");
@@ -225,6 +225,9 @@ bool CRapidDownloader::updateRepos(const std::string& searchstr)
 	std::list<IDownload*> dls;
 	std::list<CRepo*> usedrepos;
 	for (CRepo& repo : repos) {
+		if (tag != "" && repo.getShortName() != tag) {
+			continue;
+		}
 		IDownload* dl = new IDownload();
 		if (!repo.getDownload(*dl)) {
 			delete dl;
