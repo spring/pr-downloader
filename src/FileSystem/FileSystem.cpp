@@ -522,8 +522,9 @@ bool CFileSystem::extract(const std::string& filename,
 		delete archive;
 		return false;
 	}
+	std::vector<unsigned char> buf;
 	for (unsigned int i = 0; i < num; i++) {
-		std::vector<unsigned char> buf;
+		buf.clear();
 		std::string name;
 		int size, mode;
 		archive->FileInfo(i, name, size, mode);
