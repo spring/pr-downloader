@@ -204,7 +204,9 @@ bool CSevenZipArchive::GetFile(unsigned int fid,
 			     &allocImp, &allocTempImp);
 	if (res == SZ_OK) {
 		buffer.resize(outSizeProcessed);
-		memcpy(&buffer[0], (char*)outBuffer + offset, outSizeProcessed);
+		if (outSizeProcessed > 0) {
+			memcpy(&buffer[0], (char*)outBuffer + offset, outSizeProcessed);
+		}
 		return true;
 	} else {
 		LOG_ERROR("Error extracting %s: %s", fileData[fid].origName.c_str(), GetErrorStr(res));
