@@ -87,7 +87,13 @@ void stream(std::string const & StorePath, std::string const & Hexed)
 		Marshal::packLittle(Entry.Size, Bytes);
 		std::cout.write(reinterpret_cast<char *>(Bytes), 4);
 		std::cout.flush();
-		sendfile(STDOUT_FILENO, In, 0, Entry.Size);
+		for (std::size_t left = Entry.Size; left > 0;) {
+			ssize_t written = sendfile(STDOUT_FILENO, In, 0, left);
+			if (written < 0) {
+				throw std::runtime_error{"Sendfile failed"};
+			}
+			left -= written;
+		}
 		close(In);
 	}
 }
