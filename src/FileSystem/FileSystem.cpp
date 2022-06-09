@@ -643,7 +643,7 @@ unsigned long CFileSystem::getMBsFree(const std::string& path)
 {
 #ifdef _WIN32
 	ULARGE_INTEGER freespace;
-	BOOL res = GetDiskFreeSpaceEx(s2ws(path).c_str(), &freespace, nullptr, nullptr);
+	BOOL res = GetDiskFreeSpaceExW(s2ws(path).c_str(), &freespace, nullptr, nullptr);
 	if (!res) {
 		LOG_ERROR("Error getting free disk space on %s: %d", path.c_str(), GetLastError());
 		return 0;
