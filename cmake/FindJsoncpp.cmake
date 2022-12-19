@@ -8,7 +8,7 @@
 #  Jsoncpp_LIBRARY - link to use Jsoncpp
 
 # Use pkg-config to get hints about paths
-INCLUDE(FindPkgConfig)
+find_package(PkgConfig QUIET)
 if (PKG_CONFIG_FOUND)
 	pkg_check_modules(Jsoncpp_PKGCONF jsoncpp)
 endif ()
