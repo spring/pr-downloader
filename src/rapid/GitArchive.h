@@ -47,7 +47,6 @@ void replaceVersion(char const * Buffer, std::size_t BufferSize, std::string con
 	if (Size == 0) return;
 	Functor(Pos, Size);
 }
-void buildGit(std::string const & GitPath, std::string const & ModRoot,	std::string const & Modinfo, std::string const & StorePath, std::string const & GitHash, std::string const & Prefix);
 
 } // namespace
 
