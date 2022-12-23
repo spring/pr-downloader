@@ -1,5 +1,3 @@
-/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
-
 #include "pr-downloader.h"
 #include "Downloader/IDownloader.h"
 #include "FileSystem/FileSystem.h"
