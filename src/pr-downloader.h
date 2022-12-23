@@ -1,6 +1,4 @@
-/*
-        header for pr-downloader
-*/
+/* This file is part of pr-downloader (GPL v2 or later), see the LICENSE file */
 
 #ifndef PR_DOWNLOADER_H
 #define PR_DOWNLOADER_H

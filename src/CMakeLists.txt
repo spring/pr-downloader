@@ -248,7 +248,7 @@ if (RAPIDTOOLS)
 	add_executable(AddZip AddZip.cpp)
 	target_link_libraries(AddZip Rapid)
 
-	add_executable(BuildGit BuildGit.cpp)
+	add_executable(BuildGit rapid/GitArchive.cpp BuildGit.cpp)
 	target_link_libraries(BuildGit Rapid)
 
 	add_executable(MakeZip MakeZip.cpp)
