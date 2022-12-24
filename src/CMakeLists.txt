@@ -186,8 +186,7 @@ OPTION(RAPIDTOOLS "compile rapid tools" OFF)
 if (RAPIDTOOLS)
 	find_package(Lua51 REQUIRED)
 	find_package(Zip REQUIRED)
-	find_package(Libgit2 1.0)
-
+	find_package(Libgit2 REQUIRED)
 
 	add_library(Rapid
 		${SRC_OS}

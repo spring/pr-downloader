@@ -22,6 +22,7 @@ addons:
       - libzip-dev
       - spring
       - zlib1g-dev
+      - libgit2-dev
 
 before_script:
   - cmake . -DPRD_DEVELOP_FILES:BOOL=ON -DBUILD_TESTS=ON -DPRD_ENABLE_LSL=ON -DRAPIDTOOLS:BOOL=ON -DLSLSERVER:BOOL=ON 
