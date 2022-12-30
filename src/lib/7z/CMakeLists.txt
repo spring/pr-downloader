@@ -2,7 +2,7 @@ if(WIN32)
         add_definitions(-DUNICODE -D_UNICODE)
 endif ()
 
-add_library(7z STATIC
+add_library(7zip STATIC
 	7zAlloc.c
 	7zArcIn.c
 	7zBuf.c
