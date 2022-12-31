@@ -43,7 +43,7 @@ void dump(LSL::StringVector& vec)
 
 void GetMapInfo(LSL::StringVector& maps)
 {
-	for (const std::string mapname : maps) {
+	for (const std::string& mapname : maps) {
 		lsllogdebug("Extracting %s", mapname.c_str());
 		LSL::usync().PrefetchMap(mapname);
 	}
@@ -51,7 +51,7 @@ void GetMapInfo(LSL::StringVector& maps)
 
 void GetGameInfo(LSL::StringVector& games)
 {
-	for (const std::string gamename : games) {
+	for (const std::string& gamename : games) {
 		lsllogdebug("Extracting %s", gamename.c_str());
 		LSL::usync().PrefetchGame(gamename);
 	}

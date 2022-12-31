@@ -36,7 +36,7 @@ void request_handler::reply_http_ok(reply& rep, const std::string& mimetype)
 void request_handler::create_file_list(reply& rep, const LSL::StringVector& items, const std::string& type)
 {
 	Json::Value root;
-	for (const std::string item : items) {
+	for (const std::string& item : items) {
 		root.append(item);
 	}
 	std::stringstream ss;

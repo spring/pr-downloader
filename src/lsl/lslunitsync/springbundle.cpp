@@ -138,7 +138,7 @@ static void GetEnv(const std::string& name, LSL::StringVector& pathlist)
 	if (envvar == NULL)
 		return;
 	LSL::StringVector res = LSL::Util::StringTokenize(envvar, ";:");
-	for (const std::string path : res) {
+	for (const std::string& path : res) {
 		AddPath(path, pathlist);
 	}
 }
@@ -170,7 +170,7 @@ bool SpringBundle::LocateSystemInstalledSpring(LSL::SpringBundle& bundle)
 	AddPath("/lib", paths);
 	AddPath("/bin", paths);
 
-	for (const std::string path : paths) {
+	for (const std::string& path : paths) {
 		if (bundle.AutoComplete(path)) {
 			return true;
 		}
