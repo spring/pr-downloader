@@ -39,5 +39,5 @@ repos = {
 	"repos": repolist
 }
 
-with open("repos.json", "w") as f:
+with open("/home/packages/www/repos.springrts.com/repos.json", "w") as f:
 	f.write(json.dumps(repos, indent='\t'))
