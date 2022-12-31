@@ -19,7 +19,7 @@ def get_name(repodir):
 
 repolist = {}
 
-for d in os.listdir("."):
+for d in os.listdir("/home/packages/git"):
 	if not os.path.isdir(d):
 		continue
 	abspath = os.path.abspath(d)
@@ -40,4 +40,4 @@ repos = {
 }
 
 with open("/home/packages/www/repos.springrts.com/repos.json", "w") as f:
-	f.write(json.dumps(repos, indent='\t'))
+	f.write(json.dumps(repos, indent='\t', sort_keys=True))
