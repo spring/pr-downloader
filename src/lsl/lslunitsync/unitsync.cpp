@@ -140,7 +140,7 @@ void Unitsync::FetchUnitsyncErrors(const std::string& prefix)
 	if (!prefix.empty()) {
 		pre += " ";
 	}
-	for (const std::string error : errors) {
+	for (const std::string& error : errors) {
 		LslWarning("Unitsync: %s%s", pre.c_str(), error.c_str());
 	}
 }
