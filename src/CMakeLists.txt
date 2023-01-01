@@ -4,15 +4,14 @@ if(PRD_ARCHIVE_SUPPORT)
 	set(archivessrc FileSystem/SevenZipArchive.cpp FileSystem/ZipArchive.cpp)
 	set(archiveslib 7zip)
 	add_definitions(-DARCHIVE_SUPPORT)
-endif ()
+endif()
 
-if (PRD_JSONCPP_INTERNAL)
+if(PRD_JSONCPP_INTERNAL)
 	set(jsonlibcppsrc
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/jsoncpp/src/lib_json/json_value.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/lib/jsoncpp/src/lib_json/json_reader.cpp
-		${CMAKE_CURRENT_SOURCE_DIR}/lib/jsoncpp/src/lib_json/json_writer.cpp
-	)
-endif ()
+		${CMAKE_CURRENT_SOURCE_DIR}/lib/jsoncpp/src/lib_json/json_writer.cpp)
+endif()
 
 add_library(Downloader STATIC
 	Downloader/Rapid/RapidDownloader.cpp
@@ -39,17 +38,18 @@ add_library(Downloader STATIC
 )
 
 target_include_directories(Downloader
-		PRIVATE ${pr-downloader_SOURCE_DIR}/src
-		PRIVATE ${PRD_JSONCPP_INCLUDE_DIR}
-		PRIVATE ${MINIZIP_INCLUDE_DIR}
-		PRIVATE ${CURL_INCLUDE_DIR}
-		PRIVATE ${ZLIB_INCLUDE_DIR}
-	)
+	PRIVATE
+		${pr-downloader_SOURCE_DIR}/src
+		${PRD_JSONCPP_INCLUDE_DIR}
+		${MINIZIP_INCLUDE_DIR}
+		${CURL_INCLUDE_DIR}
+		${ZLIB_INCLUDE_DIR}
+)
 set_source_files_properties(Version.cpp PROPERTIES COMPILE_DEFINITIONS "PR_DOWNLOADER_VERSION=${PR_DOWNLOADER_VERSION}")
 
-IF (WIN32)
-	SET(WIN32LIBS ws2_32 mswsock)
-ENDIF ()
+if(WIN32)
+	set(WIN32LIBS ws2_32 mswsock)
+endif()
 
 set(PRDOWNLOADER_LIBS
 	${WIN32LIBS}
@@ -69,121 +69,112 @@ target_link_libraries(Downloader
 )
 
 if(PRD_ARCHIVE_SUPPORT)
-	if (MINIZIP_FOUND)
+	if(MINIZIP_FOUND)
 		target_link_libraries(Downloader ${MINIZIP_LIBRARIES} ${LZMA_LIBRARY})
-	else ()
+	else()
 		target_link_libraries(Downloader pr-minizip)
-	endif ()
-endif ()
+	endif()
+endif()
 
 
-set (PRDOWNLOADER "pr-downloader")
-set (PRDOWNLOADER_SHARED ${PRDOWNLOADER}_shared)
-set (PRDOWNLOADER_STATIC ${PRDOWNLOADER}_static)
+set(PRDOWNLOADER "pr-downloader")
+set(PRDOWNLOADER_SHARED ${PRDOWNLOADER}_shared)
+set(PRDOWNLOADER_STATIC ${PRDOWNLOADER}_static)
 
-OPTION(PRD_SHAREDLIB
-	"Enables compilation of the shared lib" ON)
+option(PRD_SHAREDLIB "Enables compilation of the shared lib" ON)
 
-if (PRD_SHAREDLIB)
+if(PRD_SHAREDLIB)
 	add_library(${PRDOWNLOADER_SHARED} SHARED
 		pr-downloader.cpp
-		Logger.cpp
-	)
+		Logger.cpp)
 	if(PRD_DO_INSTALL AND (PRD_DEVELOP_FILES OR (PRD_CONSOLETOOL AND NOT PRD_LINK_STATIC)))
-		INSTALL (TARGETS ${PRDOWNLOADER_SHARED}
+		install(TARGETS ${PRDOWNLOADER_SHARED}
 			RUNTIME DESTINATION ${PRD_BINDIR}
 			LIBRARY DESTINATION ${PRD_LIBDIR}
-			ARCHIVE DESTINATION ${PRD_LIBDIR} )
-	endif ()
+			ARCHIVE DESTINATION ${PRD_LIBDIR})
+	endif()
 	target_include_directories(${PRDOWNLOADER_SHARED} PRIVATE ${pr-downloader_SOURCE_DIR}/src)
 	target_link_libraries( ${PRDOWNLOADER_SHARED} ${PRDOWNLOADER_LIBS} )
-endif ()
+endif()
 
-if (PRD_DEFAULT_LOGGER)
+if(PRD_DEFAULT_LOGGER)
 	set(LOGGERCPP Logger.cpp)
-else ()
-	set(LOGGERCPP )
-endif ()
+else()
+	set(LOGGERCPP)
+endif()
 
-OPTION(PRD_STATICLIB
-	"Enables compilation of the static lib" ON)
-if (PRD_STATICLIB)
+option(PRD_STATICLIB "Enables compilation of the static lib" ON)
+if(PRD_STATICLIB)
 	add_library(${PRDOWNLOADER_STATIC} STATIC
 		pr-downloader.cpp
-		${LOGGERCPP}
-	)
+		${LOGGERCPP})
 	if(PRD_DO_INSTALL AND PRD_DEVELOP_FILES)
-		INSTALL (TARGETS ${PRDOWNLOADER_STATIC}
+		install(TARGETS ${PRDOWNLOADER_STATIC}
 			RUNTIME DESTINATION ${PRD_BINDIR}
 			LIBRARY DESTINATION ${PRD_LIBDIR}
-			ARCHIVE DESTINATION ${PRD_LIBDIR} )
-	endif ()
+			ARCHIVE DESTINATION ${PRD_LIBDIR})
+	endif()
 	target_include_directories(${PRDOWNLOADER_STATIC} PRIVATE ${pr-downloader_SOURCE_DIR}/src)
-	target_link_libraries( ${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} ${CMAKE_DL_LIBS})
-endif ()
+	target_link_libraries(${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} ${CMAKE_DL_LIBS})
+endif()
 
-OPTION(PRD_CONSOLETOOL
-        "Enables compilation and installation of the console tool ${PRDOWNLOADER}" ON)
+option(PRD_CONSOLETOOL "Enables compilation and installation of the console tool ${PRDOWNLOADER}" ON)
 
-if (PRD_CONSOLETOOL)
+if(PRD_CONSOLETOOL)
 	### Add icon and manifest to exe using windres
 	if(WIN32 AND MINGW)
 	        set(PRD_ICON "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc")
-	endif ()
+	endif()
 
 	add_executable(${PRDOWNLOADER}
 		${PRD_ICON}
 		main.cpp
-		Logger.cpp
-	)
+		Logger.cpp)
 	target_include_directories(${PRDOWNLOADER}
-		PRIVATE ${pr-downloader_SOURCE_DIR}/src
-	)
+		PRIVATE ${pr-downloader_SOURCE_DIR}/src)
 
-	if (PRD_LINK_STATIC)
+	if(PRD_LINK_STATIC)
 		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
-	else ()
+	else()
 		# hack arround "make install" doesn't generate libpr-downloader_shared.so
 		add_dependencies(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED})
-		target_link_libraries(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED} )
-	endif ()
-	if (WIN32)
+		target_link_libraries(${PRDOWNLOADER} ${PRDOWNLOADER_SHARED})
+	endif()
+	if(WIN32)
 		set_target_properties(${PRDOWNLOADER} PROPERTIES LINK_FLAGS "-Wl,-subsystem,console")
-	endif ()
-	if (PRD_DO_INSTALL)
-		INSTALL (TARGETS ${PRDOWNLOADER}
+	endif()
+	if(PRD_DO_INSTALL)
+		install(TARGETS ${PRDOWNLOADER}
 			RUNTIME DESTINATION ${PRD_BINDIR}
 			LIBRARY DESTINATION ${PRD_LIBDIR}
-			ARCHIVE DESTINATION ${PRD_LIBDIR} )
-	endif ()
-endif ()
+			ARCHIVE DESTINATION ${PRD_LIBDIR})
+	endif()
+endif()
 
-FILE( GLOB_RECURSE header "*.h" )
-
-
+file(GLOB_RECURSE header "*.h")
 
 if(NOT WIN32 AND PRD_DEVELOP_FILES)
 	set(VERSION ${PR_DOWNLOADER_VERSION})
 	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/libspringdownloader.pc.in"
 	               "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" @ONLY)
-	if (PRD_DO_INSTALL)
+	if(PRD_DO_INSTALL)
 		install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libspringdownloader.pc" DESTINATION "${PRD_LIBDIR}/pkgconfig")
-	endif ()
-endif ()
+	endif()
+endif()
 
 if(PRD_DO_INSTALL AND PRD_DEVELOP_FILES)
 	install(FILES
 		pr-downloader.h
-	        DESTINATION ${PRD_INCLUDE_DIR}/Downloader COMPONENT Devel )
-endif ()
+	        DESTINATION ${PRD_INCLUDE_DIR}/Downloader COMPONENT Devel)
+endif()
 
-OPTION(PRD_ENABLE_LSL "compile lsl modules" OFF)
-if (PRD_ENABLE_LSL)
+option(PRD_ENABLE_LSL "compile lsl modules" OFF)
+if(PRD_ENABLE_LSL)
 	add_subdirectory(lsl)
-endif ()
+endif()
 
-OPTION(RAPIDTOOLS "compile rapid tools" OFF)
-if (RAPIDTOOLS)
+option(RAPIDTOOLS "compile rapid tools" OFF)
+if(RAPIDTOOLS)
 	find_package(Lua51 REQUIRED)
 	find_package(Zip REQUIRED)
 	find_package(Libgit2 REQUIRED)
@@ -211,38 +202,34 @@ if (RAPIDTOOLS)
 		rapid/Versions.cpp
 		rapid/Zip.cpp
 		rapid/ZipFile.cpp
-		Logger.cpp
-	)
+		Logger.cpp)
 
 	target_link_libraries(Rapid
 		pr-md5
 		${LUA_LIBRARIES}
 		${ZIP_LIBRARIES}
-		${ZLIB_LIBRARIES}
-	)
-	if (Libgit2_FOUND)
+		${ZLIB_LIBRARIES})
+	if(Libgit2_FOUND)
 		target_link_libraries(Rapid ${LIBGIT2_LIBRARIES})
 		target_include_directories(Rapid PRIVATE ${LIBGIT2_HEADERS})
-	else ()
+	else()
 		target_link_libraries(Rapid git2)
 		target_include_directories(Rapid
 			PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/include
 			PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/src
-			PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/deps/http-parser
-		)
-	endif ()
+			PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/lib/libgit2/deps/http-parser)
+	endif()
 
 	target_include_directories(Rapid
 		PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
 		PUBLIC ${LUA_INCLUDE_DIR}
 		PUBLIC ${ZIP_INCLUDE_DIR}
-		PUBLIC ${ZLIB_INCLUDE_DIR}
-	)
+		PUBLIC ${ZLIB_INCLUDE_DIR})
 	if(MINIZIP_FOUND)
 		target_link_libraries(Rapid ${MINIZIP_LIBRARIES})
-	else ()
+	else()
 		target_link_libraries(Rapid pr-minizip)
-	endif ()
+	endif()
 
 	add_executable(AddZip AddZip.cpp)
 	target_link_libraries(AddZip Rapid)
@@ -255,5 +242,5 @@ if (RAPIDTOOLS)
 
 	add_executable(Streamer Streamer.cpp)
 	target_link_libraries(Streamer Rapid)
-endif ()
+endif()
 
