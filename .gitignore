@@ -38,4 +38,5 @@ CMakeFiles
 /build.ninja
 /rules.ninja
 #test files
-test/prd_test
+/test/prd_test
+/Testing
