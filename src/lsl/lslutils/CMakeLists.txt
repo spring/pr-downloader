@@ -1,21 +1,19 @@
 
-SET(libSpringLobbyUtilsSrc
+set(libSpringLobbyUtilsSrc
 	"${CMAKE_CURRENT_SOURCE_DIR}/misc.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/config.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/thread.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/globalsmanager.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/conversion.cpp"
-	)
+)
 
-FILE( GLOB RECURSE libSpringLobbyUtilsHeader "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+file( GLOB RECURSE libSpringLobbyUtilsHeader "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
 
 #grep -lR cc\"$ src/* | sed -e "s/\.h/\.cc/g"
-SET( templatesources
-	""
-)
-LIST( APPEND libSpringLobbyUtilsHeader ${templatesources} )
+set(templatesources "")
+list(APPEND libSpringLobbyUtilsHeader ${templatesources})
 set_source_files_properties(  ${libSpringLobbyUtilsHeader} PROPERTIES HEADER_FILE_ONLY 1 )
-LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
 if(WIN32)
 	#see https://github.com/mxe/mxe/issues/1448
 	add_definitions(
@@ -24,11 +22,12 @@ if(WIN32)
 			-DMINGW_HAS_SECURE_API=1
 		)
 endif ()
-ADD_LIBRARY(lsl-utils STATIC ${libSpringLobbyHeader} ${libSpringLobbyUtilsSrc} )
-TARGET_LINK_LIBRARIES(lsl-utils ${Boost_THREAD_LIBRARY} pr-md5)
+add_library(lsl-utils STATIC ${libSpringLobbyHeader} ${libSpringLobbyUtilsSrc} )
+target_link_libraries(lsl-utils ${Boost_THREAD_LIBRARY} pr-md5)
 target_include_directories(lsl-utils
-		PRIVATE ${Boost_INCLUDE_DIRS}
-		PRIVATE ${pr-downloader_SOURCE_DIR}/src/lsl
-	)
+	PRIVATE
+		${Boost_INCLUDE_DIRS}
+		${pr-downloader_SOURCE_DIR}/src/lsl
+)
 
 

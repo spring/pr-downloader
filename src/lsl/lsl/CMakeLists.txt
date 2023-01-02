@@ -1,4 +1,4 @@
-SET(libSpringLobbySrc
+set(libSpringLobbySrc
 	"${CMAKE_CURRENT_SOURCE_DIR}/container/userlist.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/container/channellist.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/container/battlelist.cpp"
@@ -16,26 +16,25 @@ SET(libSpringLobbySrc
 	"${CMAKE_CURRENT_SOURCE_DIR}/battle/tdfcontainer.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/spring/spring.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/spring/springprocess.cpp"
-	)
+)
 
-FILE( GLOB RECURSE libSpringLobbyHeader "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+file(GLOB RECURSE libSpringLobbyHeader "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 
 #grep -lR cc\"$ src/* | sed -e "s/\.h/\.cc/g"
-SET( templatesources
-	""
-)
-LIST( APPEND libSpringLobbyHeader ${templatesources} )
+set(templatesources "")
+list(APPEND libSpringLobbyHeader ${templatesources})
 set_source_files_properties(  ${libSpringLobbyHeader} PROPERTIES HEADER_FILE_ONLY 1 )
 
-ADD_LIBRARY(lsl-server STATIC ${libSpringLobbyHeader} ${libSpringLobbySrc} ${libSpringLobby_RC_FILE} )
-TARGET_LINK_LIBRARIES(lsl-server lsl-utils ${Boost_SYSTEM} ${Boost_THREAD_LIBRARY} )
-target_include_directories(lsl-server PRIVATE
-	${pr-downloader_SOURCE_DIR}/src/lsl
-	${pr-downloader_SOURCE_DIR}/src/
+add_library(lsl-server STATIC ${libSpringLobbyHeader} ${libSpringLobbySrc} ${libSpringLobby_RC_FILE} )
+target_link_libraries(lsl-server lsl-utils ${Boost_SYSTEM} ${Boost_THREAD_LIBRARY} )
+target_include_directories(lsl-server
+	PRIVATE
+		${pr-downloader_SOURCE_DIR}/src/lsl
+		${pr-downloader_SOURCE_DIR}/src/
 )
 
 if (MINGW)
-	TARGET_LINK_LIBRARIES( lsl-server iphlpapi )
+	target_link_libraries(lsl-server iphlpapi)
 endif ()
 
 if (LSLSERVER)
