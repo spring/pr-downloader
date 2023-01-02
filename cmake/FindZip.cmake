@@ -14,24 +14,24 @@ find_path(ZIP_INCLUDE_DIR zip.h
 	/usr/local/include)
 
 set(ZIP_NAMES ${ZIP_NAMES} zip)
-find_library (ZIP_LIBRARY
+find_library(ZIP_LIBRARY
 	NAMES ${ZIP_NAMES}
 	PATHS /usr/lib /usr/local/lib)
 
 if(ZIP_LIBRARY AND ZIP_INCLUDE_DIR)
-	set (ZIP_LIBRARIES ${ZIP_LIBRARY})
-	set (ZIP_FOUND "YES")
+	set(ZIP_LIBRARIES ${ZIP_LIBRARY})
+	set(ZIP_FOUND "YES")
 else()
-	set (ZIP_FOUND "NO")
+	set(ZIP_FOUND "NO")
 endif()
 
 if(ZIP_FOUND)
 	if(NOT ZIP_FIND_QUIETLY)
-		message (STATUS "Found ZIP: ${ZIP_LIBRARIES}")
+		message(STATUS "Found ZIP: ${ZIP_LIBRARIES}")
 	endif()
 else()
 	if(ZIP_FIND_REQUIRED)
-		message (FATAL_ERROR "Could not find ZIP library")
+		message(FATAL_ERROR "Could not find ZIP library")
 	endif()
 endif()
 

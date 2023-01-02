@@ -30,16 +30,15 @@ if(GIT_FOUND)
 				OUTPUT_VARIABLE ${var}
 				ERROR_VARIABLE  GIT_ERROR
 				OUTPUT_STRIP_TRAILING_WHITESPACE
-				ERROR_STRIP_TRAILING_WHITESPACE
-			)
+				ERROR_STRIP_TRAILING_WHITESPACE)
 
-		if (NOT ${CMD_RET_VAL} EQUAL 0)
+		if(NOT ${CMD_RET_VAL} EQUAL 0)
 			set(${var})
 			set(${var}-NOTFOUND "1")
-			if (NOT GIT_UTIL_FIND_QUIETLY)
+			if(NOT GIT_UTIL_FIND_QUIETLY)
 				message(STATUS "Command \"${CMD_GIT}\" in directory ${dir} failed with output:\n\"${GIT_ERROR}\"")
-			endif ()
-		endif ()
+			endif()
+		endif()
 	endmacro()
 
 	# Fetches the revision SHA1 hash of the current HEAD.
@@ -124,7 +123,7 @@ if(GIT_FOUND)
 
 		git_util_command(${prefix}_GIT_STATUS_OUT "${dir}" status --porcelain)
 
-		if (${prefix}_GIT_STATUS_OUT)
+		if(${prefix}_GIT_STATUS_OUT)
 			# convert the raw command output to a list like:
 			# "M;M;M;M;M;A;D;D;??;??;??"
 			string(REGEX REPLACE
@@ -138,38 +137,38 @@ if(GIT_FOUND)
 			set(${prefix}_GIT_FILES_DELETED     0)
 			set(${prefix}_GIT_FILES_UNVERSIONED 0)
 			foreach(type ${${prefix}_GIT_STATUS_OUT_LIST_NO_PATHS})
-				if ("${type}" STREQUAL "M")
+				if("${type}" STREQUAL "M")
 					math(EXPR ${prefix}_GIT_FILES_MODIFIED    "${${prefix}_GIT_FILES_MODIFIED}    + 1")
-				elseif ("${type}" STREQUAL "A")
+				elseif("${type}" STREQUAL "A")
 					math(EXPR ${prefix}_GIT_FILES_ADDED       "${${prefix}_GIT_FILES_ADDED}       + 1")
-				elseif ("${type}" STREQUAL "D")
+				elseif("${type}" STREQUAL "D")
 					math(EXPR ${prefix}_GIT_FILES_DELETED     "${${prefix}_GIT_FILES_DELETED}     + 1")
-				elseif ("${type}" STREQUAL "??")
+				elseif("${type}" STREQUAL "??")
 					math(EXPR ${prefix}_GIT_FILES_UNVERSIONED "${${prefix}_GIT_FILES_UNVERSIONED} + 1")
-				endif ()
-			endforeach ()
+				endif()
+			endforeach()
 			math(EXPR ${prefix}_GIT_FILES_CHANGES
 					"${${prefix}_GIT_FILES_MODIFIED} + ${${prefix}_GIT_FILES_ADDED} + ${${prefix}_GIT_FILES_DELETED} + ${${prefix}_GIT_FILES_UNVERSIONED}")
 
-			if (${${prefix}_GIT_FILES_MODIFIED} EQUAL 0)
+			if(${${prefix}_GIT_FILES_MODIFIED} EQUAL 0)
 				set(${prefix}_GIT_FILES_CLEAN TRUE)
-			else ()
+			else()
 				set(${prefix}_GIT_FILES_CLEAN FALSE)
-			endif ()
-			if (${${prefix}_GIT_FILES_CHANGES} EQUAL 0)
+			endif()
+			if(${${prefix}_GIT_FILES_CHANGES} EQUAL 0)
 				set(${prefix}_GIT_FILES_CLEAN_VERY TRUE)
-			else ()
+			else()
 				set(${prefix}_GIT_FILES_CLEAN_VERY FALSE)
-			endif ()
-		else ()
+			endif()
+		else()
 			set(${prefix}_GIT_FILES_MODIFIED-NOTFOUND    "1")
 			set(${prefix}_GIT_FILES_ADDED-NOTFOUND       "1")
 			set(${prefix}_GIT_FILES_DELETED-NOTFOUND     "1")
 			set(${prefix}_GIT_FILES_UNVERSIONED-NOTFOUND "1")
 			set(${prefix}_GIT_FILES_CLEAN-NOTFOUND       "1")
 			set(${prefix}_GIT_FILES_CLEAN_VERY-NOTFOUND  "1")
-		endif ()
-	endmacro ()
+		endif()
+	endmacro()
 
 	# Prints extensive git version info.
 	# @see Git_Info

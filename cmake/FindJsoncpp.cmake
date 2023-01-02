@@ -9,18 +9,18 @@
 
 # Use pkg-config to get hints about paths
 find_package(PkgConfig QUIET)
-if (PKG_CONFIG_FOUND)
+if(PKG_CONFIG_FOUND)
 	pkg_check_modules(Jsoncpp_PKGCONF jsoncpp)
-endif ()
+endif()
 # Include dir
 find_path(Jsoncpp_INCLUDE_DIR
-  NAMES json/json.h
-  PATH_SUFFIXES jsoncpp
-  PATHS ${Jsoncpp_PKGCONF_INCLUDE_DIRS} # /usr/include/jsoncpp/json
+	NAMES json/json.h
+	PATH_SUFFIXES jsoncpp
+	PATHS ${Jsoncpp_PKGCONF_INCLUDE_DIRS} # /usr/include/jsoncpp/json
 )
 
 # Finally the library itself
 find_library(Jsoncpp_LIBRARY
-  NAMES jsoncpp
-  PATHS ${Jsoncpp_PKGCONF_LIBRARY_DIRS}
+	NAMES jsoncpp
+	PATHS ${Jsoncpp_PKGCONF_LIBRARY_DIRS}
 )
