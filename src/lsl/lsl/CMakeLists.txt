@@ -23,28 +23,28 @@ file(GLOB RECURSE libSpringLobbyHeader "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 #grep -lR cc\"$ src/* | sed -e "s/\.h/\.cc/g"
 set(templatesources "")
 list(APPEND libSpringLobbyHeader ${templatesources})
-set_source_files_properties(  ${libSpringLobbyHeader} PROPERTIES HEADER_FILE_ONLY 1 )
+set_source_files_properties(${libSpringLobbyHeader} PROPERTIES HEADER_FILE_ONLY 1)
 
-add_library(lsl-server STATIC ${libSpringLobbyHeader} ${libSpringLobbySrc} ${libSpringLobby_RC_FILE} )
-target_link_libraries(lsl-server lsl-utils ${Boost_SYSTEM} ${Boost_THREAD_LIBRARY} )
+add_library(lsl-server STATIC ${libSpringLobbyHeader} ${libSpringLobbySrc} ${libSpringLobby_RC_FILE})
+target_link_libraries(lsl-server lsl-utils ${Boost_SYSTEM} ${Boost_THREAD_LIBRARY})
 target_include_directories(lsl-server
 	PRIVATE
 		${pr-downloader_SOURCE_DIR}/src/lsl
 		${pr-downloader_SOURCE_DIR}/src/
 )
 
-if (MINGW)
+if(MINGW)
 	target_link_libraries(lsl-server iphlpapi)
-endif ()
+endif()
 
-if (LSLSERVER)
-	if (WIN32)
-	    install(TARGETS lsl-server DESTINATION . )
-	else ()
+if(LSLSERVER)
+	if(WIN32)
+	    install(TARGETS lsl-server DESTINATION .)
+	else()
 	    install(TARGETS lsl-server
 			LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
-			ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib )
-	endif ()
-endif ()
+			ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+	endif()
+endif()
 
 

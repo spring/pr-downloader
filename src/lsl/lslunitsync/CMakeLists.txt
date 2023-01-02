@@ -10,7 +10,7 @@ set(libUnitsyncSrc
 	"${CMAKE_CURRENT_SOURCE_DIR}/unitsync.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/unitsync_cache.cpp"
 	"${CMAKE_CURRENT_SOURCE_DIR}/springbundle.cpp"
-	)
+)
 file(GLOB RECURSE libUnitsyncHeader "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 
 #grep -lR cc\"$ "${CMAKE_CURRENT_SOURCE_DIR}/* | sed -e "s/\.h/\.cc/g"
@@ -24,16 +24,16 @@ find_package(X11 REQUIRED)
 add_library(lsl-unitsync STATIC ${libUnitsyncHeader} ${libUnitsyncSrc} ${jsonlibcppsrc})
 if(ADD_WXCONVERT)
 	target_compile_definitions(lsl-unitsync PRIVATE -DHAVE_WX)
-endif ()
+endif()
 
-if (UNIX AND NOT MINGW AND NOT APPLE)
+if(UNIX AND NOT MINGW AND NOT APPLE)
 	find_library(RT_LIBRARY rt)
-endif ()
+endif()
 
 find_package(Threads REQUIRED)
 if(CMAKE_USE_PTHREADS_INIT)
 	target_link_libraries(lsl-unitsync pthread)
-endif ()
+endif()
 
 target_link_libraries(lsl-unitsync lsl-utils ${Boost_THREAD_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${PNG_LIBRARY} ${X11_LIBRARIES} ${CMAKE_DL_LIBS} ${RT_LIBRARY} ${PRD_JSONCPP_LIBRARIES})
 target_include_directories(lsl-unitsync
