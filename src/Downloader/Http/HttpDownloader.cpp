@@ -363,7 +363,7 @@ bool CHttpDownloader::setupDownload(DownloadData* piece)
 	curl_easy_setopt(curle, CURLOPT_WRITEDATA, piece);
 	curl_easy_setopt(curle, CURLOPT_NOPROGRESS, 0L);
 	curl_easy_setopt(curle, CURLOPT_PROGRESSDATA, piece);
-	curl_easy_setopt(curle, CURLOPT_PROGRESSFUNCTION, progress_func);
+	curl_easy_setopt(curle, CURLOPT_XFERINFOFUNCTION, progress_func);
 	curl_easy_setopt(curle, CURLOPT_URL, CurlWrapper::escapeUrl(piece->mirror->url).c_str());
 
 	curl_easy_setopt(curle, CURLOPT_SSL_VERIFYPEER, piece->download->validateTLS);
@@ -489,7 +489,7 @@ bool CHttpDownloader::processMessages(CURLM* curlm,
 
 				// get speed at which this piece was downloaded + update mirror info
 				double dlSpeed;
-				curl_easy_getinfo(data->curlw->GetHandle(), CURLINFO_SPEED_DOWNLOAD,
+				curl_easy_getinfo(data->curlw->GetHandle(), CURLINFO_SPEED_DOWNLOAD_T,
 						  &dlSpeed);
 				data->mirror->UpdateSpeed(dlSpeed);
 				if (data->mirror->status ==
