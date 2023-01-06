@@ -360,7 +360,7 @@ MapInfo UnitsyncLib::GetMapInfoEx(int index)
 		bool xset = false;
 		for (int i = 0; i < infos; i++) {
 			auto errors = GetUnitsyncErrors();
-			for (const std::string error : errors) {
+			for (const std::string& error : errors) {
 				LslError("%s", error.c_str());
 			}
 			const std::string& key = Util::SafeString(m_get_info_key(i));
