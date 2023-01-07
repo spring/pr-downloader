@@ -71,7 +71,7 @@ bool CHttpDownloader::DownloadUrl(const std::string& url, std::string& res)
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_WRITEDATA, (void*)&res);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_PROGRESSDATA, &d);
-	curl_easy_setopt(curlw.GetHandle(), CURLOPT_PROGRESSFUNCTION, progress_func);
+	curl_easy_setopt(curlw.GetHandle(), CURLOPT_XFERINFOFUNCTION, progress_func);
 	curl_easy_setopt(curlw.GetHandle(), CURLOPT_NOPROGRESS, 0L);
 	const CURLcode curlres = curl_easy_perform(curlw.GetHandle());
 
