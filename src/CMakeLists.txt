@@ -116,6 +116,11 @@ if(PRD_STATICLIB)
 	endif()
 	target_include_directories(${PRDOWNLOADER_STATIC} PRIVATE ${pr-downloader_SOURCE_DIR}/src)
 	target_link_libraries(${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} ${CMAKE_DL_LIBS})
+	set_target_properties(${PRDOWNLOADER_STATIC} PROPERTIES
+	        C_VISIBILITY_PRESET hidden
+	        CXX_VISIBILITY_PRESET hidden
+	        VISIBILITY_INLINES_HIDDEN ON
+	)
 endif()
 
 option(PRD_CONSOLETOOL "Enables compilation and installation of the console tool ${PRDOWNLOADER}" ON)
