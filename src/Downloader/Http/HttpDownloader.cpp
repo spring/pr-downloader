@@ -98,11 +98,13 @@ bool CHttpDownloader::ParseResult(const std::string& /*name*/,
 				  std::list<IDownload*>& res)
 {
 	Json::Value result; // will contains the root value after parsing.
-	Json::Reader reader;
-	const bool parsingSuccessful = reader.parse(json, result);
+	Json::CharReaderBuilder builder;
+	auto reader = builder.newCharReader();
+	JSONCPP_STRING err;
+	assert(!json.empty());
+	const bool parsingSuccessful = reader->parse(json.c_str(), json.c_str() +  json.length(), &result, &err);
 	if (!parsingSuccessful) {
-		LOG_ERROR("Couldn't parse result: %s %s",
-			  reader.getFormattedErrorMessages().c_str(), json.c_str());
+		LOG_ERROR("Couldn't parse result: %s %s", err, json.c_str());
 		return false;
 	}
 
