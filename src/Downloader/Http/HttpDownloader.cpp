@@ -99,7 +99,7 @@ bool CHttpDownloader::ParseResult(const std::string& /*name*/,
 {
 	Json::Value result; // will contains the root value after parsing.
 	Json::CharReaderBuilder builder;
-	auto reader = builder.newCharReader();
+	const std::unique_ptr<Json::CharReader> reader(builder.newCharReader());
 	JSONCPP_STRING err;
 	assert(!json.empty());
 	const bool parsingSuccessful = reader->parse(json.c_str(), json.c_str() +  json.length(), &result, &err);
