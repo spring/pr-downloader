@@ -357,7 +357,9 @@ MapInfo UnitsyncLib::GetMapInfoEx(int index)
 
 		const int infos = m_get_map_info_count(index);
 		int x = 0;
+#ifndef NDEBUG
 		bool xset = false;
+#endif
 		for (int i = 0; i < infos; i++) {
 			auto errors = GetUnitsyncErrors();
 			for (const std::string& error : errors) {
@@ -418,7 +420,9 @@ MapInfo UnitsyncLib::GetMapInfoEx(int index)
 				} else {
 					LslWarning("Unknown datatype for start position: %s", type.c_str());
 				}
+#ifndef NDEBUG
 				xset = true;
+#endif
 				continue;
 			}
 			if (key == "zPos") {
@@ -435,7 +439,9 @@ MapInfo UnitsyncLib::GetMapInfoEx(int index)
 				}
 
 				info.positions.push_back(pos);
+#ifndef NDEBUG
 				xset = false;
+#endif
 				continue;
 			}
 			LslWarning("Unknown key in GetMapInfoCount(): %s", key.c_str());
