@@ -114,13 +114,9 @@ if(PRD_STATICLIB)
 			LIBRARY DESTINATION ${PRD_LIBDIR}
 			ARCHIVE DESTINATION ${PRD_LIBDIR})
 	endif()
-	target_include_directories(${PRDOWNLOADER_STATIC} PRIVATE ${pr-downloader_SOURCE_DIR}/src)
+	target_include_directories(${PRDOWNLOADER_STATIC} PUBLIC
+		${pr-downloader_SOURCE_DIR}/src)
 	target_link_libraries(${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} ${CMAKE_DL_LIBS})
-	set_target_properties(${PRDOWNLOADER_STATIC} PROPERTIES
-	        C_VISIBILITY_PRESET hidden
-	        CXX_VISIBILITY_PRESET hidden
-	        VISIBILITY_INLINES_HIDDEN ON
-	)
 endif()
 
 option(PRD_CONSOLETOOL "Enables compilation and installation of the console tool ${PRDOWNLOADER}" ON)
@@ -135,8 +131,7 @@ if(PRD_CONSOLETOOL)
 		${PRD_ICON}
 		main.cpp
 		Logger.cpp)
-	target_include_directories(${PRDOWNLOADER}
-		PRIVATE ${pr-downloader_SOURCE_DIR}/src)
+	target_include_directories(${PRDOWNLOADER} PRIVATE ${pr-downloader_SOURCE_DIR}/src)
 
 	if(PRD_LINK_STATIC)
 		target_link_libraries( ${PRDOWNLOADER} ${PRDOWNLOADER_STATIC} )
