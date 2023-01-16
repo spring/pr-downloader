@@ -25,7 +25,7 @@ add_library(7zip STATIC
 	Ppmd7Dec.c
 )
 
-target_include_directories(7z
+target_include_directories(7zip
 	INTERFACE
 		${CMAKE_CURRENT_SOURCE_DIR}
 )
