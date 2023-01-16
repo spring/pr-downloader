@@ -114,8 +114,11 @@ if(PRD_STATICLIB)
 			LIBRARY DESTINATION ${PRD_LIBDIR}
 			ARCHIVE DESTINATION ${PRD_LIBDIR})
 	endif()
-	target_include_directories(${PRDOWNLOADER_STATIC} PUBLIC
-		${pr-downloader_SOURCE_DIR}/src)
+	target_include_directories(${PRDOWNLOADER_STATIC}
+		PUBLIC
+			${CMAKE_CURRENT_SOURCE_DIR}
+			${CMAKE_CURRENT_SOURCE_DIR}/lib/7z
+		)
 	target_link_libraries(${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} ${CMAKE_DL_LIBS})
 endif()
 
