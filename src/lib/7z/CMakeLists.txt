@@ -10,18 +10,22 @@ add_library(7zip STATIC
 	7zCrc.c
 	7zCrcOpt.c
 	7zDec.c
+	7zFile.c
 	7zStream.c
+	7zStream.c
+	Bcj2.c
+	Bra.c
+	Bra86.c
 	BraIA64.c
 	CpuArch.c
 	Delta.c
-	LzmaDec.c
 	Lzma2Dec.c
-	Bra.c
-	Bra86.c
-	Bcj2.c
+	LzmaDec.c
 	Ppmd7.c
 	Ppmd7Dec.c
-	7zFile.c
-	7zStream.c
 )
 
+target_include_directories(7z
+	INTERFACE
+		${CMAKE_CURRENT_SOURCE_DIR}
+)
