@@ -95,22 +95,9 @@ if(MSVC)
 	add_definitions(-DWIN32_LEAN_AND_MEAN -DNOMINMAX)
 endif()
 
-if(PREFER_STATIC_LIBS)
-	#curl dependency
-	find_package_static(OpenSSL REQUIRED)
-	find_package_static(CURL REQUIRED)
-	find_package_static(ZLIB REQUIRED)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCURL_STATICLIB")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DCURL_STATICLIB")
-else()
-	find_package(CURL REQUIRED)
-	find_package(ZLIB REQUIRED)
-endif()
-
-set(CURL_MIN_VER 7.60)
-if(CURL_VERSION_STRING VERSION_LESS ${CURL_MIN_VER})
-	message(WARNING "libcurl ${CURL_VERSION_STRING} found but ${CURL_MIN_VER} is required!")
-endif()
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CURL REQUIRED libcurl>=7.60)
+pkg_check_modules(ZLIB REQUIRED zlib)
 
 if(PRD_JSONCPP_INTERNAL)
         # use bundled JsonCpp

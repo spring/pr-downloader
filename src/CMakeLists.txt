@@ -118,7 +118,7 @@ if(PRD_STATICLIB)
 		PUBLIC
 			${CMAKE_CURRENT_SOURCE_DIR}
 			${CMAKE_CURRENT_SOURCE_DIR}/lib/7z
-		)
+	)
 	target_link_libraries(${PRDOWNLOADER_STATIC} ${PRDOWNLOADER_LIBS} ${CMAKE_DL_LIBS})
 endif()
 
@@ -178,9 +178,9 @@ endif()
 
 option(RAPIDTOOLS "compile rapid tools" OFF)
 if(RAPIDTOOLS)
-	find_package(Lua51 REQUIRED)
-	find_package(Zip REQUIRED)
-	find_package(Libgit2 REQUIRED)
+	pkg_check_modules(LIBGIT2 libgit2)
+	pkg_check_modules(LUA REQUIRED lua51)
+	pkg_check_modules(ZIP REQUIRED libzip)
 
 	add_library(Rapid
 		${SRC_OS}
