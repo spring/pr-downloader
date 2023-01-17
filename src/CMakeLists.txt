@@ -57,22 +57,23 @@ set(PRDOWNLOADER_LIBS
 )
 
 target_link_libraries(Downloader
-	${CURL_LIBRARIES}
-	${CURL_LD_FLAGS}
-	${OPENSSL_LIBRARIES}
-	${WIN32LIBS}
-	${PRD_JSONCPP_LIBRARIES}
-	${ZLIB_LIBRARIES}
-	pr-md5
-	pr-sha1
-	${archiveslib}
+	PRIVATE
+		${WIN32LIBS}
+		${PRD_JSONCPP_LIBRARIES}
+		pr-md5
+		pr-sha1
+		${archiveslib}
+		${ZLIB_LIBRARIES}
+	PUBLIC
+		${CURL_LINK_LIBRARIES}
+		${OPENSSL_LINK_LIBRARIES}
 )
 
 if(PRD_ARCHIVE_SUPPORT)
 	if(MINIZIP_FOUND)
-		target_link_libraries(Downloader ${MINIZIP_LIBRARIES} ${LZMA_LIBRARY})
+		target_link_libraries(Downloader PRIVATE ${MINIZIP_LIBRARIES} ${LZMA_LIBRARY})
 	else()
-		target_link_libraries(Downloader pr-minizip)
+		target_link_libraries(Downloader PRIVATE pr-minizip)
 	endif()
 endif()
 
