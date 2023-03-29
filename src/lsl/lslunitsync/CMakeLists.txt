@@ -26,7 +26,7 @@ if(ADD_WXCONVERT)
 	target_compile_definitions(lsl-unitsync PRIVATE -DHAVE_WX)
 endif()
 
-if(UNIX AND NOT MINGW AND NOT APPLE)
+if(UNIX AND NOT MINGW AND NOT APPLE AND NOT OPENBSD)
 	find_library(RT_LIBRARY rt)
 endif()
 
