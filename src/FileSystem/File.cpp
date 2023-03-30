@@ -25,6 +25,10 @@
 #include <windows.h>
 #endif
 
+#ifdef __OpenBSD__
+#define lutimes utimes
+#endif
+
 CFile::~CFile()
 {
 	// TODO: write buffered data
